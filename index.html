@@ -518,7 +518,7 @@ const products = [
    points:["ล็อกอัตโนมัติ","ไม่ต้องเจาะผนัง","รับน้ำหนักได้ดี","Made to Order"],
    web:119, shopee:119, tiktok:119},
   {id:24, name:"Javik Hanger", cat:"Storage & Organization", tag:"storage",
-   imgSrc:"Javik Hanger.jpg", imgSrc2:"Javik Hanger_2.jpg", imgSrc3:"Javik Hanger_3.jpg",
+   imgSrc:"javik_hanger.jpg", imgSrc2:"javik_hanger_2.jpg", imgSrc3:"javik_hanger_3.jpg", imgSrc4:"javik_hanger_4.jpg", imgSrc5:"javik_hanger_5.jpg",
    emoji:"🪝", badge:"new", badgeLabel:"New",
    desc:"ที่แขวนดีไซน์เรียบง่าย ติดตั้งง่าย เหมาะแขวนกุญแจ กระเป๋า หรือของใช้ทั่วไป",
    points:["ดีไซน์เรียบง่าย","ติดตั้งง่าย","เลือกสีได้","Made to Order"],
@@ -666,6 +666,8 @@ function openModal(id) {
   if(p.imgSrc) galleryImgs.push(p.imgSrc)
   if(p.imgSrc2) galleryImgs.push(p.imgSrc2)
   if(p.imgSrc3) galleryImgs.push(p.imgSrc3)
+  if(p.imgSrc4) galleryImgs.push(p.imgSrc4)
+  if(p.imgSrc5) galleryImgs.push(p.imgSrc5)
 
   const el = document.getElementById('modal-emoji')
   el.style.padding = '0'
