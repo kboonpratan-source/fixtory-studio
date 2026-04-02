@@ -698,12 +698,9 @@ function openModal(id) {
   // Price display — dual pricing for priceAlt products
   const priceMain = document.getElementById('m-price-main')
   if (p.priceAlt) {
-    priceMain.innerHTML = \`
-      <div style="font-family:var(--font-display);font-size:56px;color:var(--accent);letter-spacing:2px;line-height:1">฿\${p.shopee}</div>
-      <div style="font-size:13px;color:rgba(240,237,232,.5);margin-top:4px">3 ชิ้น · หรือ ชิ้นละ <span style="color:rgba(240,237,232,.7)">฿\${p.priceAlt}</span></div>
-    \`
+    priceMain.innerHTML = '<div style="font-family:var(--font-display);font-size:56px;color:var(--accent);letter-spacing:2px;line-height:1">฿' + p.shopee + '</div><div style="font-size:13px;color:rgba(240,237,232,.5);margin-top:4px">3 ชิ้น · หรือ ชิ้นละ <span style=\"color:rgba(240,237,232,.7)\">฿' + p.priceAlt + '</span></div>'
   } else {
-    priceMain.innerHTML = \`<div style="font-family:var(--font-display);font-size:52px;color:var(--accent);letter-spacing:2px" id="m-shopee">฿\${p.shopee}</div>\`
+    priceMain.innerHTML = '<div style="font-family:var(--font-display);font-size:52px;color:var(--accent);letter-spacing:2px">฿' + p.shopee + '</div>'
   }
   document.getElementById('modal-points').innerHTML = p.points.map(pt =>
     `<div class="modal-point">${pt}</div>`).join('')
