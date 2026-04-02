@@ -391,6 +391,9 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:40px;dis
 
 <script>
 
+let selectedColor = null
+let currentBrand = 'Bambu Matte'
+
 const colorPalette = [
   // ── Bambu Lab PLA Matte (official hex) ──
   {hex:"#FFFFFF", name:"Ivory White",     brand:"Bambu Matte"},
@@ -754,8 +757,6 @@ let galleryIdx = 0
 let galleryImgs = []
 
 
-let selectedColor = null
-let currentBrand = 'Bambu Matte'
 
 function filterBrand(brand) {
   currentBrand = brand
@@ -768,15 +769,20 @@ function renderSwatches() {
   const container = document.getElementById('m-color-swatches')
   if (!container) return
   const colors = colorPalette.filter(c => c.brand === currentBrand)
-  container.innerHTML = colors.map(c => {
+  container.innerHTML = colors.map((c, i) => {
     const isLight = parseInt(c.hex.slice(1,3),16) > 200 && parseInt(c.hex.slice(3,5),16) > 200
-    const sel = selectedColor && selectedColor.hex === c.hex ? 'selected' : ''
-    return '<div class="color-swatch ' + sel + '" ' +
+    const sel = selectedColor && selectedColor.hex === c.hex && selectedColor.brand === c.brand ? ' selected' : ''
+    return '<div class="color-swatch' + sel + '" ' +
       (isLight ? 'data-light="1" ' : '') +
+      'data-brand="' + c.brand + '" data-hex="' + c.hex + '" data-name="' + c.name + '" ' +
       'style="background:' + c.hex + '" ' +
-      'onclick="selectColor(' + JSON.stringify(c) + ')" ' +
       'title="' + c.name + '"></div>'
   }).join('')
+  container.querySelectorAll('.color-swatch').forEach(el => {
+    el.addEventListener('click', function() {
+      selectColor({hex: this.dataset.hex, name: this.dataset.name, brand: this.dataset.brand})
+    })
+  })
 }
 
 function selectColor(c) {
@@ -857,10 +863,13 @@ function closeModal(e) {
   if (e.target.id === 'modal') document.getElementById('modal').classList.remove('open')
 }
 
-function addToCart(id) {
+function addToCart(id, color) {
+  const p = products.find(x => x.id === id)
+  if (!p) return
   cartCount++
   document.getElementById('cart-count').textContent = cartCount
-  showToast('สั่งซื้อเลยแล้ว!')
+  const colorText = color ? ' · ' + color.name : ''
+  showToast('เพิ่ม ' + p.name + colorText + ' แล้ว!')
 }
 
 function addToCartFromModal() {
@@ -870,7 +879,7 @@ function addToCartFromModal() {
     return
   }
   if (currentProduct) {
-    addToCart(currentProduct.id)
+    addToCart(currentProduct.id, selectedColor)
     document.getElementById('modal').classList.remove('open')
   }
 }
