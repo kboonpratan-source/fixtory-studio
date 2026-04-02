@@ -179,6 +179,19 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:40px;dis
 .gallery-dots{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);display:flex;gap:5px}
 .gallery-dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.4);cursor:pointer;transition:background .2s}
 .gallery-dot.active{background:#fff}
+
+.color-picker-section{margin:12px 0 16px}
+.color-picker-label{font-size:11px;color:rgba(240,237,232,.5);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px}
+.brand-tabs{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap}
+.brand-tab{font-size:11px;padding:3px 10px;border-radius:20px;border:0.5px solid rgba(240,237,232,.2);background:transparent;color:rgba(240,237,232,.5);cursor:pointer;transition:all .2s}
+.brand-tab.active{background:var(--accent);border-color:var(--accent);color:#000}
+.color-swatches{display:flex;flex-wrap:wrap;gap:6px}
+.color-swatch{width:28px;height:28px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:transform .15s,border-color .15s;position:relative}
+.color-swatch:hover{transform:scale(1.15)}
+.color-swatch.selected{border-color:var(--accent);transform:scale(1.2)}
+.color-swatch[data-light="1"]{box-shadow:inset 0 0 0 1px rgba(0,0,0,.15)}
+.selected-color-name{font-size:12px;color:rgba(240,237,232,.6);margin-top:8px;min-height:16px;text-align:center}
+
 </style>
 </head>
 <body>
@@ -367,6 +380,58 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:40px;dis
 <div class="toast" id="toast"></div>
 
 <script>
+
+const colorPalette = [
+  // Bambu Lab PLA Matte
+  {hex:"#FFFFFF", name:"Ivory White",    brand:"Bambu"},
+  {hex:"#CBC6B8", name:"Bone White",     brand:"Bambu"},
+  {hex:"#E8DBB7", name:"Desert Tan",     brand:"Bambu"},
+  {hex:"#D3B7A7", name:"Latte Brown",    brand:"Bambu"},
+  {hex:"#AE835B", name:"Caramel",        brand:"Bambu"},
+  {hex:"#B15533", name:"Terracotta",     brand:"Bambu"},
+  {hex:"#7D6556", name:"Dark Brown",     brand:"Bambu"},
+  {hex:"#4D3324", name:"Dark Chocolate", brand:"Bambu"},
+  {hex:"#AE96D4", name:"Lilac Purple",   brand:"Bambu"},
+  {hex:"#E8AFCF", name:"Sakura Pink",    brand:"Bambu"},
+  {hex:"#F99963", name:"Mandarin Orange",brand:"Bambu"},
+  {hex:"#F7D959", name:"Lemon Yellow",   brand:"Bambu"},
+  {hex:"#950051", name:"Plum",           brand:"Bambu"},
+  {hex:"#DE4343", name:"Scarlet Red",    brand:"Bambu"},
+  {hex:"#BB3D43", name:"Dark Red",       brand:"Bambu"},
+  {hex:"#68724D", name:"Dark Green",     brand:"Bambu"},
+  {hex:"#61C680", name:"Grass Green",    brand:"Bambu"},
+  {hex:"#C2E189", name:"Apple Green",    brand:"Bambu"},
+  {hex:"#A3D8E1", name:"Ice Blue",       brand:"Bambu"},
+  {hex:"#56B7E6", name:"Sky Blue",       brand:"Bambu"},
+  {hex:"#0078BF", name:"Marine Blue",    brand:"Bambu"},
+  {hex:"#042F56", name:"Dark Blue",      brand:"Bambu"},
+  {hex:"#9B9EA0", name:"Ash Gray",       brand:"Bambu"},
+  {hex:"#757575", name:"Nardo Gray",     brand:"Bambu"},
+  {hex:"#2C2C2C", name:"Charcoal",       brand:"Bambu"},
+  // eSUN PLA+
+  {hex:"#F5F5F5", name:"White",          brand:"eSUN"},
+  {hex:"#373838", name:"Black",          brand:"eSUN"},
+  {hex:"#697480", name:"Gray",           brand:"eSUN"},
+  {hex:"#E78397", name:"Pink",           brand:"eSUN"},
+  {hex:"#8350A4", name:"Purple",         brand:"eSUN"},
+  {hex:"#E3C7AF", name:"Skin",           brand:"eSUN"},
+  {hex:"#2A6DB5", name:"Blue",           brand:"eSUN"},
+  {hex:"#3AAA50", name:"Green",          brand:"eSUN"},
+  {hex:"#E8343A", name:"Red",            brand:"eSUN"},
+  {hex:"#F5A623", name:"Orange",         brand:"eSUN"},
+  {hex:"#F7E642", name:"Yellow",         brand:"eSUN"},
+  // Polymaker Panchroma Matte
+  {hex:"#F2EFE8", name:"White",          brand:"Polymaker"},
+  {hex:"#1A1A1A", name:"Black",          brand:"Polymaker"},
+  {hex:"#C0392B", name:"Red",            brand:"Polymaker"},
+  {hex:"#2980B9", name:"Blue",           brand:"Polymaker"},
+  {hex:"#27AE60", name:"Green",          brand:"Polymaker"},
+  {hex:"#F39C12", name:"Orange",         brand:"Polymaker"},
+  {hex:"#8E44AD", name:"Purple",         brand:"Polymaker"},
+  {hex:"#C0A882", name:"Beige",          brand:"Polymaker"},
+  {hex:"#7F8C8D", name:"Gray",           brand:"Polymaker"},
+]
+
 const products = [
   // ── HIVE series ────────────────────────────────────────────
   {id:1, name:"HIVE BOX", cat:"Storage & Organization", tag:"storage",
@@ -655,6 +720,38 @@ function filterProducts(tag, btn) {
 let galleryIdx = 0
 let galleryImgs = []
 
+
+let selectedColor = null
+let currentBrand = 'Bambu'
+
+function filterBrand(brand) {
+  currentBrand = brand
+  document.querySelectorAll('.brand-tab').forEach(t =>
+    t.classList.toggle('active', t.textContent.startsWith(brand)))
+  renderSwatches()
+}
+
+function renderSwatches() {
+  const container = document.getElementById('m-color-swatches')
+  if (!container) return
+  const colors = colorPalette.filter(c => c.brand === currentBrand)
+  container.innerHTML = colors.map(c => {
+    const isLight = parseInt(c.hex.slice(1,3),16) > 200 && parseInt(c.hex.slice(3,5),16) > 200
+    const sel = selectedColor && selectedColor.hex === c.hex ? 'selected' : ''
+    return '<div class="color-swatch ' + sel + '" ' +
+      (isLight ? 'data-light="1" ' : '') +
+      'style="background:' + c.hex + '" ' +
+      'onclick="selectColor(' + JSON.stringify(c) + ')" ' +
+      'title="' + c.name + '"></div>'
+  }).join('')
+}
+
+function selectColor(c) {
+  selectedColor = c
+  document.getElementById('m-color-name').textContent = c.name + ' (' + c.brand + ')'
+  renderSwatches()
+}
+
 function openModal(id) {
   const p = products.find(x => x.id === id)
   if (!p) return
@@ -727,6 +824,11 @@ function addToCart(id) {
 }
 
 function addToCartFromModal() {
+  if (!selectedColor) {
+    document.getElementById('m-color-name').textContent = '⚠️ กรุณาเลือกสีก่อนสั่งซื้อ'
+    document.getElementById('m-color-name').style.color = 'var(--accent)'
+    return
+  }
   if (currentProduct) {
     addToCart(currentProduct.id)
     document.getElementById('modal').classList.remove('open')
