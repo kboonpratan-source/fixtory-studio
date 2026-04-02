@@ -669,7 +669,7 @@ const products = [
    emoji:"🔡", badge:"new", badgeLabel:"New",
    desc:"Keycap ตัวอักษร custom เลือกตัวอักษรและสีได้ ครบชุด keycap + ราง + สายคล้อง",
    points:["ได้รับ keycap + ราง + สายคล้อง ครบชุด","เลือกตัวอักษรและสีได้","Made to Order ผลิตในไทย","สั่ง 3 ชิ้น ประหยัดกว่า","เลือกสีได้"],
-   web:100, shopee:100, tiktok:100, priceAlt:35},
+   web:100, shopee:100, tiktok:100, priceAlt:35, priceTiers:[{qty:1,price:49},{qty:2,price:70},{qty:3,price:100},{qty:4,price:135},{qty:5,price:170},{qty:6,price:200},{qty:7,price:235},{qty:8,price:270}]},
 
   // ── Premium ─────────────────────────────────────────────────
   {id:8, name:"Genesha Marble Statue", cat:"Premium", tag:"premium",
@@ -834,7 +834,16 @@ function openModal(id) {
   document.getElementById('modal-desc').textContent = p.desc
   // Price display — dual pricing for priceAlt products
   const priceMain = document.getElementById('m-price-main')
-  if (p.priceAlt) {
+  if (p.priceTiers) {
+    const tierHTML = p.priceTiers.map(t =>
+      '<div style="text-align:center;padding:6px 12px;background:rgba(255,255,255,.05);border-radius:8px">' +
+      '<div style="font-size:11px;color:rgba(240,237,232,.5)">' + t.qty + ' ชิ้น</div>' +
+      '<div style="font-family:var(--font-display);font-size:22px;color:var(--accent)">฿' + t.price + '</div>' +
+      '</div>'
+    ).join('')
+    priceMain.innerHTML = '<div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">' + tierHTML + '</div>' +
+      '<div style="font-size:11px;color:rgba(240,237,232,.4);margin-top:8px">ตัวละ ฿' + p.priceAlt + ' เมื่อสั่ง 2 ตัว ขึ้นไป</div>'
+  } else if (p.priceAlt) {
     priceMain.innerHTML = '<div style="font-family:var(--font-display);font-size:56px;color:var(--accent);letter-spacing:2px;line-height:1">฿' + p.shopee + '</div><div style="font-size:13px;color:rgba(240,237,232,.5);margin-top:4px">3 ชิ้น · หรือ ชิ้นละ <span style=\"color:rgba(240,237,232,.7)\">฿' + p.priceAlt + '</span></div>'
   } else {
     priceMain.innerHTML = '<div style="font-family:var(--font-display);font-size:52px;color:var(--accent);letter-spacing:2px">฿' + p.shopee + '</div>'
