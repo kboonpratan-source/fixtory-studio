@@ -368,9 +368,9 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:40px;dis
         <div class="color-picker-section">
           <div class="color-picker-label">เลือกสี</div>
           <div class="brand-tabs" id="m-brand-tabs">
-            <button class="brand-tab active" onclick="filterBrand('Bambu')">Bambu Matte</button>
-            <button class="brand-tab" onclick="filterBrand('eSUN')">eSUN PLA+</button>
-            <button class="brand-tab" onclick="filterBrand('Polymaker')">Polymaker</button>
+            <button class="brand-tab active" onclick="filterBrand('Bambu Matte')">Bambu Matte</button>
+            <button class="brand-tab" onclick="filterBrand('eSUN Matte')">eSUN Matte</button>
+            <button class="brand-tab" onclick="filterBrand('Polymaker Matte')">Polymaker Matte</button>
           </div>
           <div class="color-swatches" id="m-color-swatches"></div>
           <div class="selected-color-name" id="m-color-name">— เลือกสีที่ต้องการ —</div>
@@ -392,54 +392,77 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:40px;dis
 <script>
 
 const colorPalette = [
-  // Bambu Lab PLA Matte
-  {hex:"#FFFFFF", name:"Ivory White",    brand:"Bambu"},
-  {hex:"#CBC6B8", name:"Bone White",     brand:"Bambu"},
-  {hex:"#E8DBB7", name:"Desert Tan",     brand:"Bambu"},
-  {hex:"#D3B7A7", name:"Latte Brown",    brand:"Bambu"},
-  {hex:"#AE835B", name:"Caramel",        brand:"Bambu"},
-  {hex:"#B15533", name:"Terracotta",     brand:"Bambu"},
-  {hex:"#7D6556", name:"Dark Brown",     brand:"Bambu"},
-  {hex:"#4D3324", name:"Dark Chocolate", brand:"Bambu"},
-  {hex:"#AE96D4", name:"Lilac Purple",   brand:"Bambu"},
-  {hex:"#E8AFCF", name:"Sakura Pink",    brand:"Bambu"},
-  {hex:"#F99963", name:"Mandarin Orange",brand:"Bambu"},
-  {hex:"#F7D959", name:"Lemon Yellow",   brand:"Bambu"},
-  {hex:"#950051", name:"Plum",           brand:"Bambu"},
-  {hex:"#DE4343", name:"Scarlet Red",    brand:"Bambu"},
-  {hex:"#BB3D43", name:"Dark Red",       brand:"Bambu"},
-  {hex:"#68724D", name:"Dark Green",     brand:"Bambu"},
-  {hex:"#61C680", name:"Grass Green",    brand:"Bambu"},
-  {hex:"#C2E189", name:"Apple Green",    brand:"Bambu"},
-  {hex:"#A3D8E1", name:"Ice Blue",       brand:"Bambu"},
-  {hex:"#56B7E6", name:"Sky Blue",       brand:"Bambu"},
-  {hex:"#0078BF", name:"Marine Blue",    brand:"Bambu"},
-  {hex:"#042F56", name:"Dark Blue",      brand:"Bambu"},
-  {hex:"#9B9EA0", name:"Ash Gray",       brand:"Bambu"},
-  {hex:"#757575", name:"Nardo Gray",     brand:"Bambu"},
-  {hex:"#2C2C2C", name:"Charcoal",       brand:"Bambu"},
-  // eSUN PLA+
-  {hex:"#F5F5F5", name:"White",          brand:"eSUN"},
-  {hex:"#373838", name:"Black",          brand:"eSUN"},
-  {hex:"#697480", name:"Gray",           brand:"eSUN"},
-  {hex:"#E78397", name:"Pink",           brand:"eSUN"},
-  {hex:"#8350A4", name:"Purple",         brand:"eSUN"},
-  {hex:"#E3C7AF", name:"Skin",           brand:"eSUN"},
-  {hex:"#2A6DB5", name:"Blue",           brand:"eSUN"},
-  {hex:"#3AAA50", name:"Green",          brand:"eSUN"},
-  {hex:"#E8343A", name:"Red",            brand:"eSUN"},
-  {hex:"#F5A623", name:"Orange",         brand:"eSUN"},
-  {hex:"#F7E642", name:"Yellow",         brand:"eSUN"},
-  // Polymaker Panchroma Matte
-  {hex:"#F2EFE8", name:"White",          brand:"Polymaker"},
-  {hex:"#1A1A1A", name:"Black",          brand:"Polymaker"},
-  {hex:"#C0392B", name:"Red",            brand:"Polymaker"},
-  {hex:"#2980B9", name:"Blue",           brand:"Polymaker"},
-  {hex:"#27AE60", name:"Green",          brand:"Polymaker"},
-  {hex:"#F39C12", name:"Orange",         brand:"Polymaker"},
-  {hex:"#8E44AD", name:"Purple",         brand:"Polymaker"},
-  {hex:"#C0A882", name:"Beige",          brand:"Polymaker"},
-  {hex:"#7F8C8D", name:"Gray",           brand:"Polymaker"},
+  // ── Bambu Lab PLA Matte (official hex) ──
+  {hex:"#FFFFFF", name:"Ivory White",     brand:"Bambu Matte"},
+  {hex:"#CBC6B8", name:"Bone White",      brand:"Bambu Matte"},
+  {hex:"#E8DBB7", name:"Desert Tan",      brand:"Bambu Matte"},
+  {hex:"#D3B7A7", name:"Latte Brown",     brand:"Bambu Matte"},
+  {hex:"#AE835B", name:"Caramel",         brand:"Bambu Matte"},
+  {hex:"#B15533", name:"Terracotta",      brand:"Bambu Matte"},
+  {hex:"#7D6556", name:"Dark Brown",      brand:"Bambu Matte"},
+  {hex:"#4D3324", name:"Dark Chocolate",  brand:"Bambu Matte"},
+  {hex:"#AE96D4", name:"Lilac Purple",    brand:"Bambu Matte"},
+  {hex:"#E8AFCF", name:"Sakura Pink",     brand:"Bambu Matte"},
+  {hex:"#F99963", name:"Mandarin Orange", brand:"Bambu Matte"},
+  {hex:"#F7D959", name:"Lemon Yellow",    brand:"Bambu Matte"},
+  {hex:"#950051", name:"Plum",            brand:"Bambu Matte"},
+  {hex:"#DE4343", name:"Scarlet Red",     brand:"Bambu Matte"},
+  {hex:"#BB3D43", name:"Dark Red",        brand:"Bambu Matte"},
+  {hex:"#68724D", name:"Dark Green",      brand:"Bambu Matte"},
+  {hex:"#61C680", name:"Grass Green",     brand:"Bambu Matte"},
+  {hex:"#C2E189", name:"Apple Green",     brand:"Bambu Matte"},
+  {hex:"#A3D8E1", name:"Ice Blue",        brand:"Bambu Matte"},
+  {hex:"#56B7E6", name:"Sky Blue",        brand:"Bambu Matte"},
+  {hex:"#0078BF", name:"Marine Blue",     brand:"Bambu Matte"},
+  {hex:"#042F56", name:"Dark Blue",       brand:"Bambu Matte"},
+  {hex:"#9B9EA0", name:"Ash Gray",        brand:"Bambu Matte"},
+  {hex:"#757575", name:"Nardo Gray",      brand:"Bambu Matte"},
+  {hex:"#2C2C2C", name:"Charcoal",        brand:"Bambu Matte"},
+  // ── eSUN ePLA-Matte ──
+  {hex:"#F5F5F0", name:"Milky White",     brand:"eSUN Matte"},
+  {hex:"#1A1A1A", name:"Deep Black",      brand:"eSUN Matte"},
+  {hex:"#4A4A4A", name:"Dark Gray",       brand:"eSUN Matte"},
+  {hex:"#F5C5A3", name:"Peach Pink",      brand:"eSUN Matte"},
+  {hex:"#F5D78E", name:"Almond Yellow",   brand:"eSUN Matte"},
+  {hex:"#A8D8A8", name:"Mint Green",      brand:"eSUN Matte"},
+  {hex:"#ADD8C7", name:"Matcha Green",    brand:"eSUN Matte"},
+  {hex:"#E85C5C", name:"Strawberry Red",  brand:"eSUN Matte"},
+  {hex:"#F4914E", name:"Tangerine",       brand:"eSUN Matte"},
+  {hex:"#C8B4A0", name:"Light Khaki",     brand:"eSUN Matte"},
+  {hex:"#A8C8D8", name:"Light Blue",      brand:"eSUN Matte"},
+  {hex:"#C8A8C8", name:"Lilac",           brand:"eSUN Matte"},
+  // ── Polymaker Panchroma Matte (PolyTerra) ──
+  {hex:"#4C4E56", name:"Charcoal Black",  brand:"Polymaker Matte"},
+  {hex:"#FFFFFF", name:"Cotton White",    brand:"Polymaker Matte"},
+  {hex:"#9B9EA0", name:"Fossil Grey",     brand:"Polymaker Matte"},
+  {hex:"#0078BF", name:"Sapphire Blue",   brand:"Polymaker Matte"},
+  {hex:"#DE4343", name:"Lava Red",        brand:"Polymaker Matte"},
+  {hex:"#519F61", name:"Forest Green",    brand:"Polymaker Matte"},
+  {hex:"#FFE17F", name:"Savannah Yellow", brand:"Polymaker Matte"},
+  {hex:"#F99963", name:"Sunrise Orange",  brand:"Polymaker Matte"},
+  {hex:"#5AABB1", name:"Arctic Teal",     brand:"Polymaker Matte"},
+  {hex:"#AD7441", name:"Wood Brown",      brand:"Polymaker Matte"},
+  {hex:"#775C50", name:"Earth Brown",     brand:"Polymaker Matte"},
+  {hex:"#E0A8BB", name:"Sakura Pink",     brand:"Polymaker Matte"},
+  {hex:"#AE96D4", name:"Lavender Purple", brand:"Polymaker Matte"},
+  {hex:"#95C5D3", name:"Pastel Ice",      brand:"Polymaker Matte"},
+  {hex:"#FEE5A5", name:"Pastel Banana",   brand:"Polymaker Matte"},
+  {hex:"#FC6371", name:"Pastel Watermelon",brand:"Polymaker Matte"},
+  {hex:"#D3B7A7", name:"Pastel Peanut",   brand:"Polymaker Matte"},
+  {hex:"#F3D6E5", name:"Pastel Candy",    brand:"Polymaker Matte"},
+  {hex:"#BEC9A5", name:"Pastel Mint",     brand:"Polymaker Matte"},
+  {hex:"#F2B67A", name:"Pastel Peach",    brand:"Polymaker Matte"},
+  {hex:"#68724D", name:"Army Dark Green", brand:"Polymaker Matte"},
+  {hex:"#A78403", name:"Army Light Green",brand:"Polymaker Matte"},
+  {hex:"#7D6556", name:"Army Brown",      brand:"Polymaker Matte"},
+  {hex:"#DFC8B7", name:"Army Beige",      brand:"Polymaker Matte"},
+  {hex:"#BC3E44", name:"Army Red",        brand:"Polymaker Matte"},
+  {hex:"#375172", name:"Army Blue",       brand:"Polymaker Matte"},
+  {hex:"#AFA198", name:"Muted White",     brand:"Polymaker Matte"},
+  {hex:"#4E6A84", name:"Muted Blue",      brand:"Polymaker Matte"},
+  {hex:"#C44F26", name:"Muted Red",       brand:"Polymaker Matte"},
+  {hex:"#656D60", name:"Muted Green",     brand:"Polymaker Matte"},
+  {hex:"#7C5577", name:"Muted Purple",    brand:"Polymaker Matte"},
 ]
 
 const products = [
@@ -732,7 +755,7 @@ let galleryImgs = []
 
 
 let selectedColor = null
-let currentBrand = 'Bambu'
+let currentBrand = 'Bambu Matte'
 
 function filterBrand(brand) {
   currentBrand = brand
@@ -811,7 +834,14 @@ function openModal(id) {
   }
   document.getElementById('modal-points').innerHTML = p.points.map(pt =>
     `<div class="modal-point">${pt}</div>`).join('')
+  // Reset & render color picker
+  selectedColor = null
+  currentBrand = 'Bambu Matte'
+  document.getElementById('m-color-name').textContent = '— เลือกสีที่ต้องการ —'
+  document.getElementById('m-color-name').style.color = ''
+  document.querySelectorAll('.brand-tab').forEach((t,i) => t.classList.toggle('active', i===0))
   document.getElementById('modal').classList.add('open')
+  renderSwatches()
 }
 
 function goSlide(idx) {
