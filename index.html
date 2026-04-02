@@ -205,7 +205,7 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:40px;dis
     <li><a href="#custom">Custom</a></li>
     <li><a href="#contact">Contact</a></li>
   </ul>
-  <button class="nav-cta" onclick="showToast('ไปที่ตะกร้าสินค้า...')">
+  <button class="nav-cta" onclick="checkout()">
     Cart <span class="cart-count" id="cart-count">0</span>
   </button>
 </nav>
@@ -717,6 +717,7 @@ const products = [
 ]
 
 let cartCount = 0
+let cartItems = []
 let currentProduct = null
 
 function renderProducts(filter='all') {
@@ -866,10 +867,10 @@ function closeModal(e) {
 function addToCart(id, color) {
   const p = products.find(x => x.id === id)
   if (!p) return
+  cartItems.push({name: p.name, price: p.shopee, color: color ? color.name : 'ไม่ระบุสี', brand: color ? color.brand : ''})
   cartCount++
   document.getElementById('cart-count').textContent = cartCount
-  const colorText = color ? ' · ' + color.name : ''
-  showToast('เพิ่ม ' + p.name + colorText + ' แล้ว!')
+  showToast('เพิ่ม ' + p.name + ' แล้ว!')
 }
 
 function addToCartFromModal() {
@@ -886,12 +887,28 @@ function addToCartFromModal() {
   }
 }
 
+
+function checkout() {
+  if (cartItems.length === 0) {
+    showToast('ยังไม่มีสินค้าในตะกร้า')
+    return
+  }
+  const orderText = cartItems.map((item, i) => 
+    (i+1) + '. ' + item.name + ' (' + item.color + ') ฿' + item.price
+  ).join('\n')
+  const total = cartItems.reduce((s, item) => s + item.price, 0)
+  const fullOrder = orderText + '\n\nรวม: ฿' + total
+  const url = 'https://docs.google.com/forms/d/e/1FAIpQLSfUtWWFrO8NvFiVlWuBlCWWnRnHIJgNpwWfWJnvFmeD-Wyzyw/viewform?usp=pp_url&entry.839337160=' + encodeURIComponent(fullOrder)
+  window.open(url, '_blank')
+}
+
 function showToast(msg) {
-  const t = document.getElementById('toast')
-  if (!t) return
-  t.textContent = msg
-  t.style.cssText = 'position:fixed;bottom:32px;right:32px;background:#E8724A;color:#fff;padding:14px 24px;font-size:13px;z-index:9999;border-radius:4px;opacity:1;transform:translateY(0);transition:all .3s'
-  setTimeout(() => { t.style.opacity='0'; t.style.transform='translateY(100px)'; setTimeout(()=>t.style.cssText='',300) }, 2800)
+  // Create floating notification
+  const div = document.createElement('div')
+  div.textContent = msg
+  div.style.cssText = 'position:fixed;bottom:32px;right:32px;background:#E8724A;color:#fff;padding:14px 24px;font-size:13px;z-index:99999;border-radius:4px;font-family:sans-serif;box-shadow:0 4px 12px rgba(0,0,0,.3)'
+  document.body.appendChild(div)
+  setTimeout(() => { div.style.opacity='0'; div.style.transition='opacity .3s'; setTimeout(()=>div.remove(),300) }, 2800)
 }
 
 renderProducts()
