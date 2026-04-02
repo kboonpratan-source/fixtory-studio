@@ -888,9 +888,10 @@ function addToCartFromModal() {
 
 function showToast(msg) {
   const t = document.getElementById('toast')
+  if (!t) return
   t.textContent = msg
-  t.classList.add('show')
-  setTimeout(() => t.classList.remove('show'), 2800)
+  t.style.cssText = 'position:fixed;bottom:32px;right:32px;background:#E8724A;color:#fff;padding:14px 24px;font-size:13px;z-index:9999;border-radius:4px;opacity:1;transform:translateY(0);transition:all .3s'
+  setTimeout(() => { t.style.opacity='0'; t.style.transform='translateY(100px)'; setTimeout(()=>t.style.cssText='',300) }, 2800)
 }
 
 renderProducts()
