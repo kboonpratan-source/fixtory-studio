@@ -894,7 +894,7 @@ function checkout() {
     return
   }
   const orderText = cartItems.map((item, i) => 
-    (i+1) + '. ' + item.name + ' (' + item.color + ') ฿' + item.price
+    (i+1) + '. ' + item.name + ' · ' + item.color + ' (' + item.brand + ') ฿' + item.price
   ).join('\n')
   const total = cartItems.reduce((s, item) => s + item.price, 0)
   const fullOrder = orderText + '\n\nรวม: ฿' + total
@@ -908,7 +908,7 @@ function showToast(msg) {
   div.textContent = msg
   div.style.cssText = 'position:fixed;bottom:32px;right:32px;background:#E8724A;color:#fff;padding:14px 24px;font-size:13px;z-index:99999;border-radius:4px;font-family:sans-serif;box-shadow:0 4px 12px rgba(0,0,0,.3)'
   document.body.appendChild(div)
-  setTimeout(() => { div.style.opacity='0'; div.style.transition='opacity .3s'; setTimeout(()=>div.remove(),300) }, 2800)
+  setTimeout(() => { div.style.opacity='0'; div.style.transition='opacity .3s'; setTimeout(()=>div.remove(),300) }, 10000)
 }
 
 renderProducts()
