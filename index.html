@@ -352,9 +352,9 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:40px;dis
         <div class="modal-name" id="modal-name"></div>
         <div class="modal-desc" id="modal-desc"></div>
         <div class="modal-points" id="modal-points"></div>
-        <div style="text-align:center;padding:16px 0 8px">
+        <div style="text-align:center;padding:16px 0 8px" id="m-price-block">
           <div style="font-size:12px;color:rgba(240,237,232,.5);margin-bottom:6px;letter-spacing:1px;text-transform:uppercase">ราคา</div>
-          <div style="font-family:var(--font-display);font-size:52px;color:var(--accent);letter-spacing:2px" id="m-shopee"></div>
+          <div id="m-price-main"></div>
           <div style="font-size:11px;color:rgba(240,237,232,.4);margin-top:4px">ราคาเดียวกันทุก platform · Shopee · TikTok</div>
         </div>
         <button class="modal-add" onclick="addToCartFromModal()">สั่งซื้อเลย</button>
@@ -566,9 +566,9 @@ const products = [
   {id:37, name:"Alphabet Keycap", cat:"Storage & Organization", tag:"storage",
    imgSrc:"alphabet_keycap.jpg",
    emoji:"🔡", badge:"new", badgeLabel:"New",
-   desc:"Keycap ตัวอักษร custom เลือกตัวอักษรและสีได้ ครบชุด keycap + ราง + สายคล้อง — ชิ้นละ ฿35 หรือ 3 ชิ้น ฿100",
-   points:["ได้รับ keycap + ราง + สายคล้อง ครบชุด","เลือกตัวอักษรและสีได้","1 ชิ้น ฿35 / 3 ชิ้น ฿100","Made to Order ผลิตในไทย"],
-   web:35, shopee:35, tiktok:35},
+   desc:"Keycap ตัวอักษร custom เลือกตัวอักษรและสีได้ ครบชุด keycap + ราง + สายคล้อง",
+   points:["ได้รับ keycap + ราง + สายคล้อง ครบชุด","เลือกตัวอักษรและสีได้","Made to Order ผลิตในไทย","สั่ง 3 ชิ้น ประหยัดกว่า"],
+   web:100, shopee:100, tiktok:100, priceAlt:35},
 
   // ── Premium ─────────────────────────────────────────────────
   {id:8, name:"Genesha Marble Statue", cat:"Premium", tag:"premium",
@@ -636,7 +636,7 @@ function renderProducts(filter='all') {
         </div>
         <div class="card-footer">
           <div>
-            <div class="card-price">฿${p.shopee}</div>
+            <div class="card-price">${p.priceAlt ? '฿'+p.shopee+' / 3 ชิ้น' : '฿'+p.shopee}</div>
             <div class="card-price-platform">Shopee · TikTok · เว็บ ราคาเดียวกัน</div>
           </div>
           <button class="add-btn" onclick="event.stopPropagation();addToCart(${p.id})">+</button>
@@ -695,7 +695,16 @@ function openModal(id) {
   document.getElementById('modal-cat').textContent = p.cat
   document.getElementById('modal-name').textContent = p.name
   document.getElementById('modal-desc').textContent = p.desc
-  document.getElementById('m-shopee').textContent = '฿' + p.shopee
+  // Price display — dual pricing for priceAlt products
+  const priceMain = document.getElementById('m-price-main')
+  if (p.priceAlt) {
+    priceMain.innerHTML = \`
+      <div style="font-family:var(--font-display);font-size:56px;color:var(--accent);letter-spacing:2px;line-height:1">฿\${p.shopee}</div>
+      <div style="font-size:13px;color:rgba(240,237,232,.5);margin-top:4px">3 ชิ้น · หรือ ชิ้นละ <span style="color:rgba(240,237,232,.7)">฿\${p.priceAlt}</span></div>
+    \`
+  } else {
+    priceMain.innerHTML = \`<div style="font-family:var(--font-display);font-size:52px;color:var(--accent);letter-spacing:2px" id="m-shopee">฿\${p.shopee}</div>\`
+  }
   document.getElementById('modal-points').innerHTML = p.points.map(pt =>
     `<div class="modal-point">${pt}</div>`).join('')
   document.getElementById('modal').classList.add('open')
