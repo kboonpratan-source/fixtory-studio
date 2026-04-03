@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Fixtory.studio — Premium 3D Printing Thailand</title>
+<title>Fixtory.studio — From Craft to Smart Design</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Noto+Sans+Thai:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -192,7 +192,6 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:40px;dis
 .color-swatch[data-light="1"]{box-shadow:inset 0 0 0 1px rgba(0,0,0,.15)}
 .selected-color-name{font-size:12px;color:rgba(240,237,232,.6);margin-top:8px;min-height:16px;text-align:center}
 
-
 .hero-visual{position:relative;display:flex;align-items:center;justify-content:center;height:100%;padding:20px 10px}
 .hero-visual svg{width:100%;height:100%;max-height:calc(100vh - 100px);filter:drop-shadow(0 0 40px rgba(232,114,74,.15))}
 @media(max-width:900px){.hero{grid-template-columns:1fr;padding:100px 20px 40px}.hero-visual{display:none}}
@@ -208,6 +207,7 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:40px;dis
 @keyframes floatUp{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
 @keyframes spinSlow{from{transform:rotateZ(0deg)}to{transform:rotateZ(360deg)}}
 @keyframes fadeLoop{0%,100%{opacity:.2}50%{opacity:.7}}
+
 </style>
 </head>
 <body>
@@ -232,7 +232,7 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:40px;dis
   <div class="hero-glow"></div>
   <div class="hero-content">
     <div class="hero-tag">Bangkok, Thailand · Premium 3D Printing</div>
-    <h1>YOUR IDEAS,<br><em>PRINTED</em><br>PERFECTLY</h1>
+    <h1>FROM CRAFT<br><em>TO SMART</em><br>DESIGN</h1>
     <p class="hero-desc">สินค้า 3D print คุณภาพสูง ออกแบบเฉพาะคุณ<br>ตั้งแต่ของตกแต่งบ้านไปจนถึง custom order</p>
     <div class="hero-btns">
       <button class="btn-primary" onclick="document.getElementById('products').scrollIntoView({behavior:'smooth'})">ดูสินค้าทั้งหมด</button>
@@ -487,6 +487,23 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:40px;dis
     <text x="252" y="375" font-size="9" fill="#E8724A" text-anchor="middle" font-family="monospace" letter-spacing="3" opacity=".55">Layer by Layer</text>
     </svg>
   </div></section>
+
+<!-- PRODUCTS -->
+<section class="products-section" id="products">
+  <div class="section-tag">Collections</div>
+  <div class="section-title">SHOP</div>
+  <div class="section-sub">สินค้า Priority 1 — Evergreen · พร้อมส่ง · Made to Order</div>
+
+  <div class="filter-bar">
+    <button class="filter-btn active" onclick="filterProducts('all',this)">ทั้งหมด</button>
+    <button class="filter-btn" onclick="filterProducts('storage',this)">Storage & Organization</button>
+    <button class="filter-btn" onclick="filterProducts('travel',this)">Travel</button>
+    <button class="filter-btn" onclick="filterProducts('decor',this)">Home Decor</button>
+    <button class="filter-btn" onclick="filterProducts('premium',this)">Premium</button>
+  </div>
+
+  <div class="products-grid" id="products-grid"></div>
+</section>
 
 <!-- PROCESS -->
 <section class="process-section" id="process">
