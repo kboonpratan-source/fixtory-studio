@@ -179,7 +179,6 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:40px;dis
 .gallery-dots{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);display:flex;gap:5px}
 .gallery-dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.4);cursor:pointer;transition:background .2s}
 .gallery-dot.active{background:#fff}
-.slide-size-label{position:absolute;font-family:var(--font-mono);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;background:rgba(10,10,10,.72);color:var(--text);padding:3px 8px;pointer-events:none;border:1px solid rgba(255,255,255,.15);backdrop-filter:blur(4px)}
 
 .color-picker-section{margin:12px 0 16px}
 .color-picker-label{font-size:11px;color:rgba(240,237,232,.5);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px}
@@ -191,8 +190,8 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:40px;dis
 .color-swatch:hover{transform:scale(1.15)}
 .color-swatch.selected{border-color:var(--accent);transform:scale(1.2)}
 .color-swatch[data-light="1"]{box-shadow:inset 0 0 0 1px rgba(0,0,0,.15)}
-.gallery-color-overlay{position:absolute;inset:0;pointer-events:none;transition:background .3s ease,opacity .3s ease;opacity:0;mix-blend-mode:color;border-radius:4px;display:none}
-.gallery-color-overlay.active{opacity:.85;display:block}
+.gallery-color-overlay{position:absolute;inset:0;pointer-events:none;transition:background .3s ease,opacity .3s ease;opacity:0;mix-blend-mode:multiply;border-radius:4px}
+.gallery-color-overlay.active{opacity:.45}
 .modal-gallery{position:relative}
 .selected-color-name{font-size:12px;color:rgba(240,237,232,.6);margin-top:8px;min-height:16px;text-align:center}
 
@@ -767,35 +766,30 @@ const products = [
   {id:10, name:"COOKIES Tall", cat:"Storage & Organization", tag:"storage",
    imgSrc:"cookies_labeled.jpg", imgSrc2:"cookies_set.jpg",
    emoji:"🍪", badge:"new", badgeLabel:"New",
-   slideLabels:{"cookies_set.jpg":[{text:"Tall",left:"5%",top:"5%"},{text:"M",left:"62%",top:"18%"},{text:"L",left:"5%",top:"60%"},{text:"S",left:"65%",top:"72%"}]},
    desc:"กระบอกใส่ดินสอ/ปากกา ดีไซน์ ribbed texture สวยงาม เข้าชุด COOKIES series",
    points:["ดีไซน์ ribbed texture","เลือกสีได้","Made to Order","เข้าชุด COOKIES series"],
    web:219, shopee:219, tiktok:219},
   {id:11, name:"COOKIES L", cat:"Storage & Organization", tag:"storage",
    imgSrc:"cookies_labeled.jpg", imgSrc2:"cookies_set.jpg",
    emoji:"🍪", badge:"new", badgeLabel:"New",
-   slideLabels:{"cookies_set.jpg":[{text:"Tall",left:"5%",top:"5%"},{text:"M",left:"62%",top:"18%"},{text:"L",left:"5%",top:"60%"},{text:"S",left:"65%",top:"72%"}]},
    desc:"กล่องฝาปิดทรงกลม size L ดีไซน์ beaded border สวยงาม เหมาะเก็บของชิ้นใหญ่",
    points:["มีฝาปิด","ดีไซน์ beaded border","เลือกสีได้","เข้าชุด COOKIES series"],
    web:299, shopee:299, tiktok:299},
   {id:12, name:"COOKIES M", cat:"Storage & Organization", tag:"storage",
    imgSrc:"cookies_labeled.jpg", imgSrc2:"cookies_set.jpg",
    emoji:"🍪", badge:"new", badgeLabel:"New",
-   slideLabels:{"cookies_set.jpg":[{text:"Tall",left:"5%",top:"5%"},{text:"M",left:"62%",top:"18%"},{text:"L",left:"5%",top:"60%"},{text:"S",left:"65%",top:"72%"}]},
    desc:"กล่องฝาปิดทรงกลม size M เหมาะเก็บเครื่องประดับ กำไล ต่างหู",
    points:["มีฝาปิด","ดีไซน์ beaded border","เลือกสีได้","เหมาะเก็บเครื่องประดับ"],
    web:219, shopee:219, tiktok:219},
   {id:13, name:"COOKIES S", cat:"Storage & Organization", tag:"storage",
    imgSrc:"cookies_labeled.jpg", imgSrc2:"cookies_set.jpg",
    emoji:"🍪", badge:"new", badgeLabel:"New",
-   slideLabels:{"cookies_set.jpg":[{text:"Tall",left:"5%",top:"5%"},{text:"M",left:"62%",top:"18%"},{text:"L",left:"5%",top:"60%"},{text:"S",left:"65%",top:"72%"}]},
    desc:"กล่องฝาปิดทรงกลม size S น่ารัก เหมาะเป็นของขวัญหรือเก็บของชิ้นเล็ก",
    points:["มีฝาปิด","ขนาดเล็กน่ารัก","เลือกสีได้","เหมาะเป็นของขวัญ"],
    web:149, shopee:149, tiktok:149},
   {id:14, name:"COOKIES Full Set", cat:"Storage & Organization", tag:"storage",
    imgSrc:"cookies_labeled.jpg", imgSrc2:"cookies_set.jpg",
    emoji:"🍪", badge:"new", badgeLabel:"New",
-   slideLabels:{"cookies_set.jpg":[{text:"Tall",left:"5%",top:"5%"},{text:"M",left:"62%",top:"18%"},{text:"L",left:"5%",top:"60%"},{text:"S",left:"65%",top:"72%"}]},
    desc:"COOKIES ครบ set 4 ชิ้น (Tall + L + M + S) ประหยัดกว่าซื้อแยก ฿137",
    points:["ครบ 4 ชิ้นในชุดเดียว","ประหยัดกว่าซื้อแยก ฿137","เลือกสีได้","Made to Order"],
    web:749, shopee:749, tiktok:749},
@@ -938,6 +932,14 @@ const products = [
    points:["ได้รับ keycap + ราง + สายคล้อง ครบชุด","เลือกตัวอักษรและสีได้","Made to Order ผลิตในไทย","สั่ง 3 ตัว ประหยัดกว่า","เลือกสีได้"],
    web:100, shopee:100, tiktok:100, priceAlt:35, priceTiers:[{qty:1,price:49},{qty:2,price:70},{qty:3,price:100},{qty:4,price:135},{qty:5,price:170},{qty:6,price:200},{qty:7,price:235},{qty:8,price:270}]},
 
+  // ── LOCKET ─────────────────────────────────────────────
+  {id:51, name:"LOCKET", cat:"Accessories", tag:"accessories",
+   imgSrc:"locket_1.jpg", imgSrc2:"locket_2.jpg", imgSrc3:"locket_3.jpg", imgSrc4:"locket_4.jpg", imgSrc5:"locket_5.jpg", imgSrc6:"locket_6.jpg",
+   emoji:"💊", badge:"new", badgeLabel:"New",
+   desc:"กล่องพกพาสุดเก๋ ใส่ลิปบาล์ม น้ำหอมขนาดเล็ก หรือของจิ๋วที่รัก · แขวนกุญแจ กระเป๋า หรือสายคล้องได้ · lip balm holder keychain น้ำหอมพกพา ของขวัญ",
+   points:["ใส่ได้ทุกอย่าง — ลิปบาล์ม น้ำหอมเล็ก ยา ของจิ๋ว","แขวนกุญแจหรือกระเป๋าได้ทันที","ฝาล็อคแน่น ไม่หลุด","เลือกสีได้","Made to Order ผลิตในไทย"],
+   web:149, shopee:149, tiktok:149},
+
   // ── Premium ─────────────────────────────────────────────────
   {id:8, name:"Genesha Marble Statue", cat:"Premium", tag:"premium",
    imgSrc:"genesha.jpg",
@@ -986,7 +988,6 @@ const products = [
 let cartCount = 0
 let cartItems = []
 let currentProduct = null
-let originalImgSrcs = []
 
 function renderProducts(filter='all') {
   const filtered = filter === 'all' ? products : products.filter(p => p.tag === filter)
@@ -1062,76 +1063,22 @@ function selectColor(c) {
 }
 
 function applyColorOverlay(hex) {
-  const imgs = Array.from(document.querySelectorAll('#gslides img'))
-  if (originalImgSrcs.length === 0) imgs.forEach(img => originalImgSrcs.push(img.src))
-  const tr = parseInt(hex.slice(1,3),16), tg = parseInt(hex.slice(3,5),16), tb = parseInt(hex.slice(5,7),16)
-  const [th, ts] = rgbToHsl(tr, tg, tb)
-  imgs.forEach((img, i) => recolorProductImg(originalImgSrcs[i], th, ts, img))
-}
-
-function recolorProductImg(src, th, ts, imgEl) {
-  const cssHueFallback = () => {
-    // hue-rotate shifts warm hues (product) more than neutral (background ~s=0)
-    const rot = Math.round(th - 35)
-    const sat = (1 + ts * 2).toFixed(2)
-    const bri = (0.55 + ts * 0.45).toFixed(2)
-    imgEl.style.filter = `hue-rotate(${rot}deg) saturate(${sat}) brightness(${bri})`
+  // Method 1: overlay div
+  const overlay = document.getElementById('color-overlay')
+  if (overlay) {
+    overlay.style.background = hex
+    overlay.classList.add('active')
   }
-  const tmp = new Image()
-  tmp.crossOrigin = 'anonymous'
-  tmp.onload = function() {
-    const cv = document.createElement('canvas')
-    cv.width = tmp.naturalWidth; cv.height = tmp.naturalHeight
-    const cx = cv.getContext('2d')
-    cx.drawImage(tmp, 0, 0)
-    try {
-      const id = cx.getImageData(0, 0, cv.width, cv.height), d = id.data
-      for (let i = 0; i < d.length; i += 4) {
-        const [h, s, l] = rgbToHsl(d[i], d[i+1], d[i+2])
-        // Warm-hue product pixels: raise s threshold to exclude low-sat backgrounds,
-        // raise l ceiling to include bright-lit product surfaces (l up to 0.99)
-        if (h >= 12 && h <= 70 && s > 0.18 && l > 0.06 && l < 0.99) {
-          const ns = Math.min(0.92, Math.max(ts, 0.35))
-          const [r2,g2,b2] = hslToRgb(th, ns, l)
-          d[i] = r2; d[i+1] = g2; d[i+2] = b2
-        }
-      }
-      cx.putImageData(id, 0, 0)
-      imgEl.src = cv.toDataURL('image/jpeg', 0.92)
-      imgEl.style.filter = ''
-    } catch(e) { cssHueFallback() }
-  }
-  tmp.onerror = cssHueFallback
-  tmp.src = src
-}
-
-function rgbToHsl(r, g, b) {
-  r /= 255; g /= 255; b /= 255
-  const max = Math.max(r,g,b), min = Math.min(r,g,b)
-  let h = 0, s = 0, l = (max + min) / 2
-  if (max !== min) {
-    const d = max - min
-    s = l > 0.5 ? d / (2 - max - min) : d / (max + min)
-    if (max === r) h = ((g - b) / d + (g < b ? 6 : 0)) * 60
-    else if (max === g) h = ((b - r) / d + 2) * 60
-    else h = ((r - g) / d + 4) * 60
-  }
-  return [h, s, l]
-}
-
-function hslToRgb(h, s, l) {
-  h /= 360
-  if (s === 0) { const v = Math.round(l * 255); return [v, v, v] }
-  const q = l < 0.5 ? l * (1 + s) : l + s - l * s, p = 2 * l - q
-  return [hue2rgb(p,q,h+1/3), hue2rgb(p,q,h), hue2rgb(p,q,h-1/3)].map(x => Math.round(x*255))
-}
-
-function hue2rgb(p, q, t) {
-  if (t < 0) t += 1; if (t > 1) t -= 1
-  if (t < 1/6) return p + (q-p)*6*t
-  if (t < 1/2) return q
-  if (t < 2/3) return p + (q-p)*(2/3-t)*6
-  return p
+  // Method 2: CSS filter tint on all gallery images as backup
+  const imgs = document.querySelectorAll('#gslides img')
+  const r = parseInt(hex.slice(1,3),16)
+  const g = parseInt(hex.slice(3,5),16)  
+  const b = parseInt(hex.slice(5,7),16)
+  // Convert to hue-rotate + saturate approximation
+  imgs.forEach(img => {
+    img.style.transition = 'filter .3s ease'
+    img.style.filter = `sepia(0.6) saturate(3) hue-rotate(${hexToHueDeg(hex)}deg) brightness(0.95)`
+  })
 }
 
 function hexToHueDeg(hex) {
@@ -1169,12 +1116,8 @@ function openModal(id) {
   if(galleryImgs.length > 0) {
     const dots = galleryImgs.map((_,i) =>
       `<div class="gallery-dot${i===0?' active':''}" onclick="goSlide(${i})"></div>`).join('')
-    const slides = galleryImgs.map(src => {
-      const labels = p.slideLabels && p.slideLabels[src]
-      const labelHtml = labels ? labels.map(l =>
-        `<span class="slide-size-label" style="left:${l.left};top:${l.top}">${l.text}</span>`).join('') : ''
-      return `<div class="gallery-slide" style="position:relative"><img src="${src}" alt="">${labelHtml}</div>`
-    }).join('')
+    const slides = galleryImgs.map(src =>
+      `<div class="gallery-slide"><img src="${src}" alt=""></div>`).join('')
     const nav = galleryImgs.length > 1
       ? `<button class="gallery-btn prev" onclick="goSlide(galleryIdx-1)">&#8249;</button>
          <button class="gallery-btn next" onclick="goSlide(galleryIdx+1)">&#8250;</button>
@@ -1213,7 +1156,6 @@ function openModal(id) {
     `<div class="modal-point">${pt}</div>`).join('')
   // Reset & render color picker
   selectedColor = null
-  originalImgSrcs = []
   currentBrand = 'Bambu Matte'
   const ov = document.getElementById('color-overlay')
   if(ov) { ov.classList.remove('active'); ov.style.background = '' }
