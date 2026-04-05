@@ -875,7 +875,7 @@ const products = [
    web:199, shopee:199, tiktok:199},
 
   // ── Keychains & Accessories ─────────────────────────────────
-  {id:22, name:"Instax Keychain", cat:"Accessories", tag:"accessories",
+  {id:22, name:"Instax Keychain", hidden:true, cat:"Accessories", tag:"accessories",
    imgSrc:"instax_keychain.jpg",
    emoji:"📷", badge:"new", badgeLabel:"New",
    desc:"พวงกุญแจ Instax น่ารัก เหมาะของขวัญสำหรับคนชอบถ่ายรูป",
@@ -893,25 +893,25 @@ const products = [
    desc:"ที่แขวนดีไซน์เรียบง่าย ติดตั้งง่าย เหมาะแขวนกุญแจ กระเป๋า หรือของใช้ทั่วไป",
    points:["ดีไซน์เรียบง่าย","ติดตั้งง่าย","เลือกสีได้","Made to Order"],
    web:99, shopee:99, tiktok:99},
-  {id:25, name:"Boba Fidget", cat:"Accessories", tag:"accessories",
+  {id:25, name:"Boba Fidget", hidden:true, cat:"Accessories", tag:"accessories",
    imgSrc:"boba_fidget.jpg",
    emoji:"🧋", badge:"new", badgeLabel:"New",
    desc:"ของเล่น fidget ดีไซน์บอบบา น่ารัก คลายเครียดได้ดี",
    points:["คลายเครียด","ดีไซน์บอบบาน่ารัก","เลือกสีได้","Made to Order"],
    web:89, shopee:89, tiktok:89},
-  {id:26, name:"Carrot Keychain", cat:"Accessories", tag:"accessories",
+  {id:26, name:"Carrot Keychain", hidden:true, cat:"Accessories", tag:"accessories",
    imgSrc:"carrot_keychain.jpg",
    emoji:"🥕", badge:"new", badgeLabel:"New",
    desc:"พวงกุญแจแครอทน่ารัก เหมาะของขวัญหรือติดกระเป๋า",
    points:["ดีไซน์น่ารัก","เหมาะเป็นของขวัญ","เลือกสีได้","Made to Order"],
    web:99, shopee:99, tiktok:99},
-  {id:27, name:"Daisi Keychain", cat:"Accessories", tag:"accessories",
+  {id:27, name:"Daisi Keychain", hidden:true, cat:"Accessories", tag:"accessories",
    imgSrc:"daisi_keychain.jpg",
    emoji:"🌼", badge:"new", badgeLabel:"New",
    desc:"พวงกุญแจดอกเดซี่น่ารัก เหมาะของขวัญหรือติดกระเป๋า",
    points:["ดีไซน์ดอกไม้น่ารัก","เหมาะเป็นของขวัญ","เลือกสีได้","Made to Order"],
    web:109, shopee:109, tiktok:109},
-  {id:28, name:"Airpod Case", cat:"Accessories", tag:"accessories",
+  {id:28, name:"Airpod Case", hidden:true, cat:"Accessories", tag:"accessories",
    imgSrc:"airpod_case.jpg",
    emoji:"🎧", badge:"new", badgeLabel:"New",
    desc:"เคส Airpod print 3D พิมพ์จาก PLA+ คุณภาพสูง กันกระแทก เลือกสีได้",
@@ -943,13 +943,13 @@ const products = [
    web:169, shopee:169, tiktok:169},
 
   // ── Premium ─────────────────────────────────────────────────
-  {id:8, name:"Genesha Marble Statue", cat:"Premium", tag:"premium",
+  {id:8, name:"Genesha Marble Statue", cat:"Premium", tag:"premium", hidden:true,
    imgSrc:"genesha.jpg",
    emoji:"🐘", badge:"premium", badgeLabel:"Premium",
    desc:"พระพิฆเนศดีไซน์ลายหินอ่อน PLA Marble พิเศษ งานละเอียดระดับ premium เหมาะเป็นของขวัญ",
    points:["PLA Marble พิเศษ","งานละเอียดสูง","เหมาะเป็นของขวัญ premium","Made to Order","เลือกสีได้"],
    web:299, shopee:299, tiktok:299},
-  {id:18, name:"Christmas Fireplace", cat:"Premium", tag:"premium",
+  {id:18, name:"Christmas Fireplace", cat:"Premium", tag:"premium", hidden:true,
    imgSrc:"christmas_fireplace.jpg",
    emoji:"🎄", badge:"new", badgeLabel:"New",
    desc:"เตาผิงคริสต์มาส ดีไซน์สวยงาม ตกแต่งบ้านช่วงเทศกาล",
@@ -965,7 +965,7 @@ const products = [
    web:119, shopee:119, tiktok:119},
 
   // ── ป้ายตัวอักษร ────────────────────────────────────────────
-  {id:34, name:"ป้ายตัวอักษร", cat:"Storage & Organization", tag:"storage",
+  {id:34, name:"ป้ายตัวอักษร", hidden:true, cat:"Storage & Organization", tag:"storage",
    imgSrc:"alphabet_sign.jpg",
    emoji:"🔤", badge:"new", badgeLabel:"New",
    desc:"ป้ายตัวอักษรสำหรับติดชั้นวาง โต๊ะ หรือตกแต่งบ้าน custom ข้อความได้",
@@ -973,13 +973,13 @@ const products = [
    web:369, shopee:369, tiktok:369},
 
   // ── อื่นๆ ───────────────────────────────────────────────────
-  {id:35, name:"Lip", cat:"Home Decor", tag:"decor",
+  {id:35, name:"Lip", hidden:true, cat:"Home Decor", tag:"decor",
    imgSrc:"lip.jpg",
    emoji:"💄", badge:"new", badgeLabel:"New",
    desc:"ดีไซน์ริมฝีปาก ตกแต่งโต๊ะหรือใช้เป็นที่วางของ น่ารักสไตล์ pop art",
    points:["ดีไซน์ pop art","ตกแต่งโต๊ะ","เลือกสีได้","Made to Order"],
    web:129, shopee:129, tiktok:129},
-  {id:39, name:"กล่องใส่", cat:"Storage & Organization", tag:"storage",
+  {id:39, name:"กล่องใส่", hidden:true, cat:"Storage & Organization", tag:"storage",
    imgSrc:"storage_box.jpg",
    emoji:"📦", badge:"new", badgeLabel:"New",
    desc:"กล่องใส่ของอเนกประสงค์ พิมพ์จาก PLA+ คุณภาพสูง เลือกสีและขนาดได้",
@@ -992,7 +992,7 @@ let cartItems = []
 let currentProduct = null
 
 function renderProducts(filter='all') {
-  const filtered = filter === 'all' ? products : products.filter(p => p.tag === filter)
+  const filtered = (filter === 'all' ? products : products.filter(p => p.tag === filter)).filter(p => !p.hidden)
   const grid = document.getElementById('products-grid')
   grid.innerHTML = filtered.map(p => `
     <div class="product-card" onclick="openModal(${p.id})">
