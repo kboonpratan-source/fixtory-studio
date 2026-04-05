@@ -1070,6 +1070,13 @@ function applyColorOverlay(hex) {
 }
 
 function recolorProductImg(src, th, ts, imgEl) {
+  const cssHueFallback = () => {
+    // hue-rotate shifts warm hues (product) more than neutral (background ~s=0)
+    const rot = Math.round(th - 35)
+    const sat = (1 + ts * 2).toFixed(2)
+    const bri = (0.55 + ts * 0.45).toFixed(2)
+    imgEl.style.filter = `hue-rotate(${rot}deg) saturate(${sat}) brightness(${bri})`
+  }
   const tmp = new Image()
   tmp.crossOrigin = 'anonymous'
   tmp.onload = function() {
@@ -1081,9 +1088,10 @@ function recolorProductImg(src, th, ts, imgEl) {
       const id = cx.getImageData(0, 0, cv.width, cv.height), d = id.data
       for (let i = 0; i < d.length; i += 4) {
         const [h, s, l] = rgbToHsl(d[i], d[i+1], d[i+2])
-        // Match warm beige/cream product pixels (hue 12–70°, low–mid sat, not pure white/black)
-        if (h >= 12 && h <= 70 && s > 0.06 && l > 0.10 && l < 0.96) {
-          const ns = Math.min(0.95, Math.max(ts, 0.25))
+        // Warm-hue product pixels: raise s threshold to exclude low-sat backgrounds,
+        // raise l ceiling to include bright-lit product surfaces (l up to 0.99)
+        if (h >= 12 && h <= 70 && s > 0.18 && l > 0.06 && l < 0.99) {
+          const ns = Math.min(0.92, Math.max(ts, 0.35))
           const [r2,g2,b2] = hslToRgb(th, ns, l)
           d[i] = r2; d[i+1] = g2; d[i+2] = b2
         }
@@ -1091,14 +1099,9 @@ function recolorProductImg(src, th, ts, imgEl) {
       cx.putImageData(id, 0, 0)
       imgEl.src = cv.toDataURL('image/jpeg', 0.92)
       imgEl.style.filter = ''
-    } catch(e) {
-      // CORS fallback (local file://)
-      imgEl.style.filter = 'grayscale(0.92) contrast(1.05)'
-      const ov = document.getElementById('color-overlay')
-      if (ov) { ov.style.background = '#'+('000000'+(Math.round(th/360*255)).toString(16)).slice(-6); ov.classList.add('active') }
-    }
+    } catch(e) { cssHueFallback() }
   }
-  tmp.onerror = () => {}
+  tmp.onerror = cssHueFallback
   tmp.src = src
 }
 
