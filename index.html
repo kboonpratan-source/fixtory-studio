@@ -179,6 +179,7 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:40px;dis
 .gallery-dots{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);display:flex;gap:5px}
 .gallery-dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.4);cursor:pointer;transition:background .2s}
 .gallery-dot.active{background:#fff}
+.slide-size-label{position:absolute;font-family:var(--font-mono);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;background:rgba(10,10,10,.72);color:var(--text);padding:3px 8px;pointer-events:none;border:1px solid rgba(255,255,255,.15);backdrop-filter:blur(4px)}
 
 .color-picker-section{margin:12px 0 16px}
 .color-picker-label{font-size:11px;color:rgba(240,237,232,.5);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px}
@@ -766,30 +767,35 @@ const products = [
   {id:10, name:"COOKIES Tall", cat:"Storage & Organization", tag:"storage",
    imgSrc:"cookies_labeled.jpg", imgSrc2:"cookies_set.jpg",
    emoji:"🍪", badge:"new", badgeLabel:"New",
+   slideLabels:{"cookies_set.jpg":[{text:"Tall",left:"5%",top:"5%"},{text:"M",left:"62%",top:"18%"},{text:"L",left:"5%",top:"60%"},{text:"S",left:"65%",top:"72%"}]},
    desc:"กระบอกใส่ดินสอ/ปากกา ดีไซน์ ribbed texture สวยงาม เข้าชุด COOKIES series",
    points:["ดีไซน์ ribbed texture","เลือกสีได้","Made to Order","เข้าชุด COOKIES series"],
    web:219, shopee:219, tiktok:219},
   {id:11, name:"COOKIES L", cat:"Storage & Organization", tag:"storage",
    imgSrc:"cookies_labeled.jpg", imgSrc2:"cookies_set.jpg",
    emoji:"🍪", badge:"new", badgeLabel:"New",
+   slideLabels:{"cookies_set.jpg":[{text:"Tall",left:"5%",top:"5%"},{text:"M",left:"62%",top:"18%"},{text:"L",left:"5%",top:"60%"},{text:"S",left:"65%",top:"72%"}]},
    desc:"กล่องฝาปิดทรงกลม size L ดีไซน์ beaded border สวยงาม เหมาะเก็บของชิ้นใหญ่",
    points:["มีฝาปิด","ดีไซน์ beaded border","เลือกสีได้","เข้าชุด COOKIES series"],
    web:299, shopee:299, tiktok:299},
   {id:12, name:"COOKIES M", cat:"Storage & Organization", tag:"storage",
    imgSrc:"cookies_labeled.jpg", imgSrc2:"cookies_set.jpg",
    emoji:"🍪", badge:"new", badgeLabel:"New",
+   slideLabels:{"cookies_set.jpg":[{text:"Tall",left:"5%",top:"5%"},{text:"M",left:"62%",top:"18%"},{text:"L",left:"5%",top:"60%"},{text:"S",left:"65%",top:"72%"}]},
    desc:"กล่องฝาปิดทรงกลม size M เหมาะเก็บเครื่องประดับ กำไล ต่างหู",
    points:["มีฝาปิด","ดีไซน์ beaded border","เลือกสีได้","เหมาะเก็บเครื่องประดับ"],
    web:219, shopee:219, tiktok:219},
   {id:13, name:"COOKIES S", cat:"Storage & Organization", tag:"storage",
    imgSrc:"cookies_labeled.jpg", imgSrc2:"cookies_set.jpg",
    emoji:"🍪", badge:"new", badgeLabel:"New",
+   slideLabels:{"cookies_set.jpg":[{text:"Tall",left:"5%",top:"5%"},{text:"M",left:"62%",top:"18%"},{text:"L",left:"5%",top:"60%"},{text:"S",left:"65%",top:"72%"}]},
    desc:"กล่องฝาปิดทรงกลม size S น่ารัก เหมาะเป็นของขวัญหรือเก็บของชิ้นเล็ก",
    points:["มีฝาปิด","ขนาดเล็กน่ารัก","เลือกสีได้","เหมาะเป็นของขวัญ"],
    web:149, shopee:149, tiktok:149},
   {id:14, name:"COOKIES Full Set", cat:"Storage & Organization", tag:"storage",
    imgSrc:"cookies_labeled.jpg", imgSrc2:"cookies_set.jpg",
    emoji:"🍪", badge:"new", badgeLabel:"New",
+   slideLabels:{"cookies_set.jpg":[{text:"Tall",left:"5%",top:"5%"},{text:"M",left:"62%",top:"18%"},{text:"L",left:"5%",top:"60%"},{text:"S",left:"65%",top:"72%"}]},
    desc:"COOKIES ครบ set 4 ชิ้น (Tall + L + M + S) ประหยัดกว่าซื้อแยก ฿137",
    points:["ครบ 4 ชิ้นในชุดเดียว","ประหยัดกว่าซื้อแยก ฿137","เลือกสีได้","Made to Order"],
    web:749, shopee:749, tiktok:749},
@@ -1108,8 +1114,12 @@ function openModal(id) {
   if(galleryImgs.length > 0) {
     const dots = galleryImgs.map((_,i) =>
       `<div class="gallery-dot${i===0?' active':''}" onclick="goSlide(${i})"></div>`).join('')
-    const slides = galleryImgs.map(src =>
-      `<div class="gallery-slide"><img src="${src}" alt=""></div>`).join('')
+    const slides = galleryImgs.map(src => {
+      const labels = p.slideLabels && p.slideLabels[src]
+      const labelHtml = labels ? labels.map(l =>
+        `<span class="slide-size-label" style="left:${l.left};top:${l.top}">${l.text}</span>`).join('') : ''
+      return `<div class="gallery-slide" style="position:relative"><img src="${src}" alt="">${labelHtml}</div>`
+    }).join('')
     const nav = galleryImgs.length > 1
       ? `<button class="gallery-btn prev" onclick="goSlide(galleryIdx-1)">&#8249;</button>
          <button class="gallery-btn next" onclick="goSlide(galleryIdx+1)">&#8250;</button>
