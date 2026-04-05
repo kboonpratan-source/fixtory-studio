@@ -499,9 +499,11 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:40px;dis
 
   <div class="filter-bar">
     <button class="filter-btn active" onclick="filterProducts('all',this)">ทั้งหมด</button>
-    <button class="filter-btn" onclick="filterProducts('storage',this)">Storage & Organization</button>
-    <button class="filter-btn" onclick="filterProducts('travel',this)">Travel</button>
+    <button class="filter-btn" onclick="filterProducts('storage',this)">Storage</button>
     <button class="filter-btn" onclick="filterProducts('decor',this)">Home Decor</button>
+    <button class="filter-btn" onclick="filterProducts('travel',this)">Travel</button>
+    <button class="filter-btn" onclick="filterProducts('workspace',this)">Workspace</button>
+    <button class="filter-btn" onclick="filterProducts('accessories',this)">Accessories</button>
     <button class="filter-btn" onclick="filterProducts('premium',this)">Premium</button>
   </div>
 
@@ -815,7 +817,7 @@ const products = [
    web:199, shopee:199, tiktok:199},
 
   // ── Travel ──────────────────────────────────────────────────
-  {id:50, name:"Jewelry Travel Compact Box", cat:"Travel & Accessories", tag:"travel",
+  {id:50, name:"Jewelry Travel Compact Box", cat:"Travel", tag:"travel",
    imgSrc:"jewtra_travel.jpg",
    emoji:"💍", badge:"new", badgeLabel:"New",
    desc:"กล่องเครื่องประดับพกพา ช่องแยกแหวน สร้อย ต่างหู ไม่พันกัน เหมาะเดินทาง",
@@ -827,31 +829,31 @@ const products = [
    desc:"กล่อง stackable ซ้อนกันได้ ประหยัดพื้นที่ เหมาะจัดระเบียบโต๊ะ",
    points:["ซ้อนกันได้","ประหยัดพื้นที่","เลือกสีได้","Made to Order"],
    web:199, shopee:199, tiktok:199},
-  {id:16, name:"FLYLIA Travel — Tall", cat:"Travel & Accessories", tag:"travel",
+  {id:16, name:"FLYLIA Travel — Tall", cat:"Travel", tag:"travel",
    imgSrc:"flylia_tall_1.jpg", imgSrc2:"flylia_tall_2.jpg", imgSrc3:"flylia_tall_3.jpg",
    emoji:"✈️", badge:"new", badgeLabel:"New",
    desc:"กระบอกพกพา size Tall เหมาะใส่แปรงสีฟัน ดินสอ หรือของใช้เดินทาง",
    points:["พกพาสะดวก","ฝาปิดมิดชิด","เลือกสีได้","Made to Order"],
    web:219, shopee:219, tiktok:219},
-  {id:17, name:"FLYLIA Travel — Middle", cat:"Travel & Accessories", tag:"travel",
+  {id:17, name:"FLYLIA Travel — Middle", cat:"Travel", tag:"travel",
    imgSrc:"flylia_middle.jpg",
    emoji:"✈️", badge:"new", badgeLabel:"New",
    desc:"กระบอกพกพา size Middle เหมาะใส่ของใช้เดินทาง",
    points:["พกพาสะดวก","ฝาปิดมิดชิด","เลือกสีได้","Made to Order"],
    web:149, shopee:149, tiktok:149},
-  {id:18, name:"FLYLIA Travel — Small", cat:"Travel & Accessories", tag:"travel",
+  {id:18, name:"FLYLIA Travel — Small", cat:"Travel", tag:"travel",
    imgSrc:"flylia_small.jpg",
    emoji:"✈️", badge:"new", badgeLabel:"New",
    desc:"กระบอกพกพา size Small เหมาะใส่ยาเม็ด เครื่องประดับ ของเล็กชิ้น",
    points:["ขนาดกะทัดรัด","ฝาปิดมิดชิด","เลือกสีได้","Made to Order"],
    web:119, shopee:119, tiktok:119},
-  {id:19, name:"FLYLIA Travel — Mini", cat:"Travel & Accessories", tag:"travel",
+  {id:19, name:"FLYLIA Travel — Mini", cat:"Travel", tag:"travel",
    imgSrc:"flylia_mini.jpg",
    emoji:"✈️", badge:"new", badgeLabel:"New",
    desc:"กระบอกพกพา size Mini เล็กสุด เหมาะใส่ยา เครื่องประดับชิ้นเล็ก",
    points:["เล็กสุดพกง่าย","ฝาปิดมิดชิด","เลือกสีได้","Made to Order"],
    web:109, shopee:109, tiktok:109},
-  {id:20, name:"FLYLIA Travel — Full Set (4 ชิ้น)", cat:"Travel & Accessories", tag:"travel",
+  {id:20, name:"FLYLIA Travel — Full Set (4 ชิ้น)", cat:"Travel", tag:"travel",
    imgSrc:"flylia_set_labeled.jpg",
    emoji:"✈️", badge:"new", badgeLabel:"New",
    desc:"FLYLIA ครบ set 4 ชิ้น (Tall + Middle + Small + Mini) ประหยัดกว่าซื้อแยก ฿107",
@@ -873,7 +875,7 @@ const products = [
    web:199, shopee:199, tiktok:199},
 
   // ── Keychains & Accessories ─────────────────────────────────
-  {id:22, name:"Instax Keychain", cat:"Travel & Accessories", tag:"travel",
+  {id:22, name:"Instax Keychain", cat:"Accessories", tag:"accessories",
    imgSrc:"instax_keychain.jpg",
    emoji:"📷", badge:"new", badgeLabel:"New",
    desc:"พวงกุญแจ Instax น่ารัก เหมาะของขวัญสำหรับคนชอบถ่ายรูป",
@@ -891,25 +893,25 @@ const products = [
    desc:"ที่แขวนดีไซน์เรียบง่าย ติดตั้งง่าย เหมาะแขวนกุญแจ กระเป๋า หรือของใช้ทั่วไป",
    points:["ดีไซน์เรียบง่าย","ติดตั้งง่าย","เลือกสีได้","Made to Order"],
    web:99, shopee:99, tiktok:99},
-  {id:25, name:"Boba Fidget", cat:"Home Decor", tag:"decor",
+  {id:25, name:"Boba Fidget", cat:"Accessories", tag:"accessories",
    imgSrc:"boba_fidget.jpg",
    emoji:"🧋", badge:"new", badgeLabel:"New",
    desc:"ของเล่น fidget ดีไซน์บอบบา น่ารัก คลายเครียดได้ดี",
    points:["คลายเครียด","ดีไซน์บอบบาน่ารัก","เลือกสีได้","Made to Order"],
    web:89, shopee:89, tiktok:89},
-  {id:26, name:"Carrot Keychain", cat:"Travel & Accessories", tag:"travel",
+  {id:26, name:"Carrot Keychain", cat:"Accessories", tag:"accessories",
    imgSrc:"carrot_keychain.jpg",
    emoji:"🥕", badge:"new", badgeLabel:"New",
    desc:"พวงกุญแจแครอทน่ารัก เหมาะของขวัญหรือติดกระเป๋า",
    points:["ดีไซน์น่ารัก","เหมาะเป็นของขวัญ","เลือกสีได้","Made to Order"],
    web:99, shopee:99, tiktok:99},
-  {id:27, name:"Daisi Keychain", cat:"Travel & Accessories", tag:"travel",
+  {id:27, name:"Daisi Keychain", cat:"Accessories", tag:"accessories",
    imgSrc:"daisi_keychain.jpg",
    emoji:"🌼", badge:"new", badgeLabel:"New",
    desc:"พวงกุญแจดอกเดซี่น่ารัก เหมาะของขวัญหรือติดกระเป๋า",
    points:["ดีไซน์ดอกไม้น่ารัก","เหมาะเป็นของขวัญ","เลือกสีได้","Made to Order"],
    web:109, shopee:109, tiktok:109},
-  {id:28, name:"Airpod Case", cat:"Travel & Accessories", tag:"travel",
+  {id:28, name:"Airpod Case", cat:"Accessories", tag:"accessories",
    imgSrc:"airpod_case.jpg",
    emoji:"🎧", badge:"new", badgeLabel:"New",
    desc:"เคส Airpod print 3D พิมพ์จาก PLA+ คุณภาพสูง กันกระแทก เลือกสีได้",
@@ -917,7 +919,7 @@ const products = [
    web:129, shopee:129, tiktok:129},
 
   // ── Smart Doc Clip ──────────────────────────────────────────
-  {id:32, name:"Smart Doc Clip (20 ชิ้น)", cat:"Storage & Organization", tag:"storage",
+  {id:32, name:"Smart Doc Clip (20 ชิ้น)", cat:"Workspace", tag:"workspace",
    imgSrc:"smart_doc_clip_1.jpg", imgSrc2:"smart_doc_clip_2.jpg", imgSrc3:"smart_doc_clip_3.jpg",
    emoji:"📎", badge:"new", badgeLabel:"New",
    desc:"คลิปหนีบเอกสาร custom ข้อความได้ 20 ชิ้น หลากสีให้เลือก mix แบบได้",
@@ -925,7 +927,7 @@ const products = [
    web:79, shopee:79, tiktok:79},
 
   // ── Alphabet Keycap ─────────────────────────────────────────
-  {id:37, name:"Alphabet Clicky Keychain", cat:"Storage & Organization", tag:"storage",
+  {id:37, name:"Alphabet Clicky Keychain", cat:"Accessories", tag:"accessories",
    imgSrc:"keycap_set.jpg", imgSrc2:"keycap_kao.jpg", imgSrc3:"keycap_tui.jpg", imgSrc4:"keycap_tor.jpg", imgSrc5:"alphabet_keycap.jpg",
    emoji:"🔡", badge:"new", badgeLabel:"New",
    desc:"พวงกุญแจ keycap ตัวอักษร custom name เลือกชื่อและสีได้เอง · ครบชุด keycap + ราง + สายคล้อง · กดแล้ว clicky · พวงกุญแจชื่อ ของขวัญ custom",
@@ -955,7 +957,7 @@ const products = [
    web:329, shopee:329, tiktok:329},
 
   // ── Notebook Stand ──────────────────────────────────────────
-  {id:36, name:"Notebook Stand", cat:"Storage & Organization", tag:"storage", 
+  {id:36, name:"Notebook Stand", cat:"Workspace", tag:"workspace", 
    imgSrc:"notebook_stand_1.jpg", imgSrc2:"notebook_stand_2.jpg",
    emoji:"💻", badge:"new", badgeLabel:"New",
    desc:"ขาตั้ง notebook แบบพับเก็บได้ เสียบข้างเครื่องได้เลย บาง เบา พกพาง่าย",
