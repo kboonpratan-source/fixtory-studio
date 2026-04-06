@@ -992,7 +992,7 @@ let cartItems = []
 let currentProduct = null
 
 function renderProducts(filter='all') {
-  const filtered = (filter === 'all' ? products : products.filter(p => p.tag === filter)).filter(p => !p.hidden)
+  const filtered = (filter === 'all' ? products : products.filter(p => p.tag === filter)).filter(p => !p.hidden).sort((a,b) => a.name.localeCompare(b.name, 'th'))
   const grid = document.getElementById('products-grid')
   grid.innerHTML = filtered.map(p => `
     <div class="product-card" onclick="openModal(${p.id})">
