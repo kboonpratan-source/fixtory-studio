@@ -861,13 +861,13 @@ const products = [
    web:489, shopee:489, tiktok:489},
 
   // ── JEWTRA ──────────────────────────────────────────────────
-  {id:20, name:"JEWTRA Valentines (Heart)", cat:"Home Decor", tag:"decor",
+  {id:20, name:"JEWTRA Valentines (Heart)", hidden:true, cat:"Home Decor", tag:"decor",
    imgSrc:"jewtra_heart.jpg",
    emoji:"💝", badge:"new", badgeLabel:"New",
    desc:"กล่องเครื่องประดับดีไซน์หัวใจ เหมาะเป็นของขวัญวาเลนไทน์หรือวันพิเศษ",
    points:["ดีไซน์หัวใจน่ารัก","เหมาะเป็นของขวัญ","เลือกสีได้","Made to Order"],
    web:199, shopee:199, tiktok:199},
-  {id:21, name:"JEWTRA Valentines (Square)", cat:"Home Decor", tag:"decor",
+  {id:21, name:"JEWTRA Valentines (Square)", hidden:true, cat:"Home Decor", tag:"decor",
    imgSrc:"jewtra_square.jpg",
    emoji:"💝", badge:"new", badgeLabel:"New",
    desc:"กล่องเครื่องประดับดีไซน์สี่เหลี่ยม เหมาะเป็นของขวัญวันพิเศษ",
@@ -993,12 +993,12 @@ let currentProduct = null
 
 function renderProducts(filter='all') {
   const filtered = (filter === 'all' ? products : products.filter(p => p.tag === filter)).filter(p => !p.hidden).sort((a,b) => {
-    // If both have sortOrder, sort by sortOrder
-    if(a.sortOrder && b.sortOrder) return a.sortOrder - b.sortOrder
-    // If only one has sortOrder, they're in same series — sortOrder first
-    if(a.sortOrder) return -1
-    if(b.sortOrder) return 1
-    // Otherwise alphabetical
+    // Get series prefix (e.g. "HIVE", "COOKIES", "FLYLIA")
+    const seriesA = a.name.split(' ')[0]
+    const seriesB = b.name.split(' ')[0]
+    // If same series and both have sortOrder → sort by size within series
+    if(seriesA === seriesB && a.sortOrder && b.sortOrder) return a.sortOrder - b.sortOrder
+    // Different series or no sortOrder → sort alphabetically by name
     return a.name.localeCompare(b.name, 'th')
   })
   const grid = document.getElementById('products-grid')
