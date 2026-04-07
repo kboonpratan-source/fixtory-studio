@@ -29,8 +29,10 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-we
 
 /* ─── NAV ─────────────────────────────── */
 nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:18px 40px;border-bottom:1px solid var(--border);background:rgba(10,10,10,0.92);backdrop-filter:blur(12px)}
-.logo{font-family:var(--font-display);font-size:24px;letter-spacing:3px;color:var(--text)}
-.logo span{color:var(--accent)}
+.logo{display:flex;align-items:center;gap:10px;cursor:pointer}
+.logo-svg{width:32px;height:32px;flex-shrink:0}
+.logo-text{font-family:var(--font-display);font-size:22px;letter-spacing:3px;color:var(--text)}
+.logo-text span{color:var(--accent)}
 .nav-links{display:flex;gap:32px;list-style:none}
 .nav-links a{font-size:12px;color:var(--muted);text-decoration:none;letter-spacing:1.5px;text-transform:uppercase;transition:color .2s}
 .nav-links a:hover{color:var(--text)}
@@ -217,7 +219,19 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:40px;dis
 
 <!-- NAV -->
 <nav>
-  <div class="logo">FIXTORY<span>.studio</span></div>
+  <div class="logo" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+    <svg class="logo-svg" viewBox="0 0 160 155" xmlns="http://www.w3.org/2000/svg" fill="none">
+      <polygon points="80,130 120,108 120,118 80,140 40,118 40,108" fill="#C4714A" opacity=".25"/>
+      <polygon points="80,112 120,90 120,100 80,122 40,100 40,90" fill="#C4714A" opacity=".42"/>
+      <polygon points="80,94 120,72 120,82 80,104 40,82 40,72" fill="#C4714A" opacity=".6"/>
+      <polygon points="80,76 120,54 120,64 80,86 40,64 40,54" fill="#C4714A" opacity=".78"/>
+      <polygon points="80,58 120,36 120,46 80,68 40,46 40,36" fill="#C4714A" opacity=".92"/>
+      <polygon points="40,36 80,14 120,36 80,58" fill="#C4714A"/>
+      <rect x="68" y="4" width="24" height="10" rx="2" fill="#C4714A"/>
+      <polygon points="68,14 92,14 88,18 72,18" fill="#C4714A"/>
+    </svg>
+    <div class="logo-text">FIXTORY<span>.studio</span></div>
+  </div>
   <ul class="nav-links">
     <li><a href="#products">Shop</a></li>
     <li><a href="#process">Process</a></li>
@@ -605,7 +619,19 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:40px;dis
 <!-- FOOTER -->
 <footer id="contact">
   <div>
+    <div class="logo" style="gap:8px">
+    <svg style="width:24px;height:24px" viewBox="0 0 160 155" xmlns="http://www.w3.org/2000/svg" fill="none">
+      <polygon points="80,130 120,108 120,118 80,140 40,118 40,108" fill="#C4714A" opacity=".25"/>
+      <polygon points="80,112 120,90 120,100 80,122 40,100 40,90" fill="#C4714A" opacity=".42"/>
+      <polygon points="80,94 120,72 120,82 80,104 40,82 40,72" fill="#C4714A" opacity=".6"/>
+      <polygon points="80,76 120,54 120,64 80,86 40,64 40,54" fill="#C4714A" opacity=".78"/>
+      <polygon points="80,58 120,36 120,46 80,68 40,46 40,36" fill="#C4714A" opacity=".92"/>
+      <polygon points="40,36 80,14 120,36 80,58" fill="#C4714A"/>
+      <rect x="68" y="4" width="24" height="10" rx="2" fill="#C4714A"/>
+      <polygon points="68,14 92,14 88,18 72,18" fill="#C4714A"/>
+    </svg>
     <div class="footer-logo">FIXTORY<span>.studio</span></div>
+  </div>
     <div style="font-size:11px;color:var(--muted);margin-top:6px">Bangkok, Thailand · Made with ❤️ & PLA+</div>
   </div>
   <div class="footer-links">
