@@ -1608,16 +1608,7 @@ function renderCoStep() {
           <div class="co-receipt-row" style="font-weight:600;font-size:14px;margin-top:6px"><span>รวม</span><span style="color:var(--accent);font-family:var(--font-display);font-size:20px">฿${coTotal().toLocaleString()}</span></div>
           <div class="co-receipt-row" style="margin-top:8px"><span>วันที่</span><span>${dateStr}</span></div>
         </div>
-        <div style="background:rgba(232,133,90,.08);border:1px solid rgba(232,133,90,.25);padding:16px;margin-bottom:16px;text-align:left">
-          <div style="font-size:12px;color:var(--muted);margin-bottom:10px;letter-spacing:.5px">📋 ขั้นตอนสุดท้าย — ส่ง order ให้ร้าน</div>
-          <div style="font-size:12px;color:rgba(240,237,232,.7);line-height:1.8;margin-bottom:12px">
-            1. กดปุ่ม <strong style="color:var(--accent)">Copy Order</strong> ด้านล่าง<br>
-            2. กด chat icon มุมขวาล่าง<br>
-            3. Paste แล้วกด Send
-          </div>
-          <button id="co-copy-btn" class="co-btn" style="margin-top:0" onclick="copyOrderMsg()">📋 Copy Order</button>
-        </div>
-        <button class="co-btn-outline" onclick="closeCheckout();clearCartAfterOrder()">ปิด</button>
+        <button class="co-btn" onclick="closeCheckout();clearCartAfterOrder()">ปิด</button>
       </div>`
     // Fix slip image
     const receiptImg = box.querySelector('.co-receipt img')
@@ -1643,22 +1634,6 @@ function coNext2() {
   sendOrderToTawk()
 }
 
-function buildOrderMsg() {
-  const total = coTotal()
-  const items = cartItems.map((item, i) =>
-    (i+1) + '. ' + item.name + (item.color && item.color !== 'ไม่ระบุสี' ? ' ('+item.color+')' : '') + ' — ฿' + item.price
-  ).join('\n')
-  return '🛍️ ORDER ใหม่!\n' +
-    '👤 ' + coCustomer.name + '\n' +
-    '📞 ' + coCustomer.phone + '\n' +
-    '📦 ' + coCustomer.addr + '\n' +
-    (coCustomer.note ? '📝 ' + coCustomer.note + '\n' : '') +
-    '---\n' +
-    items + '\n' +
-    '---\n' +
-    '💰 รวม: ฿' + total.toLocaleString() + '\n' +
-    '✅ โอนเงินและแนบสลิปแล้ว'
-}
 
 function sendOrderToTawk() {
   try {
@@ -1666,24 +1641,6 @@ function sendOrderToTawk() {
   } catch(e) {}
 }
 
-function copyOrderMsg() {
-  const msg = buildOrderMsg()
-  const btn = document.getElementById('co-copy-btn')
-  function onCopied() {
-    if (btn) { btn.textContent = '✅ Copy แล้ว! Paste ในช่อง chat ได้เลย'; btn.style.background = 'var(--green)' }
-  }
-  if (navigator.clipboard) {
-    navigator.clipboard.writeText(msg).then(onCopied).catch(function() {
-      const ta = document.createElement('textarea')
-      ta.value = msg; document.body.appendChild(ta); ta.select()
-      document.execCommand('copy'); document.body.removeChild(ta); onCopied()
-    })
-  } else {
-    const ta = document.createElement('textarea')
-    ta.value = msg; document.body.appendChild(ta); ta.select()
-    document.execCommand('copy'); document.body.removeChild(ta); onCopied()
-  }
-}
 
 function coPreviewSlip(input) {
   if (!input.files || !input.files[0]) return
