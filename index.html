@@ -1565,30 +1565,55 @@ function coNext2() {
 
 function sendOrderToTawk() {
   try {
-    const orderNum = document.querySelector('.co-receipt-num') ? document.querySelector('.co-receipt-num').textContent : 'FX-'
     const total = coTotal()
     const items = cartItems.map((item, i) =>
       `${i+1}. ${item.name}${item.color && item.color !== 'ไม่ระบุสี' ? ' ('+item.color+')' : ''} — ฿${item.price}`
     ).join('\n')
     const msg = `🛍️ ORDER ใหม่!\n` +
-      `━━━━━━━━━━━━━━━━\n` +
       `👤 ${coCustomer.name}\n` +
       `📞 ${coCustomer.phone}\n` +
       `📦 ${coCustomer.addr}\n` +
       (coCustomer.note ? `📝 ${coCustomer.note}\n` : '') +
-      `━━━━━━━━━━━━━━━━\n` +
+      `---\n` +
       `${items}\n` +
-      `━━━━━━━━━━━━━━━━\n` +
+      `---\n` +
       `💰 รวม: ฿${total.toLocaleString()}\n` +
-      `✅ แนบสลิปแล้ว`
+      `✅ โอนเงินและแนบสลิปแล้ว`
 
-    if (window.Tawk_API && window.Tawk_API.sendMessage) {
-      window.Tawk_API.sendMessage(msg)
+    function doSend() {
+      try {
+        // Open widget
+        if (window.Tawk_API.maximize) window.Tawk_API.maximize()
+        // Set visitor name
+        if (window.Tawk_API.setAttributes) {
+          window.Tawk_API.setAttributes({ name: coCustomer.name, phone: coCustomer.phone }, function(){})
+        }
+        // Prefill input box
+        setTimeout(function() {
+          const input = document.querySelector('.tawk-chatinput-editor, [contenteditable="true"].tawk-input, textarea.tawk-textarea, div[contenteditable]')
+          if (input) {
+            input.focus()
+            // Try execCommand for contenteditable
+            if (input.contentEditable === 'true') {
+              document.execCommand('selectAll', false, null)
+              document.execCommand('insertText', false, msg)
+            } else {
+              input.value = msg
+              input.dispatchEvent(new Event('input', {bubbles:true}))
+            }
+          }
+        }, 800)
+      } catch(e) { console.log('Tawk prefill error:', e) }
+    }
+
+    if (window.Tawk_API && window.Tawk_API.getStatus && window.Tawk_API.getStatus() !== 'offline') {
+      doSend()
     } else {
-      // Queue message when Tawk loads
       window.Tawk_API = window.Tawk_API || {}
+      const prev = window.Tawk_API.onLoad
       window.Tawk_API.onLoad = function() {
-        window.Tawk_API.sendMessage(msg)
+        if (prev) prev()
+        doSend()
       }
     }
   } catch(e) {
