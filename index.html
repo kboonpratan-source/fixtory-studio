@@ -213,6 +213,23 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:40px;dis
 @keyframes spinSlow{from{transform:rotateZ(0deg)}to{transform:rotateZ(360deg)}}
 @keyframes fadeLoop{0%,100%{opacity:.2}50%{opacity:.7}}
 
+
+.keycap-config{display:none;margin-bottom:16px}
+.keycap-config.active{display:block}
+.keycap-qty-row{display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+.keycap-qty-label{font-size:12px;color:rgba(240,237,232,.6);letter-spacing:1px;white-space:nowrap}
+.keycap-qty-btn{width:30px;height:30px;border-radius:50%;border:1px solid rgba(240,237,232,.2);background:transparent;color:var(--text);cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;transition:all .2s}
+.keycap-qty-btn:hover{border-color:var(--accent);color:var(--accent)}
+.keycap-qty-num{font-size:20px;font-weight:600;color:var(--accent);min-width:24px;text-align:center}
+.keycap-price-live{font-size:13px;color:rgba(240,237,232,.5);margin-left:auto}
+.keycap-slots{display:flex;flex-direction:column;gap:8px;margin-bottom:14px}
+.keycap-slot{display:flex;align-items:center;gap:10px;padding:8px 12px;background:rgba(255,255,255,.04);border-radius:6px;border:1px solid rgba(240,237,232,.08)}
+.keycap-slot-label{font-size:12px;color:rgba(240,237,232,.5);min-width:60px}
+.keycap-slot-color{display:flex;align-items:center;gap:6px;flex:1;cursor:pointer}
+.keycap-slot-swatch{width:20px;height:20px;border-radius:50%;border:1.5px solid rgba(255,255,255,.2);flex-shrink:0}
+.keycap-slot-name{font-size:11px;color:rgba(240,237,232,.7)}
+.keycap-picking{border-color:var(--accent) !important}
+.keycap-pick-hint{font-size:11px;color:var(--accent);text-align:center;margin-bottom:8px;min-height:16px}
 </style>
 </head>
 <body>
@@ -654,6 +671,18 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:40px;dis
         <div class="modal-name" id="modal-name"></div>
         <div class="modal-desc" id="modal-desc"></div>
         <div class="modal-points" id="modal-points"></div>
+        <!-- KEYCAP CONFIGURATOR (shown only for Alphabet Clicky Keychain) -->
+        <div class="keycap-config" id="keycap-config">
+          <div class="keycap-qty-row">
+            <span class="keycap-qty-label">จำนวน keycap</span>
+            <button class="keycap-qty-btn" onclick="changeKeycapQty(-1)">−</button>
+            <span class="keycap-qty-num" id="keycap-qty">1</span>
+            <button class="keycap-qty-btn" onclick="changeKeycapQty(1)">+</button>
+            <span class="keycap-price-live" id="keycap-price-live"></span>
+          </div>
+          <div class="keycap-slots" id="keycap-slots"></div>
+          <div class="keycap-pick-hint" id="keycap-pick-hint"></div>
+        </div>
         <div class="color-picker-section">
           <div class="color-picker-label">เลือกสี</div>
           <div class="brand-tabs" id="m-brand-tabs">
@@ -1205,6 +1234,17 @@ function openModal(id) {
   document.querySelectorAll('.brand-tab').forEach((t,i) => t.classList.toggle('active', i===0))
   document.getElementById('modal').classList.add('open')
   renderSwatches()
+  // show keycap configurator only for Alphabet Clicky Keychain
+  const keycapConfig = document.getElementById('keycap-config')
+  const colorSection = document.querySelector('.color-picker-section')
+  if (p.id === 37) {
+    keycapConfig.classList.add('active')
+    colorSection.querySelector('.color-picker-label').textContent = 'เลือกสี (กดที่ช่องก่อน)'
+    initKeycapConfig()
+  } else {
+    keycapConfig.classList.remove('active')
+    colorSection.querySelector('.color-picker-label').textContent = 'เลือกสี'
+  }
 }
 
 function goSlide(idx) {
@@ -1268,6 +1308,162 @@ function showToast(msg) {
 }
 
 renderProducts()
+
+// ── KEYCAP CONFIGURATOR ────────────────────────────────────
+let keycapQty = 1
+let keycapColors = [] // [{hex, name, brand}, ...] for each slot
+let keycapRailColor = null
+let keycapPickingSlot = null // 'rail' | 0..n index
+
+function initKeycapConfig() {
+  keycapQty = 1
+  keycapColors = [{body: null, letter: null}]
+  keycapRailColor = null
+  keycapPickingSlot = null // {idx: 0, part: 'body'|'letter'} | 'rail'
+  document.getElementById('keycap-qty').textContent = keycapQty
+  renderKeycapSlots()
+  updateKeycapPrice()
+  document.getElementById('keycap-pick-hint').textContent = ''
+}
+
+function changeKeycapQty(delta) {
+  const newQty = Math.max(1, Math.min(8, keycapQty + delta))
+  if (newQty === keycapQty) return
+  keycapQty = newQty
+  // resize colors array
+  while (keycapColors.length < keycapQty) keycapColors.push({body: null, letter: null})
+  keycapColors = keycapColors.slice(0, keycapQty)
+  document.getElementById('keycap-qty').textContent = keycapQty
+  renderKeycapSlots()
+  updateKeycapPrice()
+}
+
+function renderKeycapSlots() {
+  const container = document.getElementById('keycap-slots')
+  if (!container) return
+  let html = ''
+  for (let i = 0; i < keycapQty; i++) {
+    const c = keycapColors[i]
+    const bodyActive = keycapPickingSlot && keycapPickingSlot.idx === i && keycapPickingSlot.part === 'body'
+    const letterActive = keycapPickingSlot && keycapPickingSlot.idx === i && keycapPickingSlot.part === 'letter'
+    html += `<div class="keycap-slot" style="flex-direction:column;align-items:stretch;gap:6px">
+      <span class="keycap-slot-label" style="font-size:11px;opacity:.5">Keycap ${i+1}</span>
+      <div style="display:flex;gap:8px">
+        <div class="keycap-slot-color ${bodyActive ? 'keycap-picking' : ''}" style="flex:1;padding:6px 8px;border-radius:5px;border:1px solid rgba(240,237,232,${bodyActive?'.5':'.08'});cursor:pointer" onclick="pickKeycapSlot(${i},'body')">
+          <span class="keycap-slot-swatch" style="background:${c.body ? c.body.hex : '#333'};${!c.body ? 'border-style:dashed' : ''}"></span>
+          <span class="keycap-slot-name">${c.body ? c.body.name : 'สี keycap'}</span>
+        </div>
+        <div class="keycap-slot-color ${letterActive ? 'keycap-picking' : ''}" style="flex:1;padding:6px 8px;border-radius:5px;border:1px solid rgba(240,237,232,${letterActive?'.5':'.08'});cursor:pointer" onclick="pickKeycapSlot(${i},'letter')">
+          <span class="keycap-slot-swatch" style="background:${c.letter ? c.letter.hex : '#333'};${!c.letter ? 'border-style:dashed' : ''}"></span>
+          <span class="keycap-slot-name">${c.letter ? c.letter.name : 'สีตัวอักษร'}</span>
+        </div>
+      </div>
+    </div>`
+  }
+  // rail
+  const rc = keycapRailColor
+  const railActive = keycapPickingSlot === 'rail'
+  html += `<div class="keycap-slot ${railActive ? 'keycap-picking' : ''}" onclick="pickKeycapSlot('rail')">
+    <span class="keycap-slot-label">ราง</span>
+    <span class="keycap-slot-color">
+      <span class="keycap-slot-swatch" style="background:${rc ? rc.hex : '#333'};${!rc ? 'border-style:dashed' : ''}"></span>
+      <span class="keycap-slot-name">${rc ? rc.name + ' · ' + rc.brand : '— กดเพื่อเลือกสี —'}</span>
+    </span>
+  </div>`
+  container.innerHTML = html
+}
+
+function pickKeycapSlot(slot, part) {
+  keycapPickingSlot = slot === 'rail' ? 'rail' : {idx: slot, part: part}
+  renderKeycapSlots()
+  let hint = ''
+  if (slot === 'rail') hint = 'กำลังเลือกสี ราง'
+  else if (part === 'body') hint = `กำลังเลือกสี keycap ${slot+1}`
+  else hint = `กำลังเลือกสีตัวอักษร keycap ${slot+1}`
+  document.getElementById('keycap-pick-hint').textContent = hint + ' — เลือก swatch ด้านล่าง'
+}
+
+function updateKeycapPrice() {
+  const tiers = currentProduct && currentProduct.priceTiers
+  if (!tiers) return
+  const tier = tiers.find(t => t.qty === keycapQty) || tiers[tiers.length-1]
+  document.getElementById('keycap-price-live').textContent = '฿' + tier.price
+  // update main price highlight
+  document.querySelectorAll('#m-price-main > div > div').forEach(el => {
+    const qty = parseInt(el.querySelector('div:first-child')?.textContent)
+    el.style.border = qty === keycapQty ? '1px solid var(--accent)' : '1px solid transparent'
+  })
+}
+
+// Override selectColor to handle keycap slots
+const _origSelectColor = selectColor
+function selectColor(c) {
+  if (currentProduct && currentProduct.id === 37 && keycapPickingSlot !== null) {
+    // keycap mode
+    if (keycapPickingSlot === 'rail') {
+      keycapRailColor = c
+      keycapPickingSlot = null
+      document.getElementById('keycap-pick-hint').textContent = '✅ เลือกสีครบแล้ว!'
+    } else if (keycapPickingSlot) {
+      const {idx, part} = keycapPickingSlot
+      keycapColors[idx][part] = c
+      // auto advance
+      if (part === 'body') {
+        keycapPickingSlot = {idx, part: 'letter'}
+        document.getElementById('keycap-pick-hint').textContent = `กำลังเลือกสีตัวอักษร keycap ${idx+1} — เลือก swatch ด้านล่าง`
+      } else {
+        // find next empty body
+        const nextIdx = keycapColors.findIndex((x, i) => i > idx && !x.body)
+        if (nextIdx !== -1) {
+          keycapPickingSlot = {idx: nextIdx, part: 'body'}
+          document.getElementById('keycap-pick-hint').textContent = `กำลังเลือกสี keycap ${nextIdx+1} — เลือก swatch ด้านล่าง`
+        } else if (!keycapRailColor) {
+          keycapPickingSlot = 'rail'
+          document.getElementById('keycap-pick-hint').textContent = 'กำลังเลือกสี ราง — เลือก swatch ด้านล่าง'
+        } else {
+          keycapPickingSlot = null
+          document.getElementById('keycap-pick-hint').textContent = '✅ เลือกสีครบแล้ว!'
+        }
+      }
+    }
+    renderKeycapSlots()
+    renderSwatches()
+    return
+  }
+  _origSelectColor(c)
+}
+
+// Override addToCartFromModal for keycap
+const _origAddToCartFromModal = addToCartFromModal
+function addToCartFromModal() {
+  if (currentProduct && currentProduct.id === 37) {
+    // validate all slots filled
+    const allFilled = keycapColors.every(c => c.body && c.letter) && keycapRailColor
+    if (!allFilled) {
+      document.getElementById('keycap-pick-hint').textContent = '⚠️ กรุณาเลือกสีให้ครบทุกช่อง'
+      document.getElementById('keycap-pick-hint').style.color = 'var(--accent)'
+      return
+    }
+    const tiers = currentProduct.priceTiers
+    const tier = tiers.find(t => t.qty === keycapQty) || tiers[tiers.length-1]
+    const keycapDetail = keycapColors.map((c,i) => `K${i+1}:${c.name}`).join(', ') + ` | ราง:${keycapRailColor.name}`
+    document.getElementById('modal').classList.remove('open')
+    setTimeout(() => {
+      cartItems.push({
+        name: `Alphabet Clicky Keychain x${keycapQty}`,
+        price: tier.price,
+        color: keycapDetail,
+        brand: keycapColors[0].brand
+      })
+      cartCount++
+      document.getElementById('cart-count').textContent = cartCount
+      showToast(`เพิ่ม Alphabet Clicky Keychain x${keycapQty} แล้ว!`)
+    }, 150)
+    return
+  }
+  _origAddToCartFromModal()
+}
+
 </script>
 </body>
 </html>
