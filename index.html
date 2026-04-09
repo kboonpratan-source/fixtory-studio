@@ -1559,6 +1559,41 @@ function coNext2() {
   if (!coSlipDataUrl) { showToast('⚠️ กรุณาแนบสลิปการโอนเงิน'); return }
   coStep = 3
   renderCoStep()
+  // Send order to Tawk.to
+  sendOrderToTawk()
+}
+
+function sendOrderToTawk() {
+  try {
+    const orderNum = document.querySelector('.co-receipt-num') ? document.querySelector('.co-receipt-num').textContent : 'FX-'
+    const total = coTotal()
+    const items = cartItems.map((item, i) =>
+      `${i+1}. ${item.name}${item.color && item.color !== 'ไม่ระบุสี' ? ' ('+item.color+')' : ''} — ฿${item.price}`
+    ).join('\n')
+    const msg = `🛍️ ORDER ใหม่!\n` +
+      `━━━━━━━━━━━━━━━━\n` +
+      `👤 ${coCustomer.name}\n` +
+      `📞 ${coCustomer.phone}\n` +
+      `📦 ${coCustomer.addr}\n` +
+      (coCustomer.note ? `📝 ${coCustomer.note}\n` : '') +
+      `━━━━━━━━━━━━━━━━\n` +
+      `${items}\n` +
+      `━━━━━━━━━━━━━━━━\n` +
+      `💰 รวม: ฿${total.toLocaleString()}\n` +
+      `✅ แนบสลิปแล้ว`
+
+    if (window.Tawk_API && window.Tawk_API.sendMessage) {
+      window.Tawk_API.sendMessage(msg)
+    } else {
+      // Queue message when Tawk loads
+      window.Tawk_API = window.Tawk_API || {}
+      window.Tawk_API.onLoad = function() {
+        window.Tawk_API.sendMessage(msg)
+      }
+    }
+  } catch(e) {
+    console.log('Tawk send error:', e)
+  }
 }
 
 function coPreviewSlip(input) {
