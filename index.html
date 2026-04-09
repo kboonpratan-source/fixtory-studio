@@ -318,6 +318,32 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:40px;dis
 .aff-stat-label{font-size:11px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-top:4px}
 .aff-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px}
 .aff-ref{font-family:var(--font-mono);font-size:13px;color:var(--accent);background:rgba(232,133,90,.08);border:1px solid rgba(232,133,90,.2);padding:10px;margin-bottom:20px;letter-spacing:2px}
+
+/* ─── ORDER TRACKING ──────────────────────────── */
+.track-overlay{position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:400;display:none;align-items:center;justify-content:center;padding:20px}
+.track-overlay.open{display:flex}
+.track-box{background:var(--bg2);width:100%;max-width:460px;border:1px solid var(--border);padding:32px}
+.track-title{font-family:var(--font-display);font-size:24px;letter-spacing:2px;margin-bottom:4px}
+.track-sub{font-size:12px;color:var(--muted);margin-bottom:24px}
+.track-steps{display:flex;flex-direction:column;gap:0;margin:24px 0}
+.track-step{display:flex;gap:16px;align-items:flex-start;position:relative}
+.track-step:not(:last-child)::after{content:'';position:absolute;left:15px;top:32px;width:2px;height:calc(100% + 4px);background:var(--border)}
+.track-step.done::after{background:var(--accent)}
+.track-dot{width:32px;height:32px;border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;background:var(--bg2);position:relative;z-index:1}
+.track-step.done .track-dot{border-color:var(--accent);background:var(--accent)}
+.track-step.active .track-dot{border-color:var(--accent);background:rgba(232,133,90,.15)}
+.track-info{padding:4px 0 20px}
+.track-label{font-size:13px;font-weight:500;margin-bottom:2px}
+.track-step.done .track-label{color:var(--accent)}
+.track-step.active .track-label{color:var(--text)}
+.track-step:not(.done):not(.active) .track-label{color:var(--muted)}
+.track-desc{font-size:11px;color:var(--muted)}
+.track-num{font-family:var(--font-mono);font-size:11px;color:var(--accent);letter-spacing:1px;margin-bottom:16px}
+.track-input-row{display:flex;gap:8px;margin-bottom:16px}
+.track-input-row input{flex:1;background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:10px 14px;font-family:var(--font-body);font-size:13px;outline:none}
+.track-input-row input:focus{border-color:var(--accent)}
+.track-input-row button{background:var(--accent);border:none;color:#fff;padding:10px 18px;cursor:pointer;font-family:var(--font-body);font-size:12px;white-space:nowrap}
+.track-input-row button:hover{background:var(--accent2)}
 </style>
 </head>
 <body>
@@ -1134,7 +1160,7 @@ let cartCount = 0
 let cartItems = []
 
 // ── AFFILIATE & ORDER TRACKING ─────────────────────────────
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwpvehu3og0PFBh6AUZ9y68T6OxwbSFDxrZ2PDF-_RG6zDMX3jblk93tjuqehgEPuia/exec'
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz-Ec4eWVx5HF1Z0xbGVNQCM8Z1rPfv6DdI2V53EgoJlfs8hUmlYKBen-gyqIzgk9I-/exec'
 const urlParams = new URLSearchParams(window.location.search)
 const refCode = urlParams.get('ref') || localStorage.getItem('fixtory_ref') || ''
 if (refCode) localStorage.setItem('fixtory_ref', refCode)
@@ -1598,6 +1624,10 @@ function renderCoStep() {
         <div class="co-receipt-title">สั่งซื้อสำเร็จ!</div>
         <div class="co-receipt-sub">ขอบคุณที่ไว้วางใจ Fixtory.Studio<br>เราจะติดต่อกลับภายใน 24 ชม.</div>
         <div class="co-receipt-num">ORDER # ${orderNum}</div>
+        <div style="margin-bottom:16px">
+          <a href="javascript:void(0)" onclick="closeCheckout();setTimeout(()=>openTracking('${orderNum}'),300)" style="font-size:12px;color:var(--accent);text-decoration:none;border-bottom:1px solid rgba(232,133,90,.3)">📦 ติดตาม order นี้</a>
+          <span style="font-size:11px;color:var(--muted);margin-left:8px">หรือเปิด ?order=${orderNum}</span>
+        </div>
         <div class="co-receipt-box">
           <div class="co-receipt-row"><span>ชื่อ</span><span>${coCustomer.name}</span></div>
           <div class="co-receipt-row"><span>เบอร์โทร</span><span>${coCustomer.phone}</span></div>
@@ -1671,6 +1701,71 @@ function showToast(msg) {
   div.style.cssText = 'position:fixed;bottom:32px;right:32px;background:#E8724A;color:#fff;padding:14px 24px;font-size:13px;z-index:99999;border-radius:4px;font-family:sans-serif;box-shadow:0 4px 12px rgba(0,0,0,.3)'
   document.body.appendChild(div)
   setTimeout(() => { div.style.opacity='0'; div.style.transition='opacity .3s'; setTimeout(()=>div.remove(),300) }, 10000)
+}
+
+
+// ── ORDER TRACKING ──────────────────────────────────────────
+const STATUS_STEPS = [
+  { key: 'รอยืนยัน',    icon: '🟡', label: 'รอยืนยันสลิป',   desc: 'ร้านกำลังตรวจสอบการชำระเงิน' },
+  { key: 'กำลังผลิต',   icon: '🔵', label: 'กำลังผลิต',      desc: 'พิมพ์และ finishing สินค้าของคุณ' },
+  { key: 'จัดส่งแล้ว',  icon: '🚚', label: 'จัดส่งแล้ว',     desc: 'สินค้าถูกส่งออกแล้ว' },
+  { key: 'ได้รับแล้ว',  icon: '✅', label: 'ได้รับสินค้าแล้ว', desc: 'เสร็จสมบูรณ์' },
+]
+
+function openTracking(orderNum) {
+  const overlay = document.getElementById('track-overlay')
+  overlay.classList.add('open')
+  if (orderNum) {
+    document.getElementById('track-order-input').value = orderNum
+    fetchTrackingData(orderNum)
+  }
+}
+
+function closeTracking() {
+  document.getElementById('track-overlay').classList.remove('open')
+}
+
+function fetchTrackingData(orderNum) {
+  const box = document.getElementById('track-result')
+  box.innerHTML = '<div style="text-align:center;padding:20px;color:var(--muted)">กำลังโหลด...</div>'
+  fetch(SCRIPT_URL + '?order=' + encodeURIComponent(orderNum))
+    .then(r => r.json())
+    .then(data => {
+      if (!data.ok) {
+        box.innerHTML = '<div style="text-align:center;padding:20px;color:var(--muted)">ไม่พบ Order นี้<br><span style="font-size:11px">กรุณาตรวจสอบหมายเลข Order อีกครั้ง</span></div>'
+        return
+      }
+      const currentIdx = STATUS_STEPS.findIndex(s => s.key === data.status)
+      const stepsHTML = STATUS_STEPS.map((s, i) => {
+        const isDone = i < currentIdx
+        const isActive = i === currentIdx
+        const cls = isDone ? 'done' : isActive ? 'active' : ''
+        return `<div class="track-step ${cls}">
+          <div class="track-dot">${isDone ? '✓' : s.icon}</div>
+          <div class="track-info">
+            <div class="track-label">${s.label}</div>
+            <div class="track-desc">${isActive && s.key === 'จัดส่งแล้ว' && data.tracking ? 'Tracking: ' + data.tracking : s.desc}</div>
+          </div>
+        </div>`
+      }).join('')
+      box.innerHTML = `
+        <div class="track-num">ORDER # ${data.orderNum}</div>
+        <div style="font-size:13px;color:var(--muted);margin-bottom:4px">${data.items}</div>
+        <div style="font-family:var(--font-display);font-size:22px;color:var(--accent);margin-bottom:20px">฿${Number(data.total).toLocaleString()}</div>
+        <div class="track-steps">${stepsHTML}</div>
+      `
+    })
+    .catch(() => {
+      box.innerHTML = '<div style="text-align:center;padding:20px;color:var(--muted)">โหลดไม่ได้ ลองใหม่อีกครั้ง</div>'
+    })
+}
+
+// Auto-open tracking if ?order= in URL
+const orderParam = urlParams.get('order')
+if (orderParam) {
+  window.addEventListener('DOMContentLoaded', function() {
+    setTimeout(() => openTracking(orderParam), 500)
+  })
 }
 
 renderProducts()
@@ -1840,6 +1935,22 @@ function proceedCheckout() {
 </script>
 
 
+
+
+<!-- TRACKING OVERLAY -->
+<div class="track-overlay" id="track-overlay" onclick="if(event.target===this)closeTracking()">
+  <div class="track-box">
+    <button class="co-close" onclick="closeTracking()" style="position:absolute;top:14px;right:16px">✕</button>
+    <div class="track-title">TRACK ORDER</div>
+    <div class="track-sub">ติดตามสถานะสินค้าของคุณ</div>
+    <div class="track-input-row">
+      <input id="track-order-input" type="text" placeholder="เช่น FX951499">
+      <button onclick="fetchTrackingData(document.getElementById('track-order-input').value.trim())">ค้นหา</button>
+    </div>
+    <div id="track-result"></div>
+    <button class="co-btn-outline" style="margin-top:8px" onclick="closeTracking()">ปิด</button>
+  </div>
+</div>
 
 <!-- AFFILIATE OVERLAY -->
 <div class="aff-overlay" id="aff-overlay" onclick="if(event.target===this)this.classList.remove('open')">
