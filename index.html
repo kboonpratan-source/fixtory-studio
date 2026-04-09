@@ -261,6 +261,51 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:40px;dis
 .cart-checkout-btn:hover{background:var(--accent2)}
 .cart-clear-btn{width:100%;background:transparent;border:1px solid var(--border);color:var(--muted);padding:10px;font-family:var(--font-body);font-size:12px;cursor:pointer;transition:all .2s;border-radius:2px}
 .cart-clear-btn:hover{border-color:#e55;color:#e55}
+
+/* ─── CHECKOUT FLOW ───────────────────────────── */
+.co-overlay{position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:300;display:none;align-items:center;justify-content:center;padding:20px}
+.co-overlay.open{display:flex}
+.co-box{background:var(--bg2);width:100%;max-width:520px;max-height:92vh;overflow-y:auto;border:1px solid var(--border);position:relative}
+.co-header{padding:20px 24px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px}
+.co-step-pills{display:flex;gap:6px}
+.co-pill{width:28px;height:4px;background:var(--border);border-radius:2px;transition:background .3s}
+.co-pill.done{background:var(--accent)}
+.co-title{font-family:var(--font-display);font-size:20px;letter-spacing:1px}
+.co-body{padding:24px}
+.co-field{display:flex;flex-direction:column;gap:6px;margin-bottom:16px}
+.co-field label{font-size:11px;color:var(--muted);letter-spacing:1px;text-transform:uppercase}
+.co-field input,.co-field textarea{background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:11px 14px;font-family:var(--font-body);font-size:13px;outline:none;transition:border-color .2s;width:100%}
+.co-field input:focus,.co-field textarea:focus{border-color:var(--accent)}
+.co-field textarea{resize:vertical;min-height:70px}
+.co-btn{width:100%;background:var(--accent);border:none;color:#fff;padding:14px;font-family:var(--font-body);font-size:13px;letter-spacing:.5px;cursor:pointer;transition:background .2s;font-weight:500;margin-top:4px}
+.co-btn:hover{background:var(--accent2)}
+.co-btn-outline{width:100%;background:transparent;border:1px solid var(--border);color:var(--muted);padding:11px;font-family:var(--font-body);font-size:12px;cursor:pointer;transition:all .2s;margin-top:8px}
+.co-btn-outline:hover{border-color:var(--accent);color:var(--accent)}
+.co-order-summary{background:var(--bg3);border:1px solid var(--border);padding:16px;margin-bottom:20px}
+.co-order-row{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-bottom:6px}
+.co-order-total{display:flex;justify-content:space-between;font-size:15px;padding-top:10px;border-top:1px solid var(--border);margin-top:6px}
+.co-order-total span:last-child{font-family:var(--font-display);font-size:22px;color:var(--accent)}
+.co-qr-wrap{text-align:center;margin-bottom:20px}
+.co-qr-wrap img{width:220px;height:220px;object-fit:contain;border:4px solid #fff;border-radius:4px}
+.co-qr-amount{font-family:var(--font-display);font-size:36px;color:var(--accent);margin:12px 0 4px;letter-spacing:1px}
+.co-qr-note{font-size:12px;color:var(--muted)}
+.co-upload-area{border:2px dashed var(--border);padding:28px 20px;text-align:center;cursor:pointer;transition:border-color .2s;margin-bottom:16px;position:relative}
+.co-upload-area:hover{border-color:var(--accent)}
+.co-upload-area input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.co-upload-icon{font-size:32px;margin-bottom:8px}
+.co-upload-text{font-size:13px;color:var(--muted)}
+.co-upload-preview{width:100%;max-height:200px;object-fit:contain;display:none;margin-bottom:12px;border:1px solid var(--border)}
+.co-receipt{padding:24px;text-align:center}
+.co-receipt-icon{font-size:56px;margin-bottom:12px}
+.co-receipt-title{font-family:var(--font-display);font-size:28px;letter-spacing:2px;margin-bottom:6px;color:var(--accent)}
+.co-receipt-sub{font-size:13px;color:var(--muted);margin-bottom:20px}
+.co-receipt-box{background:var(--bg3);border:1px solid var(--border);padding:16px;text-align:left;margin-bottom:20px}
+.co-receipt-row{display:flex;justify-content:space-between;font-size:12px;margin-bottom:8px;gap:12px}
+.co-receipt-row span:first-child{color:var(--muted);flex-shrink:0}
+.co-receipt-row span:last-child{color:var(--text);text-align:right}
+.co-receipt-num{font-family:var(--font-mono);font-size:11px;color:var(--accent);letter-spacing:1px;margin-bottom:16px}
+.co-close{position:absolute;top:14px;right:16px;background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer;line-height:1}
+.co-close:hover{color:var(--text)}
 </style>
 </head>
 <body>
@@ -1377,14 +1422,166 @@ function checkout() {
     showToast('ยังไม่มีสินค้าในตะกร้า')
     return
   }
-  const orderText = cartItems.map((item, i) => 
-    (i+1) + '. ' + item.name + ' · ' + item.color + ' (' + item.brand + ') ฿' + item.price
-  ).join('\n')
-  const total = cartItems.reduce((s, item) => s + item.price, 0)
-  const fullOrder = orderText + '\n\nรวม: ฿' + total
-  const url = 'https://docs.google.com/forms/d/e/1FAIpQLSfUtWWFrO8NvFiVlWuBlCWWnRnHIJgNpwWfWJnvFmeD-Wyzyw/viewform?usp=pp_url&entry.839337160=' + encodeURIComponent(fullOrder)
-  window.open(url, '_blank')
+  openCheckout()
 }
+
+// ── CHECKOUT FLOW ──────────────────────────────────────────
+let coStep = 1
+let coCustomer = {}
+let coSlipDataUrl = null
+
+function openCheckout() {
+  coStep = 1
+  coCustomer = {}
+  coSlipDataUrl = null
+  closeCart()
+  renderCoStep()
+  document.getElementById('co-overlay').classList.add('open')
+  document.body.style.overflow = 'hidden'
+}
+
+function closeCheckout() {
+  document.getElementById('co-overlay').classList.remove('open')
+  document.body.style.overflow = ''
+}
+
+function coTotal() {
+  return cartItems.reduce((s, i) => s + i.price, 0)
+}
+
+function coOrderSummaryHTML() {
+  const rows = cartItems.map(item =>
+    `<div class="co-order-row"><span>${item.name}${item.color && item.color !== 'ไม่ระบุสี' ? ' · ' + item.color : ''}</span><span>฿${item.price}</span></div>`
+  ).join('')
+  return `<div class="co-order-summary">
+    ${rows}
+    <div class="co-order-total"><span>รวมทั้งหมด</span><span>฿${coTotal().toLocaleString()}</span></div>
+  </div>`
+}
+
+function renderCoStep() {
+  const box = document.getElementById('co-box')
+  const pills = [1,2,3].map(n =>
+    `<div class="co-pill ${n <= coStep ? 'done' : ''}"></div>`).join('')
+
+  if (coStep === 1) {
+    box.innerHTML = `
+      <button class="co-close" onclick="closeCheckout()">✕</button>
+      <div class="co-header">
+        <div>
+          <div class="co-title">ข้อมูลจัดส่ง</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:4px">ขั้นตอน 1 / 3</div>
+        </div>
+        <div class="co-step-pills" style="margin-left:auto">${pills}</div>
+      </div>
+      <div class="co-body">
+        ${coOrderSummaryHTML()}
+        <div class="co-field"><label>ชื่อ-นามสกุล *</label><input id="co-name" type="text" placeholder="ชื่อผู้รับสินค้า"></div>
+        <div class="co-field"><label>เบอร์โทรศัพท์ *</label><input id="co-phone" type="tel" placeholder="08x-xxx-xxxx"></div>
+        <div class="co-field"><label>ที่อยู่จัดส่ง *</label><textarea id="co-addr" placeholder="บ้านเลขที่ ถนน แขวง/ตำบล เขต/อำเภอ จังหวัด รหัสไปรษณีย์"></textarea></div>
+        <div class="co-field"><label>หมายเหตุ (ถ้ามี)</label><input id="co-note" type="text" placeholder="เช่น สีที่ต้องการพิเศษ หรือข้อความ custom"></div>
+        <button class="co-btn" onclick="coNext1()">ถัดไป → ชำระเงิน</button>
+      </div>`
+  } else if (coStep === 2) {
+    box.innerHTML = `
+      <button class="co-close" onclick="closeCheckout()">✕</button>
+      <div class="co-header">
+        <div>
+          <div class="co-title">ชำระเงิน</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:4px">ขั้นตอน 2 / 3</div>
+        </div>
+        <div class="co-step-pills" style="margin-left:auto">${pills}</div>
+      </div>
+      <div class="co-body">
+        <div class="co-qr-wrap">
+          <div style="font-size:11px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:12px">สแกน QR เพื่อโอนเงิน</div>
+          <img src="promptpay_qr.jpg" alt="QR PromptPay">
+          <div class="co-qr-amount">฿${coTotal().toLocaleString()}</div>
+          <div class="co-qr-note">โอนเงินแล้ว แนบสลิปด้านล่างได้เลยครับ</div>
+        </div>
+        <div class="co-upload-area" id="co-upload-area">
+          <input type="file" accept="image/*" onchange="coPreviewSlip(this)">
+          <img id="co-slip-preview" class="co-upload-preview">
+          <div class="co-upload-icon" id="co-upload-icon">📎</div>
+          <div class="co-upload-text" id="co-upload-text">แตะเพื่อแนบสลิปการโอนเงิน</div>
+        </div>
+        <button class="co-btn" onclick="coNext2()" id="co-confirm-btn">ยืนยันการชำระเงิน</button>
+        <button class="co-btn-outline" onclick="coStep=1;renderCoStep()">← กลับแก้ข้อมูล</button>
+      </div>`
+    // restore preview if already uploaded
+    if (coSlipDataUrl) {
+      document.getElementById('co-slip-preview').src = coSlipDataUrl
+      document.getElementById('co-slip-preview').style.display = 'block'
+      document.getElementById('co-upload-icon').textContent = '✅'
+      document.getElementById('co-upload-text').textContent = 'แนบสลิปแล้ว (กดเพื่อเปลี่ยน)'
+    }
+  } else if (coStep === 3) {
+    const orderNum = 'FX' + Date.now().toString().slice(-6)
+    const now = new Date()
+    const dateStr = now.toLocaleDateString('th-TH', {day:'numeric',month:'long',year:'numeric'}) + ' ' +
+      now.toLocaleTimeString('th-TH', {hour:'2-digit',minute:'2-digit'})
+    box.innerHTML = `
+      <div class="co-receipt">
+        <div class="co-receipt-icon">✅</div>
+        <div class="co-receipt-title">สั่งซื้อสำเร็จ!</div>
+        <div class="co-receipt-sub">ขอบคุณที่ไว้วางใจ Fixtory.Studio<br>เราจะติดต่อกลับภายใน 24 ชม.</div>
+        <div class="co-receipt-num">ORDER # ${orderNum}</div>
+        <div class="co-receipt-box">
+          <div class="co-receipt-row"><span>ชื่อ</span><span>${coCustomer.name}</span></div>
+          <div class="co-receipt-row"><span>เบอร์โทร</span><span>${coCustomer.phone}</span></div>
+          <div class="co-receipt-row"><span>ที่อยู่</span><span>${coCustomer.addr}</span></div>
+          ${coCustomer.note ? `<div class="co-receipt-row"><span>หมายเหตุ</span><span>${coCustomer.note}</span></div>` : ''}
+          <div style="border-top:1px solid var(--border);margin:10px 0"></div>
+          ${cartItems.map(item => `<div class="co-receipt-row"><span>${item.name}</span><span>฿${item.price}</span></div>`).join('')}
+          <div class="co-receipt-row" style="font-weight:600;font-size:14px;margin-top:6px"><span>รวม</span><span style="color:var(--accent);font-family:var(--font-display);font-size:20px">฿${coTotal().toLocaleString()}</span></div>
+          <div class="co-receipt-row" style="margin-top:8px"><span>วันที่</span><span>${dateStr}</span></div>
+        </div>
+        ${coSlipDataUrl ? `<img src="${'${coSlipDataUrl}'}" style="width:120px;border:1px solid var(--border);margin-bottom:16px">` : ''}
+        <button class="co-btn" onclick="closeCheckout();clearCartAfterOrder()">ปิด</button>
+      </div>`
+    // Fix template literal issue
+    const receiptImg = box.querySelector('.co-receipt img')
+    if (receiptImg && coSlipDataUrl) receiptImg.src = coSlipDataUrl
+  }
+}
+
+function coNext1() {
+  const name = document.getElementById('co-name').value.trim()
+  const phone = document.getElementById('co-phone').value.trim()
+  const addr = document.getElementById('co-addr').value.trim()
+  if (!name || !phone || !addr) { showToast('⚠️ กรุณากรอกข้อมูลให้ครบ'); return }
+  coCustomer = { name, phone, addr, note: document.getElementById('co-note').value.trim() }
+  coStep = 2
+  renderCoStep()
+}
+
+function coNext2() {
+  if (!coSlipDataUrl) { showToast('⚠️ กรุณาแนบสลิปการโอนเงิน'); return }
+  coStep = 3
+  renderCoStep()
+}
+
+function coPreviewSlip(input) {
+  if (!input.files || !input.files[0]) return
+  const reader = new FileReader()
+  reader.onload = function(e) {
+    coSlipDataUrl = e.target.result
+    const preview = document.getElementById('co-slip-preview')
+    const icon = document.getElementById('co-upload-icon')
+    const text = document.getElementById('co-upload-text')
+    if (preview) { preview.src = coSlipDataUrl; preview.style.display = 'block' }
+    if (icon) icon.textContent = '✅'
+    if (text) text.textContent = 'แนบสลิปแล้ว (กดเพื่อเปลี่ยน)'
+  }
+  reader.readAsDataURL(input.files[0])
+}
+
+function clearCartAfterOrder() {
+  cartItems = []
+  cartCount = 0
+  document.getElementById('cart-count').textContent = 0
+}
+
 
 function showToast(msg) {
   // Create floating notification
@@ -1561,6 +1758,12 @@ function proceedCheckout() {
 }
 </script>
 
+
+<!-- CHECKOUT OVERLAY -->
+<div class="co-overlay" id="co-overlay" onclick="if(event.target===this)closeCheckout()">
+  <div class="co-box" id="co-box"></div>
+</div>
+
 <!-- CART OVERLAY -->
 <div class="cart-overlay" id="cart-overlay" onclick="closeCart()"></div>
 
@@ -1585,5 +1788,19 @@ function proceedCheckout() {
     </div>
   </div>
 </div>
+
+<!--Start of Tawk.to Script-->
+<script type="text/javascript">
+var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+(function(){
+var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+s1.async=true;
+s1.src='https://embed.tawk.to/69d7696e3091751c36bdb547/1jlon7mih';
+s1.charset='UTF-8';
+s1.setAttribute('crossorigin','*');
+s0.parentNode.insertBefore(s1,s0);
+})();
+</script>
+<!--End of Tawk.to Script-->
 </body>
 </html>
