@@ -1536,10 +1536,18 @@ function renderCoStep() {
           <div class="co-receipt-row" style="font-weight:600;font-size:14px;margin-top:6px"><span>รวม</span><span style="color:var(--accent);font-family:var(--font-display);font-size:20px">฿${coTotal().toLocaleString()}</span></div>
           <div class="co-receipt-row" style="margin-top:8px"><span>วันที่</span><span>${dateStr}</span></div>
         </div>
-        ${coSlipDataUrl ? `<img src="${'${coSlipDataUrl}'}" style="width:120px;border:1px solid var(--border);margin-bottom:16px">` : ''}
-        <button class="co-btn" onclick="closeCheckout();clearCartAfterOrder()">ปิด</button>
+        <div style="background:rgba(232,133,90,.08);border:1px solid rgba(232,133,90,.25);padding:16px;margin-bottom:16px;text-align:left">
+          <div style="font-size:12px;color:var(--muted);margin-bottom:10px;letter-spacing:.5px">📋 ขั้นตอนสุดท้าย — ส่ง order ให้ร้าน</div>
+          <div style="font-size:12px;color:rgba(240,237,232,.7);line-height:1.8;margin-bottom:12px">
+            1. กดปุ่ม <strong style="color:var(--accent)">Copy Order</strong> ด้านล่าง<br>
+            2. กด chat icon มุมขวาล่าง<br>
+            3. Paste แล้วกด Send
+          </div>
+          <button id="co-copy-btn" class="co-btn" style="margin-top:0" onclick="copyOrderMsg()">📋 Copy Order</button>
+        </div>
+        <button class="co-btn-outline" onclick="closeCheckout();clearCartAfterOrder()">ปิด</button>
       </div>`
-    // Fix template literal issue
+    // Fix slip image
     const receiptImg = box.querySelector('.co-receipt img')
     if (receiptImg && coSlipDataUrl) receiptImg.src = coSlipDataUrl
   }
@@ -1563,61 +1571,45 @@ function coNext2() {
   sendOrderToTawk()
 }
 
+function buildOrderMsg() {
+  const total = coTotal()
+  const items = cartItems.map((item, i) =>
+    (i+1) + '. ' + item.name + (item.color && item.color !== 'ไม่ระบุสี' ? ' ('+item.color+')' : '') + ' — ฿' + item.price
+  ).join('\n')
+  return '🛍️ ORDER ใหม่!\n' +
+    '👤 ' + coCustomer.name + '\n' +
+    '📞 ' + coCustomer.phone + '\n' +
+    '📦 ' + coCustomer.addr + '\n' +
+    (coCustomer.note ? '📝 ' + coCustomer.note + '\n' : '') +
+    '---\n' +
+    items + '\n' +
+    '---\n' +
+    '💰 รวม: ฿' + total.toLocaleString() + '\n' +
+    '✅ โอนเงินและแนบสลิปแล้ว'
+}
+
 function sendOrderToTawk() {
   try {
-    const total = coTotal()
-    const items = cartItems.map((item, i) =>
-      `${i+1}. ${item.name}${item.color && item.color !== 'ไม่ระบุสี' ? ' ('+item.color+')' : ''} — ฿${item.price}`
-    ).join('\n')
-    const msg = `🛍️ ORDER ใหม่!\n` +
-      `👤 ${coCustomer.name}\n` +
-      `📞 ${coCustomer.phone}\n` +
-      `📦 ${coCustomer.addr}\n` +
-      (coCustomer.note ? `📝 ${coCustomer.note}\n` : '') +
-      `---\n` +
-      `${items}\n` +
-      `---\n` +
-      `💰 รวม: ฿${total.toLocaleString()}\n` +
-      `✅ โอนเงินและแนบสลิปแล้ว`
+    if (window.Tawk_API && window.Tawk_API.maximize) window.Tawk_API.maximize()
+  } catch(e) {}
+}
 
-    function doSend() {
-      try {
-        // Open widget
-        if (window.Tawk_API.maximize) window.Tawk_API.maximize()
-        // Set visitor name
-        if (window.Tawk_API.setAttributes) {
-          window.Tawk_API.setAttributes({ name: coCustomer.name, phone: coCustomer.phone }, function(){})
-        }
-        // Prefill input box
-        setTimeout(function() {
-          const input = document.querySelector('.tawk-chatinput-editor, [contenteditable="true"].tawk-input, textarea.tawk-textarea, div[contenteditable]')
-          if (input) {
-            input.focus()
-            // Try execCommand for contenteditable
-            if (input.contentEditable === 'true') {
-              document.execCommand('selectAll', false, null)
-              document.execCommand('insertText', false, msg)
-            } else {
-              input.value = msg
-              input.dispatchEvent(new Event('input', {bubbles:true}))
-            }
-          }
-        }, 800)
-      } catch(e) { console.log('Tawk prefill error:', e) }
-    }
-
-    if (window.Tawk_API && window.Tawk_API.getStatus && window.Tawk_API.getStatus() !== 'offline') {
-      doSend()
-    } else {
-      window.Tawk_API = window.Tawk_API || {}
-      const prev = window.Tawk_API.onLoad
-      window.Tawk_API.onLoad = function() {
-        if (prev) prev()
-        doSend()
-      }
-    }
-  } catch(e) {
-    console.log('Tawk send error:', e)
+function copyOrderMsg() {
+  const msg = buildOrderMsg()
+  const btn = document.getElementById('co-copy-btn')
+  function onCopied() {
+    if (btn) { btn.textContent = '✅ Copy แล้ว! Paste ในช่อง chat ได้เลย'; btn.style.background = 'var(--green)' }
+  }
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(msg).then(onCopied).catch(function() {
+      const ta = document.createElement('textarea')
+      ta.value = msg; document.body.appendChild(ta); ta.select()
+      document.execCommand('copy'); document.body.removeChild(ta); onCopied()
+    })
+  } else {
+    const ta = document.createElement('textarea')
+    ta.value = msg; document.body.appendChild(ta); ta.select()
+    document.execCommand('copy'); document.body.removeChild(ta); onCopied()
   }
 }
 
