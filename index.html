@@ -1496,6 +1496,68 @@ function addToCartFromModal() {
   _origAddToCartFromModal()
 }
 
+
+function openCart() {
+  renderCartPanel()
+  document.getElementById('cart-panel').classList.add('open')
+  document.getElementById('cart-overlay').classList.add('open')
+  document.body.style.overflow = 'hidden'
+}
+
+function closeCart() {
+  document.getElementById('cart-panel').classList.remove('open')
+  document.getElementById('cart-overlay').classList.remove('open')
+  document.body.style.overflow = ''
+}
+
+function renderCartPanel() {
+  const body = document.getElementById('cart-body')
+  const totalEl = document.getElementById('cart-total-price')
+  if (cartItems.length === 0) {
+    body.innerHTML = '<div class="cart-empty">ยังไม่มีสินค้าในตะกร้า</div>'
+    totalEl.textContent = '฿0'
+    return
+  }
+  const total = cartItems.reduce((s, item) => s + item.price, 0)
+  totalEl.textContent = '฿' + total.toLocaleString()
+  body.innerHTML = cartItems.map((item, i) => `
+    <div class="cart-item">
+      <div class="cart-item-info">
+        <div class="cart-item-name">${item.name}</div>
+        <div class="cart-item-detail">สี: ${item.color || 'ไม่ระบุ'}${item.brand ? ' · ' + item.brand : ''}</div>
+      </div>
+      <span class="cart-item-price">฿${item.price}</span>
+      <button class="cart-item-remove" onclick="removeCartItem(${i})" title="ลบ">×</button>
+    </div>
+  `).join('')
+}
+
+function removeCartItem(idx) {
+  cartItems.splice(idx, 1)
+  cartCount = cartItems.length
+  document.getElementById('cart-count').textContent = cartCount
+  renderCartPanel()
+  showToast('ลบสินค้าออกแล้ว')
+}
+
+function clearCart() {
+  if (cartItems.length === 0) return
+  if (!confirm('ล้างตะกร้าทั้งหมด?')) return
+  cartItems = []
+  cartCount = 0
+  document.getElementById('cart-count').textContent = 0
+  renderCartPanel()
+  showToast('ล้างตะกร้าแล้ว')
+}
+
+function proceedCheckout() {
+  if (cartItems.length === 0) {
+    showToast('ยังไม่มีสินค้าในตะกร้า')
+    return
+  }
+  closeCart()
+  checkout()
+}
 </script>
 
 <!-- CART OVERLAY -->
@@ -1518,6 +1580,7 @@ function addToCartFromModal() {
     <div class="cart-actions">
       <button class="cart-checkout-btn" onclick="proceedCheckout()">สั่งซื้อ / ส่ง Order</button>
       <button class="cart-clear-btn" onclick="clearCart()">ล้างตะกร้าทั้งหมด</button>
+      <button class="cart-clear-btn" onclick="closeCart()" style="border-color:rgba(240,237,232,.15);margin-top:4px">ยกเลิก / ปิด</button>
     </div>
   </div>
 </div>
