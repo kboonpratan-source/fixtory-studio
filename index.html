@@ -221,6 +221,10 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:40px;dis
 .keycap-qty-btn{width:30px;height:30px;border-radius:50%;border:1px solid rgba(240,237,232,.2);background:transparent;color:var(--text);cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;transition:all .2s}
 .keycap-qty-btn:hover{border-color:var(--accent);color:var(--accent)}
 .keycap-qty-num{font-size:20px;font-weight:600;color:var(--accent);min-width:24px;text-align:center}
+
+.keycap-letter-input{width:36px;height:36px;text-align:center;font-size:18px;font-weight:bold;font-family:var(--font-display);background:rgba(255,255,255,.06);border:1px solid rgba(240,237,232,.2);border-radius:6px;color:var(--text);text-transform:uppercase;outline:none;transition:border-color .2s}
+.keycap-letter-input:focus{border-color:var(--accent)}
+
 .keycap-price-live{font-size:13px;color:rgba(240,237,232,.5);margin-left:auto}
 .keycap-slots{display:flex;flex-direction:column;gap:8px;margin-bottom:14px}
 .keycap-slot{display:flex;align-items:center;gap:10px;padding:8px 12px;background:rgba(255,255,255,.04);border-radius:6px;border:1px solid rgba(240,237,232,.08)}
@@ -1124,7 +1128,6 @@ function selectColor(c) {
   selectedColor = c
   document.getElementById('m-color-name').textContent = c.name + ' (' + c.brand + ')'
   renderSwatches()
-  applyColorOverlay(c.hex)
 }
 
 function applyColorOverlay(hex) {
@@ -1134,16 +1137,7 @@ function applyColorOverlay(hex) {
     overlay.style.background = hex
     overlay.classList.add('active')
   }
-  // Method 2: CSS filter tint on all gallery images as backup
-  const imgs = document.querySelectorAll('#gslides img')
-  const r = parseInt(hex.slice(1,3),16)
-  const g = parseInt(hex.slice(3,5),16)  
-  const b = parseInt(hex.slice(5,7),16)
-  // Convert to hue-rotate + saturate approximation
-  imgs.forEach(img => {
-    img.style.transition = 'filter .3s ease'
-    img.style.filter = `sepia(0.6) saturate(3) hue-rotate(${hexToHueDeg(hex)}deg) brightness(0.95)`
-  })
+
 }
 
 function hexToHueDeg(hex) {
@@ -1194,7 +1188,6 @@ function openModal(id) {
     el.innerHTML = `<div class="modal-gallery" style="position:relative">
       <div class="gallery-slides" id="gslides">${slides}</div>
       ${nav}
-      <div class="gallery-color-overlay" id="color-overlay"></div>
     </div>`
   } else {
     el.textContent = p.emoji
@@ -1228,7 +1221,6 @@ function openModal(id) {
   currentBrand = 'Bambu Matte'
   const ov = document.getElementById('color-overlay')
   if(ov) { ov.classList.remove('active'); ov.style.background = '' }
-  document.querySelectorAll('#gslides img').forEach(img => { img.style.filter = '' })
   document.getElementById('m-color-name').textContent = '— เลือกสีที่ต้องการ —'
   document.getElementById('m-color-name').style.color = ''
   document.querySelectorAll('.brand-tab').forEach((t,i) => t.classList.toggle('active', i===0))
@@ -1313,7 +1305,8 @@ renderProducts()
 let keycapQty = 1
 let keycapColors = [] // [{hex, name, brand}, ...] for each slot
 let keycapRailColor = null
-let keycapPickingSlot = null // 'rail' | 0..n index
+let keycapPickingSlot = null
+let keycapLetters = []
 
 function initKeycapConfig() {
   keycapQty = 1
@@ -1333,6 +1326,8 @@ function changeKeycapQty(delta) {
   // resize colors array
   while (keycapColors.length < keycapQty) keycapColors.push({body: null, letter: null})
   keycapColors = keycapColors.slice(0, keycapQty)
+  while (keycapLetters.length < keycapQty) keycapLetters.push('')
+  keycapLetters = keycapLetters.slice(0, keycapQty)
   document.getElementById('keycap-qty').textContent = keycapQty
   renderKeycapSlots()
   updateKeycapPrice()
@@ -1347,7 +1342,13 @@ function renderKeycapSlots() {
     const bodyActive = keycapPickingSlot && keycapPickingSlot.idx === i && keycapPickingSlot.part === 'body'
     const letterActive = keycapPickingSlot && keycapPickingSlot.idx === i && keycapPickingSlot.part === 'letter'
     html += `<div class="keycap-slot" style="flex-direction:column;align-items:stretch;gap:6px">
-      <span class="keycap-slot-label" style="font-size:11px;opacity:.5">Keycap ${i+1}</span>
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:2px">
+        <span class="keycap-slot-label" style="font-size:11px;opacity:.5">Keycap ${i+1}</span>
+        <input class="keycap-letter-input" type="text" maxlength="1" placeholder="A" value="${keycapLetters[i] || ''}"
+          oninput="keycapLetters[${i}]=this.value.toUpperCase().replace(/[^A-Z]/g,'');this.value=keycapLetters[${i}]"
+          onclick="event.stopPropagation()" title="ตัวอักษร A-Z">
+        <span style="font-size:10px;color:rgba(240,237,232,.35)">กรอกตัวอักษร</span>
+      </div>
       <div style="display:flex;gap:8px">
         <div class="keycap-slot-color ${bodyActive ? 'keycap-picking' : ''}" style="flex:1;padding:6px 8px;border-radius:5px;border:1px solid rgba(240,237,232,${bodyActive?'.5':'.08'});cursor:pointer" onclick="pickKeycapSlot(${i},'body')">
           <span class="keycap-slot-swatch" style="background:${c.body ? c.body.hex : '#333'};${!c.body ? 'border-style:dashed' : ''}"></span>
@@ -1438,22 +1439,26 @@ const _origAddToCartFromModal = addToCartFromModal
 function addToCartFromModal() {
   if (currentProduct && currentProduct.id === 37) {
     // validate all slots filled
-    const allFilled = keycapColors.every(c => c.body && c.letter) && keycapRailColor
-    if (!allFilled) {
-      document.getElementById('keycap-pick-hint').textContent = '⚠️ กรุณาเลือกสีให้ครบทุกช่อง'
+    const allColorsFilled = keycapColors.every(c => c.body && c.letter) && keycapRailColor
+    const allLettersFilled = keycapLetters.every(l => l && l.trim())
+    if (!allColorsFilled || !allLettersFilled) {
+      const msg = !allLettersFilled ? '⚠️ กรุณากรอกตัวอักษรให้ครบทุกช่อง' : '⚠️ กรุณาเลือกสีให้ครบทุกช่อง'
+      document.getElementById('keycap-pick-hint').textContent = msg
       document.getElementById('keycap-pick-hint').style.color = 'var(--accent)'
       return
     }
     const tiers = currentProduct.priceTiers
     const tier = tiers.find(t => t.qty === keycapQty) || tiers[tiers.length-1]
-    const keycapDetail = keycapColors.map((c,i) => `K${i+1}:${c.name}`).join(', ') + ` | ราง:${keycapRailColor.name}`
+    const keycapDetail = keycapColors.map((c,i) =>
+      `${keycapLetters[i]}(keycap:${c.body ? c.body.name : '-'}, ตัวอักษร:${c.letter ? c.letter.name : '-'})`
+    ).join(' | ') + ` | ราง:${keycapRailColor ? keycapRailColor.name : '-'}`
     document.getElementById('modal').classList.remove('open')
     setTimeout(() => {
       cartItems.push({
         name: `Alphabet Clicky Keychain x${keycapQty}`,
         price: tier.price,
         color: keycapDetail,
-        brand: keycapColors[0].brand
+        brand: keycapColors[0] && keycapColors[0].body ? keycapColors[0].body.brand : 'Bambu Matte'
       })
       cartCount++
       document.getElementById('cart-count').textContent = cartCount
