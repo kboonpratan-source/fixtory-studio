@@ -2318,14 +2318,19 @@ function admCalc() {
   document.getElementById('adm-change-note').textContent = ch>0?'Change '+ch+'× → purge +฿'+Math.round(cw)+' · labor +฿'+Math.round((ch*2/60)*60):''
 }
 
-// Secret: กด Ctrl+Shift+A เพื่อเปิด admin
+// Secret: พิมพ์ "fixtory" เพื่อเปิด admin (ไม่ต้องอยู่ใน input)
+let admKeyBuf = ''
 document.addEventListener('keydown', function(e) {
-  if(e.ctrlKey && e.shiftKey && e.key==='A') {
+  if(e.key==='Escape') { closeAdmin(); admKeyBuf=''; return }
+  if(document.activeElement.tagName==='INPUT'||document.activeElement.tagName==='TEXTAREA') return
+  admKeyBuf += e.key.toLowerCase()
+  if(admKeyBuf.length > 7) admKeyBuf = admKeyBuf.slice(-7)
+  if(admKeyBuf.includes('fixtory')) {
+    admKeyBuf = ''
     document.getElementById('admin-pw-overlay').classList.add('open')
     document.body.style.overflow = 'hidden'
     setTimeout(()=>document.getElementById('admin-pw-input').focus(), 100)
   }
-  if(e.key==='Escape') closeAdmin()
 })
 
 </script>
