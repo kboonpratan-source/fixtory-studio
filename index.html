@@ -120,6 +120,33 @@ section{padding:80px 40px}
 .process-title{font-size:14px;font-weight:500;margin-bottom:8px}
 .process-desc{font-size:12px;color:var(--muted);line-height:1.7}
 
+
+/* ─── CUSTOM QUOTE ────────────────────── */
+.quote-section{background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.quote-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border);border-radius:4px;overflow:hidden;margin-bottom:1px}
+.quote-panel{background:var(--bg2);padding:28px}
+.quote-label{font-size:13px;color:rgba(240,237,232,.6);margin-bottom:10px;display:block}
+.quote-hint{font-size:11px;color:var(--muted);font-family:var(--font-mono);margin-bottom:10px;display:block}
+.quote-pills{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:20px}
+.quote-pill{font-size:11px;padding:5px 14px;border:1px solid var(--border);color:var(--muted);background:transparent;cursor:pointer;transition:all .2s;font-family:var(--font-body);letter-spacing:.5px}
+.quote-pill.on{border-color:var(--accent);color:var(--accent);background:rgba(232,133,90,.06)}
+.quote-qty{display:flex;align-items:center;gap:14px;margin-bottom:20px}
+.quote-qty-btn{width:32px;height:32px;border-radius:50%;border:1px solid var(--border);background:transparent;color:var(--text);cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;transition:all .2s}
+.quote-qty-btn:hover{border-color:var(--accent);color:var(--accent)}
+.quote-qty-num{font-family:var(--font-display);font-size:32px;color:var(--accent);min-width:32px;text-align:center}
+.quote-qty-note{font-size:12px;color:var(--muted)}
+.quote-result{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;background:var(--border);margin-top:1px}
+.quote-rc{background:var(--bg2);padding:24px}
+.quote-rc.accent{background:rgba(232,133,90,.04)}
+.quote-rl{font-family:var(--font-mono);font-size:9px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:8px}
+.quote-rv{font-family:var(--font-display);font-size:42px;letter-spacing:1px;line-height:1;color:var(--text)}
+.quote-rc.accent .quote-rv{color:var(--accent)}
+.quote-rs{font-size:11px;color:var(--muted);margin-top:6px;font-family:var(--font-mono)}
+.quote-tag{display:inline-block;background:rgba(232,133,90,.08);border:1px solid rgba(232,133,90,.2);padding:5px 14px;font-family:var(--font-mono);font-size:10px;color:var(--accent);letter-spacing:1px;margin-top:16px}
+.quote-cta{width:100%;background:var(--accent);border:none;color:#fff;padding:16px;font-family:var(--font-body);font-size:14px;letter-spacing:.5px;cursor:pointer;transition:background .2s;font-weight:500;margin-top:1px}
+.quote-cta:hover{background:var(--accent2)}
+.quote-note{font-size:11px;color:var(--muted);text-align:center;margin-top:14px;font-family:var(--font-mono);line-height:1.7}
+
 /* ─── CUSTOM ORDER SECTION ────────────── */
 .custom-section{background:var(--bg)}
 .custom-card{background:var(--bg2);border:1px solid var(--border);padding:48px;display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center}
@@ -367,6 +394,7 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:40px;dis
     <li><a href="#products">Shop</a></li>
     <li><a href="#process">Process</a></li>
     <li><a href="#custom">Custom</a></li>
+    <li><a href="#quote">Quote</a></li>
     <li><a href="#contact">Contact</a></li>
   </ul>
   <button class="nav-cta" onclick="openCart()">
@@ -682,6 +710,95 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:40px;dis
       <div class="process-desc">แพ็คอย่างดี ส่งทั่วประเทศ ติดตาม order status ได้ real-time</div>
     </div>
   </div>
+</section>
+
+
+<!-- CUSTOM QUOTE -->
+<section class="quote-section" id="quote">
+  <div class="section-tag">Custom Order</div>
+  <div class="section-title">GET A QUOTE</div>
+  <div class="section-sub">ประเมินราคา custom order เบื้องต้น — ไม่ต้องรู้ขนาดแน่ชัด</div>
+
+  <div class="quote-grid">
+    <div class="quote-panel">
+      <div class="section-tag" style="margin-bottom:14px">ขนาดสินค้า</div>
+      <span class="quote-label">ระบุขนาดสินค้า (cm)</span>
+      <span class="quote-hint">ประมาณได้ — ไม่ต้องแม่นยำ 100%</span>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:16px">
+        <div>
+          <div style="font-size:10px;color:var(--muted);letter-spacing:1px;font-family:var(--font-mono);margin-bottom:6px">กว้าง (cm)</div>
+          <input type="number" id="q-w" value="10" min="1" max="100" step="0.5" oninput="calcQuote()" style="background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:8px 12px;font-family:var(--font-body);font-size:14px;width:100%;outline:none;transition:border-color .2s" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'">
+        </div>
+        <div>
+          <div style="font-size:10px;color:var(--muted);letter-spacing:1px;font-family:var(--font-mono);margin-bottom:6px">ยาว (cm)</div>
+          <input type="number" id="q-d" value="10" min="1" max="100" step="0.5" oninput="calcQuote()" style="background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:8px 12px;font-family:var(--font-body);font-size:14px;width:100%;outline:none;transition:border-color .2s" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'">
+        </div>
+        <div>
+          <div style="font-size:10px;color:var(--muted);letter-spacing:1px;font-family:var(--font-mono);margin-bottom:6px">สูง (cm)</div>
+          <input type="number" id="q-h" value="5" min="0.5" max="100" step="0.5" oninput="calcQuote()" style="background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:8px 12px;font-family:var(--font-body);font-size:14px;width:100%;outline:none;transition:border-color .2s" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'">
+        </div>
+      </div>
+      <div id="q-size-note" style="font-size:11px;color:rgba(240,237,232,.35);font-family:var(--font-mono);margin-top:8px;margin-bottom:12px"></div>
+      <div style="margin-bottom:16px">
+        <div style="font-size:10px;color:var(--muted);letter-spacing:1px;font-family:var(--font-mono);margin-bottom:6px">เวลาพิมพ์จริง (ชม.) — ไม่บังคับ</div>
+        <div style="display:flex;align-items:center;gap:10px">
+          <input type="number" id="q-hrs" placeholder="เช่น 5.5" min="0.1" max="100" step="0.5" oninput="calcQuote()" style="background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:8px 12px;font-family:var(--font-body);font-size:14px;width:120px;outline:none;transition:border-color .2s" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'">
+          <span style="font-size:11px;color:rgba(240,237,232,.25);font-family:var(--font-mono)">ถ้ากรอกจะใช้ตัวเลขนี้แทนการประมาณ</span>
+        </div>
+      </div>
+      <div class="section-tag" style="margin-bottom:14px">ความซับซ้อน</div>
+      <span class="quote-label">งานมีรายละเอียดมากแค่ไหน?</span>
+      <div class="quote-pills" id="q-detail">
+        <button class="quote-pill on" onclick="qDt('simple',this)">เรียบง่าย</button>
+        <button class="quote-pill" onclick="qDt('medium',this)">มีลวดลายบ้าง</button>
+        <button class="quote-pill" onclick="qDt('complex',this)">ละเอียดมาก</button>
+      </div>
+    </div>
+    <div class="quote-panel">
+      <div class="section-tag" style="margin-bottom:14px">จำนวนสี</div>
+      <div class="quote-pills" id="q-col">
+        <button class="quote-pill on" onclick="qCol(1,this)">1 สี</button>
+        <button class="quote-pill" onclick="qCol(2,this)">2 สี</button>
+        <button class="quote-pill" onclick="qCol(3,this)">3 สี</button>
+        <button class="quote-pill" onclick="qCol(4,this)">4+ สี</button>
+      </div>
+      <div class="section-tag" style="margin:20px 0 14px">จำนวนชิ้น</div>
+      <div class="quote-qty">
+        <button class="quote-qty-btn" onclick="qQty(-1)">−</button>
+        <span class="quote-qty-num" id="q-qty-num">1</span>
+        <button class="quote-qty-btn" onclick="qQty(1)">+</button>
+        <span class="quote-qty-note">ชิ้น · ยิ่งเยอะยิ่งประหยัด</span>
+      </div>
+      <div class="section-tag" style="margin-bottom:14px">วัสดุเพิ่มเติม</div>
+      <div class="quote-pills" id="q-mat">
+        <button class="quote-pill on" onclick="qMat(0,this)">ไม่มี</button>
+        <button class="quote-pill" onclick="qMat(16,this)">แม่เหล็ก</button>
+        <button class="quote-pill" onclick="qMat(25,this)">น็อต/ชิ้นส่วน</button>
+        <button class="quote-pill" onclick="qMat(40,this)">อื่นๆ</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="quote-result">
+    <div class="quote-rc accent">
+      <div class="quote-rl">ราคาประมาณ / ชิ้น</div>
+      <div class="quote-rv" id="q-unit">฿0</div>
+      <div class="quote-rs" id="q-unit-s">custom +30%</div>
+    </div>
+    <div class="quote-rc">
+      <div class="quote-rl">ราคารวม <span id="q-qty-label">1 ชิ้น</span></div>
+      <div class="quote-rv" id="q-total">฿0</div>
+      <div class="quote-rs">ก่อนค่าจัดส่ง</div>
+    </div>
+    <div class="quote-rc">
+      <div class="quote-rl">เวลาผลิต</div>
+      <div class="quote-rv" id="q-time">—</div>
+      <div class="quote-rs">วันทำการ</div>
+    </div>
+  </div>
+  <div id="q-tag" class="quote-tag"></div>
+  <button class="quote-cta" onclick="quoteCheckout()">ติดต่อสั่งซื้อ →</button>
+  <div class="quote-note">ราคานี้เป็นการประมาณเบื้องต้น · ราคาจริงอาจแตกต่างตามความซับซ้อนของงาน<br>ทีมงานจะยืนยันราคาสุดท้ายหลังรับ brief ครับ</div>
 </section>
 
 <!-- CUSTOM ORDER -->
@@ -1767,6 +1884,82 @@ if (orderParam) {
     setTimeout(() => openTracking(orderParam), 500)
   })
 }
+
+
+// ── CUSTOM QUOTE ──────────────────────────────────────────
+const Q_DETAIL={simple:{m:1,label:'เรียบง่าย'},medium:{m:1.2,label:'มีลวดลาย'},complex:{m:1.5,label:'ละเอียดมาก'}}
+let qDtV='simple',qColV=1,qQtyV=1,qMatV=0
+
+function qDt(v,el){qDtV=v;el.closest('.quote-pills').querySelectorAll('.quote-pill').forEach(b=>b.classList.remove('on'));el.classList.add('on');calcQuote()}
+function qCol(v,el){qColV=v;el.closest('.quote-pills').querySelectorAll('.quote-pill').forEach(b=>b.classList.remove('on'));el.classList.add('on');calcQuote()}
+function qMat(v,el){qMatV=v;el.closest('.quote-pills').querySelectorAll('.quote-pill').forEach(b=>b.classList.remove('on'));el.classList.add('on');calcQuote()}
+function qQty(d){qQtyV=Math.max(1,Math.min(50,qQtyV+d));document.getElementById('q-qty-num').textContent=qQtyV;calcQuote()}
+
+function calcQuote(){
+  const w=parseFloat(document.getElementById('q-w').value)||10
+  const d=parseFloat(document.getElementById('q-d').value)||10
+  const hh=parseFloat(document.getElementById('q-h').value)||5
+
+  // Volume → filament estimate
+  // Calibrated against real prints:
+  // Wall Plaque 15×15×0.8cm → 63g ✓
+  // HIVE BOX 10×10×8cm → ~80g ✓
+  // Formula: base area × height × fill_factor × PLA_density
+  // fill_factor: flat/thin=0.35, normal=0.20, box/hollow=0.12
+  const vol=w*d*hh
+  const aspect=hh/Math.max(w,d)  // thin=low aspect
+  const fillFactor=aspect<0.15?0.35:aspect<0.5?0.22:0.14
+  const grams=vol*fillFactor*1.24
+  const manualHrs=parseFloat(document.getElementById('q-hrs')?.value)
+  const useManual=(!isNaN(manualHrs)&&manualHrs>0)
+  const hours=useManual?manualHrs:grams/12
+  // If manual hours given, recalculate grams from hours (12g/hr avg)
+  const gramsActual=useManual?manualHrs*12:grams
+
+  // Days estimation
+  const days = hours<=1?'1':hours<=3?'1-2':hours<=6?'2-3':hours<=12?'3-5':'5-7+'
+
+  // Size label
+  const sizeLabel = w+'×'+d+'×'+hh+' cm (ประมาณ '+Math.round(gramsActual)+'g'+(useManual?' · จาก slicer':'')+')'
+  const note = document.getElementById('q-size-note')
+  if(note) note.textContent = 'ประมาณ '+Math.round(gramsActual)+'g · '+Math.round(hours*10)/10+' ชม.'+(useManual?' (ชั่วโมงจริง)':' · volume '+Math.round(vol)+' cm³')
+
+  const dm=Q_DETAIL[qDtV].m
+  const fil=(gramsActual/1000)*672*dm
+  const elec=.095*hours*4.83*dm
+  const dep=6.67*hours*dm
+  const maint=(elec+dep)*.12
+  const colMult=qColV===1?1:qColV===2?1.1:qColV===3?1.2:1.3
+  const labor=26.67*colMult*dm
+  const cost=fil+elec+dep+maint+labor+20+qMatV
+
+  const discount=qQtyV>=10?.9:qQtyV>=5?.95:1
+  const QUOTE_BUFFER=1.15  // แสดงราคาสูงกว่าจริง 15% → ร้านบอกราคาจริงทีหลัง ลูกค้าประทับใจ
+  const raw=(cost*discount)*(1+.5)/(1-.082)*1.3*QUOTE_BUFFER
+  const unit=(Math.floor(raw/10)+1)*10-1
+  const total=unit*qQtyV
+
+  document.getElementById('q-unit').textContent='฿'+unit
+  document.getElementById('q-total').textContent='฿'+total.toLocaleString()
+  document.getElementById('q-qty-label').textContent=qQtyV+' ชิ้น'
+  document.getElementById('q-time').textContent=days
+  document.getElementById('q-unit-s').textContent=qQtyV>=5?'ส่วนลด '+(100-discount*100).toFixed(0)+'%':'custom +30%'
+  document.getElementById('q-tag').textContent=sizeLabel+' · '+Q_DETAIL[qDtV].label+' · '+qColV+' สี'+(qMatV>0?' · มีวัสดุเพิ่ม':'')+(qQtyV>1?' · '+qQtyV+' ชิ้น':'')
+}
+
+function quoteCheckout(){
+  const w=document.getElementById('q-w').value
+  const d=document.getElementById('q-d').value
+  const hh=document.getElementById('q-h').value
+  const unit=document.getElementById('q-unit').textContent
+  const total=document.getElementById('q-total').textContent
+  const msg='สวัสดีครับ อยากสอบถาม custom order\n\nขนาด: '+w+'×'+d+'×'+hh+' cm\nความซับซ้อน: '+Q_DETAIL[qDtV].label+'\nจำนวนสี: '+qColV+' สี\nจำนวน: '+qQtyV+' ชิ้น\nราคาประมาณ: '+unit+'/ชิ้น (รวม '+total+')'
+  if(window.Tawk_API&&window.Tawk_API.maximize)window.Tawk_API.maximize()
+  showToast('เปิด chat แล้ว — กด Paste ข้อความ order ได้เลย!')
+  navigator.clipboard&&navigator.clipboard.writeText(msg)
+}
+
+calcQuote()
 
 renderProducts()
 
