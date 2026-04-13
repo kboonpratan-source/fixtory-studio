@@ -371,6 +371,46 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:40px;dis
 .track-input-row input:focus{border-color:var(--accent)}
 .track-input-row button{background:var(--accent);border:none;color:#fff;padding:10px 18px;cursor:pointer;font-family:var(--font-body);font-size:12px;white-space:nowrap}
 .track-input-row button:hover{background:var(--accent2)}
+
+/* ─── ADMIN CALCULATOR ────────────────── */
+.admin-overlay{position:fixed;inset:0;background:rgba(0,0,0,.95);z-index:500;display:none;align-items:center;justify-content:center;flex-direction:column;gap:16px}
+.admin-overlay.open{display:flex}
+.admin-box{background:#111;border:1px solid rgba(232,133,90,.3);padding:32px;width:100%;max-width:680px;max-height:92vh;overflow-y:auto}
+.admin-pw-box{background:#111;border:1px solid rgba(255,255,255,.1);padding:32px;text-align:center;width:320px}
+.admin-pw-title{font-family:var(--font-display);font-size:24px;letter-spacing:3px;color:var(--accent);margin-bottom:6px}
+.admin-pw-sub{font-size:11px;color:var(--muted);font-family:var(--font-mono);margin-bottom:20px}
+.admin-pw-input{width:100%;background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:12px;font-family:var(--font-mono);font-size:18px;text-align:center;letter-spacing:4px;outline:none;margin-bottom:12px}
+.admin-pw-input:focus{border-color:var(--accent)}
+.admin-pw-btn{width:100%;background:var(--accent);border:none;color:#fff;padding:12px;font-family:var(--font-body);font-size:13px;cursor:pointer}
+.admin-pw-btn:hover{background:var(--accent2)}
+.admin-pw-err{font-size:12px;color:#e55;font-family:var(--font-mono);margin-top:8px;min-height:16px}
+.admin-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid rgba(255,255,255,.06)}
+.admin-title{font-family:var(--font-display);font-size:20px;letter-spacing:3px;color:var(--accent)}
+.admin-close{background:none;border:none;color:var(--muted);font-size:22px;cursor:pointer}
+.admin-close:hover{color:var(--text)}
+.adm-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px;background:rgba(255,255,255,.06);border-radius:8px;overflow:hidden;margin-bottom:2px}
+.adm-panel{background:#181818;padding:18px}
+.adm-title{font-size:9px;letter-spacing:2px;color:var(--accent);text-transform:uppercase;margin-bottom:12px;font-family:var(--font-mono)}
+.adm-field{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.adm-field label{font-size:12px;color:rgba(240,237,232,.5);flex:1}
+.adm-field input{background:#0a0a0a;border:1px solid var(--border);color:var(--text);padding:7px 10px;border-radius:4px;font-size:13px;width:88px;outline:none;transition:border-color .2s;font-family:inherit;text-align:right}
+.adm-field input:focus{border-color:var(--accent)}
+.adm-unit{font-size:11px;color:rgba(240,237,232,.2);font-family:var(--font-mono);width:20px}
+.adm-pills{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px}
+.adm-pill{font-size:11px;padding:4px 11px;border:1px solid var(--border);border-radius:20px;background:transparent;color:rgba(240,237,232,.4);cursor:pointer;transition:all .2s;font-family:inherit}
+.adm-pill.on{background:rgba(232,133,90,.1);border-color:var(--accent);color:var(--accent)}
+.adm-div{border:none;border-top:1px solid rgba(255,255,255,.06);margin:12px 0}
+.adm-bk-row{display:flex;justify-content:space-between;font-size:11px;color:rgba(240,237,232,.35);padding:3px 0;font-family:var(--font-mono)}
+.adm-bk-row span:last-child{color:rgba(240,237,232,.5)}
+.adm-results{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:2px;background:rgba(255,255,255,.06);border-radius:8px;overflow:hidden}
+.adm-rc{background:#181818;padding:16px}
+.adm-rc.terra{background:rgba(232,133,90,.04)}
+.adm-rc.blue{background:rgba(86,183,230,.03)}
+.adm-rl{font-size:9px;letter-spacing:1.5px;color:rgba(240,237,232,.3);text-transform:uppercase;font-family:var(--font-mono);margin-bottom:6px}
+.adm-rv{font-family:var(--font-display);font-size:28px;letter-spacing:1px;line-height:1;color:var(--text)}
+.adm-rc.terra .adm-rv{color:var(--accent)}
+.adm-rc.blue .adm-rv{color:#56b7e6}
+.adm-rs{font-size:10px;color:rgba(240,237,232,.25);margin-top:4px;font-family:var(--font-mono)}
 </style>
 </head>
 <body>
@@ -2191,7 +2231,160 @@ s1.charset='UTF-8';
 s1.setAttribute('crossorigin','*');
 s0.parentNode.insertBefore(s1,s0);
 })();
+
+// ── ADMIN CALCULATOR ──────────────────────────────────────
+const ADMIN_PW = '160977'
+let admFee = 0.082
+let admSelColors = new Set()
+
+// Build swatches
+const admSw = document.getElementById('adm-swatches')
+if(admSw) {
+  colorPalette.filter(c=>c.brand==='Bambu Matte').forEach((c,i) => {
+    const d = document.createElement('div')
+    d.style.cssText = 'width:20px;height:20px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:all .15s;flex-shrink:0;background:'+c.hex
+    if(parseInt(c.hex.slice(1,3),16)>200&&parseInt(c.hex.slice(3,5),16)>200) d.style.boxShadow='inset 0 0 0 1px rgba(0,0,0,.15)'
+    d.title = c.name
+    d.onclick = () => {
+      const idx = colorPalette.filter(x=>x.brand==='Bambu Matte').indexOf(c)
+      if(admSelColors.has(idx)) admSelColors.delete(idx)
+      else admSelColors.add(idx)
+      d.style.borderColor = admSelColors.has(idx) ? 'var(--accent)' : 'transparent'
+      const names = [...admSelColors].map(i=>colorPalette.filter(x=>x.brand==='Bambu Matte')[i].name)
+      document.getElementById('adm-color-note').textContent = names.length ? names.join(', ') : '— ยังไม่ได้เลือกสี —'
+      admCalc()
+    }
+    admSw.appendChild(d)
+  })
+}
+
+function adminLogin() {
+  const pw = document.getElementById('admin-pw-input').value
+  const err = document.getElementById('admin-pw-err')
+  if(pw === ADMIN_PW) {
+    document.getElementById('admin-pw-overlay').classList.remove('open')
+    document.getElementById('admin-overlay').classList.add('open')
+    document.body.style.overflow = 'hidden'
+    admCalc()
+    err.textContent = ''
+  } else {
+    err.textContent = 'รหัสไม่ถูกต้อง'
+    document.getElementById('admin-pw-input').value = ''
+  }
+}
+
+function closeAdmin() {
+  document.getElementById('admin-overlay').classList.remove('open')
+  document.getElementById('admin-pw-overlay').classList.remove('open')
+  document.body.style.overflow = ''
+}
+
+function admSetCh(c, el) {
+  el.closest('.adm-pills').querySelectorAll('.adm-pill').forEach(b=>b.classList.remove('on'))
+  el.classList.add('on')
+  const m = {shopee:[0.082,'Shopee · 8.2%'],tiktok:[0.114,'TikTok · 11.4%'],web:[0.015,'เว็บตรง · 1.5%'],aff:[0.115,'เว็บ+Affiliate · 11.5%']}
+  admFee = m[c][0]
+  document.getElementById('adm-fee-note').textContent = m[c][1]
+  admCalc()
+}
+
+function admCalc() {
+  const g = parseFloat(document.getElementById('adm-g').value)||0
+  const h = parseFloat(document.getElementById('adm-h').value)||0
+  const ch = parseInt(document.getElementById('adm-ch').value)||0
+  const ex = parseFloat(document.getElementById('adm-ex').value)||0
+  const bambuColors = colorPalette.filter(c=>c.brand==='Bambu Matte')
+  const avgPrice = admSelColors.size>0 ? [...admSelColors].reduce((s,i)=>s+bambuColors[i].price,0)/admSelColors.size : 560
+  const filRate = avgPrice*1.2/1000
+  const fil = g*filRate
+  const cw = (ch*3/1000)*filRate*1000
+  const elec = 0.095*h*4.83
+  const dep = 6.67*h
+  const maint = (elec+dep)*0.12
+  const labor = 26.67 + (ch*2/60)*60
+  const cost = fil+cw+elec+dep+maint+labor+20+ex
+  const price = (Math.floor(cost*1.5/(1-admFee)/10)+1)*10-1
+  const custom = (Math.floor(price*1.3/10)+1)*10-1
+  const profit = price*(1-admFee)-cost
+  const mp = Math.round(profit/(price*(1-admFee))*100)
+  document.getElementById('adm-cost').textContent = '฿'+Math.round(cost)
+  document.getElementById('adm-price').textContent = '฿'+price
+  document.getElementById('adm-custom').textContent = '฿'+custom
+  document.getElementById('adm-profit').textContent = '฿'+Math.round(profit)
+  document.getElementById('adm-mgn').textContent = 'gross margin '+mp+'%'
+  document.getElementById('adm-psub').textContent = 'หักช่องทาง '+Math.round(admFee*100)+'%'
+  const rows = [['Filament ('+g+'g)','฿'+Math.round(fil)],...(cw>0?[['Purge ('+ch+'×3g)','฿'+Math.round(cw)]]:[] ),['ค่าไฟ','฿'+Math.round(elec)],['ค่าเสื่อม','฿'+Math.round(dep)],['แรงงาน','฿'+Math.round(labor)],['Packaging','฿20'],...(ex>0?[['วัสดุเพิ่ม','฿'+ex]]:[] )]
+  document.getElementById('adm-bk').innerHTML = rows.map(r=>'<div class="adm-bk-row"><span>'+r[0]+'</span><span>'+r[1]+'</span></div>').join('')
+  document.getElementById('adm-change-note').textContent = ch>0?'Change '+ch+'× → purge +฿'+Math.round(cw)+' · labor +฿'+Math.round((ch*2/60)*60):''
+}
+
+// Secret: กด Ctrl+Shift+A เพื่อเปิด admin
+document.addEventListener('keydown', function(e) {
+  if(e.ctrlKey && e.shiftKey && e.key==='A') {
+    document.getElementById('admin-pw-overlay').classList.add('open')
+    document.body.style.overflow = 'hidden'
+    setTimeout(()=>document.getElementById('admin-pw-input').focus(), 100)
+  }
+  if(e.key==='Escape') closeAdmin()
+})
+
 </script>
 <!--End of Tawk.to Script-->
+
+<!-- ADMIN PASSWORD -->
+<div class="admin-overlay" id="admin-pw-overlay">
+  <div class="admin-pw-box">
+    <div class="admin-pw-title">ADMIN</div>
+    <div class="admin-pw-sub">Fixtory.Studio · Price Calculator</div>
+    <input class="admin-pw-input" type="password" id="admin-pw-input" placeholder="••••••" maxlength="10" onkeydown="if(event.key==='Enter')adminLogin()">
+    <button class="admin-pw-btn" onclick="adminLogin()">เข้าสู่ระบบ</button>
+    <div class="admin-pw-err" id="admin-pw-err"></div>
+  </div>
+</div>
+
+<!-- ADMIN CALCULATOR -->
+<div class="admin-overlay" id="admin-overlay">
+  <div class="admin-box">
+    <div class="admin-header">
+      <div class="admin-title">PRICE CALCULATOR · ADMIN</div>
+      <button class="admin-close" onclick="closeAdmin()">✕</button>
+    </div>
+    <div class="adm-grid">
+      <div class="adm-panel">
+        <div class="adm-title">Print Data</div>
+        <div class="adm-field"><label>Filament รวม</label><input type="number" id="adm-g" value="75" min="1" step="0.1" oninput="admCalc()"><span class="adm-unit">g</span></div>
+        <div class="adm-field"><label>Print time</label><input type="number" id="adm-h" value="5.25" min="0.1" step="0.1" oninput="admCalc()"><span class="adm-unit">hr</span></div>
+        <div class="adm-field"><label>Filament change</label><input type="number" id="adm-ch" value="0" min="0" step="1" oninput="admCalc()"><span class="adm-unit">×</span></div>
+        <div class="adm-field"><label>วัสดุเพิ่ม</label><input type="number" id="adm-ex" value="0" min="0" step="1" oninput="admCalc()"><span class="adm-unit">฿</span></div>
+        <div class="adm-div"></div>
+        <div class="adm-title">Bambu Matte · เลือกสี</div>
+        <div style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px" id="adm-swatches"></div>
+        <div style="font-size:11px;color:rgba(240,237,232,.35);font-family:var(--font-mono);min-height:16px" id="adm-color-note">— ยังไม่ได้เลือกสี —</div>
+      </div>
+      <div class="adm-panel">
+        <div class="adm-title">ช่องทางขาย</div>
+        <div class="adm-pills" id="adm-ch-pills">
+          <button class="adm-pill on" onclick="admSetCh('shopee',this)">Shopee</button>
+          <button class="adm-pill" onclick="admSetCh('tiktok',this)">TikTok</button>
+          <button class="adm-pill" onclick="admSetCh('web',this)">เว็บตรง</button>
+          <button class="adm-pill" onclick="admSetCh('aff',this)">เว็บ+Aff</button>
+        </div>
+        <div style="font-size:10px;color:rgba(240,237,232,.2);font-family:var(--font-mono);margin-bottom:12px" id="adm-fee-note">Shopee · 8.2%</div>
+        <div class="adm-div"></div>
+        <div class="adm-title">Breakdown</div>
+        <div id="adm-bk"></div>
+        <div style="font-size:10px;color:rgba(240,237,232,.2);font-family:var(--font-mono);margin-top:6px" id="adm-change-note"></div>
+      </div>
+    </div>
+    <div style="height:2px"></div>
+    <div class="adm-results">
+      <div class="adm-rc"><div class="adm-rl">ต้นทุนรวม</div><div class="adm-rv" id="adm-cost">฿0</div><div class="adm-rs" id="adm-mgn">margin —</div></div>
+      <div class="adm-rc terra"><div class="adm-rl">Catalog</div><div class="adm-rv" id="adm-price">฿0</div><div class="adm-rs">หน้าเว็บ / platform</div></div>
+      <div class="adm-rc blue"><div class="adm-rl">Custom +30%</div><div class="adm-rv" id="adm-custom">฿0</div><div class="adm-rs">บวก premium</div></div>
+      <div class="adm-rc"><div class="adm-rl">กำไรสุทธิ</div><div class="adm-rv" id="adm-profit">฿0</div><div class="adm-rs" id="adm-psub">หลังหักช่องทาง</div></div>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
