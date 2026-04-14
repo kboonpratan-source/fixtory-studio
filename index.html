@@ -813,32 +813,40 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:40px;dis
       <div class="section-tag" style="margin-bottom:14px">วัสดุเพิ่มเติม</div>
       <div class="quote-pills" id="q-mat">
         <button class="quote-pill on" onclick="qMat(0,this)">ไม่มี</button>
-        <button class="quote-pill" onclick="qMat(16,this)">แม่เหล็ก</button>
-        <button class="quote-pill" onclick="qMat(25,this)">น็อต/ชิ้นส่วน</button>
-        <button class="quote-pill" onclick="qMat(40,this)">อื่นๆ</button>
+        <button class="quote-pill" onclick="qMat(16,this)">แม่เหล็ก (+฿16)</button>
+        <button class="quote-pill" onclick="qMat(25,this)">น็อต/ชิ้นส่วน (+฿25)</button>
+        <button class="quote-pill" onclick="qMat(-1,this)">วัสดุพิเศษ (LED ฯลฯ)</button>
       </div>
     </div>
   </div>
 
-  <div class="quote-result">
-    <div class="quote-rc accent">
-      <div class="quote-rl">ราคาประมาณ / ชิ้น</div>
-      <div class="quote-rv" id="q-unit">฿0</div>
-      <div class="quote-rs" id="q-unit-s">custom +30%</div>
+  <div id="q-normal-result">
+    <div class="quote-result">
+      <div class="quote-rc accent">
+        <div class="quote-rl">ราคาประมาณ / ชิ้น</div>
+        <div class="quote-rv" id="q-unit">฿0</div>
+        <div class="quote-rs" id="q-unit-s">custom +30%</div>
+      </div>
+      <div class="quote-rc">
+        <div class="quote-rl">ราคารวม <span id="q-qty-label">1 ชิ้น</span></div>
+        <div class="quote-rv" id="q-total">฿0</div>
+        <div class="quote-rs">ก่อนค่าจัดส่ง</div>
+      </div>
+      <div class="quote-rc">
+        <div class="quote-rl">เวลาผลิต</div>
+        <div class="quote-rv" id="q-time">—</div>
+        <div class="quote-rs">วันทำการ</div>
+      </div>
     </div>
-    <div class="quote-rc">
-      <div class="quote-rl">ราคารวม <span id="q-qty-label">1 ชิ้น</span></div>
-      <div class="quote-rv" id="q-total">฿0</div>
-      <div class="quote-rs">ก่อนค่าจัดส่ง</div>
-    </div>
-    <div class="quote-rc">
-      <div class="quote-rl">เวลาผลิต</div>
-      <div class="quote-rv" id="q-time">—</div>
-      <div class="quote-rs">วันทำการ</div>
-    </div>
+    <div id="q-tag" class="quote-tag"></div>
+    <button class="quote-cta" onclick="quoteCheckout()">ติดต่อสั่งซื้อ →</button>
   </div>
-  <div id="q-tag" class="quote-tag"></div>
-  <button class="quote-cta" onclick="quoteCheckout()">ติดต่อสั่งซื้อ →</button>
+  <div id="q-special-result" style="display:none;background:rgba(232,133,90,.06);border:1px solid rgba(232,133,90,.2);padding:24px;text-align:center;margin-top:1px">
+    <div style="font-family:var(--font-display);font-size:28px;color:var(--accent);letter-spacing:2px;margin-bottom:8px">งานวัสดุพิเศษ</div>
+    <div style="font-size:13px;color:rgba(240,237,232,.6);margin-bottom:6px">ป้ายไฟ LED · งาน electronics · วัสดุ custom</div>
+    <div style="font-size:12px;color:var(--muted);font-family:var(--font-mono);margin-bottom:20px">ราคาขึ้นกับวัสดุและ spec จริง · ไม่สามารถ quote อัตโนมัติได้</div>
+    <button class="quote-cta" style="max-width:320px;margin:0 auto;display:block" onclick="quoteCheckout()">ติดต่อสอบถามราคา →</button>
+  </div>
   <div class="quote-note">ราคานี้เป็นการประมาณเบื้องต้น · ราคาจริงอาจแตกต่างตามความซับซ้อนของงาน<br>ทีมงานจะยืนยันราคาสุดท้ายหลังรับ brief ครับ</div>
 </section>
 
@@ -1933,7 +1941,19 @@ let qDtV='simple',qColV=1,qQtyV=1,qMatV=0
 
 function qDt(v,el){qDtV=v;el.closest('.quote-pills').querySelectorAll('.quote-pill').forEach(b=>b.classList.remove('on'));el.classList.add('on');calcQuote()}
 function qCol(v,el){qColV=v;el.closest('.quote-pills').querySelectorAll('.quote-pill').forEach(b=>b.classList.remove('on'));el.classList.add('on');calcQuote()}
-function qMat(v,el){qMatV=v;el.closest('.quote-pills').querySelectorAll('.quote-pill').forEach(b=>b.classList.remove('on'));el.classList.add('on');calcQuote()}
+function qMat(v,el){
+  qMatV=v
+  el.closest('.quote-pills').querySelectorAll('.quote-pill').forEach(b=>b.classList.remove('on'))
+  el.classList.add('on')
+  if(v===-1){
+    document.getElementById('q-normal-result').style.display='none'
+    document.getElementById('q-special-result').style.display='block'
+  } else {
+    document.getElementById('q-normal-result').style.display='block'
+    document.getElementById('q-special-result').style.display='none'
+    calcQuote()
+  }
+}
 function qQty(d){qQtyV=Math.max(1,Math.min(50,qQtyV+d));document.getElementById('q-qty-num').textContent=qQtyV;calcQuote()}
 
 function calcQuote(){
@@ -1989,6 +2009,16 @@ function calcQuote(){
 }
 
 function quoteCheckout(){
+  if(qMatV===-1){
+    const w=document.getElementById('q-w').value
+    const d=document.getElementById('q-d').value
+    const hh=document.getElementById('q-h').value
+    const msg='สวัสดีครับ อยากสอบถาม custom order งานวัสดุพิเศษ\n\nขนาด: '+w+'×'+d+'×'+hh+' cm\nจำนวนสี: '+qColV+' สี\nจำนวน: '+qQtyV+' ชิ้น\nวัสดุพิเศษ: (กรุณาระบุ เช่น LED, หลอดไฟ ฯลฯ)'
+    if(window.Tawk_API&&window.Tawk_API.maximize)window.Tawk_API.maximize()
+    showToast('เปิด chat แล้ว — กด Paste ข้อความได้เลย!')
+    navigator.clipboard&&navigator.clipboard.writeText(msg)
+    return
+  }
   const w=document.getElementById('q-w').value
   const d=document.getElementById('q-d').value
   const hh=document.getElementById('q-h').value
