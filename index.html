@@ -2296,10 +2296,10 @@ function admCalc() {
   const ch = parseInt(document.getElementById('adm-ch').value)||0
   const ex = parseFloat(document.getElementById('adm-ex').value)||0
   const bambuColors = colorPalette.filter(c=>c.brand==='Bambu Matte')
-  const avgPrice = admSelColors.size>0 ? [...admSelColors].reduce((s,i)=>s+bambuColors[i].price,0)/admSelColors.size : 560
-  const filRate = avgPrice*1.2/1000
+  const avgPrice = admSelColors.size>0 ? [...admSelColors].reduce((s,i)=>s+(bambuColors[i]?bambuColors[i].price:690),0)/admSelColors.size : 560
+  const filRate = (isNaN(avgPrice)?560:avgPrice)*1.2/1000
   const fil = g*filRate
-  const cw = (ch*3/1000)*filRate*1000
+  const cw = (ch*3/1000)*(isNaN(avgPrice)?560:avgPrice)*1.2
   const elec = 0.095*h*4.83
   const dep = 6.67*h
   const maint = (elec+dep)*0.12
