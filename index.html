@@ -1956,7 +1956,7 @@ function calcQuote(){
   if(note) note.textContent = 'ประมาณ '+Math.round(gramsActual)+'g · '+Math.round(hours*10)/10+' ชม.'+(useManual?' (ชั่วโมงจริง)':' · volume '+Math.round(vol)+' cm³')
 
   const dm=Q_DETAIL[qDtV].m
-  const fil=(gramsActual/1000)*672*dm
+  const fil=(gramsActual/1000)*800*dm  // ใช้ราคา premium สูงสุด สำหรับ quote
   const elec=.095*hours*4.83*dm
   const dep=8.00*hours*dm
   const maint=(elec+dep)*.12
