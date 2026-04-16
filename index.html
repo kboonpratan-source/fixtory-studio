@@ -841,6 +841,36 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:40px;dis
     <div id="q-tag" class="quote-tag"></div>
     <button class="quote-cta" onclick="quoteCheckout()">ติดต่อสั่งซื้อ →</button>
   </div>
+  <div id="q-order-form" style="display:none;margin-top:2px;background:var(--bg2);border:1px solid var(--border);padding:32px">
+    <div class="section-tag" style="margin-bottom:10px">ขั้นตอนถัดไป</div>
+    <div class="section-title" style="font-size:clamp(28px,4vw,42px);margin-bottom:8px">MAKE IT YOURS</div>
+    <div class="section-sub" style="margin-bottom:24px">กรอกรายละเอียด — เราจะติดต่อกลับภายใน 24 ชม.</div>
+    <div id="q-prefill-note" style="background:rgba(232,133,90,.08);border:1px solid rgba(232,133,90,.2);padding:14px 18px;font-family:var(--font-mono);font-size:11px;color:rgba(240,237,232,.6);line-height:1.8;margin-bottom:20px;white-space:pre-line"></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+      <div class="form-group">
+        <label>ชื่อ-นามสกุล *</label>
+        <input type="text" id="qf-name" placeholder="ชื่อผู้สั่ง">
+      </div>
+      <div class="form-group">
+        <label>Line / เบอร์โทร *</label>
+        <input type="text" id="qf-contact" placeholder="สำหรับติดต่อกลับ">
+      </div>
+    </div>
+    <div class="form-group" style="margin-top:12px">
+      <label>วัสดุที่ต้องการ</label>
+      <select id="qf-material">
+        <option>PLA+ (แนะนำสำหรับงานทั่วไป)</option>
+        <option>PETG (ทนความร้อน)</option>
+        <option>Marble PLA (ลายหินอ่อน)</option>
+        <option>Panchroma Silk (ผิวมันวาว)</option>
+      </select>
+    </div>
+    <div class="form-group" style="margin-top:12px">
+      <label>รายละเอียดเพิ่มเติม / ไฟล์ STL</label>
+      <textarea id="qf-detail" placeholder="อธิบายสิ่งที่ต้องการเพิ่มเติม หรือแจ้ง Line เพื่อส่ง STL file..." style="min-height:90px"></textarea>
+    </div>
+    <button class="btn-primary" style="width:100%;margin-top:16px" onclick="submitQuoteForm()">ส่ง Custom Request →</button>
+  </div>
   <div id="q-special-result" style="display:none;background:rgba(232,133,90,.06);border:1px solid rgba(232,133,90,.2);padding:24px;text-align:center;margin-top:1px">
     <div style="font-family:var(--font-display);font-size:28px;color:var(--accent);letter-spacing:2px;margin-bottom:8px">งานวัสดุพิเศษ</div>
     <div style="font-size:13px;color:rgba(240,237,232,.6);margin-bottom:6px">ป้ายไฟ LED · งาน electronics · วัสดุ custom</div>
@@ -851,67 +881,7 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:40px;dis
 </section>
 
 <!-- CUSTOM ORDER -->
-<section class="custom-section" id="custom">
-  <div class="section-tag">Custom Order</div>
-  <div class="section-title">MAKE IT YOURS</div>
-  <div class="section-sub">ส่ง STL file หรืออธิบายไอเดีย — เราทำให้เป็นจริง</div>
-  <div class="custom-card">
-    <div class="custom-form">
-      <div class="form-group">
-        <label>ชื่อของคุณ</label>
-        <input type="text" placeholder="ชื่อ-นามสกุล">
-      </div>
-      <div class="form-group">
-        <label>Line / เบอร์โทร</label>
-        <input type="text" placeholder="สำหรับติดตาม order">
-      </div>
-      <div class="form-group">
-        <label>วัสดุที่ต้องการ</label>
-        <select>
-          <option>PLA+ (แนะนำสำหรับงานทั่วไป)</option>
-          <option>PETG (ทนความร้อน)</option>
-          <option>Marble PLA (ลายหินอ่อน)</option>
-          <option>Panchroma Silk (ผิวมันวาว)</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label>รายละเอียดงาน</label>
-        <textarea placeholder="อธิบายสิ่งที่ต้องการ หรือแนบ STL file ได้ผ่าน Line..."></textarea>
-      </div>
-      <button class="btn-primary" style="width:100%;margin-top:4px" onclick="showToast('ส่งคำขอแล้ว! เราจะติดต่อกลับภายใน 24 ชม.')">ส่ง Custom Request</button>
-    </div>
-    <div class="custom-info">
-      <div class="custom-feature">
-        <div class="feature-icon">📐</div>
-        <div>
-          <div class="feature-title">รับ STL ทุก format</div>
-          <div class="feature-desc">ส่งไฟล์มาได้เลย เราดูให้และประเมินราคาให้ฟรีภายใน 24 ชม.</div>
-        </div>
-      </div>
-      <div class="custom-feature">
-        <div class="feature-icon">🎨</div>
-        <div>
-          <div class="feature-title">เลือกสีและวัสดุได้อิสระ</div>
-          <div class="feature-desc">มีวัสดุหลายประเภท PLA+, PETG, Marble, Silk Panchroma ให้เลือก</div>
-        </div>
-      </div>
-      <div class="custom-feature">
-        <div class="feature-icon">⚡</div>
-        <div>
-          <div class="feature-title">Pricing โปร่งใส</div>
-          <div class="feature-desc">คำนวณจากต้นทุนจริง — filament + ค่าเครื่อง + ค่าไฟ + แรงงาน ไม่มีค่าซ่อน</div>
-        </div>
-      </div>
-      <div class="custom-feature">
-        <div class="feature-icon">📦</div>
-        <div>
-          <div class="feature-title">ผลิตและส่งเร็ว</div>
-          <div class="feature-desc">งานทั่วไป 3-5 วัน งานใหญ่หรือละเอียด 5-10 วัน ติดตามได้ทุกขั้นตอน</div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
+<div id="custom"></div>
 
 <!-- FOOTER -->
 <footer id="contact">
@@ -2009,25 +1979,26 @@ function calcQuote(){
 }
 
 function quoteCheckout(){
-  if(qMatV===-1){
-    const w=document.getElementById('q-w').value
-    const d=document.getElementById('q-d').value
-    const hh=document.getElementById('q-h').value
-    const msg='สวัสดีครับ อยากสอบถาม custom order งานวัสดุพิเศษ\n\nขนาด: '+w+'×'+d+'×'+hh+' cm\nจำนวนสี: '+qColV+' สี\nจำนวน: '+qQtyV+' ชิ้น\nวัสดุพิเศษ: (กรุณาระบุ เช่น LED, หลอดไฟ ฯลฯ)'
-    if(window.Tawk_API&&window.Tawk_API.maximize)window.Tawk_API.maximize()
-    showToast('เปิด chat แล้ว — กด Paste ข้อความได้เลย!')
-    navigator.clipboard&&navigator.clipboard.writeText(msg)
-    return
-  }
+  // Build prefill message
   const w=document.getElementById('q-w').value
   const d=document.getElementById('q-d').value
   const hh=document.getElementById('q-h').value
-  const unit=document.getElementById('q-unit').textContent
-  const total=document.getElementById('q-total').textContent
-  const msg='สวัสดีครับ อยากสอบถาม custom order\n\nขนาด: '+w+'×'+d+'×'+hh+' cm\nความซับซ้อน: '+Q_DETAIL[qDtV].label+'\nจำนวนสี: '+qColV+' สี\nจำนวน: '+qQtyV+' ชิ้น\nราคาประมาณ: '+unit+'/ชิ้น (รวม '+total+')'
-  if(window.Tawk_API&&window.Tawk_API.maximize)window.Tawk_API.maximize()
-  showToast('เปิด chat แล้ว — กด Paste ข้อความ order ได้เลย!')
-  navigator.clipboard&&navigator.clipboard.writeText(msg)
+  const manualH=parseFloat(document.getElementById('q-hrs')?.value)
+  const hrsNote=(!isNaN(manualH)&&manualH>0)?' · '+manualH+' ชม.':''
+  const unit=document.getElementById('q-unit')?.textContent||''
+  const total=document.getElementById('q-total')?.textContent||''
+
+  if(qMatV===-1){
+    const msg='สวัสดีครับ อยากสอบถาม custom order งานวัสดุพิเศษ\n\nขนาด: '+w+'×'+d+'×'+hh+' cm\nจำนวนสี: '+qColV+' สี\nจำนวน: '+qQtyV+' ชิ้น\nวัสดุพิเศษ: (กรุณาระบุ เช่น LED, หลอดไฟ ฯลฯ)'
+    document.getElementById('q-prefill-note').textContent=msg
+    document.getElementById('q-order-form').style.display='block'
+    document.getElementById('q-order-form').scrollIntoView({behavior:'smooth'})
+    return
+  }
+  const msg='ขนาด: '+w+'×'+d+'×'+hh+' cm'+hrsNote+'\nความซับซ้อน: วัสดุเพิ่ม: '+(qMatV>0?'฿'+qMatV:'ไม่มี')+'\nจำนวนสี: '+qColV+' สี\nจำนวน: '+qQtyV+' ชิ้น\nราคาประมาณ: '+unit+'/ชิ้น (รวม '+total+')'
+  document.getElementById('q-prefill-note').textContent=msg
+  document.getElementById('q-order-form').style.display='block'
+  document.getElementById('q-order-form').scrollIntoView({behavior:'smooth'})
 }
 
 calcQuote()
@@ -2365,6 +2336,20 @@ document.addEventListener('keydown', function(e) {
   }
 })
 
+
+function submitQuoteForm() {
+  const name = document.getElementById('qf-name').value.trim()
+  const contact = document.getElementById('qf-contact').value.trim()
+  if(!name || !contact) { showToast('⚠️ กรุณากรอกชื่อและ Line/เบอร์โทร'); return }
+  const detail = document.getElementById('qf-detail').value.trim()
+  const material = document.getElementById('qf-material').value
+  const note = document.getElementById('q-prefill-note').textContent
+  const msg = 'สวัสดีครับ อยากสั่ง custom order\n\n👤 '+name+'\n📞 '+contact+'\n🧵 วัสดุ: '+material+'\n\n📋 ราคาประมาณ:\n'+note+(detail?'\n\n📝 รายละเอียด: '+detail:'')
+  if(window.Tawk_API&&window.Tawk_API.maximize) window.Tawk_API.maximize()
+  navigator.clipboard&&navigator.clipboard.writeText(msg)
+  showToast('✅ ส่งคำขอแล้ว! เราจะติดต่อกลับภายใน 24 ชม.')
+  document.getElementById('q-order-form').style.display='none'
+}
 </script>
 <!--End of Tawk.to Script-->
 
