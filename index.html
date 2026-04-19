@@ -2371,10 +2371,81 @@ function admSwitchTab(tab) {
 }
 
 function admStockTab(tab) {
-  document.getElementById('adm-fil-stock').style.display = tab==='fil'?'block':'none'
-  document.getElementById('adm-prod-stock').style.display = tab==='prod'?'block':'none'
-  document.getElementById('stab-fil').classList.toggle('on', tab==='fil')
-  document.getElementById('stab-prod').classList.toggle('on', tab==='prod')
+  ['fil','prod','key'].forEach(t => {
+    const el = document.getElementById('adm-'+t+'-stock')
+    if(el) el.style.display = tab===t?'block':'none'
+    const btn = document.getElementById('stab-'+t)
+    if(btn) btn.classList.toggle('on', tab===t)
+  })
+  if(tab==='key') admBuildKeyStock()
+}
+
+// Key colors to track
+const KEY_COLORS = [
+  {name:'Ivory White',hex:'#FFFFFF',light:1},
+  {name:'Terracotta',hex:'#B15533'},
+  {name:'Charcoal',hex:'#2C2C2C'},
+  {name:'Sky Blue',hex:'#56B7E6',light:1},
+  {name:'Scarlet Red',hex:'#DE4343'},
+  {name:'Dark Green',hex:'#68724D'},
+  {name:'Lilac Purple',hex:'#AE96D4'},
+  {name:'Lemon Yellow',hex:'#F7D959',light:1},
+]
+const LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('')
+let keySelectedColor = null
+let keyStockData = JSON.parse(localStorage.getItem('fx_key_stock')||'{}')
+
+function admBuildKeyStock() {
+  // Build color selector
+  const sel = document.getElementById('key-color-selector')
+  if(!sel.children.length) {
+    KEY_COLORS.forEach((c,i) => {
+      const d = document.createElement('div')
+      d.style.cssText = 'width:22px;height:22px;border-radius:50%;cursor:pointer;border:2px solid transparent;flex-shrink:0;background:'+c.hex+(c.light?';box-shadow:inset 0 0 0 1px rgba(0,0,0,.15)':'')
+      d.title = c.name
+      d.onclick = () => selectKeyColor(i)
+      sel.appendChild(d)
+    })
+  }
+  if(!keySelectedColor) selectKeyColor(0)
+}
+
+function selectKeyColor(i) {
+  keySelectedColor = KEY_COLORS[i]
+  document.querySelectorAll('#key-color-selector div').forEach((d,j) => {
+    d.style.borderColor = j===i ? 'var(--accent)' : 'transparent'
+  })
+  document.getElementById('key-selected-color').textContent = '🎨 '+keySelectedColor.name
+  renderKeyGrid()
+}
+
+function renderKeyGrid() {
+  if(!keySelectedColor) return
+  const grid = document.getElementById('adm-key-grid')
+  const colorKey = keySelectedColor.name
+  grid.innerHTML = LETTERS.map(letter => {
+    const k = colorKey+'|'+letter
+    const qty = keyStockData[k]||0
+    const low = qty<=0?'color:#e55':'qty>=1&&qty<=2?color:#fa8':'color:rgba(240,237,232,.5)'
+    const style = qty<=0?'color:#e55':qty<=2?'color:#fa8':'color:rgba(240,237,232,.5)'
+    return `<div class="adm-stock-cell" style="justify-content:space-between">
+      <span style="font-family:var(--font-display);font-size:20px;color:var(--text)">${letter}</span>
+      <input class="adm-stock-input" type="number" min="0" step="1" value="${qty}" id="kst-${letter}" style="${qty<=0?'border-color:rgba(229,85,85,.4)':''}" oninput="keyStockData['${colorKey}|${letter}']=parseInt(this.value)||0">
+      <span class="adm-stock-unit">ชิ้น</span>
+    </div>`
+  }).join('')
+}
+
+function saveKeyStock() {
+  // save current grid values first
+  if(keySelectedColor) {
+    LETTERS.forEach(letter => {
+      const el = document.getElementById('kst-'+letter)
+      if(el) keyStockData[keySelectedColor.name+'|'+letter] = parseInt(el.value)||0
+    })
+  }
+  localStorage.setItem('fx_key_stock', JSON.stringify(keyStockData))
+  showToast('✅ บันทึก Keychain Stock แล้ว!')
 }
 
 let stockBuilt = false
@@ -2516,6 +2587,7 @@ function saveProdStock() {
       <div style="display:flex;gap:6px;margin-bottom:12px">
         <button class="adm-pill on" id="stab-fil" onclick="admStockTab('fil')">🎨 Filament</button>
         <button class="adm-pill" id="stab-prod" onclick="admStockTab('prod')">📦 สินค้า</button>
+        <button class="adm-pill" id="stab-key" onclick="admStockTab('key')">🔑 Keychain</button>
       </div>
       <div id="adm-fil-stock">
         <div class="adm-title" style="margin-bottom:10px">Bambu Matte · จำนวน Spool คงเหลือ</div>
@@ -2526,6 +2598,19 @@ function saveProdStock() {
         <div class="adm-title" style="margin-bottom:10px">สินค้า · จำนวนพร้อมส่ง</div>
         <div id="adm-prod-grid" style="display:grid;grid-template-columns:repeat(2,1fr);gap:2px;background:rgba(255,255,255,.06);border-radius:8px;overflow:hidden;max-height:380px;overflow-y:auto"></div>
         <button onclick="saveProdStock()" style="margin-top:10px;background:var(--accent);border:none;color:#fff;padding:12px;font-family:var(--font-body);font-size:13px;cursor:pointer;width:100%;letter-spacing:.5px">💾 บันทึก Product Stock</button>
+      </div>
+
+      <!-- Keychain Stock -->
+      <div id="adm-key-stock" style="display:none">
+        <div class="adm-title" style="margin-bottom:6px">Clicky Keychain · Stock ตัวอักษร × สี</div>
+        <div style="font-size:11px;color:var(--muted);font-family:var(--font-mono);margin-bottom:12px">กรอกจำนวนชิ้นที่ทำไว้แล้ว (ready-made)</div>
+        <div style="margin-bottom:10px;display:flex;align-items:center;gap:10px">
+          <span style="font-size:12px;color:var(--muted);font-family:var(--font-mono)">เลือกสี body:</span>
+          <div id="key-color-selector" style="display:flex;gap:5px;flex-wrap:wrap"></div>
+        </div>
+        <div style="font-size:11px;color:var(--accent);font-family:var(--font-mono);margin-bottom:8px" id="key-selected-color">— กดเลือกสีก่อน —</div>
+        <div id="adm-key-grid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:2px;background:rgba(255,255,255,.06);border-radius:8px;overflow:hidden"></div>
+        <button onclick="saveKeyStock()" style="margin-top:10px;background:var(--accent);border:none;color:#fff;padding:12px;font-family:var(--font-body);font-size:13px;cursor:pointer;width:100%;letter-spacing:.5px">💾 บันทึก Keychain Stock</button>
       </div>
     </div>
 
