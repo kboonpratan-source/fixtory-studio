@@ -411,6 +411,16 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:40px;dis
 .adm-rc.terra .adm-rv{color:var(--accent)}
 .adm-rc.blue .adm-rv{color:#56b7e6}
 .adm-rs{font-size:10px;color:rgba(240,237,232,.25);margin-top:4px;font-family:var(--font-mono)}
+
+.adm-tab{font-size:11px;padding:6px 16px;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;font-family:var(--font-body);letter-spacing:.5px;transition:all .2s}
+.adm-tab.on{background:rgba(232,133,90,.1);border-color:var(--accent);color:var(--accent)}
+.adm-stock-cell{background:#181818;padding:14px 16px;display:flex;align-items:center;gap:10px}
+.adm-stock-swatch{width:18px;height:18px;border-radius:50%;flex-shrink:0}
+.adm-stock-name{font-size:12px;color:rgba(240,237,232,.6);flex:1;font-family:var(--font-mono)}
+.adm-stock-input{background:#0a0a0a;border:1px solid var(--border);color:var(--text);padding:5px 8px;width:60px;font-size:13px;text-align:center;outline:none;font-family:inherit}
+.adm-stock-input:focus{border-color:var(--accent)}
+.adm-stock-unit{font-size:11px;color:var(--muted);font-family:var(--font-mono)}
+.adm-low{color:#e55!important}
 </style>
 </head>
 <body>
@@ -2350,6 +2360,96 @@ function submitQuoteForm() {
   showToast('✅ ส่งคำขอแล้ว! เราจะติดต่อกลับภายใน 24 ชม.')
   document.getElementById('q-order-form').style.display='none'
 }
+
+// ── STOCK MANAGEMENT ──────────────────────────────────────
+function admSwitchTab(tab) {
+  document.getElementById('adm-calc-panel').style.display = tab==='calc'?'block':'none'
+  document.getElementById('adm-stock-panel').style.display = tab==='stock'?'block':'none'
+  document.getElementById('tab-calc').classList.toggle('on', tab==='calc')
+  document.getElementById('tab-stock').classList.toggle('on', tab==='stock')
+  if(tab==='stock') admBuildStock()
+}
+
+function admStockTab(tab) {
+  document.getElementById('adm-fil-stock').style.display = tab==='fil'?'block':'none'
+  document.getElementById('adm-prod-stock').style.display = tab==='prod'?'block':'none'
+  document.getElementById('stab-fil').classList.toggle('on', tab==='fil')
+  document.getElementById('stab-prod').classList.toggle('on', tab==='prod')
+}
+
+let stockBuilt = false
+function admBuildStock() {
+  if(stockBuilt) { admRefreshStock(); return }
+  stockBuilt = true
+
+  // Filament grid
+  const filStock = JSON.parse(localStorage.getItem('fx_fil_stock')||'{}')
+  const filGrid = document.getElementById('adm-fil-grid')
+  const bambu = colorPalette.filter(c=>c.brand==='Bambu Matte')
+  filGrid.innerHTML = bambu.map((c,i) => {
+    const qty = filStock[c.name]||0
+    const low = qty<=1 ? ' adm-low' : ''
+    const light = parseInt(c.hex.slice(1,3),16)>200&&parseInt(c.hex.slice(3,5),16)>200
+    return `<div class="adm-stock-cell">
+      <div class="adm-stock-swatch" style="background:${c.hex};${light?'box-shadow:inset 0 0 0 1px rgba(0,0,0,.2)':''}"></div>
+      <span class="adm-stock-name${low}">${c.name}</span>
+      <input class="adm-stock-input" type="number" min="0" step="0.5" value="${qty}" id="fst-${i}" onchange="admMarkDirty('fil')">
+      <span class="adm-stock-unit">spool</span>
+    </div>`
+  }).join('')
+
+  // Product grid
+  const prodStock = JSON.parse(localStorage.getItem('fx_prod_stock')||'{}')
+  const prodGrid = document.getElementById('adm-prod-grid')
+  prodGrid.innerHTML = products.map((p,i) => {
+    const qty = prodStock[p.id]||0
+    const low = qty<=2 ? ' adm-low' : ''
+    return `<div class="adm-stock-cell">
+      <span class="adm-stock-name${low}" style="font-size:13px">${p.name}</span>
+      <input class="adm-stock-input" type="number" min="0" step="1" value="${qty}" id="pst-${p.id}" onchange="admMarkDirty('prod')">
+      <span class="adm-stock-unit">ชิ้น</span>
+    </div>`
+  }).join('')
+}
+
+function admRefreshStock() {
+  const filStock = JSON.parse(localStorage.getItem('fx_fil_stock')||'{}')
+  const bambu = colorPalette.filter(c=>c.brand==='Bambu Matte')
+  bambu.forEach((c,i) => {
+    const el = document.getElementById('fst-'+i)
+    if(el) el.value = filStock[c.name]||0
+  })
+  const prodStock = JSON.parse(localStorage.getItem('fx_prod_stock')||'{}')
+  products.forEach(p => {
+    const el = document.getElementById('pst-'+p.id)
+    if(el) el.value = prodStock[p.id]||0
+  })
+}
+
+function admMarkDirty(type) { /* auto-save on change */ }
+
+function saveFilStock() {
+  const bambu = colorPalette.filter(c=>c.brand==='Bambu Matte')
+  const data = {}
+  bambu.forEach((c,i) => {
+    const el = document.getElementById('fst-'+i)
+    if(el) data[c.name] = parseFloat(el.value)||0
+  })
+  localStorage.setItem('fx_fil_stock', JSON.stringify(data))
+  showToast('✅ บันทึก Filament Stock แล้ว!')
+  admBuildStock()
+}
+
+function saveProdStock() {
+  const data = {}
+  products.forEach(p => {
+    const el = document.getElementById('pst-'+p.id)
+    if(el) data[p.id] = parseInt(el.value)||0
+  })
+  localStorage.setItem('fx_prod_stock', JSON.stringify(data))
+  showToast('✅ บันทึก Product Stock แล้ว!')
+}
+
 </script>
 <!--End of Tawk.to Script-->
 
@@ -2368,9 +2468,13 @@ function submitQuoteForm() {
 <div class="admin-overlay" id="admin-overlay">
   <div class="admin-box">
     <div class="admin-header">
-      <div class="admin-title">PRICE CALCULATOR · ADMIN</div>
+      <div style="display:flex;gap:4px">
+        <button class="adm-tab on" id="tab-calc" onclick="admSwitchTab('calc')">Calculator</button>
+        <button class="adm-tab" id="tab-stock" onclick="admSwitchTab('stock')">Stock</button>
+      </div>
       <button class="admin-close" onclick="closeAdmin()">✕</button>
     </div>
+    <div id="adm-calc-panel">
     <div class="adm-grid">
       <div class="adm-panel">
         <div class="adm-title">Print Data</div>
@@ -2405,6 +2509,26 @@ function submitQuoteForm() {
       <div class="adm-rc blue"><div class="adm-rl">Custom +30%</div><div class="adm-rv" id="adm-custom">฿0</div><div class="adm-rs">บวก premium</div></div>
       <div class="adm-rc"><div class="adm-rl">กำไรสุทธิ</div><div class="adm-rv" id="adm-profit">฿0</div><div class="adm-rs" id="adm-psub">หลังหักช่องทาง</div></div>
     </div>
+    </div><!-- end adm-calc-panel -->
+
+    <!-- STOCK PANEL -->
+    <div id="adm-stock-panel" style="display:none">
+      <div style="display:flex;gap:6px;margin-bottom:12px">
+        <button class="adm-pill on" id="stab-fil" onclick="admStockTab('fil')">🎨 Filament</button>
+        <button class="adm-pill" id="stab-prod" onclick="admStockTab('prod')">📦 สินค้า</button>
+      </div>
+      <div id="adm-fil-stock">
+        <div class="adm-title" style="margin-bottom:10px">Bambu Matte · จำนวน Spool คงเหลือ</div>
+        <div id="adm-fil-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:2px;background:rgba(255,255,255,.06);border-radius:8px;overflow:hidden;max-height:380px;overflow-y:auto"></div>
+        <button onclick="saveFilStock()" style="margin-top:10px;background:var(--accent);border:none;color:#fff;padding:12px;font-family:var(--font-body);font-size:13px;cursor:pointer;width:100%;letter-spacing:.5px">💾 บันทึก Filament Stock</button>
+      </div>
+      <div id="adm-prod-stock" style="display:none">
+        <div class="adm-title" style="margin-bottom:10px">สินค้า · จำนวนพร้อมส่ง</div>
+        <div id="adm-prod-grid" style="display:grid;grid-template-columns:repeat(2,1fr);gap:2px;background:rgba(255,255,255,.06);border-radius:8px;overflow:hidden;max-height:380px;overflow-y:auto"></div>
+        <button onclick="saveProdStock()" style="margin-top:10px;background:var(--accent);border:none;color:#fff;padding:12px;font-family:var(--font-body);font-size:13px;cursor:pointer;width:100%;letter-spacing:.5px">💾 บันทึก Product Stock</button>
+      </div>
+    </div>
+
   </div>
 </div>
 
