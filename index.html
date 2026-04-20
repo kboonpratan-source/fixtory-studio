@@ -2482,7 +2482,7 @@ function renderKeyGrid(){
   const grid=document.getElementById('adm-key-grid')
   if(!grid)return
   const colorKey=activeCombo.name
-  const header='<div style="display:grid;grid-template-columns:36px 1fr 64px 64px 52px;gap:6px;background:#0a0a0a;padding:7px 12px;font-size:9px;letter-spacing:1.5px;color:var(--muted);text-transform:uppercase;font-family:var(--font-mono)"><div></div><div></div><div style='text-align:center'>เริ่มต้น</div><div style='text-align:center'>ขายไป</div><div style='text-align:center'>คงเหลือ</div></div>'
+  const header=`<div style="display:grid;grid-template-columns:36px 1fr 64px 64px 52px;gap:6px;background:#0a0a0a;padding:7px 12px;font-size:9px;letter-spacing:1.5px;color:var(--muted);text-transform:uppercase;font-family:var(--font-mono)"><div></div><div></div><div style="text-align:center">เริ่มต้น</div><div style="text-align:center">ขายไป</div><div style="text-align:center">คงเหลือ</div></div>`
   const rows=LETTERS.map((letter,i)=>{
     const k=colorKey+'|'+letter
     const d=keyStockData[k]||{start:0,sold:0}
