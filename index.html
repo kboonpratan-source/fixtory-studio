@@ -2539,7 +2539,7 @@ function renderRailStock(){
   const grid = document.getElementById('adm-rail-grid')
   if(!grid) return
   // Header row
-  const header = '<div style="display:grid;grid-template-columns:20px 1fr 72px 72px 60px 30px;gap:8px;background:#0a0a0a;padding:8px 14px;font-size:9px;letter-spacing:1.5px;color:var(--muted);text-transform:uppercase;font-family:var(--font-mono)"><div></div><div>สีราง</div><div style='text-align:center'>เริ่มต้น</div><div style='text-align:center'>ขายไป</div><div style='text-align:center'>คงเหลือ</div><div></div></div>'
+  const header = `<div style="display:grid;grid-template-columns:20px 1fr 72px 72px 60px 30px;gap:8px;background:#0a0a0a;padding:8px 14px;font-size:9px;letter-spacing:1.5px;color:var(--muted);text-transform:uppercase;font-family:var(--font-mono)"><div></div><div>สีราง</div><div style="text-align:center">เริ่มต้น</div><div style="text-align:center">ขายไป</div><div style="text-align:center">คงเหลือ</div><div></div></div>`
   const rows = RAIL_COLORS.map((c,i) => {
     const d = railStockData[c.name] || {start:0,sold:0}
     const remain = Math.max(0, d.start - d.sold)
