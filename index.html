@@ -421,6 +421,13 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:40px;dis
 .adm-stock-input:focus{border-color:var(--accent)}
 .adm-stock-unit{font-size:11px;color:var(--muted);font-family:var(--font-mono)}
 .adm-low{color:#e55!important}
+
+.rail-row{display:grid;grid-template-columns:auto 1fr repeat(3,70px) 70px;align-items:center;gap:8px;background:#181818;padding:10px 14px;font-family:var(--font-mono);font-size:12px}
+.rail-row:nth-child(even){background:#141414}
+.rail-header{background:#0a0a0a!important;font-size:9px;letter-spacing:1.5px;color:var(--muted);text-transform:uppercase}
+.rail-input{background:#0a0a0a;border:1px solid var(--border);color:var(--text);padding:5px 8px;width:60px;font-size:12px;text-align:center;outline:none;font-family:inherit}
+.rail-input:focus{border-color:var(--accent)}
+.rail-remain{font-family:var(--font-display);font-size:18px}
 </style>
 </head>
 <body>
@@ -2401,6 +2408,7 @@ function admBuildKeyStock() {
   buildSwatchRow('cb-letter-swatches',ALL_KEY_COLORS,c=>{cbLetter=c;updateCbPreview();document.getElementById('cb-letter-label').textContent=c.name})
   buildSwatchRow('cb-rail-swatches',ALL_KEY_COLORS,c=>{cbRail=c;updateCbPreview();document.getElementById('cb-rail-label').textContent=c.name})
   renderCombos()
+  renderRailStock()
 }
 
 function buildSwatchRow(id,colors,onSelect){
@@ -2485,7 +2493,68 @@ function renderKeyGrid(){
   }).join('')
 }
 
-function renderRailStock(){}
+// Rail colors
+const RAIL_COLORS = [
+  {name:'White',hex:'#FFFFFF',light:1},
+  {name:'Black',hex:'#2C2C2C'},
+  {name:'Terracotta',hex:'#C4714A'},
+  {name:'Pink',hex:'#E8AFCF',light:1},
+  {name:'Blue',hex:'#0078BF'},
+  {name:'Teal',hex:'#61C680',light:1},
+  {name:'Purple',hex:'#AE96D4'},
+  {name:'Yellow',hex:'#F7D959',light:1},
+]
+let railStockData = JSON.parse(localStorage.getItem('fx_rail_stock2') || 'null') || {}
+
+// Init rail defaults
+if(!Object.keys(railStockData).length) {
+  RAIL_COLORS.forEach(c => { railStockData[c.name] = {start:0, sold:0} })
+}
+
+function renderRailStock(){
+  const grid = document.getElementById('adm-rail-grid')
+  if(!grid) return
+  grid.innerHTML = `
+    <div class="rail-row rail-header" style="grid-template-columns:auto 1fr repeat(3,70px) 70px">
+      <div></div><div>สีราง</div><div>เริ่มต้น</div><div>ขายไป</div><div>คงเหลือ</div><div></div>
+    </div>` +
+  RAIL_COLORS.map((c,i) => {
+    const d = railStockData[c.name] || {start:0,sold:0}
+    const remain = Math.max(0, d.start - d.sold)
+    const remainColor = remain<=0?'color:#e55':remain<=5?'color:#fa8':'color:var(--text)'
+    const isLight = c.light
+    return `<div class="rail-row" style="grid-template-columns:auto 1fr repeat(3,70px) 70px">
+      <div style="width:16px;height:16px;border-radius:3px;background:${c.hex};${isLight?'box-shadow:inset 0 0 0 1px rgba(0,0,0,.2)':''}"></div>
+      <div style="color:var(--text)">${c.name}</div>
+      <input class="rail-input" type="number" min="0" value="${d.start}" id="rail-start-${i}" oninput="updateRailRemain(${i})">
+      <input class="rail-input" type="number" min="0" value="${d.sold}" id="rail-sold-${i}" oninput="updateRailRemain(${i})">
+      <div class="rail-remain" id="rail-remain-${i}" style="${remainColor}">${remain}</div>
+      <div style="font-size:10px;color:var(--muted)">เส้น</div>
+    </div>`
+  }).join('')
+}
+
+function updateRailRemain(i) {
+  const start = parseInt(document.getElementById('rail-start-'+i)?.value)||0
+  const sold = parseInt(document.getElementById('rail-sold-'+i)?.value)||0
+  const remain = Math.max(0, start-sold)
+  const el = document.getElementById('rail-remain-'+i)
+  if(el) {
+    el.textContent = remain
+    el.style.color = remain<=0?'#e55':remain<=5?'#fa8':'var(--text)'
+  }
+  railStockData[RAIL_COLORS[i].name] = {start, sold}
+}
+
+function saveRailStock() {
+  RAIL_COLORS.forEach((c,i) => {
+    const start = parseInt(document.getElementById('rail-start-'+i)?.value)||0
+    const sold = parseInt(document.getElementById('rail-sold-'+i)?.value)||0
+    railStockData[c.name] = {start, sold}
+  })
+  localStorage.setItem('fx_rail_stock2', JSON.stringify(railStockData))
+  showToast('✅ บันทึก Rail Stock แล้ว!')
+}
 
 function saveKeyStock(){
   if(activeCombo){
@@ -2706,7 +2775,17 @@ function saveProdStock() {
           </div>
         </div>
 
-        <button onclick="saveKeyStock()" style="background:var(--accent);border:none;color:#fff;padding:12px;font-family:var(--font-body);font-size:13px;cursor:pointer;width:100%;letter-spacing:.5px">💾 บันทึก Stock ทั้งหมด</button>
+        <!-- Rail Stock — แยกอิสระ -->
+        <div style="background:rgba(255,255,255,.06);border-radius:8px;overflow:hidden;margin-bottom:2px">
+          <div style="background:#181818;padding:16px">
+            <div class="adm-title" style="margin-bottom:4px">ราง (Rail) · Stock แยกอิสระ</div>
+            <div style="font-size:10px;color:var(--muted);font-family:var(--font-mono);margin-bottom:12px">ราง 1 สีใช้ได้กับหลาย combo · นับแยกจาก keychain</div>
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:2px;background:rgba(255,255,255,.06);border-radius:6px;overflow:hidden;margin-bottom:10px" id="adm-rail-grid"></div>
+            <button onclick="saveRailStock()" style="background:#333;border:none;color:#fff;padding:10px;font-family:var(--font-body);font-size:12px;cursor:pointer;width:100%;letter-spacing:.5px">💾 บันทึก Rail Stock</button>
+          </div>
+        </div>
+
+        <button onclick="saveKeyStock()" style="background:var(--accent);border:none;color:#fff;padding:12px;font-family:var(--font-body);font-size:13px;cursor:pointer;width:100%;letter-spacing:.5px">💾 บันทึก Keychain Stock</button>
       </div>
     </div>
 
