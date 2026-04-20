@@ -2516,8 +2516,8 @@ function updateKeyRemain(colorKey, letter){
   keyStockData[colorKey+'|'+letter].sold=sold
 }
 
-// Rail colors
-const RAIL_COLORS = [
+// Rail colors — dynamic, user can add/remove
+let RAIL_COLORS = JSON.parse(localStorage.getItem('fx_rail_colors') || 'null') || [
   {name:'White',hex:'#FFFFFF',light:1},
   {name:'Black',hex:'#2C2C2C'},
   {name:'Terracotta',hex:'#C4714A'},
@@ -2529,31 +2529,60 @@ const RAIL_COLORS = [
 ]
 let railStockData = JSON.parse(localStorage.getItem('fx_rail_stock2') || 'null') || {}
 
-// Init rail defaults
-if(!Object.keys(railStockData).length) {
-  RAIL_COLORS.forEach(c => { railStockData[c.name] = {start:0, sold:0} })
+function saveRailColors() {
+  localStorage.setItem('fx_rail_colors', JSON.stringify(RAIL_COLORS))
+}
+
+function addRailColor() {
+  // Show color picker from ALL_KEY_COLORS
+  const sel = document.getElementById('rail-add-select')
+  const name = sel ? sel.value : null
+  if(!name) return
+  const color = ALL_KEY_COLORS.find(c => c.name === name)
+  if(!color) return
+  if(RAIL_COLORS.find(c => c.name === name)) { showToast('มีสีนี้อยู่แล้ว'); return }
+  RAIL_COLORS.push({...color})
+  saveRailColors()
+  renderRailStock()
+  showToast('✅ เพิ่มสีราง '+name+' แล้ว!')
+}
+
+function removeRailColor(i) {
+  if(!confirm('ลบสีราง "'+RAIL_COLORS[i].name+'" ?')) return
+  RAIL_COLORS.splice(i, 1)
+  saveRailColors()
+  renderRailStock()
+  showToast('ลบสีรางแล้ว')
 }
 
 function renderRailStock(){
   const grid = document.getElementById('adm-rail-grid')
   if(!grid) return
-  // Header row
-  const header = `<div style="display:grid;grid-template-columns:20px 1fr 90px 90px 70px 36px;gap:8px;background:#0a0a0a;padding:8px 14px;font-size:9px;letter-spacing:1.5px;color:var(--muted);text-transform:uppercase;font-family:var(--font-mono)"><div></div><div>สีราง</div><div style="text-align:center">เริ่มต้น</div><div style="text-align:center">ขายไป</div><div style="text-align:center">คงเหลือ</div><div></div></div>`
+  const header = `<div style="display:grid;grid-template-columns:20px 1fr 90px 90px 70px 32px;gap:8px;background:#0a0a0a;padding:8px 14px;font-size:9px;letter-spacing:1.5px;color:var(--muted);text-transform:uppercase;font-family:var(--font-mono)"><div></div><div>สีราง</div><div style="text-align:center">เริ่มต้น</div><div style="text-align:center">ขายไป</div><div style="text-align:center">คงเหลือ</div><div></div></div>`
   const rows = RAIL_COLORS.map((c,i) => {
     const d = railStockData[c.name] || {start:0,sold:0}
     const remain = Math.max(0, d.start - d.sold)
     const remainColor = remain<=0?'#e55':remain<=5?'#fa8':'var(--text)'
-    const isLight = c.light
-    return `<div style="display:grid;grid-template-columns:20px 1fr 90px 90px 70px 36px;gap:8px;align-items:center;background:${i%2===0?'#181818':'#141414'};padding:8px 14px">
-      <div style="width:16px;height:16px;border-radius:3px;flex-shrink:0;background:${c.hex};${isLight?'box-shadow:inset 0 0 0 1px rgba(0,0,0,.2)':''}"></div>
+    return `<div style="display:grid;grid-template-columns:20px 1fr 90px 90px 70px 32px;gap:8px;align-items:center;background:${i%2===0?'#181818':'#141414'};padding:8px 14px">
+      <div style="width:16px;height:16px;border-radius:3px;flex-shrink:0;background:${c.hex};${c.light?'box-shadow:inset 0 0 0 1px rgba(0,0,0,.2)':''}"></div>
       <div style="font-size:12px;color:var(--text);font-family:var(--font-mono)">${c.name}</div>
-      <input class="rail-input" type="number" min="0" value="${d.start}" id="rail-start-${i}" oninput="updateRailRemain(${i})" style="width:100%">
-      <input class="rail-input" type="number" min="0" value="${d.sold}" id="rail-sold-${i}" oninput="updateRailRemain(${i})" style="width:100%">
+      <input class="rail-input" type="number" min="0" value="${d.start}" id="rail-start-${i}" oninput="updateRailRemain(${i})" style="width:100%;text-align:center">
+      <input class="rail-input" type="number" min="0" value="${d.sold}" id="rail-sold-${i}" oninput="updateRailRemain(${i})" style="width:100%;text-align:center">
       <div style="font-family:var(--font-display);font-size:20px;text-align:center;color:${remainColor}" id="rail-remain-${i}">${remain}</div>
-      <div style="font-size:10px;color:var(--muted);font-family:var(--font-mono)">เส้น</div>
+      <button onclick="removeRailColor(${i})" style="background:none;border:none;color:rgba(229,85,85,.5);cursor:pointer;font-size:18px;line-height:1;padding:0">×</button>
     </div>`
   }).join('')
-  grid.innerHTML = header + rows
+
+  // Add color row
+  const addRow = `<div style="display:flex;gap:8px;align-items:center;background:#0d0d0d;padding:10px 14px;border-top:1px solid rgba(255,255,255,.06)">
+    <span style="font-size:11px;color:var(--muted);font-family:var(--font-mono);flex-shrink:0">+ เพิ่มสีราง:</span>
+    <select id="rail-add-select" style="flex:1;background:#181818;border:1px solid var(--border);color:var(--text);padding:6px 8px;font-family:var(--font-body);font-size:12px;outline:none">
+      ${ALL_KEY_COLORS.map(c=>`<option value="${c.name}">${c.name}</option>`).join('')}
+    </select>
+    <button onclick="addRailColor()" style="background:var(--accent);border:none;color:#fff;padding:6px 14px;font-family:var(--font-body);font-size:12px;cursor:pointer;flex-shrink:0">เพิ่ม</button>
+  </div>`
+
+  grid.innerHTML = header + rows + addRow
 }
 
 function updateRailRemain(i) {
