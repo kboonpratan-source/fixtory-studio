@@ -375,7 +375,7 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:40px;dis
 /* ─── ADMIN CALCULATOR ────────────────── */
 .admin-overlay{position:fixed;inset:0;background:rgba(0,0,0,.95);z-index:500;display:none;align-items:center;justify-content:center;flex-direction:column;gap:16px}
 .admin-overlay.open{display:flex}
-.admin-box{background:#111;border:1px solid rgba(232,133,90,.3);padding:32px;width:100%;max-width:680px;max-height:92vh;overflow-y:auto}
+.admin-box{background:#111;border:1px solid rgba(232,133,90,.3);padding:32px;width:100%;max-width:800px;max-height:94vh;overflow-y:auto}
 .admin-pw-box{background:#111;border:1px solid rgba(255,255,255,.1);padding:32px;text-align:center;width:320px}
 .admin-pw-title{font-family:var(--font-display);font-size:24px;letter-spacing:3px;color:var(--accent);margin-bottom:6px}
 .admin-pw-sub{font-size:11px;color:var(--muted);font-family:var(--font-mono);margin-bottom:20px}
@@ -2482,21 +2482,20 @@ function renderKeyGrid(){
   const grid=document.getElementById('adm-key-grid')
   if(!grid)return
   const colorKey=activeCombo.name
-  const header=`<div style="display:grid;grid-template-columns:36px 1fr 64px 64px 52px;gap:6px;background:#0a0a0a;padding:7px 12px;font-size:9px;letter-spacing:1.5px;color:var(--muted);text-transform:uppercase;font-family:var(--font-mono)"><div></div><div></div><div style="text-align:center">เริ่มต้น</div><div style="text-align:center">ขายไป</div><div style="text-align:center">คงเหลือ</div></div>`
+  const header=`<div style="display:grid;grid-template-columns:44px 1fr 80px 80px 70px;gap:8px;background:#0a0a0a;padding:8px 16px;font-size:9px;letter-spacing:1.5px;color:var(--muted);text-transform:uppercase;font-family:var(--font-mono)"><div></div><div></div><div style="text-align:center">เริ่มต้น</div><div style="text-align:center">ขายไป</div><div style="text-align:center">คงเหลือ</div></div>`
   const rows=LETTERS.map((letter,i)=>{
     const k=colorKey+'|'+letter
     const d=keyStockData[k]||{start:0,sold:0}
-    // support old format (number) and new format (object)
     const start=typeof d==='object'?d.start:d
     const sold=typeof d==='object'?d.sold:0
     const remain=Math.max(0,start-sold)
     const remainColor=remain<=0?'#e55':remain<=2?'#fa8':'var(--text)'
-    return `<div style="display:grid;grid-template-columns:36px 1fr 64px 64px 52px;gap:6px;align-items:center;background:${i%2===0?'#181818':'#141414'};padding:6px 12px">
-      <span style="font-family:var(--font-display);font-size:22px;color:var(--text)">${letter}</span>
+    return `<div style="display:grid;grid-template-columns:44px 1fr 80px 80px 70px;gap:8px;align-items:center;background:${i%2===0?'#181818':'#141414'};padding:8px 16px">
+      <span style="font-family:var(--font-display);font-size:24px;color:var(--text)">${letter}</span>
       <div></div>
       <input class="adm-stock-input" type="number" min="0" value="${start}" id="kst-start-${letter}" style="width:100%;text-align:center" oninput="updateKeyRemain('${colorKey}','${letter}')">
       <input class="adm-stock-input" type="number" min="0" value="${sold}" id="kst-sold-${letter}" style="width:100%;text-align:center" oninput="updateKeyRemain('${colorKey}','${letter}')">
-      <div style="font-family:var(--font-display);font-size:18px;text-align:center;color:${remainColor}" id="kst-remain-${letter}">${remain}</div>
+      <div style="font-family:var(--font-display);font-size:20px;text-align:center;color:${remainColor}" id="kst-remain-${letter}">${remain}</div>
     </div>`
   }).join('')
   grid.innerHTML=header+rows
@@ -2539,13 +2538,13 @@ function renderRailStock(){
   const grid = document.getElementById('adm-rail-grid')
   if(!grid) return
   // Header row
-  const header = `<div style="display:grid;grid-template-columns:20px 1fr 72px 72px 60px 30px;gap:8px;background:#0a0a0a;padding:8px 14px;font-size:9px;letter-spacing:1.5px;color:var(--muted);text-transform:uppercase;font-family:var(--font-mono)"><div></div><div>สีราง</div><div style="text-align:center">เริ่มต้น</div><div style="text-align:center">ขายไป</div><div style="text-align:center">คงเหลือ</div><div></div></div>`
+  const header = `<div style="display:grid;grid-template-columns:20px 1fr 90px 90px 70px 36px;gap:8px;background:#0a0a0a;padding:8px 14px;font-size:9px;letter-spacing:1.5px;color:var(--muted);text-transform:uppercase;font-family:var(--font-mono)"><div></div><div>สีราง</div><div style="text-align:center">เริ่มต้น</div><div style="text-align:center">ขายไป</div><div style="text-align:center">คงเหลือ</div><div></div></div>`
   const rows = RAIL_COLORS.map((c,i) => {
     const d = railStockData[c.name] || {start:0,sold:0}
     const remain = Math.max(0, d.start - d.sold)
     const remainColor = remain<=0?'#e55':remain<=5?'#fa8':'var(--text)'
     const isLight = c.light
-    return `<div style="display:grid;grid-template-columns:20px 1fr 72px 72px 60px 30px;gap:8px;align-items:center;background:${i%2===0?'#181818':'#141414'};padding:8px 14px">
+    return `<div style="display:grid;grid-template-columns:20px 1fr 90px 90px 70px 36px;gap:8px;align-items:center;background:${i%2===0?'#181818':'#141414'};padding:8px 14px">
       <div style="width:16px;height:16px;border-radius:3px;flex-shrink:0;background:${c.hex};${isLight?'box-shadow:inset 0 0 0 1px rgba(0,0,0,.2)':''}"></div>
       <div style="font-size:12px;color:var(--text);font-family:var(--font-mono)">${c.name}</div>
       <input class="rail-input" type="number" min="0" value="${d.start}" id="rail-start-${i}" oninput="updateRailRemain(${i})" style="width:100%">
@@ -2795,7 +2794,7 @@ function saveProdStock() {
           <div style="background:#181818;padding:14px">
             <div class="adm-title" style="margin-bottom:4px" id="cb-active-combo-title">เลือก combo ด้านบน</div>
             <div style="font-size:10px;color:var(--muted);font-family:var(--font-mono);margin-bottom:10px">กรอกจำนวน ready-made แต่ละตัวอักษร</div>
-            <div id="adm-key-grid" style="display:grid;grid-template-columns:repeat(6,1fr);gap:2px;background:rgba(255,255,255,.06);border-radius:6px;overflow:hidden"></div>
+            <div id="adm-key-grid" style="background:rgba(255,255,255,.06);border-radius:6px;overflow:hidden"></div>
           </div>
         </div>
 
@@ -2804,7 +2803,7 @@ function saveProdStock() {
           <div style="background:#181818;padding:16px">
             <div class="adm-title" style="margin-bottom:4px">ราง (Rail) · Stock แยกอิสระ</div>
             <div style="font-size:10px;color:var(--muted);font-family:var(--font-mono);margin-bottom:12px">ราง 1 สีใช้ได้กับหลาย combo · นับแยกจาก keychain</div>
-            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:2px;background:rgba(255,255,255,.06);border-radius:6px;overflow:hidden;margin-bottom:10px" id="adm-rail-grid"></div>
+            <div id="adm-rail-grid" style="background:rgba(255,255,255,.06);border-radius:6px;overflow:hidden;margin-bottom:10px"></div>
             <button onclick="saveRailStock()" style="background:#333;border:none;color:#fff;padding:10px;font-family:var(--font-body);font-size:12px;cursor:pointer;width:100%;letter-spacing:.5px">💾 บันทึก Rail Stock</button>
           </div>
         </div>
