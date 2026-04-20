@@ -2380,73 +2380,124 @@ function admStockTab(tab) {
   if(tab==='key') admBuildKeyStock()
 }
 
-// Key colors to track
-const KEY_COLORS = [
-  {name:'Ivory White',hex:'#FFFFFF',light:1},
-  {name:'Terracotta',hex:'#B15533'},
-  {name:'Charcoal',hex:'#2C2C2C'},
-  {name:'Sky Blue',hex:'#56B7E6',light:1},
-  {name:'Scarlet Red',hex:'#DE4343'},
-  {name:'Dark Green',hex:'#68724D'},
-  {name:'Lilac Purple',hex:'#AE96D4'},
-  {name:'Lemon Yellow',hex:'#F7D959',light:1},
+// Keychain color groups
+const ALL_KEY_COLORS = [
+  {name:'White',hex:'#FFFFFF',light:1},{name:'Ivory',hex:'#F5F0E8',light:1},
+  {name:'Yellow',hex:'#F7D959',light:1},{name:'Pink',hex:'#E8AFCF',light:1},
+  {name:'Mint',hex:'#A3D8E1',light:1},{name:'Sky Blue',hex:'#56B7E6',light:1},
+  {name:'Lilac',hex:'#C3B1E1'},{name:'Purple',hex:'#AE96D4'},
+  {name:'Orange',hex:'#F99963',light:1},{name:'Terracotta',hex:'#C4714A'},
+  {name:'Scarlet',hex:'#DE4343'},{name:'Mocha',hex:'#7D6556'},
+  {name:'Dark Green',hex:'#68724D'},{name:'Marine Blue',hex:'#0078BF'},
+  {name:'Dark Blue',hex:'#042F56'},{name:'Charcoal',hex:'#2C2C2C'},
 ]
 const LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('')
-let keySelectedColor = null
 let keyStockData = JSON.parse(localStorage.getItem('fx_key_stock')||'{}')
+let keyCombos = JSON.parse(localStorage.getItem('fx_key_combos')||'[]')
+let cbBody=null,cbLetter=null,cbRail=null,activeCombo=null
 
 function admBuildKeyStock() {
-  // Build color selector
-  const sel = document.getElementById('key-color-selector')
-  if(!sel.children.length) {
-    KEY_COLORS.forEach((c,i) => {
-      const d = document.createElement('div')
-      d.style.cssText = 'width:22px;height:22px;border-radius:50%;cursor:pointer;border:2px solid transparent;flex-shrink:0;background:'+c.hex+(c.light?';box-shadow:inset 0 0 0 1px rgba(0,0,0,.15)':'')
-      d.title = c.name
-      d.onclick = () => selectKeyColor(i)
-      sel.appendChild(d)
-    })
-  }
-  if(!keySelectedColor) selectKeyColor(0)
+  buildSwatchRow('cb-body-swatches',ALL_KEY_COLORS,c=>{cbBody=c;updateCbPreview();document.getElementById('cb-body-label').textContent=c.name})
+  buildSwatchRow('cb-letter-swatches',ALL_KEY_COLORS,c=>{cbLetter=c;updateCbPreview();document.getElementById('cb-letter-label').textContent=c.name})
+  buildSwatchRow('cb-rail-swatches',ALL_KEY_COLORS,c=>{cbRail=c;updateCbPreview();document.getElementById('cb-rail-label').textContent=c.name})
+  renderCombos()
 }
 
-function selectKeyColor(i) {
-  keySelectedColor = KEY_COLORS[i]
-  document.querySelectorAll('#key-color-selector div').forEach((d,j) => {
-    d.style.borderColor = j===i ? 'var(--accent)' : 'transparent'
+function buildSwatchRow(id,colors,onSelect){
+  const el=document.getElementById(id)
+  if(!el||el.children.length)return
+  colors.forEach((c,i)=>{
+    const d=document.createElement('div')
+    d.style.cssText='width:20px;height:20px;border-radius:50%;cursor:pointer;border:2px solid transparent;flex-shrink:0;background:'+c.hex+(c.light?';box-shadow:inset 0 0 0 1px rgba(0,0,0,.2)':'')
+    d.title=c.name
+    d.onclick=()=>{el.querySelectorAll('div').forEach(x=>x.style.borderColor='transparent');d.style.borderColor='var(--accent)';onSelect(c)}
+    el.appendChild(d)
   })
-  document.getElementById('key-selected-color').textContent = '🎨 '+keySelectedColor.name
+}
+
+function updateCbPreview(){
+  if(!cbBody)return
+  const p=document.getElementById('cb-preview')
+  const s=document.getElementById('cb-preview-swatch')
+  const n=document.getElementById('cb-preview-name')
+  if(p)p.style.display='block'
+  if(s){s.style.background=cbBody.hex;s.style.borderColor=cbRail?cbRail.hex:'transparent';s.style.color=cbLetter?cbLetter.hex:'rgba(240,237,232,.5)';s.textContent='A'}
+  if(n)n.textContent=(cbBody?cbBody.name:'?')+' + '+(cbLetter?cbLetter.name:'?')+' + Rail: '+(cbRail?cbRail.name:'?')
+}
+
+function saveCbCombo(){
+  if(!cbBody||!cbLetter||!cbRail){showToast('⚠️ เลือกสีให้ครบ 3 อย่างก่อน');return}
+  const nameEl=document.getElementById('cb-combo-name')
+  const name=nameEl.value.trim()||(cbBody.name+'+'+cbLetter.name)
+  keyCombos.push({id:Date.now(),name,body:cbBody,letter:cbLetter,rail:cbRail})
+  localStorage.setItem('fx_key_combos',JSON.stringify(keyCombos))
+  nameEl.value=''
+  renderCombos()
+  showToast('✅ บันทึก combo "'+name+'" แล้ว!')
+}
+
+function renderCombos(){
+  const list=document.getElementById('cb-combo-list')
+  if(!list)return
+  if(!keyCombos.length){list.innerHTML='<div style="font-size:11px;color:var(--muted);font-family:var(--font-mono);padding:8px">ยังไม่มี combo — สร้างจากด้านซ้าย</div>';return}
+  list.innerHTML=keyCombos.map((c,i)=>`
+    <div style="display:flex;align-items:center;gap:8px;padding:8px;background:${activeCombo&&activeCombo.id===c.id?'rgba(232,133,90,.08)':'transparent'};border:1px solid ${activeCombo&&activeCombo.id===c.id?'rgba(232,133,90,.3)':'transparent'};border-radius:4px;margin-bottom:4px;cursor:pointer" onclick="selectCombo(${i})">
+      <div style="width:22px;height:22px;border-radius:4px;background:${c.body.hex};border:3px solid ${c.rail.hex};display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:bold;color:${c.letter.hex};flex-shrink:0">A</div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:12px;color:var(--text);font-family:var(--font-mono)">${c.name}</div>
+        <div style="font-size:10px;color:var(--muted)">${c.body.name} · ${c.letter.name} · ${c.rail.name}</div>
+      </div>
+      <button onclick="event.stopPropagation();deleteCombo(${i})" style="background:none;border:none;color:rgba(229,85,85,.5);cursor:pointer;font-size:16px;line-height:1">×</button>
+    </div>`).join('')
+}
+
+function selectCombo(i){
+  activeCombo=keyCombos[i]
+  renderCombos()
+  const sec=document.getElementById('cb-letter-section')
+  if(sec)sec.style.display='block'
+  const t=document.getElementById('cb-active-combo-title')
+  if(t)t.textContent=activeCombo.name+' — A to Z'
   renderKeyGrid()
 }
 
-function renderKeyGrid() {
-  if(!keySelectedColor) return
-  const grid = document.getElementById('adm-key-grid')
-  const colorKey = keySelectedColor.name
-  grid.innerHTML = LETTERS.map(letter => {
-    const k = colorKey+'|'+letter
-    const qty = keyStockData[k]||0
-    const low = qty<=0?'color:#e55':'qty>=1&&qty<=2?color:#fa8':'color:rgba(240,237,232,.5)'
-    const style = qty<=0?'color:#e55':qty<=2?'color:#fa8':'color:rgba(240,237,232,.5)'
+function deleteCombo(i){
+  if(!confirm('ลบ "'+keyCombos[i].name+'" ?'))return
+  keyCombos.splice(i,1)
+  localStorage.setItem('fx_key_combos',JSON.stringify(keyCombos))
+  if(activeCombo&&!keyCombos.find(c=>c.id===activeCombo.id)){activeCombo=null;const s=document.getElementById('cb-letter-section');if(s)s.style.display='none'}
+  renderCombos()
+}
+
+function renderKeyGrid(){
+  if(!activeCombo)return
+  const grid=document.getElementById('adm-key-grid')
+  if(!grid)return
+  const colorKey=activeCombo.name
+  grid.innerHTML=LETTERS.map(letter=>{
+    const k=colorKey+'|'+letter
+    const qty=keyStockData[k]||0
     return `<div class="adm-stock-cell" style="justify-content:space-between">
-      <span style="font-family:var(--font-display);font-size:20px;color:var(--text)">${letter}</span>
+      <span style="font-family:var(--font-display);font-size:22px;color:var(--text)">${letter}</span>
       <input class="adm-stock-input" type="number" min="0" step="1" value="${qty}" id="kst-${letter}" style="${qty<=0?'border-color:rgba(229,85,85,.4)':''}" oninput="keyStockData['${colorKey}|${letter}']=parseInt(this.value)||0">
-      <span class="adm-stock-unit">ชิ้น</span>
+      <span class="adm-stock-unit" style="${qty<=0?'color:#e55':qty<=2?'color:#fa8':''}">ชิ้น</span>
     </div>`
   }).join('')
 }
 
-function saveKeyStock() {
-  // save current grid values first
-  if(keySelectedColor) {
-    LETTERS.forEach(letter => {
-      const el = document.getElementById('kst-'+letter)
-      if(el) keyStockData[keySelectedColor.name+'|'+letter] = parseInt(el.value)||0
+function renderRailStock(){}
+
+function saveKeyStock(){
+  if(activeCombo){
+    LETTERS.forEach(letter=>{
+      const el=document.getElementById('kst-'+letter)
+      if(el)keyStockData[activeCombo.name+'|'+letter]=parseInt(el.value)||0
     })
   }
-  localStorage.setItem('fx_key_stock', JSON.stringify(keyStockData))
+  localStorage.setItem('fx_key_stock',JSON.stringify(keyStockData))
   showToast('✅ บันทึก Keychain Stock แล้ว!')
 }
+
 
 let stockBuilt = false
 function admBuildStock() {
@@ -2602,15 +2653,60 @@ function saveProdStock() {
 
       <!-- Keychain Stock -->
       <div id="adm-key-stock" style="display:none">
-        <div class="adm-title" style="margin-bottom:6px">Clicky Keychain · Stock ตัวอักษร × สี</div>
-        <div style="font-size:11px;color:var(--muted);font-family:var(--font-mono);margin-bottom:12px">กรอกจำนวนชิ้นที่ทำไว้แล้ว (ready-made)</div>
-        <div style="margin-bottom:10px;display:flex;align-items:center;gap:10px">
-          <span style="font-size:12px;color:var(--muted);font-family:var(--font-mono)">เลือกสี body:</span>
-          <div id="key-color-selector" style="display:flex;gap:5px;flex-wrap:wrap"></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:2px;background:rgba(255,255,255,.06);border-radius:8px;overflow:hidden;margin-bottom:2px">
+
+          <!-- LEFT: Combo Builder -->
+          <div style="background:#181818;padding:16px">
+            <div class="adm-title" style="margin-bottom:12px">🎨 สร้าง Color Combo</div>
+
+            <div style="margin-bottom:10px">
+              <div style="font-size:10px;color:var(--muted);font-family:var(--font-mono);margin-bottom:6px">Body สี</div>
+              <div id="cb-body-swatches" style="display:flex;flex-wrap:wrap;gap:4px"></div>
+              <div style="font-size:10px;color:var(--accent);font-family:var(--font-mono);margin-top:4px" id="cb-body-label">—</div>
+            </div>
+
+            <div style="margin-bottom:10px">
+              <div style="font-size:10px;color:var(--muted);font-family:var(--font-mono);margin-bottom:6px">Letter สี</div>
+              <div id="cb-letter-swatches" style="display:flex;flex-wrap:wrap;gap:4px"></div>
+              <div style="font-size:10px;color:var(--accent);font-family:var(--font-mono);margin-top:4px" id="cb-letter-label">—</div>
+            </div>
+
+            <div style="margin-bottom:12px">
+              <div style="font-size:10px;color:var(--muted);font-family:var(--font-mono);margin-bottom:6px">Rail สี</div>
+              <div id="cb-rail-swatches" style="display:flex;flex-wrap:wrap;gap:4px"></div>
+              <div style="font-size:10px;color:var(--accent);font-family:var(--font-mono);margin-top:4px" id="cb-rail-label">—</div>
+            </div>
+
+            <!-- Preview -->
+            <div id="cb-preview" style="background:#0a0a0a;border:1px solid rgba(255,255,255,.08);border-radius:6px;padding:12px;margin-bottom:10px;text-align:center;display:none">
+              <div style="font-size:10px;color:var(--muted);font-family:var(--font-mono);margin-bottom:8px">PREVIEW</div>
+              <div id="cb-preview-swatch" style="width:48px;height:48px;border-radius:8px;margin:0 auto 6px;border:3px solid transparent;display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:22px"></div>
+              <div id="cb-preview-name" style="font-size:11px;color:rgba(240,237,232,.5);font-family:var(--font-mono)"></div>
+            </div>
+
+            <div style="display:flex;gap:6px">
+              <input id="cb-combo-name" placeholder="ชื่อ combo เช่น KAO" style="flex:1;background:#0a0a0a;border:1px solid var(--border);color:var(--text);padding:7px 10px;font-family:var(--font-body);font-size:12px;outline:none">
+              <button onclick="saveCbCombo()" style="background:var(--accent);border:none;color:#fff;padding:7px 14px;font-family:var(--font-body);font-size:12px;cursor:pointer">+ บันทึก</button>
+            </div>
+          </div>
+
+          <!-- RIGHT: Saved Combos + Stock -->
+          <div style="background:#181818;padding:16px">
+            <div class="adm-title" style="margin-bottom:10px">📦 Combos & Stock</div>
+            <div id="cb-combo-list" style="max-height:320px;overflow-y:auto"></div>
+          </div>
         </div>
-        <div style="font-size:11px;color:var(--accent);font-family:var(--font-mono);margin-bottom:8px" id="key-selected-color">— กดเลือกสีก่อน —</div>
-        <div id="adm-key-grid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:2px;background:rgba(255,255,255,.06);border-radius:8px;overflow:hidden"></div>
-        <button onclick="saveKeyStock()" style="margin-top:10px;background:var(--accent);border:none;color:#fff;padding:12px;font-family:var(--font-body);font-size:13px;cursor:pointer;width:100%;letter-spacing:.5px">💾 บันทึก Keychain Stock</button>
+
+        <!-- Letters grid for selected combo -->
+        <div id="cb-letter-section" style="display:none;background:rgba(255,255,255,.06);border-radius:8px;overflow:hidden;margin-bottom:2px">
+          <div style="background:#181818;padding:14px">
+            <div class="adm-title" style="margin-bottom:4px" id="cb-active-combo-title">เลือก combo ด้านบน</div>
+            <div style="font-size:10px;color:var(--muted);font-family:var(--font-mono);margin-bottom:10px">กรอกจำนวน ready-made แต่ละตัวอักษร</div>
+            <div id="adm-key-grid" style="display:grid;grid-template-columns:repeat(6,1fr);gap:2px;background:rgba(255,255,255,.06);border-radius:6px;overflow:hidden"></div>
+          </div>
+        </div>
+
+        <button onclick="saveKeyStock()" style="background:var(--accent);border:none;color:#fff;padding:12px;font-family:var(--font-body);font-size:13px;cursor:pointer;width:100%;letter-spacing:.5px">💾 บันทึก Stock ทั้งหมด</button>
       </div>
     </div>
 
