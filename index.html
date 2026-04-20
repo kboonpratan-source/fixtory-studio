@@ -1,0 +1,2796 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fixtory.studio — From Craft to Smart Design</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Noto+Sans+Thai:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:      #0a0a0a;
+  --bg2:     #111111;
+  --bg3:     #181818;
+  --border:  rgba(255,255,255,0.07);
+  --accent:  #e8855a;
+  --accent2: #c96a40;
+  --text:    #f0ede8;
+  --muted:   #666460;
+  --dim:     #333;
+  --green:   #1D9E75;
+  --shopee:  #EE4D2D;
+  --tiktok:  #FE2C55;
+  --font-display: 'Bebas Neue', sans-serif;
+  --font-body:    'Noto Sans Thai', sans-serif;
+  --font-mono:    'DM Mono', monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-weight:300;line-height:1.6;overflow-x:hidden}
+
+/* ─── NAV ─────────────────────────────── */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:18px 40px;border-bottom:1px solid var(--border);background:rgba(10,10,10,0.92);backdrop-filter:blur(12px)}
+.logo{display:flex;align-items:center;gap:10px;cursor:pointer}
+.logo-svg{width:32px;height:32px;flex-shrink:0}
+.logo-text{font-family:var(--font-display);font-size:22px;letter-spacing:3px;color:var(--text)}
+.logo-text span{color:var(--accent)}
+.nav-links{display:flex;gap:32px;list-style:none}
+.nav-links a{font-size:12px;color:var(--muted);text-decoration:none;letter-spacing:1.5px;text-transform:uppercase;transition:color .2s}
+.nav-links a:hover{color:var(--text)}
+.nav-cta{background:var(--accent);color:#fff;border:none;padding:9px 22px;font-family:var(--font-body);font-size:12px;letter-spacing:1px;cursor:pointer;transition:background .2s}
+.nav-cta:hover{background:var(--accent2)}
+.cart-count{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;background:var(--accent);color:#fff;border-radius:50%;font-size:10px;margin-left:6px;font-weight:600}
+
+/* ─── HERO ────────────────────────────── */
+.hero{height:100vh;max-height:100vh;display:grid;grid-template-columns:45fr 55fr;align-items:center;padding:80px 30px 30px 60px;position:relative;overflow:hidden;gap:0}
+.hero-grid{position:absolute;inset:0;background-image:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px);background-size:60px 60px;opacity:.4}
+.hero-glow{position:absolute;top:-20%;right:-10%;width:600px;height:600px;background:radial-gradient(circle,rgba(232,133,90,.12) 0%,transparent 70%);pointer-events:none}
+.hero-content{position:relative;max-width:680px}
+.hero-tag{font-family:var(--font-mono);font-size:11px;color:var(--accent);letter-spacing:2px;text-transform:uppercase;margin-bottom:20px;display:flex;align-items:center;gap:8px}
+.hero-tag::before{content:'';display:inline-block;width:24px;height:1px;background:var(--accent)}
+.hero h1{font-family:var(--font-display);font-size:clamp(52px,7vw,100px);line-height:.92;letter-spacing:2px;margin-bottom:16px}
+.hero h1 em{color:var(--accent);font-style:normal}
+.hero-desc{font-size:14px;color:rgba(240,237,232,.55);max-width:420px;line-height:1.6;margin-bottom:24px}
+.hero-btns{display:flex;gap:14px;flex-wrap:wrap}
+.btn-primary{background:var(--accent);color:#fff;border:none;padding:14px 32px;font-family:var(--font-body);font-size:13px;letter-spacing:.5px;cursor:pointer;transition:all .2s;font-weight:500}
+.btn-primary:hover{background:var(--accent2);transform:translateY(-1px)}
+.btn-outline{background:transparent;color:var(--text);border:1px solid rgba(255,255,255,.2);padding:14px 32px;font-family:var(--font-body);font-size:13px;cursor:pointer;transition:all .2s}
+.btn-outline:hover{border-color:var(--accent);color:var(--accent)}
+.hero-stats{display:flex;gap:32px;margin-top:28px;padding-top:24px;border-top:1px solid var(--border)}
+.stat-item{display:flex;flex-direction:column;gap:4px}
+.stat-num{font-family:var(--font-display);font-size:36px;letter-spacing:1px;color:var(--accent)}
+.stat-label{font-size:11px;color:var(--muted);letter-spacing:1px;text-transform:uppercase}
+
+/* ─── SECTION COMMONS ─────────────────── */
+section{padding:80px 40px}
+.section-tag{font-family:var(--font-mono);font-size:10px;color:var(--accent);letter-spacing:2.5px;text-transform:uppercase;margin-bottom:10px}
+.section-title{font-family:var(--font-display);font-size:clamp(36px,5vw,56px);letter-spacing:2px;margin-bottom:8px;line-height:1}
+.section-sub{font-size:14px;color:var(--muted);margin-bottom:40px}
+
+/* ─── PRODUCTS ────────────────────────── */
+.products-section{background:var(--bg)}
+.filter-bar{display:flex;gap:8px;margin-bottom:32px;flex-wrap:wrap}
+.filter-btn{background:transparent;border:1px solid var(--border);color:var(--muted);padding:7px 18px;font-family:var(--font-body);font-size:11px;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all .2s}
+.filter-btn.active,.filter-btn:hover{border-color:var(--accent);color:var(--accent);background:rgba(232,133,90,.06)}
+.products-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1px;background:var(--border)}
+.product-card{background:var(--bg);overflow:hidden;cursor:pointer;transition:all .25s;position:relative}
+.product-card:hover{background:var(--bg2);z-index:2}
+.product-card:hover .card-img-inner{transform:scale(1.04)}
+.card-img{height:240px;overflow:hidden;position:relative;background:var(--bg3)}
+.card-img-inner{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:80px;transition:transform .4s cubic-bezier(.25,.8,.25,1)}
+.card-badge{position:absolute;top:12px;left:12px;font-family:var(--font-mono);font-size:9px;padding:4px 10px;letter-spacing:1px;text-transform:uppercase}
+.badge-new{background:var(--accent);color:#fff}
+.badge-premium{background:linear-gradient(135deg,#b8860b,#daa520);color:#fff}
+.badge-evergreen{background:var(--green);color:#fff}
+.card-body{padding:20px}
+.card-cat{font-family:var(--font-mono);font-size:9px;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:6px}
+.card-name{font-size:15px;font-weight:500;margin-bottom:6px;color:var(--text)}
+.card-desc{font-size:12px;color:var(--muted);line-height:1.6;margin-bottom:16px}
+.card-footer{display:flex;align-items:center;justify-content:space-between}
+.card-price{font-family:var(--font-display);font-size:28px;color:var(--accent);letter-spacing:1px}
+.card-price-platform{font-size:10px;color:var(--muted);margin-top:1px}
+.add-btn{background:var(--accent);border:none;color:#fff;width:36px;height:36px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:20px;transition:all .2s;flex-shrink:0}
+.add-btn:hover{background:var(--accent2);transform:scale(1.1)}
+.card-points{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:14px}
+.point-pill{font-size:9px;padding:3px 8px;border:1px solid var(--border);color:var(--muted);letter-spacing:.5px}
+
+/* ─── PRODUCT MODAL ───────────────────── */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:200;display:none;align-items:center;justify-content:center;padding:20px}
+.modal-overlay.open{display:flex}
+.modal{background:var(--bg2);width:100%;max-width:800px;max-height:90vh;overflow-y:auto;position:relative;border:1px solid var(--border)}
+.modal-close{position:absolute;top:16px;right:16px;background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer;z-index:10;line-height:1}
+.modal-close:hover{color:var(--text)}
+.modal-body{display:grid;grid-template-columns:1fr 1fr;min-height:400px}
+.modal-visual{background:var(--bg3);display:flex;align-items:center;justify-content:center;font-size:100px;padding:0;overflow:hidden;position:relative;min-height:300px}
+.modal-info{padding:32px;overflow-y:auto;max-height:80vh}
+.modal-cat{font-family:var(--font-mono);font-size:10px;color:var(--accent);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px}
+.modal-name{font-family:var(--font-display);font-size:42px;letter-spacing:2px;margin-bottom:12px;line-height:1}
+.modal-desc{font-size:13px;color:rgba(240,237,232,.6);line-height:1.8;margin-bottom:20px}
+.modal-points{margin-bottom:24px}
+.modal-point{display:flex;align-items:flex-start;gap:8px;font-size:12px;color:var(--muted);margin-bottom:6px}
+.modal-point::before{content:'—';color:var(--accent);flex-shrink:0}
+
+.modal-add{width:100%;background:var(--accent);border:none;color:#fff;padding:14px;font-family:var(--font-body);font-size:13px;letter-spacing:.5px;cursor:pointer;transition:background .2s;font-weight:500}
+.modal-add:hover{background:var(--accent2)}
+
+/* ─── PROCESS SECTION ─────────────────── */
+.process-section{background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.process-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);margin-top:40px}
+.process-step{background:var(--bg2);padding:32px 24px;position:relative}
+.process-num{font-family:var(--font-display);font-size:72px;color:rgba(232,133,90,.1);line-height:1;margin-bottom:16px;letter-spacing:2px}
+.process-title{font-size:14px;font-weight:500;margin-bottom:8px}
+.process-desc{font-size:12px;color:var(--muted);line-height:1.7}
+
+
+/* ─── CUSTOM QUOTE ────────────────────── */
+.quote-section{background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.quote-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border);border-radius:4px;overflow:hidden;margin-bottom:1px}
+.quote-panel{background:var(--bg2);padding:28px}
+.quote-label{font-size:13px;color:rgba(240,237,232,.6);margin-bottom:10px;display:block}
+.quote-hint{font-size:11px;color:var(--muted);font-family:var(--font-mono);margin-bottom:10px;display:block}
+.quote-pills{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:20px}
+.quote-pill{font-size:11px;padding:5px 14px;border:1px solid var(--border);color:var(--muted);background:transparent;cursor:pointer;transition:all .2s;font-family:var(--font-body);letter-spacing:.5px}
+.quote-pill.on{border-color:var(--accent);color:var(--accent);background:rgba(232,133,90,.06)}
+.quote-qty{display:flex;align-items:center;gap:14px;margin-bottom:20px}
+.quote-qty-btn{width:32px;height:32px;border-radius:50%;border:1px solid var(--border);background:transparent;color:var(--text);cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;transition:all .2s}
+.quote-qty-btn:hover{border-color:var(--accent);color:var(--accent)}
+.quote-qty-num{font-family:var(--font-display);font-size:32px;color:var(--accent);min-width:32px;text-align:center}
+.quote-qty-note{font-size:12px;color:var(--muted)}
+.quote-result{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;background:var(--border);margin-top:1px}
+.quote-rc{background:var(--bg2);padding:24px}
+.quote-rc.accent{background:rgba(232,133,90,.04)}
+.quote-rl{font-family:var(--font-mono);font-size:9px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:8px}
+.quote-rv{font-family:var(--font-display);font-size:42px;letter-spacing:1px;line-height:1;color:var(--text)}
+.quote-rc.accent .quote-rv{color:var(--accent)}
+.quote-rs{font-size:11px;color:var(--muted);margin-top:6px;font-family:var(--font-mono)}
+.quote-tag{display:inline-block;background:rgba(232,133,90,.08);border:1px solid rgba(232,133,90,.2);padding:5px 14px;font-family:var(--font-mono);font-size:10px;color:var(--accent);letter-spacing:1px;margin-top:16px}
+.quote-cta{width:100%;background:var(--accent);border:none;color:#fff;padding:16px;font-family:var(--font-body);font-size:14px;letter-spacing:.5px;cursor:pointer;transition:background .2s;font-weight:500;margin-top:1px}
+.quote-cta:hover{background:var(--accent2)}
+.quote-note{font-size:11px;color:var(--muted);text-align:center;margin-top:14px;font-family:var(--font-mono);line-height:1.7}
+
+/* ─── CUSTOM ORDER SECTION ────────────── */
+.custom-section{background:var(--bg)}
+.custom-card{background:var(--bg2);border:1px solid var(--border);padding:48px;display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center}
+.custom-form{display:flex;flex-direction:column;gap:14px}
+.form-group{display:flex;flex-direction:column;gap:6px}
+.form-group label{font-size:11px;color:var(--muted);letter-spacing:1px;text-transform:uppercase}
+.form-group input,.form-group select,.form-group textarea{background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:11px 14px;font-family:var(--font-body);font-size:13px;outline:none;transition:border-color .2s;width:100%}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--accent)}
+.form-group select option{background:var(--bg3)}
+.form-group textarea{resize:vertical;min-height:90px}
+.custom-info{display:flex;flex-direction:column;gap:20px}
+.custom-feature{display:flex;gap:16px;align-items:flex-start}
+.feature-icon{width:40px;height:40px;background:rgba(232,133,90,.1);border:1px solid rgba(232,133,90,.2);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.feature-title{font-size:13px;font-weight:500;margin-bottom:4px}
+.feature-desc{font-size:12px;color:var(--muted);line-height:1.6}
+
+/* ─── FOOTER ──────────────────────────── */
+footer{background:var(--bg2);border-top:1px solid var(--border);padding:40px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:20px}
+.footer-logo{font-family:var(--font-display);font-size:20px;letter-spacing:3px}
+.footer-logo span{color:var(--accent)}
+.footer-links{display:flex;gap:24px}
+.footer-links a{font-size:11px;color:var(--muted);text-decoration:none;letter-spacing:1px;text-transform:uppercase;transition:color .2s}
+.footer-links a:hover{color:var(--accent)}
+.footer-copy{font-size:11px;color:var(--muted)}
+
+/* ─── TOAST ───────────────────────────── */
+.toast{position:fixed;bottom:32px;right:32px;background:var(--accent);color:#fff;padding:14px 24px;font-size:13px;z-index:9999;transform:translateY(100px);opacity:0;transition:all .3s}
+.toast.show{transform:translateY(0);opacity:1}
+
+/* ─── ANIMATIONS ──────────────────────── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+.hero-content>*{animation:fadeUp .6s ease both}
+.hero-tag{animation-delay:.1s}
+.hero h1{animation-delay:.2s}
+.hero-desc{animation-delay:.3s}
+.hero-btns{animation-delay:.4s}
+.hero-stats{animation-delay:.5s}
+
+/* ─── RESPONSIVE ──────────────────────── */
+@media(max-width:768px){
+  nav{padding:14px 20px}
+  .nav-links{display:none}
+  .hero{padding:80px 20px 40px}
+  section{padding:60px 20px}
+  .process-grid{grid-template-columns:1fr 1fr}
+  .modal-body{grid-template-columns:1fr;grid-template-rows:auto auto}
+  .modal-visual{display:flex;height:260px;min-height:260px;order:-1}
+  .custom-card{grid-template-columns:1fr;padding:28px}
+  .hero-stats{gap:24px}
+}
+
+.modal-gallery{width:100%;height:100%;position:relative;overflow:hidden}
+.gallery-slides{display:flex;height:100%;transition:transform .3s ease}
+.gallery-slide{flex-shrink:0;width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:var(--bg3)}
+.gallery-slide img{width:100%;height:100%;object-fit:contain}
+.gallery-btn{position:absolute;top:50%;transform:translateY(-50%);background:rgba(0,0,0,.5);border:none;color:#fff;width:32px;height:32px;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;z-index:10}
+.gallery-btn.prev{left:8px}
+.gallery-btn.next{right:8px}
+.gallery-dots{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);display:flex;gap:5px}
+.gallery-dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.4);cursor:pointer;transition:background .2s}
+.gallery-dot.active{background:#fff}
+
+.color-picker-section{margin:12px 0 16px}
+.color-picker-label{font-size:11px;color:rgba(240,237,232,.5);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px}
+.brand-tabs{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap}
+.brand-tab{font-size:11px;padding:3px 10px;border-radius:20px;border:0.5px solid rgba(240,237,232,.2);background:transparent;color:rgba(240,237,232,.5);cursor:pointer;transition:all .2s}
+.brand-tab.active{background:var(--accent);border-color:var(--accent);color:#000}
+.color-swatches{display:flex;flex-wrap:wrap;gap:6px}
+.color-swatch{width:28px;height:28px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:transform .15s,border-color .15s;position:relative}
+.color-swatch:hover{transform:scale(1.15)}
+.color-swatch.selected{border-color:var(--accent);transform:scale(1.2)}
+.color-swatch[data-light="1"]{box-shadow:inset 0 0 0 1px rgba(0,0,0,.15)}
+.gallery-color-overlay{position:absolute;inset:0;pointer-events:none;transition:background .3s ease,opacity .3s ease;opacity:0;mix-blend-mode:multiply;border-radius:4px}
+.gallery-color-overlay.active{opacity:.45}
+.modal-gallery{position:relative}
+.selected-color-name{font-size:12px;color:rgba(240,237,232,.6);margin-top:8px;min-height:16px;text-align:center}
+
+.hero-visual{position:relative;display:flex;align-items:center;justify-content:center;height:100%;padding:20px 10px}
+.hero-visual svg{width:100%;height:100%;max-height:calc(100vh - 100px);filter:drop-shadow(0 0 40px rgba(232,114,74,.15))}
+@media(max-width:900px){.hero{grid-template-columns:1fr;padding:100px 20px 40px}.hero-visual{display:none}}
+
+@keyframes phaseIn{0%,100%{opacity:0;transform:translateY(6px)}15%,80%{opacity:1;transform:translateY(0)}}
+@keyframes arrowPulse{0%,100%{opacity:.4;transform:translateX(0)}50%{opacity:1;transform:translateX(4px)}}
+@keyframes badgePop{0%,90%,100%{opacity:0;transform:scale(.8)}70%,85%{opacity:1;transform:scale(1)}}
+@keyframes spinOrbit{from{transform:rotateX(60deg) rotateZ(0deg)}to{transform:rotateX(60deg) rotateZ(360deg)}}
+@keyframes layerUp{0%{opacity:0;transform:translateY(4px)}15%{opacity:1;transform:translateY(0)}85%{opacity:1;transform:translateY(0)}100%{opacity:0;transform:translateY(-2px)}}
+@keyframes nozzleMove{0%,100%{transform:translateX(0)}25%{transform:translateX(40px)}50%{transform:translateX(80px)}75%{transform:translateX(40px)}}
+@keyframes nozzleDrop{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+@keyframes beamPulse{0%,100%{opacity:0}50%{opacity:1}}
+@keyframes floatUp{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+@keyframes spinSlow{from{transform:rotateZ(0deg)}to{transform:rotateZ(360deg)}}
+@keyframes fadeLoop{0%,100%{opacity:.2}50%{opacity:.7}}
+
+
+.keycap-config{display:none;margin-bottom:16px}
+.keycap-config.active{display:block}
+.keycap-qty-row{display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+.keycap-qty-label{font-size:12px;color:rgba(240,237,232,.6);letter-spacing:1px;white-space:nowrap}
+.keycap-qty-btn{width:30px;height:30px;border-radius:50%;border:1px solid rgba(240,237,232,.2);background:transparent;color:var(--text);cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;transition:all .2s}
+.keycap-qty-btn:hover{border-color:var(--accent);color:var(--accent)}
+.keycap-qty-num{font-size:20px;font-weight:600;color:var(--accent);min-width:24px;text-align:center}
+
+.keycap-letter-input{width:36px;height:36px;text-align:center;font-size:18px;font-weight:bold;font-family:var(--font-display);background:rgba(255,255,255,.06);border:1px solid rgba(240,237,232,.2);border-radius:6px;color:var(--text);text-transform:uppercase;outline:none;transition:border-color .2s}
+.keycap-letter-input:focus{border-color:var(--accent)}
+
+.keycap-price-live{font-size:13px;color:rgba(240,237,232,.5);margin-left:auto}
+.keycap-slots{display:flex;flex-direction:column;gap:8px;margin-bottom:14px}
+.keycap-slot{display:flex;align-items:center;gap:10px;padding:8px 12px;background:rgba(255,255,255,.04);border-radius:6px;border:1px solid rgba(240,237,232,.08)}
+.keycap-slot-label{font-size:12px;color:rgba(240,237,232,.5);min-width:60px}
+.keycap-slot-color{display:flex;align-items:center;gap:6px;flex:1;cursor:pointer}
+.keycap-slot-swatch{width:20px;height:20px;border-radius:50%;border:1.5px solid rgba(255,255,255,.2);flex-shrink:0}
+.keycap-slot-name{font-size:11px;color:rgba(240,237,232,.7)}
+.keycap-picking{border-color:var(--accent) !important}
+.keycap-pick-hint{font-size:11px;color:var(--accent);text-align:center;margin-bottom:8px;min-height:16px}
+
+.cart-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:9998}
+.cart-overlay.open{display:block}
+.cart-panel{position:fixed;top:0;right:0;width:380px;max-width:100vw;height:100vh;background:var(--bg2);z-index:9999;transform:translateX(100%);transition:transform .3s ease;display:flex;flex-direction:column;border-left:1px solid var(--border)}
+.cart-panel.open{transform:translateX(0)}
+.cart-header{display:flex;align-items:center;justify-content:space-between;padding:20px 24px;border-bottom:1px solid var(--border)}
+.cart-header h3{font-family:var(--font-display);font-size:18px;letter-spacing:1px;margin:0}
+.cart-close{background:none;border:none;color:var(--text);font-size:22px;cursor:pointer;opacity:.6;transition:opacity .2s}
+.cart-close:hover{opacity:1}
+.cart-body{flex:1;overflow-y:auto;padding:16px 24px}
+.cart-empty{text-align:center;padding:60px 0;color:var(--muted);font-size:14px}
+.cart-item{padding:14px 0;border-bottom:1px solid var(--border);display:flex;gap:12px;align-items:flex-start}
+.cart-item-info{flex:1;min-width:0}
+.cart-item-name{font-size:13px;font-weight:500;margin-bottom:4px}
+.cart-item-detail{font-size:11px;color:var(--muted);line-height:1.5;word-break:break-all}
+.cart-item-price{font-family:var(--font-display);font-size:16px;color:var(--accent);white-space:nowrap}
+.cart-item-remove{background:none;border:none;color:var(--muted);font-size:16px;cursor:pointer;padding:2px 6px;border-radius:4px;transition:all .2s;flex-shrink:0}
+.cart-item-remove:hover{color:#e55;background:rgba(255,80,80,.1)}
+.cart-footer{padding:20px 24px;border-top:1px solid var(--border)}
+.cart-total{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+.cart-total-label{font-size:13px;color:var(--muted)}
+.cart-total-price{font-family:var(--font-display);font-size:24px;color:var(--accent)}
+.cart-actions{display:flex;flex-direction:column;gap:8px}
+.cart-checkout-btn{width:100%;background:var(--accent);border:none;color:#fff;padding:14px;font-family:var(--font-body);font-size:13px;letter-spacing:.5px;cursor:pointer;transition:background .2s;font-weight:500;border-radius:2px}
+.cart-checkout-btn:hover{background:var(--accent2)}
+.cart-clear-btn{width:100%;background:transparent;border:1px solid var(--border);color:var(--muted);padding:10px;font-family:var(--font-body);font-size:12px;cursor:pointer;transition:all .2s;border-radius:2px}
+.cart-clear-btn:hover{border-color:#e55;color:#e55}
+
+/* ─── CHECKOUT FLOW ───────────────────────────── */
+.co-overlay{position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:300;display:none;align-items:center;justify-content:center;padding:20px}
+.co-overlay.open{display:flex}
+.co-box{background:var(--bg2);width:100%;max-width:520px;max-height:92vh;overflow-y:auto;border:1px solid var(--border);position:relative}
+.co-header{padding:20px 24px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px}
+.co-step-pills{display:flex;gap:6px}
+.co-pill{width:28px;height:4px;background:var(--border);border-radius:2px;transition:background .3s}
+.co-pill.done{background:var(--accent)}
+.co-title{font-family:var(--font-display);font-size:20px;letter-spacing:1px}
+.co-body{padding:24px}
+.co-field{display:flex;flex-direction:column;gap:6px;margin-bottom:16px}
+.co-field label{font-size:11px;color:var(--muted);letter-spacing:1px;text-transform:uppercase}
+.co-field input,.co-field textarea{background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:11px 14px;font-family:var(--font-body);font-size:13px;outline:none;transition:border-color .2s;width:100%}
+.co-field input:focus,.co-field textarea:focus{border-color:var(--accent)}
+.co-field textarea{resize:vertical;min-height:70px}
+.co-btn{width:100%;background:var(--accent);border:none;color:#fff;padding:14px;font-family:var(--font-body);font-size:13px;letter-spacing:.5px;cursor:pointer;transition:background .2s;font-weight:500;margin-top:4px}
+.co-btn:hover{background:var(--accent2)}
+.co-btn-outline{width:100%;background:transparent;border:1px solid var(--border);color:var(--muted);padding:11px;font-family:var(--font-body);font-size:12px;cursor:pointer;transition:all .2s;margin-top:8px}
+.co-btn-outline:hover{border-color:var(--accent);color:var(--accent)}
+.co-order-summary{background:var(--bg3);border:1px solid var(--border);padding:16px;margin-bottom:20px}
+.co-order-row{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-bottom:6px}
+.co-order-total{display:flex;justify-content:space-between;font-size:15px;padding-top:10px;border-top:1px solid var(--border);margin-top:6px}
+.co-order-total span:last-child{font-family:var(--font-display);font-size:22px;color:var(--accent)}
+.co-qr-wrap{text-align:center;margin-bottom:20px}
+.co-qr-wrap img{width:220px;height:220px;object-fit:contain;border:4px solid #fff;border-radius:4px}
+.co-qr-amount{font-family:var(--font-display);font-size:36px;color:var(--accent);margin:12px 0 4px;letter-spacing:1px}
+.co-qr-note{font-size:12px;color:var(--muted)}
+.co-upload-area{border:2px dashed var(--border);padding:28px 20px;text-align:center;cursor:pointer;transition:border-color .2s;margin-bottom:16px;position:relative}
+.co-upload-area:hover{border-color:var(--accent)}
+.co-upload-area input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.co-upload-icon{font-size:32px;margin-bottom:8px}
+.co-upload-text{font-size:13px;color:var(--muted)}
+.co-upload-preview{width:100%;max-height:200px;object-fit:contain;display:none;margin-bottom:12px;border:1px solid var(--border)}
+.co-receipt{padding:24px;text-align:center}
+.co-receipt-icon{font-size:56px;margin-bottom:12px}
+.co-receipt-title{font-family:var(--font-display);font-size:28px;letter-spacing:2px;margin-bottom:6px;color:var(--accent)}
+.co-receipt-sub{font-size:13px;color:var(--muted);margin-bottom:20px}
+.co-receipt-box{background:var(--bg3);border:1px solid var(--border);padding:16px;text-align:left;margin-bottom:20px}
+.co-receipt-row{display:flex;justify-content:space-between;font-size:12px;margin-bottom:8px;gap:12px}
+.co-receipt-row span:first-child{color:var(--muted);flex-shrink:0}
+.co-receipt-row span:last-child{color:var(--text);text-align:right}
+.co-receipt-num{font-family:var(--font-mono);font-size:11px;color:var(--accent);letter-spacing:1px;margin-bottom:16px}
+.co-close{position:absolute;top:14px;right:16px;background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer;line-height:1}
+.co-close:hover{color:var(--text)}
+
+/* ─── AFFILIATE DASHBOARD ─────────────────────── */
+.aff-overlay{position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:400;display:none;align-items:center;justify-content:center;padding:20px}
+.aff-overlay.open{display:flex}
+.aff-box{background:var(--bg2);width:100%;max-width:420px;border:1px solid var(--border);padding:32px;text-align:center}
+.aff-title{font-family:var(--font-display);font-size:28px;letter-spacing:2px;color:var(--accent);margin-bottom:4px}
+.aff-sub{font-size:12px;color:var(--muted);margin-bottom:24px}
+.aff-stat{background:var(--bg3);border:1px solid var(--border);padding:20px;margin-bottom:12px}
+.aff-stat-num{font-family:var(--font-display);font-size:42px;color:var(--accent);letter-spacing:1px}
+.aff-stat-label{font-size:11px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-top:4px}
+.aff-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px}
+.aff-ref{font-family:var(--font-mono);font-size:13px;color:var(--accent);background:rgba(232,133,90,.08);border:1px solid rgba(232,133,90,.2);padding:10px;margin-bottom:20px;letter-spacing:2px}
+
+/* ─── ORDER TRACKING ──────────────────────────── */
+.track-overlay{position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:400;display:none;align-items:center;justify-content:center;padding:20px}
+.track-overlay.open{display:flex}
+.track-box{background:var(--bg2);width:100%;max-width:460px;border:1px solid var(--border);padding:32px}
+.track-title{font-family:var(--font-display);font-size:24px;letter-spacing:2px;margin-bottom:4px}
+.track-sub{font-size:12px;color:var(--muted);margin-bottom:24px}
+.track-steps{display:flex;flex-direction:column;gap:0;margin:24px 0}
+.track-step{display:flex;gap:16px;align-items:flex-start;position:relative}
+.track-step:not(:last-child)::after{content:'';position:absolute;left:15px;top:32px;width:2px;height:calc(100% + 4px);background:var(--border)}
+.track-step.done::after{background:var(--accent)}
+.track-dot{width:32px;height:32px;border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;background:var(--bg2);position:relative;z-index:1}
+.track-step.done .track-dot{border-color:var(--accent);background:var(--accent)}
+.track-step.active .track-dot{border-color:var(--accent);background:rgba(232,133,90,.15)}
+.track-info{padding:4px 0 20px}
+.track-label{font-size:13px;font-weight:500;margin-bottom:2px}
+.track-step.done .track-label{color:var(--accent)}
+.track-step.active .track-label{color:var(--text)}
+.track-step:not(.done):not(.active) .track-label{color:var(--muted)}
+.track-desc{font-size:11px;color:var(--muted)}
+.track-num{font-family:var(--font-mono);font-size:11px;color:var(--accent);letter-spacing:1px;margin-bottom:16px}
+.track-input-row{display:flex;gap:8px;margin-bottom:16px}
+.track-input-row input{flex:1;background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:10px 14px;font-family:var(--font-body);font-size:13px;outline:none}
+.track-input-row input:focus{border-color:var(--accent)}
+.track-input-row button{background:var(--accent);border:none;color:#fff;padding:10px 18px;cursor:pointer;font-family:var(--font-body);font-size:12px;white-space:nowrap}
+.track-input-row button:hover{background:var(--accent2)}
+
+/* ─── ADMIN CALCULATOR ────────────────── */
+.admin-overlay{position:fixed;inset:0;background:rgba(0,0,0,.95);z-index:500;display:none;align-items:center;justify-content:center;flex-direction:column;gap:16px}
+.admin-overlay.open{display:flex}
+.admin-box{background:#111;border:1px solid rgba(232,133,90,.3);padding:32px;width:100%;max-width:680px;max-height:92vh;overflow-y:auto}
+.admin-pw-box{background:#111;border:1px solid rgba(255,255,255,.1);padding:32px;text-align:center;width:320px}
+.admin-pw-title{font-family:var(--font-display);font-size:24px;letter-spacing:3px;color:var(--accent);margin-bottom:6px}
+.admin-pw-sub{font-size:11px;color:var(--muted);font-family:var(--font-mono);margin-bottom:20px}
+.admin-pw-input{width:100%;background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:12px;font-family:var(--font-mono);font-size:18px;text-align:center;letter-spacing:4px;outline:none;margin-bottom:12px}
+.admin-pw-input:focus{border-color:var(--accent)}
+.admin-pw-btn{width:100%;background:var(--accent);border:none;color:#fff;padding:12px;font-family:var(--font-body);font-size:13px;cursor:pointer}
+.admin-pw-btn:hover{background:var(--accent2)}
+.admin-pw-err{font-size:12px;color:#e55;font-family:var(--font-mono);margin-top:8px;min-height:16px}
+.admin-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid rgba(255,255,255,.06)}
+.admin-title{font-family:var(--font-display);font-size:20px;letter-spacing:3px;color:var(--accent)}
+.admin-close{background:none;border:none;color:var(--muted);font-size:22px;cursor:pointer}
+.admin-close:hover{color:var(--text)}
+.adm-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px;background:rgba(255,255,255,.06);border-radius:8px;overflow:hidden;margin-bottom:2px}
+.adm-panel{background:#181818;padding:18px}
+.adm-title{font-size:9px;letter-spacing:2px;color:var(--accent);text-transform:uppercase;margin-bottom:12px;font-family:var(--font-mono)}
+.adm-field{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.adm-field label{font-size:12px;color:rgba(240,237,232,.5);flex:1}
+.adm-field input{background:#0a0a0a;border:1px solid var(--border);color:var(--text);padding:7px 10px;border-radius:4px;font-size:13px;width:88px;outline:none;transition:border-color .2s;font-family:inherit;text-align:right}
+.adm-field input:focus{border-color:var(--accent)}
+.adm-unit{font-size:11px;color:rgba(240,237,232,.2);font-family:var(--font-mono);width:20px}
+.adm-pills{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px}
+.adm-pill{font-size:11px;padding:4px 11px;border:1px solid var(--border);border-radius:20px;background:transparent;color:rgba(240,237,232,.4);cursor:pointer;transition:all .2s;font-family:inherit}
+.adm-pill.on{background:rgba(232,133,90,.1);border-color:var(--accent);color:var(--accent)}
+.adm-div{border:none;border-top:1px solid rgba(255,255,255,.06);margin:12px 0}
+.adm-bk-row{display:flex;justify-content:space-between;font-size:11px;color:rgba(240,237,232,.35);padding:3px 0;font-family:var(--font-mono)}
+.adm-bk-row span:last-child{color:rgba(240,237,232,.5)}
+.adm-results{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:2px;background:rgba(255,255,255,.06);border-radius:8px;overflow:hidden}
+.adm-rc{background:#181818;padding:16px}
+.adm-rc.terra{background:rgba(232,133,90,.04)}
+.adm-rc.blue{background:rgba(86,183,230,.03)}
+.adm-rl{font-size:9px;letter-spacing:1.5px;color:rgba(240,237,232,.3);text-transform:uppercase;font-family:var(--font-mono);margin-bottom:6px}
+.adm-rv{font-family:var(--font-display);font-size:28px;letter-spacing:1px;line-height:1;color:var(--text)}
+.adm-rc.terra .adm-rv{color:var(--accent)}
+.adm-rc.blue .adm-rv{color:#56b7e6}
+.adm-rs{font-size:10px;color:rgba(240,237,232,.25);margin-top:4px;font-family:var(--font-mono)}
+
+.adm-tab{font-size:11px;padding:6px 16px;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;font-family:var(--font-body);letter-spacing:.5px;transition:all .2s}
+.adm-tab.on{background:rgba(232,133,90,.1);border-color:var(--accent);color:var(--accent)}
+.adm-stock-cell{background:#181818;padding:14px 16px;display:flex;align-items:center;gap:10px}
+.adm-stock-swatch{width:18px;height:18px;border-radius:50%;flex-shrink:0}
+.adm-stock-name{font-size:12px;color:rgba(240,237,232,.6);flex:1;font-family:var(--font-mono)}
+.adm-stock-input{background:#0a0a0a;border:1px solid var(--border);color:var(--text);padding:5px 8px;width:60px;font-size:13px;text-align:center;outline:none;font-family:inherit}
+.adm-stock-input:focus{border-color:var(--accent)}
+.adm-stock-unit{font-size:11px;color:var(--muted);font-family:var(--font-mono)}
+.adm-low{color:#e55!important}
+
+.rail-row{display:grid;grid-template-columns:auto 1fr repeat(3,70px) 70px;align-items:center;gap:8px;background:#181818;padding:10px 14px;font-family:var(--font-mono);font-size:12px}
+.rail-row:nth-child(even){background:#141414}
+.rail-header{background:#0a0a0a!important;font-size:9px;letter-spacing:1.5px;color:var(--muted);text-transform:uppercase}
+.rail-input{background:#0a0a0a;border:1px solid var(--border);color:var(--text);padding:5px 8px;width:60px;font-size:12px;text-align:center;outline:none;font-family:inherit}
+.rail-input:focus{border-color:var(--accent)}
+.rail-remain{font-family:var(--font-display);font-size:18px}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="logo" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+    <svg class="logo-svg" viewBox="0 0 160 155" xmlns="http://www.w3.org/2000/svg" fill="none">
+      <polygon points="80,130 120,108 120,118 80,140 40,118 40,108" fill="#C4714A" opacity=".25"/>
+      <polygon points="80,112 120,90 120,100 80,122 40,100 40,90" fill="#C4714A" opacity=".42"/>
+      <polygon points="80,94 120,72 120,82 80,104 40,82 40,72" fill="#C4714A" opacity=".6"/>
+      <polygon points="80,76 120,54 120,64 80,86 40,64 40,54" fill="#C4714A" opacity=".78"/>
+      <polygon points="80,58 120,36 120,46 80,68 40,46 40,36" fill="#C4714A" opacity=".92"/>
+      <polygon points="40,36 80,14 120,36 80,58" fill="#C4714A"/>
+      <rect x="68" y="4" width="24" height="10" rx="2" fill="#C4714A"/>
+      <polygon points="68,14 92,14 88,18 72,18" fill="#C4714A"/>
+    </svg>
+    <div class="logo-text">FIXTORY<span>.studio</span></div>
+  </div>
+  <ul class="nav-links">
+    <li><a href="#products">Shop</a></li>
+    <li><a href="#process">Process</a></li>
+    <li><a href="#custom">Custom</a></li>
+    <li><a href="#quote">Quote</a></li>
+    <li><a href="#contact">Contact</a></li>
+    <li><a href="javascript:void(0)" onclick="document.getElementById('admin-pw-overlay').classList.add('open');document.body.style.overflow='hidden';setTimeout(()=>document.getElementById('admin-pw-input').focus(),100)">Admin</a></li>
+  </ul>
+  <button class="nav-cta" onclick="openCart()">
+    Cart <span class="cart-count" id="cart-count">0</span>
+  </button>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-glow"></div>
+  <div class="hero-content">
+    <div class="hero-tag">Bangkok, Thailand · Premium 3D Printing</div>
+    <h1>FROM CRAFT<br><em>TO SMART</em><br>DESIGN</h1>
+    <p class="hero-desc">สินค้า 3D print คุณภาพสูง ออกแบบเฉพาะคุณ<br>ตั้งแต่ของตกแต่งบ้านไปจนถึง custom order</p>
+    <div class="hero-btns">
+      <button class="btn-primary" onclick="document.getElementById('products').scrollIntoView({behavior:'smooth'})">ดูสินค้าทั้งหมด</button>
+      <button class="btn-outline" onclick="document.getElementById('custom').scrollIntoView({behavior:'smooth'})">สั่ง Custom Order</button>
+    </div>
+    <div class="hero-stats">
+      <div class="stat-item"><span class="stat-num">32+</span><span class="stat-label">สินค้า</span></div>
+      <div class="stat-item"><span class="stat-num">3</span><span class="stat-label">ช่องทาง</span></div>
+      <div class="stat-item"><span class="stat-num">100%</span><span class="stat-label">ผลิตในไทย</span></div>
+    </div>
+  </div>
+
+  <div class="hero-visual">
+    <svg viewBox="0 0 520 480" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" fill="none">
+      <defs>
+        <style>
+          @keyframes arrowFlow{0%{stroke-dashoffset:20}100%{stroke-dashoffset:0}}
+          @keyframes layerUp3{0%{opacity:0;transform:translateY(3px)}12%{opacity:1;transform:translateY(0)}88%{opacity:1}100%{opacity:0}}
+          @keyframes nozzle3{0%,100%{transform:translateX(0)}25%{transform:translateX(36px)}75%{transform:translateX(36px)}50%{transform:translateX(72px)}}
+          @keyframes beam3{0%,35%,100%{opacity:0}18%,65%{opacity:1}}
+          @keyframes filamentGrow{0%{stroke-dashoffset:60;opacity:0}10%{opacity:1}60%{stroke-dashoffset:0;opacity:1}80%,100%{stroke-dashoffset:0;opacity:.85}}
+          @keyframes dripFall{0%,30%{opacity:0;transform:translateY(0)}40%{opacity:1;transform:translateY(0)}80%{opacity:.8;transform:translateY(18px)}100%{opacity:0;transform:translateY(24px)}}
+          @keyframes dripFall2{0%,45%{opacity:0;transform:translateY(0)}55%{opacity:.8;transform:translateY(0)}90%{opacity:.6;transform:translateY(14px)}100%{opacity:0;transform:translateY(18px)}}
+          @keyframes glowPulse{0%,100%{opacity:.4}50%{opacity:1}}
+          @keyframes screenBlink{0%,100%{opacity:.5}50%{opacity:1}}
+          @keyframes dotPulse{0%,100%{opacity:0}50%{opacity:1}}
+          @keyframes printerGlow{0%,100%{opacity:.1}50%{opacity:.28}}
+          .lyr3{animation:layerUp3 3s ease-in-out infinite;opacity:0}
+          .l1{animation-delay:.25s}.l2{animation-delay:.5s}.l3{animation-delay:.75s}
+          .l4{animation-delay:1s}.l5{animation-delay:1.25s}.l6{animation-delay:1.5s}
+          .l7{animation-delay:1.75s}.l8{animation-delay:2s}
+          .arr{stroke-dasharray:6,4;animation:arrowFlow .8s linear infinite}
+        </style>
+        <linearGradient id="screenGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#1e2a1e"/>
+          <stop offset="100%" stop-color="#0d150d"/>
+        </linearGradient>
+        <linearGradient id="productGrad2" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#1a1a2e"/>
+          <stop offset="100%" stop-color="#0d0d1a"/>
+        </linearGradient>
+        <radialGradient id="printerHalo" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#E8724A" stop-opacity=".18"/>
+          <stop offset="100%" stop-color="#E8724A" stop-opacity="0"/>
+        </radialGradient>
+        <filter id="softGlow2" x="-50%" y="-50%" width="200%" height="200%" color-interpolation-filters="sRGB">
+          <feGaussianBlur stdDeviation="2.5" result="b"/>
+          <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+      </defs>
+
+      <!-- ════════════════════════════════════ -->
+      <!-- STEP 01 — 3D Model (small, left)    -->
+      <!-- ════════════════════════════════════ -->
+      <g transform="translate(6,115)" opacity=".85">
+        <rect x="0" y="0" width="82" height="108" rx="6" fill="#161616" stroke="#3a3a3a" stroke-width="1.2"/>
+        <rect x="5" y="5" width="72" height="80" rx="3" fill="url(#screenGrad)"/>
+        <!-- wireframe cube -->
+        <g transform="translate(41,46)">
+          <polygon points="0,-20 17,-10 0,0 -17,-10" stroke="#E8724A" stroke-width="1.1" fill="rgba(232,114,74,.07)"/>
+          <polygon points="17,-10 17,10 0,20 0,0" stroke="#E8724A" stroke-width="1.1" fill="rgba(232,114,74,.04)"/>
+          <polygon points="-17,-10 -17,10 0,20 0,0" stroke="#E8724A" stroke-width="1.1" fill="rgba(0,0,0,.25)"/>
+          <circle cx="0" cy="-10" r="1.3" fill="#E8724A" opacity=".8"/>
+          <circle cx="8.5" cy="-15" r=".9" fill="#E8724A" opacity=".5"/>
+          <circle cx="-8.5" cy="-15" r=".9" fill="#E8724A" opacity=".5"/>
+        </g>
+        <!-- scanlines -->
+        <line x1="6" y1="18" x2="76" y2="18" stroke="#E8724A" stroke-width=".25" opacity=".2"/>
+        <line x1="6" y1="74" x2="76" y2="74" stroke="#E8724A" stroke-width=".25" opacity=".15"/>
+        <!-- toolbar -->
+        <circle cx="12" cy="78" r="2.5" fill="#E8724A" opacity=".5" style="animation:screenBlink 1.5s infinite"/>
+        <circle cx="21" cy="78" r="2.5" fill="#444" opacity=".4"/>
+        <!-- stand -->
+        <rect x="33" y="108" width="16" height="6" rx="1.5" fill="#222" stroke="#333" stroke-width=".7"/>
+        <rect x="24" y="114" width="34" height="4" rx="2" fill="#252525" stroke="#333" stroke-width=".7"/>
+        <!-- label -->
+        <text x="41" y="132" font-size="6.5" fill="#E8724A" text-anchor="middle" font-family="monospace" letter-spacing="1" opacity=".65">STEP 01</text>
+        <text x="41" y="142" font-size="8" fill="rgba(240,237,232,.65)" text-anchor="middle">3D Model</text>
+      </g>
+
+      <!-- ARROW 1 -->
+      <g transform="translate(92,168)">
+        <line x1="0" y1="0" x2="28" y2="0" stroke="#E8724A" stroke-width="1.3" stroke-linecap="round" class="arr"/>
+        <polygon points="26,-3.5 36,0 26,3.5" fill="#E8724A"/>
+        <text x="18" y="-7" font-size="5.5" fill="rgba(240,237,232,.3)" text-anchor="middle" font-family="monospace">ส่งเข้า</text>
+      </g>
+
+      <!-- ════════════════════════════════════ -->
+      <!-- STEP 02 — PRINTER (LARGE, center)   -->
+      <!-- ════════════════════════════════════ -->
+      <g transform="translate(130,18)">
+
+        <!-- halo glow behind printer -->
+        <ellipse cx="122" cy="200" rx="110" ry="90" fill="url(#printerHalo)"
+                 style="animation:printerGlow 3s ease-in-out infinite"/>
+
+        <!-- label -->
+        <text x="122" y="16" font-size="8" fill="#E8724A" text-anchor="middle"
+              font-family="monospace" letter-spacing="2" opacity=".85">STEP 02</text>
+        <text x="122" y="29" font-size="11" fill="rgba(240,237,232,.9)" text-anchor="middle"
+              font-weight="600">พิมพ์ 3D</text>
+
+        <!-- outer frame box -->
+        <rect x="10" y="35" width="224" height="260" rx="10" fill="rgba(255,255,255,.02)"
+              stroke="#E8724A" stroke-width="1" opacity=".35"/>
+
+        <!-- frame rails -->
+        <line x1="28" y1="48" x2="28" y2="272" stroke="#3a3a3a" stroke-width="4"/>
+        <line x1="216" y1="48" x2="216" y2="272" stroke="#3a3a3a" stroke-width="4"/>
+        <!-- top bar -->
+        <rect x="24" y="43" width="196" height="10" rx="5" fill="#2a2a2a" stroke="#555" stroke-width="1"/>
+        <!-- corner bolts -->
+        <circle cx="33" cy="48" r="3.5" fill="#3a3a3a" stroke="#666" stroke-width=".8"/>
+        <circle cx="211" cy="48" r="3.5" fill="#3a3a3a" stroke="#666" stroke-width=".8"/>
+
+        <!-- spool (top right) -->
+        <g transform="translate(196,74)">
+          <ellipse cx="0" cy="0" rx="20" ry="7" fill="#1e1e1e" stroke="#444" stroke-width="1"/>
+          <rect x="-20" y="-20" width="40" height="40" rx="4" fill="none" stroke="#333" stroke-width=".9"/>
+          <ellipse cx="0" cy="0" rx="12" ry="4.5" fill="#252525" stroke="#E8724A" stroke-width=".8" opacity=".6"/>
+          <ellipse cx="0" cy="0" rx="5" ry="2" fill="#1a1a1a" stroke="#E8724A" stroke-width="1"/>
+          <text x="0" y="1.8" font-size="5" fill="#E8724A" text-anchor="middle" font-family="monospace">PLA</text>
+          <ellipse cx="0" cy="-20" rx="20" ry="7" fill="#1e1e1e" stroke="#444" stroke-width="1"/>
+          <text x="0" y="-22" font-size="4" fill="#E8724A" text-anchor="middle" font-family="monospace" opacity=".5">Matte</text>
+          <!-- filament path -->
+          <path d="M-16,0 Q-40,10 -68,18" stroke="#E8724A" stroke-width="1" stroke-dasharray="3,3" opacity=".4"/>
+        </g>
+
+        <!-- honeycomb accent (left side) -->
+        <g opacity=".3">
+          <polygon points="14,55 21,51 28,55 28,63 21,67 14,63" stroke="#E8724A" stroke-width="1" fill="none"/>
+          <polygon points="28,55 35,51 42,55 42,63 35,67 28,63" stroke="#E8724A" stroke-width="1" fill="none"/>
+          <polygon points="21,67 28,63 35,67 35,75 28,79 21,75" stroke="#E8724A" stroke-width="1" fill="none"/>
+          <polygon points="14,79 21,75 28,79 28,87 21,91 14,87" stroke="#E8724A" stroke-width="1" fill="none"/>
+        </g>
+
+        <!-- gantry X rod -->
+        <rect x="26" y="100" width="192" height="6" rx="3" fill="#2a2a2a" stroke="#555" stroke-width=".9"/>
+
+        <!-- PRINT HEAD -->
+        <g style="animation:nozzle3 3s ease-in-out infinite">
+          <!-- carriage body -->
+          <rect x="88" y="82" width="46" height="34" rx="5" fill="#202020" stroke="#4a4a4a" stroke-width="1"/>
+          <!-- fan -->
+          <circle cx="111" cy="94" r="10" fill="#181818" stroke="#E8724A" stroke-width="1.1"/>
+          <line x1="111" y1="85" x2="111" y2="103" stroke="#E8724A" stroke-width=".9" opacity=".65"/>
+          <line x1="102" y1="94" x2="120" y2="94" stroke="#E8724A" stroke-width=".9" opacity=".65"/>
+          <line x1="104" y1="87" x2="118" y2="101" stroke="#E8724A" stroke-width=".7" opacity=".35"/>
+          <line x1="118" y1="87" x2="104" y2="101" stroke="#E8724A" stroke-width=".7" opacity=".35"/>
+          <circle cx="111" cy="94" r="3" fill="#E8724A" opacity=".55"/>
+          <!-- heat block -->
+          <rect x="103" y="114" width="16" height="9" rx="2" fill="#E8724A" opacity=".6"/>
+          <!-- nozzle tip -->
+          <polygon points="104,123 118,123 115,134 107,134" fill="#E8724A"/>
+          <!-- filament strand — main line with grow animation -->
+          <line x1="111" y1="134" x2="111" y2="175"
+                stroke="#E8724A" stroke-width="2.2" stroke-linecap="round"
+                stroke-dasharray="60" stroke-dashoffset="60"
+                filter="url(#softGlow2)"
+                style="animation:filamentGrow 3s ease-in-out infinite"/>
+          <!-- filament core highlight -->
+          <line x1="111" y1="134" x2="111" y2="175"
+                stroke="rgba(255,200,160,.55)" stroke-width=".8" stroke-linecap="round"
+                stroke-dasharray="60" stroke-dashoffset="60"
+                style="animation:filamentGrow 3s ease-in-out infinite"/>
+          <!-- drip drop 1 -->
+          <circle cx="111" cy="178" r="2.8" fill="#E8724A"
+                  style="animation:dripFall 3s ease-in infinite;opacity:0"
+                  filter="url(#softGlow2)"/>
+          <!-- drip drop 2 (offset) -->
+          <circle cx="111" cy="175" r="1.8" fill="#E8724A" opacity=".7"
+                  style="animation:dripFall2 3s ease-in infinite"/>
+          <!-- nozzle heat glow -->
+          <circle cx="111" cy="134" r="6" fill="#E8724A" opacity=".12"
+                  style="animation:glowPulse 1.5s ease-in-out infinite"/>
+        </g>
+
+        <!-- BED isometric -->
+        <polygon points="28,260 122,210 216,260 122,310" fill="#1e1e1e" stroke="#E8724A" stroke-width="1.2"/>
+        <polygon points="216,260 216,278 122,328 122,310" fill="#161616" stroke="#2a2a2a" stroke-width=".9"/>
+        <polygon points="28,260 28,278 122,328 122,310" fill="#1a1a1a" stroke="#2a2a2a" stroke-width=".9"/>
+        <!-- bed grid -->
+        <line x1="60" y1="247" x2="154" y2="280" stroke="#E8724A" stroke-width=".5" opacity=".22"/>
+        <line x1="90" y1="235" x2="184" y2="268" stroke="#E8724A" stroke-width=".5" opacity=".22"/>
+        <line x1="72" y1="272" x2="122" y2="253" stroke="#E8724A" stroke-width=".5" opacity=".22"/>
+        <line x1="122" y1="272" x2="172" y2="253" stroke="#E8724A" stroke-width=".5" opacity=".22"/>
+
+        <!-- PRINT LAYERS (8 layers!) -->
+        <g class="lyr3 l1"><polygon points="76,252 122,232 168,252 122,272" fill="#E8724A" opacity=".95"/><polygon points="168,252 168,259 122,279 122,272" fill="#b8562e" opacity=".95"/><polygon points="76,252 76,259 122,279 122,272" fill="#cf6438" opacity=".95"/></g>
+        <g class="lyr3 l2"><polygon points="76,244 122,224 168,244 122,264" fill="#E8724A" opacity=".88"/><polygon points="168,244 168,251 122,271 122,264" fill="#b8562e" opacity=".88"/><polygon points="76,244 76,251 122,271 122,264" fill="#cf6438" opacity=".88"/></g>
+        <g class="lyr3 l3"><polygon points="76,236 122,216 168,236 122,256" fill="#E8724A" opacity=".82"/><polygon points="168,236 168,243 122,263 122,256" fill="#b8562e" opacity=".82"/><polygon points="76,236 76,243 122,263 122,256" fill="#cf6438" opacity=".82"/></g>
+        <g class="lyr3 l4"><polygon points="76,228 122,208 168,228 122,248" fill="#E8724A" opacity=".74"/><polygon points="168,228 168,235 122,255 122,248" fill="#b8562e" opacity=".74"/><polygon points="76,228 76,235 122,255 122,248" fill="#cf6438" opacity=".74"/></g>
+        <g class="lyr3 l5"><polygon points="76,220 122,200 168,220 122,240" fill="#E8724A" opacity=".64"/><polygon points="168,220 168,227 122,247 122,240" fill="#b8562e" opacity=".64"/><polygon points="76,220 76,227 122,247 122,240" fill="#cf6438" opacity=".64"/></g>
+        <g class="lyr3 l6"><polygon points="76,212 122,192 168,212 122,232" fill="#E8724A" opacity=".52"/><polygon points="168,212 168,219 122,239 122,232" fill="#b8562e" opacity=".52"/><polygon points="76,212 76,219 122,239 122,232" fill="#cf6438" opacity=".52"/></g>
+        <g class="lyr3 l7"><polygon points="76,204 122,184 168,204 122,224" fill="#E8724A" opacity=".4"/><polygon points="168,204 168,211 122,231 122,224" fill="#b8562e" opacity=".4"/><polygon points="76,204 76,211 122,231 122,224" fill="#cf6438" opacity=".4"/></g>
+        <g class="lyr3 l8"><polygon points="76,196 122,176 168,196 122,216" fill="#E8724A" opacity=".3"/><polygon points="168,196 168,203 122,223 122,216" fill="#b8562e" opacity=".3"/><polygon points="76,196 76,203 122,223 122,216" fill="#cf6438" opacity=".3"/></g>
+
+        <!-- layer count badge -->
+
+
+        <!-- bottom label -->
+        <text x="122" y="345" font-size="7" fill="rgba(240,237,232,.25)" text-anchor="middle"
+              font-family="monospace" letter-spacing="1.5">FIXTORY.STUDIO</text>
+      </g>
+
+      <!-- ARROW 2 -->
+      <g transform="translate(392,168)">
+        <line x1="0" y1="0" x2="28" y2="0" stroke="#E8724A" stroke-width="1.3" stroke-linecap="round" class="arr"/>
+        <polygon points="26,-3.5 36,0 26,3.5" fill="#E8724A"/>
+        <text x="18" y="-7" font-size="5.5" fill="rgba(240,237,232,.3)" text-anchor="middle" font-family="monospace">ได้รับ</text>
+      </g>
+
+      <!-- ════════════════════════════════════ -->
+      <!-- STEP 03 — Product (small, right)    -->
+      <!-- ════════════════════════════════════ -->
+      <g transform="translate(430,115)" opacity=".85">
+        <rect x="0" y="0" width="82" height="108" rx="6" fill="#141414" stroke="#3a3a3a" stroke-width="1.2"/>
+        <rect x="5" y="5" width="72" height="80" rx="3" fill="#0f0f0f" stroke="#222" stroke-width=".7"/>
+        <!-- keycap wireframe — 3 empty outline keycaps + tray -->
+        <!-- tray outline -->
+        <rect x="12" y="54" width="58" height="20" rx="4" fill="none" stroke="#E8724A" stroke-width=".9" opacity=".5" stroke-dasharray="3,2"/>
+        <!-- keycap 1 outline -->
+        <rect x="14" y="47" width="15" height="15" rx="3" fill="rgba(232,114,74,.06)" stroke="#E8724A" stroke-width="1" opacity=".8"/>
+        <text x="21.5" y="58" font-size="7" fill="#E8724A" text-anchor="middle" font-family="monospace" opacity=".7">Y</text>
+        <rect x="33" y="47" width="15" height="15" rx="3" fill="rgba(232,114,74,.06)" stroke="#E8724A" stroke-width="1" opacity=".8"/>
+        <text x="40.5" y="58" font-size="7" fill="#E8724A" text-anchor="middle" font-family="monospace" opacity=".7">O</text>
+        <rect x="52" y="47" width="15" height="15" rx="3" fill="rgba(232,114,74,.06)" stroke="#E8724A" stroke-width="1" opacity=".8"/>
+        <text x="59.5" y="58" font-size="7" fill="#E8724A" text-anchor="middle" font-family="monospace" opacity=".7">U</text>
+        <!-- cord outline -->
+        <path d="M41,47 Q41,33 41,25 Q41,16 34,13 Q28,10 28,18" stroke="#E8724A" stroke-width="1.5" stroke-linecap="round" fill="none" opacity=".45" stroke-dasharray="3,2"/>
+        <circle cx="28" cy="18" r="3.5" fill="none" stroke="#E8724A" stroke-width="1" opacity=".45"/>
+        <!-- custom label -->
+        <text x="41" y="37" font-size="4.5" fill="#E8724A" text-anchor="middle" font-family="monospace" letter-spacing="1" opacity=".5">YOUR NAME</text>
+        <!-- corner marks -->
+        <line x1="6" y1="9" x2="11" y2="9" stroke="#E8724A" stroke-width=".7" opacity=".45"/>
+        <line x1="6" y1="9" x2="6" y2="14" stroke="#E8724A" stroke-width=".7" opacity=".45"/>
+        <line x1="76" y1="9" x2="71" y2="9" stroke="#E8724A" stroke-width=".7" opacity=".45"/>
+        <line x1="76" y1="9" x2="76" y2="14" stroke="#E8724A" stroke-width=".7" opacity=".45"/>
+        <!-- caption strip -->
+        <rect x="0" y="91" width="82" height="17" rx="0" fill="#111"/>
+        <rect x="0" y="91" width="82" height="1" fill="#E8724A" opacity=".25"/>
+        <text x="41" y="100.5" font-size="5.5" fill="#E8724A" text-anchor="middle" font-family="monospace" font-weight="bold">FIXTORY.STUDIO</text>
+        <text x="41" y="106.5" font-size="4.5" fill="rgba(240,237,232,.35)" text-anchor="middle" font-family="monospace">Made in Thailand 🇹🇭</text>
+        <!-- dots -->
+        <circle cx="4" cy="4" r="1.5" fill="#E8724A" style="animation:dotPulse 2s infinite;opacity:0"/>
+        <circle cx="78" cy="85" r="1.5" fill="#E8724A" style="animation:dotPulse 3s infinite 1s;opacity:0"/>
+        <!-- label -->
+        <text x="41" y="126" font-size="6.5" fill="#E8724A" text-anchor="middle" font-family="monospace" letter-spacing="1" opacity=".65">STEP 03</text>
+        <text x="41" y="136" font-size="8" fill="rgba(240,237,232,.65)" text-anchor="middle">สินค้า</text>
+      </g>
+
+    <text x="252" y="375" font-size="9" fill="#E8724A" text-anchor="middle" font-family="monospace" letter-spacing="3" opacity=".55">Layer by Layer</text>
+    </svg>
+  </div></section>
+
+<!-- PRODUCTS -->
+<section class="products-section" id="products">
+  <div class="section-tag">Collections</div>
+  <div class="section-title">SHOP</div>
+  <div class="section-sub">สินค้า Priority 1 — Evergreen · พร้อมส่ง · Made to Order</div>
+
+  <div class="filter-bar">
+    <button class="filter-btn active" onclick="filterProducts('all',this)">ทั้งหมด</button>
+    <button class="filter-btn" onclick="filterProducts('storage',this)">Storage</button>
+    <button class="filter-btn" onclick="filterProducts('decor',this)">Home Decor</button>
+    <button class="filter-btn" onclick="filterProducts('travel',this)">Travel</button>
+    <button class="filter-btn" onclick="filterProducts('workspace',this)">Workspace</button>
+    <button class="filter-btn" onclick="filterProducts('accessories',this)">Accessories</button>
+    <button class="filter-btn" onclick="filterProducts('premium',this)">Premium</button>
+  </div>
+
+  <div class="products-grid" id="products-grid"></div>
+</section>
+
+<!-- PROCESS -->
+<section class="process-section" id="process">
+  <div class="section-tag">How it works</div>
+  <div class="section-title">PROCESS</div>
+  <div class="section-sub">จากไอเดียถึงมือคุณ ใน 4 ขั้นตอน</div>
+  <div class="process-grid">
+    <div class="process-step">
+      <div class="process-num">01</div>
+      <div class="process-title">เลือกสินค้า / Custom</div>
+      <div class="process-desc">เลือกจากคอลเลกชั่น หรือส่ง STL file มาเพื่อ custom order ตามต้องการ</div>
+    </div>
+    <div class="process-step">
+      <div class="process-num">02</div>
+      <div class="process-title">ยืนยันราคาและดีไซน์</div>
+      <div class="process-desc">เราคำนวณราคาให้โดยอัตโนมัติ หรือ admin review สำหรับ custom งาน</div>
+    </div>
+    <div class="process-step">
+      <div class="process-num">03</div>
+      <div class="process-title">พิมพ์และ Finishing</div>
+      <div class="process-desc">พิมพ์ด้วยเครื่อง Bambu Lab A1 Combo ความละเอียดสูง ผ่าน QC ทุกชิ้น</div>
+    </div>
+    <div class="process-step">
+      <div class="process-num">04</div>
+      <div class="process-title">จัดส่งถึงบ้าน</div>
+      <div class="process-desc">แพ็คอย่างดี ส่งทั่วประเทศ ติดตาม order status ได้ real-time</div>
+    </div>
+  </div>
+</section>
+
+
+<!-- CUSTOM QUOTE -->
+<section class="quote-section" id="quote">
+  <div class="section-tag">Custom Order</div>
+  <div class="section-title">GET A QUOTE</div>
+  <div class="section-sub">ประเมินราคา custom order เบื้องต้น — ไม่ต้องรู้ขนาดแน่ชัด</div>
+
+  <div class="quote-grid">
+    <div class="quote-panel">
+      <div class="section-tag" style="margin-bottom:14px">ขนาดสินค้า</div>
+      <span class="quote-label">ระบุขนาดสินค้า (cm)</span>
+      <span class="quote-hint">ประมาณได้ — ไม่ต้องแม่นยำ 100%</span>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:16px">
+        <div>
+          <div style="font-size:10px;color:var(--muted);letter-spacing:1px;font-family:var(--font-mono);margin-bottom:6px">กว้าง (cm)</div>
+          <input type="number" id="q-w" value="10" min="1" max="100" step="0.5" oninput="calcQuote()" style="background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:8px 12px;font-family:var(--font-body);font-size:14px;width:100%;outline:none;transition:border-color .2s" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'">
+        </div>
+        <div>
+          <div style="font-size:10px;color:var(--muted);letter-spacing:1px;font-family:var(--font-mono);margin-bottom:6px">ยาว (cm)</div>
+          <input type="number" id="q-d" value="10" min="1" max="100" step="0.5" oninput="calcQuote()" style="background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:8px 12px;font-family:var(--font-body);font-size:14px;width:100%;outline:none;transition:border-color .2s" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'">
+        </div>
+        <div>
+          <div style="font-size:10px;color:var(--muted);letter-spacing:1px;font-family:var(--font-mono);margin-bottom:6px">สูง (cm)</div>
+          <input type="number" id="q-h" value="5" min="0.5" max="100" step="0.5" oninput="calcQuote()" style="background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:8px 12px;font-family:var(--font-body);font-size:14px;width:100%;outline:none;transition:border-color .2s" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'">
+        </div>
+      </div>
+      <div id="q-size-note" style="font-size:11px;color:rgba(240,237,232,.35);font-family:var(--font-mono);margin-top:8px;margin-bottom:12px"></div>
+      <div style="margin-bottom:16px">
+        <div style="font-size:10px;color:var(--muted);letter-spacing:1px;font-family:var(--font-mono);margin-bottom:6px">เวลาพิมพ์จริง (ชม.) — ไม่บังคับ</div>
+        <div style="display:flex;align-items:center;gap:10px">
+          <input type="number" id="q-hrs" placeholder="เช่น 5.5" min="0.1" max="100" step="0.5" oninput="calcQuote()" style="background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:8px 12px;font-family:var(--font-body);font-size:14px;width:120px;outline:none;transition:border-color .2s" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'">
+          <span style="font-size:11px;color:rgba(240,237,232,.25);font-family:var(--font-mono)">ถ้ากรอกจะใช้ตัวเลขนี้แทนการประมาณ</span>
+        </div>
+      </div>
+      <div class="section-tag" style="margin-bottom:14px">ความซับซ้อน</div>
+      <span class="quote-label">งานมีรายละเอียดมากแค่ไหน?</span>
+      <div class="quote-pills" id="q-detail">
+        <button class="quote-pill on" onclick="qDt('simple',this)">เรียบง่าย</button>
+        <button class="quote-pill" onclick="qDt('medium',this)">มีลวดลายบ้าง</button>
+        <button class="quote-pill" onclick="qDt('complex',this)">ละเอียดมาก</button>
+      </div>
+    </div>
+    <div class="quote-panel">
+      <div class="section-tag" style="margin-bottom:14px">จำนวนสี</div>
+      <div class="quote-pills" id="q-col">
+        <button class="quote-pill on" onclick="qCol(1,this)">1 สี</button>
+        <button class="quote-pill" onclick="qCol(2,this)">2 สี</button>
+        <button class="quote-pill" onclick="qCol(3,this)">3 สี</button>
+        <button class="quote-pill" onclick="qCol(4,this)">4+ สี</button>
+      </div>
+      <div class="section-tag" style="margin:20px 0 14px">จำนวนชิ้น</div>
+      <div class="quote-qty">
+        <button class="quote-qty-btn" onclick="qQty(-1)">−</button>
+        <span class="quote-qty-num" id="q-qty-num">1</span>
+        <button class="quote-qty-btn" onclick="qQty(1)">+</button>
+        <span class="quote-qty-note">ชิ้น · ยิ่งเยอะยิ่งประหยัด</span>
+      </div>
+      <div class="section-tag" style="margin-bottom:14px">วัสดุเพิ่มเติม</div>
+      <div class="quote-pills" id="q-mat">
+        <button class="quote-pill on" onclick="qMat(0,this)">ไม่มี</button>
+        <button class="quote-pill" onclick="qMat(16,this)">แม่เหล็ก (+฿16)</button>
+        <button class="quote-pill" onclick="qMat(25,this)">น็อต/ชิ้นส่วน (+฿25)</button>
+        <button class="quote-pill" onclick="qMat(-1,this)">วัสดุพิเศษ (LED ฯลฯ)</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="q-normal-result">
+    <div class="quote-result">
+      <div class="quote-rc accent">
+        <div class="quote-rl">ราคาประมาณ / ชิ้น</div>
+        <div class="quote-rv" id="q-unit">฿0</div>
+        <div class="quote-rs" id="q-unit-s">custom +30%</div>
+      </div>
+      <div class="quote-rc">
+        <div class="quote-rl">ราคารวม <span id="q-qty-label">1 ชิ้น</span></div>
+        <div class="quote-rv" id="q-total">฿0</div>
+        <div class="quote-rs">ก่อนค่าจัดส่ง</div>
+      </div>
+      <div class="quote-rc">
+        <div class="quote-rl">เวลาผลิต</div>
+        <div class="quote-rv" id="q-time">—</div>
+        <div class="quote-rs">วันทำการ</div>
+      </div>
+    </div>
+    <div id="q-tag" class="quote-tag"></div>
+    <button class="quote-cta" onclick="quoteCheckout()">ติดต่อสั่งซื้อ →</button>
+  </div>
+  <div id="q-order-form" style="display:none;margin-top:2px;background:var(--bg2);border:1px solid var(--border);padding:32px">
+    <div class="section-tag" style="margin-bottom:10px">ขั้นตอนถัดไป</div>
+    <div class="section-title" style="font-size:clamp(28px,4vw,42px);margin-bottom:8px">MAKE IT YOURS</div>
+    <div class="section-sub" style="margin-bottom:24px">กรอกรายละเอียด — เราจะติดต่อกลับภายใน 24 ชม.</div>
+    <div id="q-prefill-note" style="background:rgba(232,133,90,.08);border:1px solid rgba(232,133,90,.2);padding:14px 18px;font-family:var(--font-mono);font-size:11px;color:rgba(240,237,232,.6);line-height:1.8;margin-bottom:20px;white-space:pre-line"></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+      <div class="form-group">
+        <label>ชื่อ-นามสกุล *</label>
+        <input type="text" id="qf-name" placeholder="ชื่อผู้สั่ง">
+      </div>
+      <div class="form-group">
+        <label>Line / เบอร์โทร *</label>
+        <input type="text" id="qf-contact" placeholder="สำหรับติดต่อกลับ">
+      </div>
+    </div>
+    <div class="form-group" style="margin-top:12px">
+      <label>วัสดุที่ต้องการ</label>
+      <select id="qf-material">
+        <option>PLA+ (แนะนำสำหรับงานทั่วไป)</option>
+        <option>PETG (ทนความร้อน)</option>
+        <option>Marble PLA (ลายหินอ่อน)</option>
+        <option>Panchroma Silk (ผิวมันวาว)</option>
+      </select>
+    </div>
+    <div class="form-group" style="margin-top:12px">
+      <label>รายละเอียดเพิ่มเติม / ไฟล์ STL</label>
+      <textarea id="qf-detail" placeholder="อธิบายสิ่งที่ต้องการเพิ่มเติม หรือแจ้ง Line เพื่อส่ง STL file..." style="min-height:90px"></textarea>
+    </div>
+    <button class="btn-primary" style="width:100%;margin-top:16px" onclick="submitQuoteForm()">ส่ง Custom Request →</button>
+  </div>
+  <div id="q-special-result" style="display:none;background:rgba(232,133,90,.06);border:1px solid rgba(232,133,90,.2);padding:24px;text-align:center;margin-top:1px">
+    <div style="font-family:var(--font-display);font-size:28px;color:var(--accent);letter-spacing:2px;margin-bottom:8px">งานวัสดุพิเศษ</div>
+    <div style="font-size:13px;color:rgba(240,237,232,.6);margin-bottom:6px">ป้ายไฟ LED · งาน electronics · วัสดุ custom</div>
+    <div style="font-size:12px;color:var(--muted);font-family:var(--font-mono);margin-bottom:20px">ราคาขึ้นกับวัสดุและ spec จริง · ไม่สามารถ quote อัตโนมัติได้</div>
+    <button class="quote-cta" style="max-width:320px;margin:0 auto;display:block" onclick="quoteCheckout()">ติดต่อสอบถามราคา →</button>
+  </div>
+  <div class="quote-note">ราคานี้เป็นการประมาณเบื้องต้น · ราคาจริงอาจแตกต่างตามความซับซ้อนของงาน<br>ทีมงานจะยืนยันราคาสุดท้ายหลังรับ brief ครับ</div>
+</section>
+
+<!-- CUSTOM ORDER -->
+<div id="custom"></div>
+
+<!-- FOOTER -->
+<footer id="contact">
+  <div>
+    <div class="logo" style="gap:8px">
+    <svg style="width:24px;height:24px" viewBox="0 0 160 155" xmlns="http://www.w3.org/2000/svg" fill="none">
+      <polygon points="80,130 120,108 120,118 80,140 40,118 40,108" fill="#C4714A" opacity=".25"/>
+      <polygon points="80,112 120,90 120,100 80,122 40,100 40,90" fill="#C4714A" opacity=".42"/>
+      <polygon points="80,94 120,72 120,82 80,104 40,82 40,72" fill="#C4714A" opacity=".6"/>
+      <polygon points="80,76 120,54 120,64 80,86 40,64 40,54" fill="#C4714A" opacity=".78"/>
+      <polygon points="80,58 120,36 120,46 80,68 40,46 40,36" fill="#C4714A" opacity=".92"/>
+      <polygon points="40,36 80,14 120,36 80,58" fill="#C4714A"/>
+      <rect x="68" y="4" width="24" height="10" rx="2" fill="#C4714A"/>
+      <polygon points="68,14 92,14 88,18 72,18" fill="#C4714A"/>
+    </svg>
+    <div class="footer-logo">FIXTORY<span>.studio</span></div>
+  </div>
+    <div style="font-size:11px;color:var(--muted);margin-top:6px">Bangkok, Thailand · Made with ❤️ & PLA+</div>
+  </div>
+  <div class="footer-links">
+    <a href="#">Shopee</a>
+    <a href="#">TikTok Shop</a>
+    <a href="#">Line</a>
+    <a href="#">Instagram</a>
+  </div>
+  <div class="footer-copy">© 2026 Fixtory.studio. All rights reserved.</div>
+</footer>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal" onclick="closeModal(event)">
+  <div class="modal" id="modal-box">
+    <button class="modal-close" onclick="document.getElementById('modal').classList.remove('open')">✕</button>
+    <div class="modal-body">
+      <div class="modal-visual" id="modal-emoji">📦</div>
+      <div class="modal-info">
+        <div class="modal-cat" id="modal-cat"></div>
+        <div class="modal-name" id="modal-name"></div>
+        <div class="modal-desc" id="modal-desc"></div>
+        <div class="modal-points" id="modal-points"></div>
+        <!-- KEYCAP CONFIGURATOR (shown only for Alphabet Clicky Keychain) -->
+        <div class="keycap-config" id="keycap-config">
+          <div class="keycap-qty-row">
+            <span class="keycap-qty-label">จำนวน keycap</span>
+            <button class="keycap-qty-btn" onclick="changeKeycapQty(-1)">−</button>
+            <span class="keycap-qty-num" id="keycap-qty">1</span>
+            <button class="keycap-qty-btn" onclick="changeKeycapQty(1)">+</button>
+            <span class="keycap-price-live" id="keycap-price-live"></span>
+          </div>
+          <div class="keycap-slots" id="keycap-slots"></div>
+          <div class="keycap-pick-hint" id="keycap-pick-hint"></div>
+        </div>
+        <div class="color-picker-section">
+          <div class="color-picker-label">เลือกสี</div>
+          <div class="brand-tabs" id="m-brand-tabs">
+            <button class="brand-tab active" onclick="filterBrand('Bambu Matte')">Bambu Matte</button>
+            <button class="brand-tab" onclick="filterBrand('eSUN Matte')">eSUN Matte</button>
+            <button class="brand-tab" onclick="filterBrand('Polymaker Matte')">Polymaker Matte</button>
+          </div>
+          <div class="color-swatches" id="m-color-swatches"></div>
+          <div class="selected-color-name" id="m-color-name">— เลือกสีที่ต้องการ —</div>
+        </div>
+        <div style="text-align:center;padding:16px 0 8px" id="m-price-block">
+          <div style="font-size:12px;color:rgba(240,237,232,.5);margin-bottom:6px;letter-spacing:1px;text-transform:uppercase">ราคา</div>
+          <div id="m-price-main"></div>
+          <div style="font-size:11px;color:rgba(240,237,232,.4);margin-top:4px">ราคาเดียวกันทุก platform · Shopee · TikTok</div>
+        </div>
+        <button class="modal-add" onclick="addToCartFromModal()">สั่งซื้อเลย</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+
+let selectedColor = null
+let currentBrand = 'Bambu Matte'
+
+const colorPalette = [
+  // ── Bambu Lab PLA Matte (official hex) ──
+  {hex:"#FFFFFF", name:"Ivory White",     brand:"Bambu Matte"},
+  {hex:"#CBC6B8", name:"Bone White",      brand:"Bambu Matte"},
+  {hex:"#E8DBB7", name:"Desert Tan",      brand:"Bambu Matte"},
+  {hex:"#D3B7A7", name:"Latte Brown",     brand:"Bambu Matte"},
+  {hex:"#AE835B", name:"Caramel",         brand:"Bambu Matte"},
+  {hex:"#B15533", name:"Terracotta",      brand:"Bambu Matte"},
+  {hex:"#7D6556", name:"Dark Brown",      brand:"Bambu Matte"},
+  {hex:"#4D3324", name:"Dark Chocolate",  brand:"Bambu Matte"},
+  {hex:"#AE96D4", name:"Lilac Purple",    brand:"Bambu Matte"},
+  {hex:"#E8AFCF", name:"Sakura Pink",     brand:"Bambu Matte"},
+  {hex:"#F99963", name:"Mandarin Orange", brand:"Bambu Matte"},
+  {hex:"#F7D959", name:"Lemon Yellow",    brand:"Bambu Matte"},
+  {hex:"#950051", name:"Plum",            brand:"Bambu Matte"},
+  {hex:"#DE4343", name:"Scarlet Red",     brand:"Bambu Matte"},
+  {hex:"#BB3D43", name:"Dark Red",        brand:"Bambu Matte"},
+  {hex:"#68724D", name:"Dark Green",      brand:"Bambu Matte"},
+  {hex:"#61C680", name:"Grass Green",     brand:"Bambu Matte"},
+  {hex:"#C2E189", name:"Apple Green",     brand:"Bambu Matte"},
+  {hex:"#A3D8E1", name:"Ice Blue",        brand:"Bambu Matte"},
+  {hex:"#56B7E6", name:"Sky Blue",        brand:"Bambu Matte"},
+  {hex:"#0078BF", name:"Marine Blue",     brand:"Bambu Matte"},
+  {hex:"#042F56", name:"Dark Blue",       brand:"Bambu Matte"},
+  {hex:"#9B9EA0", name:"Ash Gray",        brand:"Bambu Matte"},
+  {hex:"#757575", name:"Nardo Gray",      brand:"Bambu Matte"},
+  {hex:"#2C2C2C", name:"Charcoal",        brand:"Bambu Matte"},
+  // ── eSUN ePLA-Matte ──
+  {hex:"#F5F5F0", name:"Milky White",     brand:"eSUN Matte"},
+  {hex:"#1A1A1A", name:"Deep Black",      brand:"eSUN Matte"},
+  {hex:"#4A4A4A", name:"Dark Gray",       brand:"eSUN Matte"},
+  {hex:"#F5C5A3", name:"Peach Pink",      brand:"eSUN Matte"},
+  {hex:"#F5D78E", name:"Almond Yellow",   brand:"eSUN Matte"},
+  {hex:"#A8D8A8", name:"Mint Green",      brand:"eSUN Matte"},
+  {hex:"#ADD8C7", name:"Matcha Green",    brand:"eSUN Matte"},
+  {hex:"#E85C5C", name:"Strawberry Red",  brand:"eSUN Matte"},
+  {hex:"#F4914E", name:"Tangerine",       brand:"eSUN Matte"},
+  {hex:"#C8B4A0", name:"Light Khaki",     brand:"eSUN Matte"},
+  {hex:"#A8C8D8", name:"Light Blue",      brand:"eSUN Matte"},
+  {hex:"#C8A8C8", name:"Lilac",           brand:"eSUN Matte"},
+  // ── Polymaker Panchroma Matte (PolyTerra) ──
+  {hex:"#4C4E56", name:"Charcoal Black",  brand:"Polymaker Matte"},
+  {hex:"#FFFFFF", name:"Cotton White",    brand:"Polymaker Matte"},
+  {hex:"#9B9EA0", name:"Fossil Grey",     brand:"Polymaker Matte"},
+  {hex:"#0078BF", name:"Sapphire Blue",   brand:"Polymaker Matte"},
+  {hex:"#DE4343", name:"Lava Red",        brand:"Polymaker Matte"},
+  {hex:"#519F61", name:"Forest Green",    brand:"Polymaker Matte"},
+  {hex:"#FFE17F", name:"Savannah Yellow", brand:"Polymaker Matte"},
+  {hex:"#F99963", name:"Sunrise Orange",  brand:"Polymaker Matte"},
+  {hex:"#5AABB1", name:"Arctic Teal",     brand:"Polymaker Matte"},
+  {hex:"#AD7441", name:"Wood Brown",      brand:"Polymaker Matte"},
+  {hex:"#775C50", name:"Earth Brown",     brand:"Polymaker Matte"},
+  {hex:"#E0A8BB", name:"Sakura Pink",     brand:"Polymaker Matte"},
+  {hex:"#AE96D4", name:"Lavender Purple", brand:"Polymaker Matte"},
+  {hex:"#95C5D3", name:"Pastel Ice",      brand:"Polymaker Matte"},
+  {hex:"#FEE5A5", name:"Pastel Banana",   brand:"Polymaker Matte"},
+  {hex:"#FC6371", name:"Pastel Watermelon",brand:"Polymaker Matte"},
+  {hex:"#D3B7A7", name:"Pastel Peanut",   brand:"Polymaker Matte"},
+  {hex:"#F3D6E5", name:"Pastel Candy",    brand:"Polymaker Matte"},
+  {hex:"#BEC9A5", name:"Pastel Mint",     brand:"Polymaker Matte"},
+  {hex:"#F2B67A", name:"Pastel Peach",    brand:"Polymaker Matte"},
+  {hex:"#68724D", name:"Army Dark Green", brand:"Polymaker Matte"},
+  {hex:"#A78403", name:"Army Light Green",brand:"Polymaker Matte"},
+  {hex:"#7D6556", name:"Army Brown",      brand:"Polymaker Matte"},
+  {hex:"#DFC8B7", name:"Army Beige",      brand:"Polymaker Matte"},
+  {hex:"#BC3E44", name:"Army Red",        brand:"Polymaker Matte"},
+  {hex:"#375172", name:"Army Blue",       brand:"Polymaker Matte"},
+  {hex:"#AFA198", name:"Muted White",     brand:"Polymaker Matte"},
+  {hex:"#4E6A84", name:"Muted Blue",      brand:"Polymaker Matte"},
+  {hex:"#C44F26", name:"Muted Red",       brand:"Polymaker Matte"},
+  {hex:"#656D60", name:"Muted Green",     brand:"Polymaker Matte"},
+  {hex:"#7C5577", name:"Muted Purple",    brand:"Polymaker Matte"},
+]
+
+const products = [
+  // ── HIVE series ────────────────────────────────────────────
+  {id:1, name:"HIVE BOX", sortOrder:1, cat:"Storage & Organization", tag:"storage",
+   imgSrc:"hive_labeled.jpg", imgSrc2:"hive_set.jpg",
+   emoji:"🍯", badge:"evergreen", badgeLabel:"Evergreen",
+   desc:"กล่องเก็บของดีไซน์ Honeycomb สวยงาม พิมพ์จาก PLA+ คุณภาพสูง เหมาะจัดระเบียบโต๊ะทำงาน",
+   points:["ดีไซน์ Honeycomb สุดยูนีค","เลือกสีได้ตามต้องการ","PLA+ คุณภาพสูง","Made to Order ผลิตในไทย"],
+   web:199, shopee:199, tiktok:199},
+  {id:2, name:"HIVE Tray", sortOrder:2, cat:"Storage & Organization", tag:"storage",
+   imgSrc:"hive_labeled.jpg", imgSrc2:"hive_set.jpg",
+   emoji:"🐝", badge:"evergreen", badgeLabel:"Evergreen",
+   desc:"ถาดวางของดีไซน์ Honeycomb เข้าชุดกับ HIVE BOX จัดโต๊ะให้สวยงามเป็นระเบียบ",
+   points:["เข้าชุดกับ HIVE BOX","เลือกสีได้","PLA+ คุณภาพสูง","สั่งเป็น set ได้"],
+   web:199, shopee:199, tiktok:199},
+  {id:3, name:"HIVE Tall", sortOrder:3, cat:"Storage & Organization", tag:"storage",
+   imgSrc:"hive_labeled.jpg", imgSrc2:"hive_set.jpg",
+   emoji:"📐", badge:"evergreen", badgeLabel:"Evergreen",
+   desc:"กระบอกทรงสูง Honeycomb ใส่ปากกา ดินสอ แปรง หรือใช้เป็นแจกันตกแต่ง",
+   points:["ทรงสูงเก็บได้เยอะ","เข้าชุด HIVE series","เลือกสีได้","งานพิมพ์ละเอียด"],
+   web:249, shopee:249, tiktok:249},
+  {id:4, name:"HIVE Mini", sortOrder:4, cat:"Storage & Organization", tag:"storage",
+   imgSrc:"hive_labeled.jpg", imgSrc2:"hive_set.jpg",
+   emoji:"💛", badge:"evergreen", badgeLabel:"Evergreen",
+   desc:"กล่องมินิ Honeycomb เหมาะวางแหวน ต่างหู ของเล็กน้อย หรือทำเป็นของขวัญ",
+   points:["ขนาดมินิน่ารัก","เหมาะเป็นของขวัญ","เข้าชุด HIVE series","เลือกสีได้"],
+   web:249, shopee:249, tiktok:249},
+  {id:5, name:"HIVE Full Set (4 ชิ้น)", sortOrder:5, cat:"Storage & Organization", tag:"storage",
+   imgSrc:"hive_labeled.jpg", imgSrc2:"hive_set.jpg",
+   emoji:"🍯", badge:"new", badgeLabel:"New",
+   desc:"HIVE ครบ set 4 ชิ้น (BOX + Tray + Tall + Mini) ประหยัดกว่าซื้อแยก ฿117",
+   points:["ครบ 4 ชิ้นในชุดเดียว","ประหยัดกว่าซื้อแยก ฿117","เลือกสีได้","Made to Order ผลิตในไทย"],
+   web:699, shopee:699, tiktok:699},
+
+  // ── COOKIES series ─────────────────────────────────────────
+  {id:10, name:"COOKIES Tall", sortOrder:1, cat:"Storage & Organization", tag:"storage",
+   imgSrc:"cookies_labeled.jpg", imgSrc2:"cookies_set.jpg",
+   emoji:"🍪", badge:"new", badgeLabel:"New",
+   desc:"กระบอกใส่ดินสอ/ปากกา ดีไซน์ ribbed texture สวยงาม เข้าชุด COOKIES series",
+   points:["ดีไซน์ ribbed texture","เลือกสีได้","Made to Order","เข้าชุด COOKIES series"],
+   web:219, shopee:219, tiktok:219},
+  {id:11, name:"COOKIES L", sortOrder:2, cat:"Storage & Organization", tag:"storage",
+   imgSrc:"cookies_labeled.jpg", imgSrc2:"cookies_set.jpg",
+   emoji:"🍪", badge:"new", badgeLabel:"New",
+   desc:"กล่องฝาปิดทรงกลม size L ดีไซน์ beaded border สวยงาม เหมาะเก็บของชิ้นใหญ่",
+   points:["มีฝาปิด","ดีไซน์ beaded border","เลือกสีได้","เข้าชุด COOKIES series"],
+   web:299, shopee:299, tiktok:299},
+  {id:12, name:"COOKIES M", sortOrder:3, cat:"Storage & Organization", tag:"storage",
+   imgSrc:"cookies_labeled.jpg", imgSrc2:"cookies_set.jpg",
+   emoji:"🍪", badge:"new", badgeLabel:"New",
+   desc:"กล่องฝาปิดทรงกลม size M เหมาะเก็บเครื่องประดับ กำไล ต่างหู",
+   points:["มีฝาปิด","ดีไซน์ beaded border","เลือกสีได้","เหมาะเก็บเครื่องประดับ"],
+   web:219, shopee:219, tiktok:219},
+  {id:13, name:"COOKIES S", sortOrder:4, cat:"Storage & Organization", tag:"storage",
+   imgSrc:"cookies_labeled.jpg", imgSrc2:"cookies_set.jpg",
+   emoji:"🍪", badge:"new", badgeLabel:"New",
+   desc:"กล่องฝาปิดทรงกลม size S น่ารัก เหมาะเป็นของขวัญหรือเก็บของชิ้นเล็ก",
+   points:["มีฝาปิด","ขนาดเล็กน่ารัก","เลือกสีได้","เหมาะเป็นของขวัญ"],
+   web:149, shopee:149, tiktok:149},
+  {id:14, name:"COOKIES Full Set", sortOrder:5, cat:"Storage & Organization", tag:"storage",
+   imgSrc:"cookies_labeled.jpg", imgSrc2:"cookies_set.jpg",
+   emoji:"🍪", badge:"new", badgeLabel:"New",
+   desc:"COOKIES ครบ set 4 ชิ้น (Tall + L + M + S) ประหยัดกว่าซื้อแยก ฿137",
+   points:["ครบ 4 ชิ้นในชุดเดียว","ประหยัดกว่าซื้อแยก ฿137","เลือกสีได้","Made to Order"],
+   web:749, shopee:749, tiktok:749},
+
+  // ── Home Decor ──────────────────────────────────────────────
+  {id:6, name:"SHAPIES Magnet Vases 5pc", cat:"Home Decor", tag:"decor",
+   imgSrc:"shapies_5pc.jpg", imgSrc2:"shapies_4pc.jpg",
+   emoji:"🌸", badge:"new", badgeLabel:"New",
+   desc:"แจกันแม่เหล็กมินิ 5 ชิ้น คนละดีไซน์ ติดตู้เย็นหรือกระดานแม่เหล็กได้เลย เหมาะดอกไม้แห้ง",
+   points:["แม่เหล็กในตัว","ติดพื้นผิวโลหะได้","5 ดีไซน์ในชุดเดียว","เหมาะดอกไม้แห้ง","เลือกสีได้"],
+   web:159, shopee:159, tiktok:159},
+  {id:9, name:"SHAPIES Magnet Vases 4pc", cat:"Home Decor", tag:"decor",
+   imgSrc:"shapies_4pc.jpg", imgSrc2:"shapies_5pc.jpg",
+   emoji:"🌷", badge:"new", badgeLabel:"New",
+   desc:"แจกันแม่เหล็กมินิ 4 ชิ้น คนละดีไซน์ ติดตู้เย็นหรือกระดานแม่เหล็กได้เลย เหมาะดอกไม้แห้ง",
+   points:["แม่เหล็กในตัว","ติดพื้นผิวโลหะได้","4 ดีไซน์ในชุดเดียว","เลือกสีได้"],
+   web:159, shopee:159, tiktok:159},
+  {id:7, name:"RIPPLE", cat:"Home Decor", tag:"decor",
+   imgSrc:"ripple_1.jpg", imgSrc2:"ripple_2.jpg", imgSrc3:"ripple_3.jpg", imgSrc4:"ripple_4.jpg",
+   emoji:"😎", badge:"evergreen", badgeLabel:"Evergreen",
+   desc:"ที่วางแว่นกันแดดติดผนัง ดีไซน์ minimal สวยงาม รองรับหลายอัน ติดตั้งง่าย",
+   points:["ติดผนังได้เลย","รองรับหลายอัน","เลือกสีได้","Made to Order"],
+   web:199, shopee:199, tiktok:199},
+
+  // ── Travel ──────────────────────────────────────────────────
+  {id:50, name:"TRINKET", cat:"Travel", tag:"travel",
+   imgSrc:"trinket_1.jpg", imgSrc2:"trinket_2.jpg", imgSrc3:"trinket_3.jpg", imgSrc4:"trinket_4.jpg", imgSrc5:"trinket_5.jpg", imgSrc6:"trinket_6.jpg", imgSrc7:"trinket_7.jpg", imgSrc8:"trinket_8.jpg",
+   emoji:"💍", badge:"new", badgeLabel:"New",
+   desc:"กล่องเครื่องประดับพกพา ช่องแยกแหวน สร้อย ต่างหู ไม่พันกัน เหมาะเดินทาง",
+   points:["ช่องแยกเครื่องประดับ","compact พกพาง่าย","เหมาะเป็นของขวัญ","เลือกสีได้"],
+   web:249, shopee:249, tiktok:249},
+  {id:15, name:"ZUIGGLES Stackable", cat:"Storage & Organization", tag:"storage",
+   imgSrc:"zuiggles.jpg",
+   emoji:"🧱", badge:"new", badgeLabel:"New",
+   desc:"กล่อง stackable ซ้อนกันได้ ประหยัดพื้นที่ เหมาะจัดระเบียบโต๊ะ",
+   points:["ซ้อนกันได้","ประหยัดพื้นที่","เลือกสีได้","Made to Order"],
+   web:199, shopee:199, tiktok:199},
+  {id:16, name:"FLYLIA Travel — Tall", sortOrder:1, cat:"Travel", tag:"travel",
+   imgSrc:"flylia_tall_1.jpg", imgSrc2:"flylia_tall_2.jpg", imgSrc3:"flylia_tall_3.jpg",
+   emoji:"✈️", badge:"new", badgeLabel:"New",
+   desc:"กระบอกพกพา size Tall เหมาะใส่แปรงสีฟัน ดินสอ หรือของใช้เดินทาง",
+   points:["พกพาสะดวก","ฝาปิดมิดชิด","เลือกสีได้","Made to Order"],
+   web:219, shopee:219, tiktok:219},
+  {id:17, name:"FLYLIA Travel — Middle", sortOrder:2, cat:"Travel", tag:"travel",
+   imgSrc:"flylia_middle.jpg",
+   emoji:"✈️", badge:"new", badgeLabel:"New",
+   desc:"กระบอกพกพา size Middle เหมาะใส่ของใช้เดินทาง",
+   points:["พกพาสะดวก","ฝาปิดมิดชิด","เลือกสีได้","Made to Order"],
+   web:149, shopee:149, tiktok:149},
+  {id:18, name:"FLYLIA Travel — Small", sortOrder:3, cat:"Travel", tag:"travel",
+   imgSrc:"flylia_small.jpg",
+   emoji:"✈️", badge:"new", badgeLabel:"New",
+   desc:"กระบอกพกพา size Small เหมาะใส่ยาเม็ด เครื่องประดับ ของเล็กชิ้น",
+   points:["ขนาดกะทัดรัด","ฝาปิดมิดชิด","เลือกสีได้","Made to Order"],
+   web:119, shopee:119, tiktok:119},
+  {id:19, name:"FLYLIA Travel — Mini", sortOrder:4, cat:"Travel", tag:"travel",
+   imgSrc:"flylia_mini.jpg",
+   emoji:"✈️", badge:"new", badgeLabel:"New",
+   desc:"กระบอกพกพา size Mini เล็กสุด เหมาะใส่ยา เครื่องประดับชิ้นเล็ก",
+   points:["เล็กสุดพกง่าย","ฝาปิดมิดชิด","เลือกสีได้","Made to Order"],
+   web:109, shopee:109, tiktok:109},
+  {id:20, name:"FLYLIA Travel — Full Set (4 ชิ้น)", sortOrder:5, cat:"Travel", tag:"travel",
+   imgSrc:"flylia_full_set.jpg", imgSrc2:"flylia_full_set_2.jpg",
+   emoji:"✈️", badge:"new", badgeLabel:"New",
+   desc:"FLYLIA ครบ set 4 ชิ้น (Tall + Middle + Small + Mini) ประหยัดกว่าซื้อแยก ฿107",
+   points:["ครบ 4 ขนาดในชุดเดียว","ประหยัดกว่าซื้อแยก ฿107","เลือกสีได้","Made to Order ผลิตในไทย"],
+   web:489, shopee:489, tiktok:489},
+
+  // ── JEWTRA ──────────────────────────────────────────────────
+  {id:20, name:"JEWTRA Valentines (Heart)", hidden:true, cat:"Home Decor", tag:"decor",
+   imgSrc:"jewtra_heart.jpg",
+   emoji:"💝", badge:"new", badgeLabel:"New",
+   desc:"กล่องเครื่องประดับดีไซน์หัวใจ เหมาะเป็นของขวัญวาเลนไทน์หรือวันพิเศษ",
+   points:["ดีไซน์หัวใจน่ารัก","เหมาะเป็นของขวัญ","เลือกสีได้","Made to Order"],
+   web:199, shopee:199, tiktok:199},
+  {id:21, name:"JEWTRA Valentines (Square)", hidden:true, cat:"Home Decor", tag:"decor",
+   imgSrc:"jewtra_square.jpg",
+   emoji:"💝", badge:"new", badgeLabel:"New",
+   desc:"กล่องเครื่องประดับดีไซน์สี่เหลี่ยม เหมาะเป็นของขวัญวันพิเศษ",
+   points:["ดีไซน์ clean minimal","เหมาะเป็นของขวัญ","เลือกสีได้","Made to Order"],
+   web:199, shopee:199, tiktok:199},
+
+  // ── Keychains & Accessories ─────────────────────────────────
+  {id:22, name:"Instax Keychain", hidden:true, cat:"Accessories", tag:"accessories",
+   imgSrc:"instax_keychain.jpg",
+   emoji:"📷", badge:"new", badgeLabel:"New",
+   desc:"พวงกุญแจ Instax น่ารัก เหมาะของขวัญสำหรับคนชอบถ่ายรูป",
+   points:["ดีไซน์น่ารัก","เหมาะเป็นของขวัญ","เลือกสีได้","Made to Order"],
+   web:139, shopee:139, tiktok:139},
+  {id:23, name:"Gravik Auto-locking Hanger", cat:"Home Decor", tag:"decor",
+   imgSrc:"gravik_1.jpg", imgSrc2:"gravik_2.jpg", imgSrc3:"gravik_3.jpg", imgSrc4:"gravik_4.jpg", imgSrc5:"gravik_5.jpg", imgSrc6:"gravik_6.jpg", imgSrc7:"gravik_7.jpg", imgSrc8:"gravik_8.jpg", imgSrc9:"gravik_9.jpg",
+   emoji:"🪝", badge:"new", badgeLabel:"New",
+   desc:"ที่แขวนล็อกอัตโนมัติ ติดตั้งง่าย ไม่ต้องเจาะผนัง รับน้ำหนักได้ดี",
+   points:["ล็อกอัตโนมัติ","ไม่ต้องเจาะผนัง","รับน้ำหนักได้ดี","Made to Order","เลือกสีได้"],
+   web:149, shopee:149, tiktok:149},
+  {id:24, name:"Javik Hanger", cat:"Storage & Organization", tag:"storage",
+   imgSrc:"javik_hanger.jpg", imgSrc2:"javik_hanger_2.jpg", imgSrc3:"javik_hanger_3.jpg", imgSrc4:"javik_hanger_4.jpg", imgSrc5:"javik_hanger_5.jpg",
+   emoji:"🪝", badge:"new", badgeLabel:"New",
+   desc:"ที่แขวนดีไซน์เรียบง่าย ติดตั้งง่าย เหมาะแขวนกุญแจ กระเป๋า หรือของใช้ทั่วไป",
+   points:["ดีไซน์เรียบง่าย","ติดตั้งง่าย","เลือกสีได้","Made to Order"],
+   web:99, shopee:99, tiktok:99},
+  {id:25, name:"Boba Fidget", hidden:true, cat:"Accessories", tag:"accessories",
+   imgSrc:"boba_fidget.jpg",
+   emoji:"🧋", badge:"new", badgeLabel:"New",
+   desc:"ของเล่น fidget ดีไซน์บอบบา น่ารัก คลายเครียดได้ดี",
+   points:["คลายเครียด","ดีไซน์บอบบาน่ารัก","เลือกสีได้","Made to Order"],
+   web:89, shopee:89, tiktok:89},
+  {id:26, name:"Carrot Keychain", hidden:true, cat:"Accessories", tag:"accessories",
+   imgSrc:"carrot_keychain.jpg",
+   emoji:"🥕", badge:"new", badgeLabel:"New",
+   desc:"พวงกุญแจแครอทน่ารัก เหมาะของขวัญหรือติดกระเป๋า",
+   points:["ดีไซน์น่ารัก","เหมาะเป็นของขวัญ","เลือกสีได้","Made to Order"],
+   web:99, shopee:99, tiktok:99},
+  {id:27, name:"Daisi Keychain", hidden:true, cat:"Accessories", tag:"accessories",
+   imgSrc:"daisi_keychain.jpg",
+   emoji:"🌼", badge:"new", badgeLabel:"New",
+   desc:"พวงกุญแจดอกเดซี่น่ารัก เหมาะของขวัญหรือติดกระเป๋า",
+   points:["ดีไซน์ดอกไม้น่ารัก","เหมาะเป็นของขวัญ","เลือกสีได้","Made to Order"],
+   web:109, shopee:109, tiktok:109},
+  {id:28, name:"Airpod Case", hidden:true, cat:"Accessories", tag:"accessories",
+   imgSrc:"airpod_case.jpg",
+   emoji:"🎧", badge:"new", badgeLabel:"New",
+   desc:"เคส Airpod print 3D พิมพ์จาก PLA+ คุณภาพสูง กันกระแทก เลือกสีได้",
+   points:["กันกระแทก","เลือกสีได้","งานพิมพ์ละเอียด","Made to Order"],
+   web:129, shopee:129, tiktok:129},
+
+  // ── Smart Doc Clip ──────────────────────────────────────────
+  {id:32, name:"Smart Doc Clip (20 ชิ้น)", cat:"Workspace", tag:"workspace",
+   imgSrc:"smart_doc_clip_1.jpg", imgSrc2:"smart_doc_clip_2.jpg", imgSrc3:"smart_doc_clip_3.jpg",
+   emoji:"📎", badge:"new", badgeLabel:"New",
+   desc:"คลิปหนีบเอกสาร custom ข้อความได้ 20 ชิ้น หลากสีให้เลือก mix แบบได้",
+   points:["20 ชิ้นต่อ set","เลือก mix แบบและสีได้","custom ข้อความได้","Made to Order ผลิตในไทย","เลือกสีได้"],
+   web:79, shopee:79, tiktok:79},
+
+  // ── Alphabet Keycap ─────────────────────────────────────────
+  {id:37, name:"Alphabet Clicky Keychain", cat:"Accessories", tag:"accessories",
+   imgSrc:"keycap_set.jpg", imgSrc2:"keycap_kao.jpg", imgSrc3:"keycap_tui.jpg", imgSrc4:"keycap_tor.jpg", imgSrc5:"alphabet_keycap.jpg",
+   emoji:"🔡", badge:"new", badgeLabel:"New",
+   desc:"พวงกุญแจ keycap ตัวอักษร custom name เลือกชื่อและสีได้เอง · ครบชุด keycap + ราง + สายคล้อง · กดแล้ว clicky · พวงกุญแจชื่อ ของขวัญ custom",
+   points:["ได้รับ keycap + ราง + สายคล้อง ครบชุด","เลือกตัวอักษรและสีได้","Made to Order ผลิตในไทย","สั่ง 3 ตัว ประหยัดกว่า","เลือกสีได้"],
+   web:100, shopee:100, tiktok:100, priceAlt:35, priceTiers:[{qty:1,price:49},{qty:2,price:70},{qty:3,price:100},{qty:4,price:135},{qty:5,price:170},{qty:6,price:200},{qty:7,price:235},{qty:8,price:270}]},
+
+  // ── LOCKET ─────────────────────────────────────────────
+  {id:51, name:"LOCKET", cat:"Accessories", tag:"accessories",
+   imgSrc:"locket_1.jpg", imgSrc2:"locket_2.jpg", imgSrc3:"locket_3.jpg", imgSrc4:"locket_4.jpg", imgSrc5:"locket_5.jpg", imgSrc6:"locket_6.jpg",
+   emoji:"💊", badge:"new", badgeLabel:"New",
+   desc:"กล่องพกพาสุดเก๋ ใส่ลิปบาล์ม น้ำหอมขนาดเล็ก หรือของจิ๋วที่รัก · แขวนกุญแจ กระเป๋า หรือสายคล้องได้ · lip balm holder keychain น้ำหอมพกพา ของขวัญ",
+   points:["ใส่ได้ทุกอย่าง — ลิปบาล์ม น้ำหอมเล็ก ยา ของจิ๋ว","แขวนกุญแจหรือกระเป๋าได้ทันที","ฝาล็อคแน่น ไม่หลุด","เลือกสีได้","Made to Order ผลิตในไทย"],
+   web:169, shopee:169, tiktok:169},
+
+  // ── Premium ─────────────────────────────────────────────────
+  {id:8, name:"Genesha Marble Statue", cat:"Premium", tag:"premium", hidden:true,
+   imgSrc:"genesha.jpg",
+   emoji:"🐘", badge:"premium", badgeLabel:"Premium",
+   desc:"พระพิฆเนศดีไซน์ลายหินอ่อน PLA Marble พิเศษ งานละเอียดระดับ premium เหมาะเป็นของขวัญ",
+   points:["PLA Marble พิเศษ","งานละเอียดสูง","เหมาะเป็นของขวัญ premium","Made to Order","เลือกสีได้"],
+   web:299, shopee:299, tiktok:299},
+  {id:18, name:"Christmas Fireplace", cat:"Premium", tag:"premium", hidden:true,
+   imgSrc:"christmas_fireplace.jpg",
+   emoji:"🎄", badge:"new", badgeLabel:"New",
+   desc:"เตาผิงคริสต์มาส ดีไซน์สวยงาม ตกแต่งบ้านช่วงเทศกาล",
+   points:["ดีไซน์เทศกาล","ตกแต่งโต๊ะ/ชั้นวาง","เลือกสีได้","Made to Order"],
+   web:329, shopee:329, tiktok:329},
+
+  // ── Notebook Stand ──────────────────────────────────────────
+  {id:36, name:"Notebook Stand", cat:"Workspace", tag:"workspace", 
+   imgSrc:"notebook_stand_1.jpg", imgSrc2:"notebook_stand_2.jpg",
+   emoji:"💻", badge:"new", badgeLabel:"New",
+   desc:"ขาตั้ง notebook แบบพับเก็บได้ เสียบข้างเครื่องได้เลย บาง เบา พกพาง่าย",
+   points:["พับเก็บได้ บางกระทัดรัด","เสียบข้าง notebook ได้เลย","ระบาย heat ได้ดีขึ้น","PLA+ เลือกสีได้"],
+   web:119, shopee:119, tiktok:119},
+
+  // ── ป้ายตัวอักษร ────────────────────────────────────────────
+  {id:34, name:"ป้ายตัวอักษร", hidden:true, cat:"Storage & Organization", tag:"storage",
+   imgSrc:"alphabet_sign.jpg",
+   emoji:"🔤", badge:"new", badgeLabel:"New",
+   desc:"ป้ายตัวอักษรสำหรับติดชั้นวาง โต๊ะ หรือตกแต่งบ้าน custom ข้อความได้",
+   points:["custom ข้อความได้","หลากสีให้เลือก","ติดตกแต่งได้หลายที่","Made to Order","เลือกสีได้"],
+   web:369, shopee:369, tiktok:369},
+
+  // ── อื่นๆ ───────────────────────────────────────────────────
+  {id:35, name:"Lip", hidden:true, cat:"Home Decor", tag:"decor",
+   imgSrc:"lip.jpg",
+   emoji:"💄", badge:"new", badgeLabel:"New",
+   desc:"ดีไซน์ริมฝีปาก ตกแต่งโต๊ะหรือใช้เป็นที่วางของ น่ารักสไตล์ pop art",
+   points:["ดีไซน์ pop art","ตกแต่งโต๊ะ","เลือกสีได้","Made to Order"],
+   web:129, shopee:129, tiktok:129},
+  {id:39, name:"กล่องใส่", hidden:true, cat:"Storage & Organization", tag:"storage",
+   imgSrc:"storage_box.jpg",
+   emoji:"📦", badge:"new", badgeLabel:"New",
+   desc:"กล่องใส่ของอเนกประสงค์ พิมพ์จาก PLA+ คุณภาพสูง เลือกสีและขนาดได้",
+   points:["อเนกประสงค์","เลือกสีได้","PLA+ คุณภาพสูง","Made to Order"],
+   web:149, shopee:149, tiktok:149},
+]
+
+let cartCount = 0
+let cartItems = []
+
+// ── AFFILIATE & ORDER TRACKING ─────────────────────────────
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz-Ec4eWVx5HF1Z0xbGVNQCM8Z1rPfv6DdI2V53EgoJlfs8hUmlYKBen-gyqIzgk9I-/exec'
+const urlParams = new URLSearchParams(window.location.search)
+const refCode = urlParams.get('ref') || localStorage.getItem('fixtory_ref') || ''
+if (refCode) localStorage.setItem('fixtory_ref', refCode)
+
+// Show affiliate dashboard if ?ref=xxx&dashboard=1
+if (urlParams.get('dashboard') === '1' && refCode) {
+  window.addEventListener('DOMContentLoaded', function() {
+    setTimeout(openAffDashboard, 500)
+  })
+}
+
+function openAffDashboard() {
+  const overlay = document.getElementById('aff-overlay')
+  if (!overlay) return
+  overlay.classList.add('open')
+  const box = document.getElementById('aff-box')
+  box.innerHTML = '<div class="aff-title">AFFILIATE</div><div class="aff-sub">กำลังโหลดข้อมูล...</div>'
+  fetch(SCRIPT_URL + '?ref=' + encodeURIComponent(refCode))
+    .then(r => r.json())
+    .then(data => {
+      box.innerHTML = `
+        <div class="aff-title">AFFILIATE</div>
+        <div class="aff-ref">REF: ${refCode.toUpperCase()}</div>
+        <div class="aff-grid">
+          <div class="aff-stat"><div class="aff-stat-num">${data.count || 0}</div><div class="aff-stat-label">Orders</div></div>
+          <div class="aff-stat"><div class="aff-stat-num">฿${(data.commission || 0).toLocaleString()}</div><div class="aff-stat-label">Commission</div></div>
+        </div>
+        <div class="aff-stat" style="margin-bottom:20px"><div class="aff-stat-num">฿${(data.total || 0).toLocaleString()}</div><div class="aff-stat-label">ยอดขายรวม</div></div>
+        <div style="font-size:11px;color:var(--muted);margin-bottom:16px">Commission 10% · อัปเดตทุก order ใหม่</div>
+        <button class="co-btn" onclick="document.getElementById('aff-overlay').classList.remove('open')">ปิด</button>
+      `
+    })
+    .catch(() => {
+      box.innerHTML = '<div class="aff-title">AFFILIATE</div><div style="color:var(--muted);margin:20px 0">โหลดไม่ได้ ลองใหม่อีกครั้ง</div><button class="co-btn" onclick="openAffDashboard()">ลองใหม่</button>'
+    })
+}
+
+function sendOrderToSheet(orderNum) {
+  const items = cartItems.map((item, i) =>
+    (i+1) + '. ' + item.name + (item.color && item.color !== 'ไม่ระบุสี' ? ' (' + item.color + ')' : '') + ' ฿' + item.price
+  ).join(' | ')
+  const payload = {
+    orderNum,
+    name: coCustomer.name,
+    phone: coCustomer.phone,
+    addr: coCustomer.addr,
+    note: coCustomer.note || '',
+    items,
+    total: coTotal(),
+    ref: localStorage.getItem('fixtory_ref') || ''
+  }
+  fetch(SCRIPT_URL, {
+    method: 'POST',
+    body: JSON.stringify(payload)
+  }).catch(e => console.log('Sheet error:', e))
+}
+let currentProduct = null
+
+function renderProducts(filter='all') {
+  const filtered = (filter === 'all' ? products : products.filter(p => p.tag === filter)).filter(p => !p.hidden).sort((a,b) => {
+    // Get series prefix (e.g. "HIVE", "COOKIES", "FLYLIA")
+    const seriesA = a.name.split(' ')[0]
+    const seriesB = b.name.split(' ')[0]
+    // If same series and both have sortOrder → sort by size within series
+    if(seriesA === seriesB && a.sortOrder && b.sortOrder) return a.sortOrder - b.sortOrder
+    // Different series or no sortOrder → sort alphabetically by name
+    return a.name.localeCompare(b.name, 'th')
+  })
+  const grid = document.getElementById('products-grid')
+  grid.innerHTML = filtered.map(p => `
+    <div class="product-card" onclick="openModal(${p.id})">
+      <div class="card-img">
+        <div class="card-img-inner" style="${p.imgSrc?'padding:0;font-size:0;overflow:hidden':''}">${p.imgSrc ? `<img src="${p.imgSrc}" style="width:100%;height:100%;object-fit:contain">` : p.emoji}</div>
+        <span class="card-badge badge-${p.badge}">${p.badgeLabel}</span>
+      </div>
+      <div class="card-body">
+        <div class="card-cat">${p.cat}</div>
+        <div class="card-name">${p.name}</div>
+        <div class="card-desc">${p.desc}</div>
+        <div class="card-points">
+          ${p.points.slice(0,2).map(pt => `<span class="point-pill">${pt}</span>`).join('')}
+        </div>
+        <div class="card-footer">
+          <div>
+            <div class="card-price">${p.priceAlt ? '฿'+p.shopee+' / 3 ตัว' : '฿'+p.shopee}</div>
+            <div class="card-price-platform">Shopee · TikTok · เว็บ ราคาเดียวกัน</div>
+          </div>
+          <button class="add-btn" onclick="event.stopPropagation();addToCart(${p.id})">+</button>
+        </div>
+      </div>
+    </div>
+  `).join('')
+}
+
+function filterProducts(tag, btn) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'))
+  btn.classList.add('active')
+  renderProducts(tag)
+}
+
+let galleryIdx = 0
+let galleryImgs = []
+
+
+
+function filterBrand(brand) {
+  currentBrand = brand
+  document.querySelectorAll('.brand-tab').forEach(t =>
+    t.classList.toggle('active', t.textContent.startsWith(brand)))
+  renderSwatches()
+}
+
+function renderSwatches() {
+  const container = document.getElementById('m-color-swatches')
+  if (!container) return
+  const colors = colorPalette.filter(c => c.brand === currentBrand)
+  container.innerHTML = colors.map((c) => {
+    const isLight = parseInt(c.hex.slice(1,3),16) > 200 && parseInt(c.hex.slice(3,5),16) > 200
+    const sel = selectedColor && selectedColor.hex === c.hex && selectedColor.brand === c.brand ? ' selected' : ''
+    return '<div class="color-swatch' + sel + '" ' +
+      (isLight ? 'data-light="1" ' : '') +
+      'data-brand="' + c.brand + '" data-hex="' + c.hex + '" data-name="' + c.name + '" ' +
+      'style="background:' + c.hex + '" ' +
+      'title="' + c.name + '"></div>'
+  }).join('')
+  // use event delegation — one listener on container, not per swatch
+  container.onclick = function(e) {
+    const el = e.target.closest('.color-swatch')
+    if (!el) return
+    selectColor({hex: el.dataset.hex, name: el.dataset.name, brand: el.dataset.brand})
+  }
+}
+
+function updateSwatchSelection() {
+  document.querySelectorAll('#m-color-swatches .color-swatch').forEach(el => {
+    el.classList.toggle('selected',
+      !!selectedColor && selectedColor.hex === el.dataset.hex && selectedColor.brand === el.dataset.brand)
+  })
+}
+
+function selectColor(c) {
+  // Handle keycap configurator mode
+  if (currentProduct && currentProduct.id === 37 && keycapPickingSlot !== null) {
+    if (keycapPickingSlot === 'rail') {
+      keycapRailColor = c
+      keycapPickingSlot = null
+      document.getElementById('keycap-pick-hint').textContent = '✅ เลือกสีครบแล้ว!'
+    } else {
+      const {idx, part} = keycapPickingSlot
+      keycapColors[idx][part] = c
+      if (part === 'body') {
+        keycapPickingSlot = {idx, part: 'letter'}
+        document.getElementById('keycap-pick-hint').textContent = `กำลังเลือกสีตัวอักษร keycap ${idx+1} — เลือก swatch ด้านล่าง`
+      } else {
+        const nextIdx = keycapColors.findIndex((x, i) => i > idx && !x.body)
+        if (nextIdx !== -1) {
+          keycapPickingSlot = {idx: nextIdx, part: 'body'}
+          document.getElementById('keycap-pick-hint').textContent = `กำลังเลือกสี keycap ${nextIdx+1} — เลือก swatch ด้านล่าง`
+        } else if (!keycapRailColor) {
+          keycapPickingSlot = 'rail'
+          document.getElementById('keycap-pick-hint').textContent = 'กำลังเลือกสี ราง — เลือก swatch ด้านล่าง'
+        } else {
+          keycapPickingSlot = null
+          document.getElementById('keycap-pick-hint').textContent = '✅ เลือกสีครบแล้ว!'
+        }
+      }
+    }
+    renderKeycapSlots()
+    updateSwatchSelection()
+    return
+  }
+  // Normal mode
+  selectedColor = c
+  document.getElementById('m-color-name').textContent = c.name + ' (' + c.brand + ')'
+  updateSwatchSelection()
+}
+
+function applyColorOverlay(hex) {
+  // Method 1: overlay div
+  const overlay = document.getElementById('color-overlay')
+  if (overlay) {
+    overlay.style.background = hex
+    overlay.classList.add('active')
+  }
+
+}
+
+function hexToHueDeg(hex) {
+  const r = parseInt(hex.slice(1,3),16)/255
+  const g = parseInt(hex.slice(3,5),16)/255
+  const b = parseInt(hex.slice(5,7),16)/255
+  const max = Math.max(r,g,b), min = Math.min(r,g,b)
+  if(max === min) return 0
+  let h
+  if(max === r) h = ((g-b)/(max-min)) % 6
+  else if(max === g) h = (b-r)/(max-min) + 2
+  else h = (r-g)/(max-min) + 4
+  h = Math.round(h * 60)
+  return h < 0 ? h + 360 : h
+}
+
+function openModal(id) {
+  const p = products.find(x => x.id === id)
+  if (!p) return
+  currentProduct = p
+  galleryIdx = 0
+
+  // Build image array
+  galleryImgs = []
+  if(p.imgSrc) galleryImgs.push(p.imgSrc)
+  if(p.imgSrc2) galleryImgs.push(p.imgSrc2)
+  if(p.imgSrc3) galleryImgs.push(p.imgSrc3)
+  if(p.imgSrc4) galleryImgs.push(p.imgSrc4)
+  if(p.imgSrc5) galleryImgs.push(p.imgSrc5)
+  if(p.imgSrc6) galleryImgs.push(p.imgSrc6)
+  if(p.imgSrc7) galleryImgs.push(p.imgSrc7)
+  if(p.imgSrc8) galleryImgs.push(p.imgSrc8)
+  if(p.imgSrc9) galleryImgs.push(p.imgSrc9)
+
+  const el = document.getElementById('modal-emoji')
+  el.style.padding = '0'
+  el.style.fontSize = '0'
+
+  if(galleryImgs.length > 0) {
+    const dots = galleryImgs.map((_,i) =>
+      `<div class="gallery-dot${i===0?' active':''}" onclick="goSlide(${i})"></div>`).join('')
+    const slides = galleryImgs.map(src =>
+      `<div class="gallery-slide"><img src="${src}" alt=""></div>`).join('')
+    const nav = galleryImgs.length > 1
+      ? `<button class="gallery-btn prev" onclick="goSlide(galleryIdx-1)">&#8249;</button>
+         <button class="gallery-btn next" onclick="goSlide(galleryIdx+1)">&#8250;</button>
+         <div class="gallery-dots">${dots}</div>` : ''
+    el.innerHTML = `<div class="modal-gallery" style="position:relative">
+      <div class="gallery-slides" id="gslides">${slides}</div>
+      ${nav}
+    </div>`
+  } else {
+    el.textContent = p.emoji
+    el.style.fontSize = '100px'
+    el.style.padding = '40px'
+  }
+
+  document.getElementById('modal-cat').textContent = p.cat
+  document.getElementById('modal-name').textContent = p.name
+  document.getElementById('modal-desc').textContent = p.desc
+  // Price display — dual pricing for priceAlt products
+  const priceMain = document.getElementById('m-price-main')
+  if (p.priceTiers) {
+    const tierHTML = p.priceTiers.map(t =>
+      '<div style="text-align:center;padding:6px 12px;background:rgba(255,255,255,.05);border-radius:8px">' +
+      '<div style="font-size:11px;color:rgba(240,237,232,.5)">' + t.qty + ' ตัว</div>' +
+      '<div style="font-family:var(--font-display);font-size:22px;color:var(--accent)">฿' + t.price + '</div>' +
+      '</div>'
+    ).join('')
+    priceMain.innerHTML = '<div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">' + tierHTML + '</div>' +
+      '<div style="font-size:11px;color:rgba(240,237,232,.4);margin-top:8px">ตัวละ ฿' + p.priceAlt + ' เมื่อสั่ง 2 ตัว ขึ้นไป</div>'
+  } else if (p.priceAlt) {
+    priceMain.innerHTML = '<div style="font-family:var(--font-display);font-size:56px;color:var(--accent);letter-spacing:2px;line-height:1">฿' + p.shopee + '</div><div style="font-size:13px;color:rgba(240,237,232,.5);margin-top:4px">3 ตัว · หรือ ตัวละ <span style=\"color:rgba(240,237,232,.7)\">฿' + p.priceAlt + '</span></div>'
+  } else {
+    priceMain.innerHTML = '<div style="font-family:var(--font-display);font-size:52px;color:var(--accent);letter-spacing:2px">฿' + p.shopee + '</div>'
+  }
+  document.getElementById('modal-points').innerHTML = p.points.map(pt =>
+    `<div class="modal-point">${pt}</div>`).join('')
+  // Reset & render color picker
+  selectedColor = null
+  currentBrand = 'Bambu Matte'
+  const ov = document.getElementById('color-overlay')
+  if(ov) { ov.classList.remove('active'); ov.style.background = '' }
+  document.getElementById('m-color-name').textContent = '— เลือกสีที่ต้องการ —'
+  document.getElementById('m-color-name').style.color = ''
+  document.querySelectorAll('.brand-tab').forEach((t,i) => t.classList.toggle('active', i===0))
+  document.getElementById('modal').classList.add('open')
+  renderSwatches()
+  // show keycap configurator only for Alphabet Clicky Keychain
+  const keycapConfig = document.getElementById('keycap-config')
+  const colorSection = document.querySelector('.color-picker-section')
+  if (p.id === 37) {
+    keycapConfig.classList.add('active')
+    colorSection.querySelector('.color-picker-label').textContent = 'เลือกสี (กดที่ช่องก่อน)'
+    initKeycapConfig()
+  } else {
+    keycapConfig.classList.remove('active')
+    colorSection.querySelector('.color-picker-label').textContent = 'เลือกสี'
+  }
+}
+
+function goSlide(idx) {
+  const total = galleryImgs.length
+  galleryIdx = ((idx % total) + total) % total
+  const slides = document.getElementById('gslides')
+  if(slides) slides.style.transform = `translateX(-${galleryIdx * 100}%)`
+  document.querySelectorAll('.gallery-dot').forEach((d,i) =>
+    d.classList.toggle('active', i === galleryIdx))
+}
+
+function closeModal(e) {
+  if (e.target.id === 'modal') document.getElementById('modal').classList.remove('open')
+}
+
+function addToCart(id, color) {
+  const p = products.find(x => x.id === id)
+  if (!p) return
+  cartItems.push({name: p.name, price: p.shopee, color: color ? color.name : 'ไม่ระบุสี', brand: color ? color.brand : ''})
+  cartCount++
+  document.getElementById('cart-count').textContent = cartCount
+  showToast('เพิ่ม ' + p.name + ' แล้ว!')
+}
+
+function addToCartFromModal() {
+  // KEYCAP mode
+  if (currentProduct && currentProduct.id === 37) {
+    const allColorsFilled = keycapColors.every(c => c.body && c.letter) && keycapRailColor
+    const allLettersFilled = keycapLetters.every(l => l && l.trim())
+    if (!allColorsFilled || !allLettersFilled) {
+      const msg = !allLettersFilled ? '⚠️ กรุณากรอกตัวอักษรให้ครบทุกช่อง' : '⚠️ กรุณาเลือกสีให้ครบทุกช่อง'
+      document.getElementById('keycap-pick-hint').textContent = msg
+      document.getElementById('keycap-pick-hint').style.color = 'var(--accent)'
+      return
+    }
+    const tiers = currentProduct.priceTiers
+    const tier = tiers.find(t => t.qty === keycapQty) || tiers[tiers.length-1]
+    const keycapDetail = keycapColors.map((c,i) =>
+      keycapLetters[i] + '(keycap:' + (c.body ? c.body.name : '-') + ', ตัวอักษร:' + (c.letter ? c.letter.name : '-') + ')'
+    ).join(' | ') + ' | ราง:' + (keycapRailColor ? keycapRailColor.name : '-')
+    document.getElementById('modal').classList.remove('open')
+    setTimeout(() => {
+      cartItems.push({
+        name: 'Alphabet Clicky Keychain x' + keycapQty,
+        price: tier.price,
+        color: keycapDetail,
+        brand: keycapColors[0] && keycapColors[0].body ? keycapColors[0].body.brand : 'Bambu Matte'
+      })
+      cartCount++
+      document.getElementById('cart-count').textContent = cartCount
+      showToast('เพิ่ม Alphabet Clicky Keychain x' + keycapQty + ' แล้ว!')
+    }, 150)
+    return
+  }
+  // NORMAL mode
+  if (!selectedColor) {
+    document.getElementById('m-color-name').textContent = '⚠️ กรุณาเลือกสีก่อนสั่งซื้อ'
+    document.getElementById('m-color-name').style.color = 'var(--accent)'
+    return
+  }
+  if (currentProduct) {
+    const p = currentProduct
+    const col = selectedColor
+    document.getElementById('modal').classList.remove('open')
+    setTimeout(() => addToCart(p.id, col), 150)
+  }
+}
+
+
+function checkout() {
+  if (cartItems.length === 0) {
+    showToast('ยังไม่มีสินค้าในตะกร้า')
+    return
+  }
+  openCheckout()
+}
+
+// ── CHECKOUT FLOW ──────────────────────────────────────────
+let coStep = 1
+let coCustomer = {}
+let coSlipDataUrl = null
+
+function openCheckout() {
+  coStep = 1
+  coCustomer = {}
+  coSlipDataUrl = null
+  closeCart()
+  renderCoStep()
+  document.getElementById('co-overlay').classList.add('open')
+  document.body.style.overflow = 'hidden'
+}
+
+function closeCheckout() {
+  document.getElementById('co-overlay').classList.remove('open')
+  document.body.style.overflow = ''
+}
+
+function coTotal() {
+  return cartItems.reduce((s, i) => s + i.price, 0)
+}
+
+function coOrderSummaryHTML() {
+  const rows = cartItems.map(item =>
+    `<div class="co-order-row"><span>${item.name}${item.color && item.color !== 'ไม่ระบุสี' ? ' · ' + item.color : ''}</span><span>฿${item.price}</span></div>`
+  ).join('')
+  return `<div class="co-order-summary">
+    ${rows}
+    <div class="co-order-total"><span>รวมทั้งหมด</span><span>฿${coTotal().toLocaleString()}</span></div>
+  </div>`
+}
+
+function renderCoStep() {
+  const box = document.getElementById('co-box')
+  const pills = [1,2,3].map(n =>
+    `<div class="co-pill ${n <= coStep ? 'done' : ''}"></div>`).join('')
+
+  if (coStep === 1) {
+    box.innerHTML = `
+      <button class="co-close" onclick="closeCheckout()">✕</button>
+      <div class="co-header">
+        <div>
+          <div class="co-title">ข้อมูลจัดส่ง</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:4px">ขั้นตอน 1 / 3</div>
+        </div>
+        <div class="co-step-pills" style="margin-left:auto">${pills}</div>
+      </div>
+      <div class="co-body">
+        ${coOrderSummaryHTML()}
+        <div class="co-field"><label>ชื่อ-นามสกุล *</label><input id="co-name" type="text" placeholder="ชื่อผู้รับสินค้า"></div>
+        <div class="co-field"><label>เบอร์โทรศัพท์ *</label><input id="co-phone" type="tel" placeholder="08x-xxx-xxxx"></div>
+        <div class="co-field"><label>ที่อยู่จัดส่ง *</label><textarea id="co-addr" placeholder="บ้านเลขที่ ถนน แขวง/ตำบล เขต/อำเภอ จังหวัด รหัสไปรษณีย์"></textarea></div>
+        <div class="co-field"><label>หมายเหตุ (ถ้ามี)</label><input id="co-note" type="text" placeholder="เช่น สีที่ต้องการพิเศษ หรือข้อความ custom"></div>
+        <button class="co-btn" onclick="coNext1()">ถัดไป → ชำระเงิน</button>
+      </div>`
+  } else if (coStep === 2) {
+    box.innerHTML = `
+      <button class="co-close" onclick="closeCheckout()">✕</button>
+      <div class="co-header">
+        <div>
+          <div class="co-title">ชำระเงิน</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:4px">ขั้นตอน 2 / 3</div>
+        </div>
+        <div class="co-step-pills" style="margin-left:auto">${pills}</div>
+      </div>
+      <div class="co-body">
+        <div class="co-qr-wrap">
+          <div style="font-size:11px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:12px">สแกน QR เพื่อโอนเงิน</div>
+          <img src="promptpay_qr.jpg" alt="QR PromptPay">
+          <div class="co-qr-amount">฿${coTotal().toLocaleString()}</div>
+          <div class="co-qr-note">โอนเงินแล้ว แนบสลิปด้านล่างได้เลยครับ</div>
+        </div>
+        <div class="co-upload-area" id="co-upload-area">
+          <input type="file" accept="image/*" onchange="coPreviewSlip(this)">
+          <img id="co-slip-preview" class="co-upload-preview">
+          <div class="co-upload-icon" id="co-upload-icon">📎</div>
+          <div class="co-upload-text" id="co-upload-text">แตะเพื่อแนบสลิปการโอนเงิน</div>
+        </div>
+        <button class="co-btn" onclick="coNext2()" id="co-confirm-btn">ยืนยันการชำระเงิน</button>
+        <button class="co-btn-outline" onclick="coStep=1;renderCoStep()">← กลับแก้ข้อมูล</button>
+      </div>`
+    // restore preview if already uploaded
+    if (coSlipDataUrl) {
+      document.getElementById('co-slip-preview').src = coSlipDataUrl
+      document.getElementById('co-slip-preview').style.display = 'block'
+      document.getElementById('co-upload-icon').textContent = '✅'
+      document.getElementById('co-upload-text').textContent = 'แนบสลิปแล้ว (กดเพื่อเปลี่ยน)'
+    }
+  } else if (coStep === 3) {
+    const orderNum = 'FX' + Date.now().toString().slice(-6)
+    sendOrderToSheet(orderNum)
+    const now = new Date()
+    const dateStr = now.toLocaleDateString('th-TH', {day:'numeric',month:'long',year:'numeric'}) + ' ' +
+      now.toLocaleTimeString('th-TH', {hour:'2-digit',minute:'2-digit'})
+    box.innerHTML = `
+      <div class="co-receipt">
+        <div class="co-receipt-icon">✅</div>
+        <div class="co-receipt-title">สั่งซื้อสำเร็จ!</div>
+        <div class="co-receipt-sub">ขอบคุณที่ไว้วางใจ Fixtory.Studio<br>เราจะติดต่อกลับภายใน 24 ชม.</div>
+        <div class="co-receipt-num">ORDER # ${orderNum}</div>
+        <div style="margin-bottom:16px">
+          <a href="javascript:void(0)" onclick="closeCheckout();setTimeout(()=>openTracking('${orderNum}'),300)" style="font-size:12px;color:var(--accent);text-decoration:none;border-bottom:1px solid rgba(232,133,90,.3)">📦 ติดตาม order นี้</a>
+          <span style="font-size:11px;color:var(--muted);margin-left:8px">หรือเปิด ?order=${orderNum}</span>
+        </div>
+        <div class="co-receipt-box">
+          <div class="co-receipt-row"><span>ชื่อ</span><span>${coCustomer.name}</span></div>
+          <div class="co-receipt-row"><span>เบอร์โทร</span><span>${coCustomer.phone}</span></div>
+          <div class="co-receipt-row"><span>ที่อยู่</span><span>${coCustomer.addr}</span></div>
+          ${coCustomer.note ? `<div class="co-receipt-row"><span>หมายเหตุ</span><span>${coCustomer.note}</span></div>` : ''}
+          <div style="border-top:1px solid var(--border);margin:10px 0"></div>
+          ${cartItems.map(item => `<div class="co-receipt-row"><span>${item.name}</span><span>฿${item.price}</span></div>`).join('')}
+          <div class="co-receipt-row" style="font-weight:600;font-size:14px;margin-top:6px"><span>รวม</span><span style="color:var(--accent);font-family:var(--font-display);font-size:20px">฿${coTotal().toLocaleString()}</span></div>
+          <div class="co-receipt-row" style="margin-top:8px"><span>วันที่</span><span>${dateStr}</span></div>
+        </div>
+        <button class="co-btn" onclick="closeCheckout();clearCartAfterOrder()">ปิด</button>
+      </div>`
+    // Fix slip image
+    const receiptImg = box.querySelector('.co-receipt img')
+    if (receiptImg && coSlipDataUrl) receiptImg.src = coSlipDataUrl
+  }
+}
+
+function coNext1() {
+  const name = document.getElementById('co-name').value.trim()
+  const phone = document.getElementById('co-phone').value.trim()
+  const addr = document.getElementById('co-addr').value.trim()
+  if (!name || !phone || !addr) { showToast('⚠️ กรุณากรอกข้อมูลให้ครบ'); return }
+  coCustomer = { name, phone, addr, note: document.getElementById('co-note').value.trim() }
+  coStep = 2
+  renderCoStep()
+}
+
+function coNext2() {
+  if (!coSlipDataUrl) { showToast('⚠️ กรุณาแนบสลิปการโอนเงิน'); return }
+  coStep = 3
+  renderCoStep()
+  // Send order to Tawk.to
+  sendOrderToTawk()
+}
+
+
+function sendOrderToTawk() {
+  try {
+    if (window.Tawk_API && window.Tawk_API.maximize) window.Tawk_API.maximize()
+  } catch(e) {}
+}
+
+
+function coPreviewSlip(input) {
+  if (!input.files || !input.files[0]) return
+  const reader = new FileReader()
+  reader.onload = function(e) {
+    coSlipDataUrl = e.target.result
+    const preview = document.getElementById('co-slip-preview')
+    const icon = document.getElementById('co-upload-icon')
+    const text = document.getElementById('co-upload-text')
+    if (preview) { preview.src = coSlipDataUrl; preview.style.display = 'block' }
+    if (icon) icon.textContent = '✅'
+    if (text) text.textContent = 'แนบสลิปแล้ว (กดเพื่อเปลี่ยน)'
+  }
+  reader.readAsDataURL(input.files[0])
+}
+
+function clearCartAfterOrder() {
+  cartItems = []
+  cartCount = 0
+  document.getElementById('cart-count').textContent = 0
+}
+
+
+function showToast(msg) {
+  // Create floating notification
+  const div = document.createElement('div')
+  div.textContent = msg
+  div.style.cssText = 'position:fixed;bottom:32px;right:32px;background:#E8724A;color:#fff;padding:14px 24px;font-size:13px;z-index:99999;border-radius:4px;font-family:sans-serif;box-shadow:0 4px 12px rgba(0,0,0,.3)'
+  document.body.appendChild(div)
+  setTimeout(() => { div.style.opacity='0'; div.style.transition='opacity .3s'; setTimeout(()=>div.remove(),300) }, 10000)
+}
+
+
+// ── ORDER TRACKING ──────────────────────────────────────────
+const STATUS_STEPS = [
+  { key: 'รอยืนยัน',    icon: '🟡', label: 'รอยืนยันสลิป',   desc: 'ร้านกำลังตรวจสอบการชำระเงิน' },
+  { key: 'กำลังผลิต',   icon: '🔵', label: 'กำลังผลิต',      desc: 'พิมพ์และ finishing สินค้าของคุณ' },
+  { key: 'จัดส่งแล้ว',  icon: '🚚', label: 'จัดส่งแล้ว',     desc: 'สินค้าถูกส่งออกแล้ว' },
+  { key: 'ได้รับแล้ว',  icon: '✅', label: 'ได้รับสินค้าแล้ว', desc: 'เสร็จสมบูรณ์' },
+]
+
+function openTracking(orderNum) {
+  const overlay = document.getElementById('track-overlay')
+  overlay.classList.add('open')
+  if (orderNum) {
+    document.getElementById('track-order-input').value = orderNum
+    fetchTrackingData(orderNum)
+  }
+}
+
+function closeTracking() {
+  document.getElementById('track-overlay').classList.remove('open')
+}
+
+function fetchTrackingData(orderNum) {
+  const box = document.getElementById('track-result')
+  box.innerHTML = '<div style="text-align:center;padding:20px;color:var(--muted)">กำลังโหลด...</div>'
+  fetch(SCRIPT_URL + '?order=' + encodeURIComponent(orderNum))
+    .then(r => r.json())
+    .then(data => {
+      if (!data.ok) {
+        box.innerHTML = '<div style="text-align:center;padding:20px;color:var(--muted)">ไม่พบ Order นี้<br><span style="font-size:11px">กรุณาตรวจสอบหมายเลข Order อีกครั้ง</span></div>'
+        return
+      }
+      const currentIdx = STATUS_STEPS.findIndex(s => s.key === data.status)
+      const stepsHTML = STATUS_STEPS.map((s, i) => {
+        const isDone = i < currentIdx
+        const isActive = i === currentIdx
+        const cls = isDone ? 'done' : isActive ? 'active' : ''
+        return `<div class="track-step ${cls}">
+          <div class="track-dot">${isDone ? '✓' : s.icon}</div>
+          <div class="track-info">
+            <div class="track-label">${s.label}</div>
+            <div class="track-desc">${isActive && s.key === 'จัดส่งแล้ว' && data.tracking ? 'Tracking: ' + data.tracking : s.desc}</div>
+          </div>
+        </div>`
+      }).join('')
+      box.innerHTML = `
+        <div class="track-num">ORDER # ${data.orderNum}</div>
+        <div style="font-size:13px;color:var(--muted);margin-bottom:4px">${data.items}</div>
+        <div style="font-family:var(--font-display);font-size:22px;color:var(--accent);margin-bottom:20px">฿${Number(data.total).toLocaleString()}</div>
+        <div class="track-steps">${stepsHTML}</div>
+      `
+    })
+    .catch(() => {
+      box.innerHTML = '<div style="text-align:center;padding:20px;color:var(--muted)">โหลดไม่ได้ ลองใหม่อีกครั้ง</div>'
+    })
+}
+
+// Auto-open tracking if ?order= in URL
+const orderParam = urlParams.get('order')
+if (orderParam) {
+  window.addEventListener('DOMContentLoaded', function() {
+    setTimeout(() => openTracking(orderParam), 500)
+  })
+}
+
+
+// ── CUSTOM QUOTE ──────────────────────────────────────────
+const Q_DETAIL={simple:{m:1,label:'เรียบง่าย'},medium:{m:1.2,label:'มีลวดลาย'},complex:{m:1.5,label:'ละเอียดมาก'}}
+let qDtV='simple',qColV=1,qQtyV=1,qMatV=0
+
+function qDt(v,el){qDtV=v;el.closest('.quote-pills').querySelectorAll('.quote-pill').forEach(b=>b.classList.remove('on'));el.classList.add('on');calcQuote()}
+function qCol(v,el){qColV=v;el.closest('.quote-pills').querySelectorAll('.quote-pill').forEach(b=>b.classList.remove('on'));el.classList.add('on');calcQuote()}
+function qMat(v,el){
+  qMatV=v
+  el.closest('.quote-pills').querySelectorAll('.quote-pill').forEach(b=>b.classList.remove('on'))
+  el.classList.add('on')
+  if(v===-1){
+    document.getElementById('q-normal-result').style.display='none'
+    document.getElementById('q-special-result').style.display='block'
+  } else {
+    document.getElementById('q-normal-result').style.display='block'
+    document.getElementById('q-special-result').style.display='none'
+    calcQuote()
+  }
+}
+function qQty(d){qQtyV=Math.max(1,Math.min(50,qQtyV+d));document.getElementById('q-qty-num').textContent=qQtyV;calcQuote()}
+
+function calcQuote(){
+  const w=parseFloat(document.getElementById('q-w').value)||10
+  const d=parseFloat(document.getElementById('q-d').value)||10
+  const hh=parseFloat(document.getElementById('q-h').value)||5
+
+  // Volume → filament estimate
+  // Calibrated against real prints:
+  // Wall Plaque 15×15×0.8cm → 63g ✓
+  // HIVE BOX 10×10×8cm → ~80g ✓
+  // Formula: base area × height × fill_factor × PLA_density
+  // fill_factor: flat/thin=0.35, normal=0.20, box/hollow=0.12
+  const vol=w*d*hh
+  const aspect=hh/Math.max(w,d)  // thin=low aspect
+  const fillFactor=aspect<0.15?0.35:aspect<0.5?0.22:0.14
+  const grams=vol*fillFactor*1.24
+  const manualHrs=parseFloat(document.getElementById('q-hrs')?.value)
+  const useManual=(!isNaN(manualHrs)&&manualHrs>0)
+  const hours=useManual?manualHrs:grams/12
+  // If manual hours given, recalculate grams from hours (12g/hr avg)
+  const gramsActual=useManual?manualHrs*12:grams
+
+  // Days estimation
+  const days = hours<=1?'1':hours<=3?'1-2':hours<=6?'2-3':hours<=12?'3-5':'5-7+'
+
+  // Size label
+  const sizeLabel = w+'×'+d+'×'+hh+' cm (ประมาณ '+Math.round(gramsActual)+'g'+(useManual?' · จาก slicer':'')+')'
+  const note = document.getElementById('q-size-note')
+  if(note) note.textContent = 'ประมาณ '+Math.round(gramsActual)+'g · '+Math.round(hours*10)/10+' ชม.'+(useManual?' (ชั่วโมงจริง)':' · volume '+Math.round(vol)+' cm³')
+
+  const dm=Q_DETAIL[qDtV].m
+  const fil=(gramsActual/1000)*800*dm  // ใช้ราคา premium สูงสุด สำหรับ quote
+  const elec=.095*hours*4.83*dm
+  const dep=8.00*hours*dm
+  const maint=(elec+dep)*.12
+  const colMult=qColV===1?1:qColV===2?1.1:qColV===3?1.2:1.3
+  const labor=26.67*colMult*dm
+  const cost=fil+elec+dep+maint+labor+20+qMatV
+
+  const discount=qQtyV>=10?.9:qQtyV>=5?.95:1
+  const QUOTE_BUFFER=1.15  // แสดงราคาสูงกว่าจริง 15% → ร้านบอกราคาจริงทีหลัง ลูกค้าประทับใจ
+  const raw=(cost*discount)*(1+.5)/(1-.082)*1.3*QUOTE_BUFFER
+  const unit=(Math.floor(raw/10)+1)*10-1
+  const total=unit*qQtyV
+
+  document.getElementById('q-unit').textContent='฿'+unit
+  document.getElementById('q-total').textContent='฿'+total.toLocaleString()
+  document.getElementById('q-qty-label').textContent=qQtyV+' ชิ้น'
+  document.getElementById('q-time').textContent=days
+  document.getElementById('q-unit-s').textContent=qQtyV>=5?'ส่วนลด '+(100-discount*100).toFixed(0)+'%':'custom +30%'
+  document.getElementById('q-tag').textContent=sizeLabel+' · '+Q_DETAIL[qDtV].label+' · '+qColV+' สี'+(qMatV>0?' · มีวัสดุเพิ่ม':'')+(qQtyV>1?' · '+qQtyV+' ชิ้น':'')
+}
+
+function quoteCheckout(){
+  // Build prefill message
+  const w=document.getElementById('q-w').value
+  const d=document.getElementById('q-d').value
+  const hh=document.getElementById('q-h').value
+  const manualH=parseFloat(document.getElementById('q-hrs')?.value)
+  const hrsNote=(!isNaN(manualH)&&manualH>0)?' · '+manualH+' ชม.':''
+  const unit=document.getElementById('q-unit')?.textContent||''
+  const total=document.getElementById('q-total')?.textContent||''
+
+  if(qMatV===-1){
+    const msg='สวัสดีครับ อยากสอบถาม custom order งานวัสดุพิเศษ\n\nขนาด: '+w+'×'+d+'×'+hh+' cm\nจำนวนสี: '+qColV+' สี\nจำนวน: '+qQtyV+' ชิ้น\nวัสดุพิเศษ: (กรุณาระบุ เช่น LED, หลอดไฟ ฯลฯ)'
+    document.getElementById('q-prefill-note').textContent=msg
+    document.getElementById('q-order-form').style.display='block'
+    document.getElementById('q-order-form').scrollIntoView({behavior:'smooth'})
+    return
+  }
+  const msg='ขนาด: '+w+'×'+d+'×'+hh+' cm'+hrsNote+'\nความซับซ้อน: วัสดุเพิ่ม: '+(qMatV>0?'฿'+qMatV:'ไม่มี')+'\nจำนวนสี: '+qColV+' สี\nจำนวน: '+qQtyV+' ชิ้น\nราคาประมาณ: '+unit+'/ชิ้น (รวม '+total+')'
+  document.getElementById('q-prefill-note').textContent=msg
+  document.getElementById('q-order-form').style.display='block'
+  document.getElementById('q-order-form').scrollIntoView({behavior:'smooth'})
+}
+
+calcQuote()
+
+renderProducts()
+
+// ── KEYCAP CONFIGURATOR ────────────────────────────────────
+let keycapQty = 1
+let keycapColors = [] // [{hex, name, brand}, ...] for each slot
+let keycapRailColor = null
+let keycapPickingSlot = null
+let keycapLetters = []
+
+function initKeycapConfig() {
+  keycapQty = 1
+  keycapColors = [{body: null, letter: null}]
+  keycapRailColor = null
+  keycapPickingSlot = null // {idx: 0, part: 'body'|'letter'} | 'rail'
+  document.getElementById('keycap-qty').textContent = keycapQty
+  renderKeycapSlots()
+  updateKeycapPrice()
+  document.getElementById('keycap-pick-hint').textContent = ''
+}
+
+function changeKeycapQty(delta) {
+  const newQty = Math.max(1, Math.min(8, keycapQty + delta))
+  if (newQty === keycapQty) return
+  keycapQty = newQty
+  // resize colors array
+  while (keycapColors.length < keycapQty) keycapColors.push({body: null, letter: null})
+  keycapColors = keycapColors.slice(0, keycapQty)
+  while (keycapLetters.length < keycapQty) keycapLetters.push('')
+  keycapLetters = keycapLetters.slice(0, keycapQty)
+  document.getElementById('keycap-qty').textContent = keycapQty
+  renderKeycapSlots()
+  updateKeycapPrice()
+}
+
+function renderKeycapSlots() {
+  const container = document.getElementById('keycap-slots')
+  if (!container) return
+  let html = ''
+  for (let i = 0; i < keycapQty; i++) {
+    const c = keycapColors[i]
+    const bodyActive = keycapPickingSlot && keycapPickingSlot.idx === i && keycapPickingSlot.part === 'body'
+    const letterActive = keycapPickingSlot && keycapPickingSlot.idx === i && keycapPickingSlot.part === 'letter'
+    html += `<div class="keycap-slot" style="flex-direction:column;align-items:stretch;gap:6px">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:2px">
+        <span class="keycap-slot-label" style="font-size:11px;opacity:.5">Keycap ${i+1}</span>
+        <input class="keycap-letter-input" type="text" maxlength="1" placeholder="A" value="${keycapLetters[i] || ''}"
+          oninput="keycapLetters[${i}]=this.value.toUpperCase().replace(/[^A-Z]/g,'');this.value=keycapLetters[${i}]"
+          onclick="event.stopPropagation()" title="ตัวอักษร A-Z">
+        <span style="font-size:10px;color:rgba(240,237,232,.35)">กรอกตัวอักษร</span>
+      </div>
+      <div style="display:flex;gap:8px">
+        <div class="keycap-slot-color ${bodyActive ? 'keycap-picking' : ''}" style="flex:1;padding:6px 8px;border-radius:5px;border:1px solid rgba(240,237,232,${bodyActive?'.5':'.08'});cursor:pointer" onclick="pickKeycapSlot(${i},'body')">
+          <span class="keycap-slot-swatch" style="background:${c.body ? c.body.hex : '#333'};${!c.body ? 'border-style:dashed' : ''}"></span>
+          <span class="keycap-slot-name">${c.body ? c.body.name : 'สี keycap'}</span>
+        </div>
+        <div class="keycap-slot-color ${letterActive ? 'keycap-picking' : ''}" style="flex:1;padding:6px 8px;border-radius:5px;border:1px solid rgba(240,237,232,${letterActive?'.5':'.08'});cursor:pointer" onclick="pickKeycapSlot(${i},'letter')">
+          <span class="keycap-slot-swatch" style="background:${c.letter ? c.letter.hex : '#333'};${!c.letter ? 'border-style:dashed' : ''}"></span>
+          <span class="keycap-slot-name">${c.letter ? c.letter.name : 'สีตัวอักษร'}</span>
+        </div>
+      </div>
+    </div>`
+  }
+  // rail
+  const rc = keycapRailColor
+  const railActive = keycapPickingSlot === 'rail'
+  html += `<div class="keycap-slot ${railActive ? 'keycap-picking' : ''}" onclick="pickKeycapSlot('rail')">
+    <span class="keycap-slot-label">ราง</span>
+    <span class="keycap-slot-color">
+      <span class="keycap-slot-swatch" style="background:${rc ? rc.hex : '#333'};${!rc ? 'border-style:dashed' : ''}"></span>
+      <span class="keycap-slot-name">${rc ? rc.name + ' · ' + rc.brand : '— กดเพื่อเลือกสี —'}</span>
+    </span>
+  </div>`
+  container.innerHTML = html
+}
+
+function pickKeycapSlot(slot, part) {
+  keycapPickingSlot = slot === 'rail' ? 'rail' : {idx: slot, part: part}
+  renderKeycapSlots()
+  let hint = ''
+  if (slot === 'rail') hint = 'กำลังเลือกสี ราง'
+  else if (part === 'body') hint = `กำลังเลือกสี keycap ${slot+1}`
+  else hint = `กำลังเลือกสีตัวอักษร keycap ${slot+1}`
+  document.getElementById('keycap-pick-hint').textContent = hint + ' — เลือก swatch ด้านล่าง'
+}
+
+function updateKeycapPrice() {
+  const tiers = currentProduct && currentProduct.priceTiers
+  if (!tiers) return
+  const tier = tiers.find(t => t.qty === keycapQty) || tiers[tiers.length-1]
+  document.getElementById('keycap-price-live').textContent = '฿' + tier.price
+  // update main price highlight
+  document.querySelectorAll('#m-price-main > div > div').forEach(el => {
+    const qty = parseInt(el.querySelector('div:first-child')?.textContent)
+    el.style.border = qty === keycapQty ? '1px solid var(--accent)' : '1px solid transparent'
+  })
+}
+
+// keycap selectColor handled inline above
+
+// Override addToCartFromModal for keycap
+// addToCartFromModal handled inline above
+
+
+function openCart() {
+  renderCartPanel()
+  document.getElementById('cart-panel').classList.add('open')
+  document.getElementById('cart-overlay').classList.add('open')
+  document.body.style.overflow = 'hidden'
+}
+
+function closeCart() {
+  document.getElementById('cart-panel').classList.remove('open')
+  document.getElementById('cart-overlay').classList.remove('open')
+  document.body.style.overflow = ''
+}
+
+function renderCartPanel() {
+  const body = document.getElementById('cart-body')
+  const totalEl = document.getElementById('cart-total-price')
+  if (cartItems.length === 0) {
+    body.innerHTML = '<div class="cart-empty">ยังไม่มีสินค้าในตะกร้า</div>'
+    totalEl.textContent = '฿0'
+    return
+  }
+  const total = cartItems.reduce((s, item) => s + item.price, 0)
+  totalEl.textContent = '฿' + total.toLocaleString()
+  body.innerHTML = cartItems.map((item, i) => `
+    <div class="cart-item">
+      <div class="cart-item-info">
+        <div class="cart-item-name">${item.name}</div>
+        <div class="cart-item-detail">สี: ${item.color || 'ไม่ระบุ'}${item.brand ? ' · ' + item.brand : ''}</div>
+      </div>
+      <span class="cart-item-price">฿${item.price}</span>
+      <button class="cart-item-remove" onclick="removeCartItem(${i})" title="ลบ">×</button>
+    </div>
+  `).join('')
+}
+
+function removeCartItem(idx) {
+  cartItems.splice(idx, 1)
+  cartCount = cartItems.length
+  document.getElementById('cart-count').textContent = cartCount
+  renderCartPanel()
+  showToast('ลบสินค้าออกแล้ว')
+}
+
+function clearCart() {
+  if (cartItems.length === 0) return
+  if (!confirm('ล้างตะกร้าทั้งหมด?')) return
+  cartItems = []
+  cartCount = 0
+  document.getElementById('cart-count').textContent = 0
+  renderCartPanel()
+  showToast('ล้างตะกร้าแล้ว')
+}
+
+function proceedCheckout() {
+  if (cartItems.length === 0) {
+    showToast('ยังไม่มีสินค้าในตะกร้า')
+    return
+  }
+  closeCart()
+  checkout()
+}
+</script>
+
+
+
+
+<!-- TRACKING OVERLAY -->
+<div class="track-overlay" id="track-overlay" onclick="if(event.target===this)closeTracking()">
+  <div class="track-box">
+    <button class="co-close" onclick="closeTracking()" style="position:absolute;top:14px;right:16px">✕</button>
+    <div class="track-title">TRACK ORDER</div>
+    <div class="track-sub">ติดตามสถานะสินค้าของคุณ</div>
+    <div class="track-input-row">
+      <input id="track-order-input" type="text" placeholder="เช่น FX951499">
+      <button onclick="fetchTrackingData(document.getElementById('track-order-input').value.trim())">ค้นหา</button>
+    </div>
+    <div id="track-result"></div>
+    <button class="co-btn-outline" style="margin-top:8px" onclick="closeTracking()">ปิด</button>
+  </div>
+</div>
+
+<!-- AFFILIATE OVERLAY -->
+<div class="aff-overlay" id="aff-overlay" onclick="if(event.target===this)this.classList.remove('open')">
+  <div class="aff-box" id="aff-box"></div>
+</div>
+
+<!-- CHECKOUT OVERLAY -->
+<div class="co-overlay" id="co-overlay" onclick="if(event.target===this)closeCheckout()">
+  <div class="co-box" id="co-box"></div>
+</div>
+
+<!-- CART OVERLAY -->
+<div class="cart-overlay" id="cart-overlay" onclick="closeCart()"></div>
+
+<!-- CART PANEL -->
+<div class="cart-panel" id="cart-panel">
+  <div class="cart-header">
+    <h3>ตะกร้าสินค้า</h3>
+    <button class="cart-close" onclick="closeCart()">×</button>
+  </div>
+  <div class="cart-body" id="cart-body">
+    <div class="cart-empty">ยังไม่มีสินค้าในตะกร้า</div>
+  </div>
+  <div class="cart-footer">
+    <div class="cart-total">
+      <span class="cart-total-label">รวมทั้งหมด</span>
+      <span class="cart-total-price" id="cart-total-price">฿0</span>
+    </div>
+    <div class="cart-actions">
+      <button class="cart-checkout-btn" onclick="proceedCheckout()">สั่งซื้อ / ส่ง Order</button>
+      <button class="cart-clear-btn" onclick="clearCart()">ล้างตะกร้าทั้งหมด</button>
+      <button class="cart-clear-btn" onclick="closeCart()" style="border-color:rgba(240,237,232,.15);margin-top:4px">ยกเลิก / ปิด</button>
+    </div>
+  </div>
+</div>
+
+<!--Start of Tawk.to Script-->
+<script type="text/javascript">
+var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+(function(){
+var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+s1.async=true;
+s1.src='https://embed.tawk.to/69d7696e3091751c36bdb547/1jlon7mih';
+s1.charset='UTF-8';
+s1.setAttribute('crossorigin','*');
+s0.parentNode.insertBefore(s1,s0);
+})();
+
+// ── ADMIN CALCULATOR ──────────────────────────────────────
+const ADMIN_PW = '160977'
+let admFee = 0.082
+let admSelColors = new Set()
+
+
+function admBuildSwatches() {
+  const admSw = document.getElementById('adm-swatches')
+  if(!admSw || admSw.children.length > 0) return
+  colorPalette.filter(c=>c.brand==='Bambu Matte').forEach((c,i) => {
+    const d = document.createElement('div')
+    d.style.cssText = 'width:20px;height:20px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:all .15s;flex-shrink:0;background:'+c.hex
+    if(parseInt(c.hex.slice(1,3),16)>200&&parseInt(c.hex.slice(3,5),16)>200) d.style.boxShadow='inset 0 0 0 1px rgba(0,0,0,.15)'
+    d.title = c.name
+    d.onclick = () => {
+      if(admSelColors.has(i)) admSelColors.delete(i)
+      else admSelColors.add(i)
+      d.style.borderColor = admSelColors.has(i) ? 'var(--accent)' : 'transparent'
+      const names = [...admSelColors].map(j=>colorPalette.filter(x=>x.brand==='Bambu Matte')[j].name)
+      document.getElementById('adm-color-note').textContent = names.length ? names.join(', ') : '— ยังไม่ได้เลือกสี —'
+      admCalc()
+    }
+    admSw.appendChild(d)
+  })
+}
+
+function adminLogin() {
+  const pw = document.getElementById('admin-pw-input').value
+  const err = document.getElementById('admin-pw-err')
+  if(pw === ADMIN_PW) {
+    document.getElementById('admin-pw-overlay').classList.remove('open')
+    document.getElementById('admin-overlay').classList.add('open')
+    document.body.style.overflow = 'hidden'
+    admBuildSwatches()
+    admCalc()
+    err.textContent = ''
+  } else {
+    err.textContent = 'รหัสไม่ถูกต้อง'
+    document.getElementById('admin-pw-input').value = ''
+  }
+}
+
+function closeAdmin() {
+  document.getElementById('admin-overlay').classList.remove('open')
+  document.getElementById('admin-pw-overlay').classList.remove('open')
+  document.body.style.overflow = ''
+}
+
+function admSetCh(c, el) {
+  el.closest('.adm-pills').querySelectorAll('.adm-pill').forEach(b=>b.classList.remove('on'))
+  el.classList.add('on')
+  const m = {shopee:[0.082,'Shopee · 8.2%'],tiktok:[0.114,'TikTok · 11.4%'],web:[0.015,'เว็บตรง · 1.5%'],aff:[0.115,'เว็บ+Affiliate · 11.5%']}
+  admFee = m[c][0]
+  document.getElementById('adm-fee-note').textContent = m[c][1]
+  admCalc()
+}
+
+function admCalc() {
+  const g = parseFloat(document.getElementById('adm-g').value)||0
+  const h = parseFloat(document.getElementById('adm-h').value)||0
+  const ch = parseInt(document.getElementById('adm-ch').value)||0
+  const ex = parseFloat(document.getElementById('adm-ex').value)||0
+  const bambuColors = colorPalette.filter(c=>c.brand==='Bambu Matte')
+  const avgPrice = admSelColors.size>0 ? [...admSelColors].reduce((s,i)=>s+(bambuColors[i]?bambuColors[i].price:690),0)/admSelColors.size : 560
+  const filRate = (isNaN(avgPrice)?560:avgPrice)*1.2/1000
+  const fil = g*filRate
+  const cw = (ch*3/1000)*(isNaN(avgPrice)?560:avgPrice)*1.2
+  const elec = 0.095*h*4.83
+  const dep = 8.00*h
+  const maint = (elec+dep)*0.12
+  const labor = 26.67 + (ch*2/60)*60
+  const cost = fil+cw+elec+dep+maint+labor+20+ex
+  const price = (Math.floor(cost*1.5/(1-admFee)/10)+1)*10-1
+  const custom = (Math.floor(price*1.3/10)+1)*10-1
+  const profit = price*(1-admFee)-cost
+  const mp = Math.round(profit/(price*(1-admFee))*100)
+  document.getElementById('adm-cost').textContent = '฿'+Math.round(cost)
+  document.getElementById('adm-price').textContent = '฿'+price
+  document.getElementById('adm-custom').textContent = '฿'+custom
+  document.getElementById('adm-profit').textContent = '฿'+Math.round(profit)
+  document.getElementById('adm-mgn').textContent = 'gross margin '+mp+'%'
+  document.getElementById('adm-psub').textContent = 'หักช่องทาง '+Math.round(admFee*100)+'%'
+  const rows = [['Filament ('+g+'g)','฿'+Math.round(fil)],...(cw>0?[['Purge ('+ch+'×3g)','฿'+Math.round(cw)]]:[] ),['ค่าไฟ','฿'+Math.round(elec)],['ค่าเสื่อม','฿'+Math.round(dep)],['แรงงาน','฿'+Math.round(labor)],['Packaging','฿20'],...(ex>0?[['วัสดุเพิ่ม','฿'+ex]]:[] )]
+  document.getElementById('adm-bk').innerHTML = rows.map(r=>'<div class="adm-bk-row"><span>'+r[0]+'</span><span>'+r[1]+'</span></div>').join('')
+  document.getElementById('adm-change-note').textContent = ch>0?'Change '+ch+'× → purge +฿'+Math.round(cw)+' · labor +฿'+Math.round((ch*2/60)*60):''
+}
+
+// Secret: พิมพ์ "fixtory" เพื่อเปิด admin (ไม่ต้องอยู่ใน input)
+let admKeyBuf = ''
+document.addEventListener('keydown', function(e) {
+  if(e.key==='Escape') { closeAdmin(); admKeyBuf=''; return }
+  if(document.activeElement.tagName==='INPUT'||document.activeElement.tagName==='TEXTAREA') return
+  admKeyBuf += e.key.toLowerCase()
+  if(admKeyBuf.length > 7) admKeyBuf = admKeyBuf.slice(-7)
+  if(admKeyBuf.includes('fixtory')) {
+    admKeyBuf = ''
+    document.getElementById('admin-pw-overlay').classList.add('open')
+    document.body.style.overflow = 'hidden'
+    setTimeout(()=>document.getElementById('admin-pw-input').focus(), 100)
+  }
+})
+
+
+function submitQuoteForm() {
+  const name = document.getElementById('qf-name').value.trim()
+  const contact = document.getElementById('qf-contact').value.trim()
+  if(!name || !contact) { showToast('⚠️ กรุณากรอกชื่อและ Line/เบอร์โทร'); return }
+  const detail = document.getElementById('qf-detail').value.trim()
+  const material = document.getElementById('qf-material').value
+  const note = document.getElementById('q-prefill-note').textContent
+  const msg = 'สวัสดีครับ อยากสั่ง custom order\n\n👤 '+name+'\n📞 '+contact+'\n🧵 วัสดุ: '+material+'\n\n📋 ราคาประมาณ:\n'+note+(detail?'\n\n📝 รายละเอียด: '+detail:'')
+  if(window.Tawk_API&&window.Tawk_API.maximize) window.Tawk_API.maximize()
+  navigator.clipboard&&navigator.clipboard.writeText(msg)
+  showToast('✅ ส่งคำขอแล้ว! เราจะติดต่อกลับภายใน 24 ชม.')
+  document.getElementById('q-order-form').style.display='none'
+}
+
+// ── STOCK MANAGEMENT ──────────────────────────────────────
+function admSwitchTab(tab) {
+  document.getElementById('adm-calc-panel').style.display = tab==='calc'?'block':'none'
+  document.getElementById('adm-stock-panel').style.display = tab==='stock'?'block':'none'
+  document.getElementById('tab-calc').classList.toggle('on', tab==='calc')
+  document.getElementById('tab-stock').classList.toggle('on', tab==='stock')
+  if(tab==='stock') admBuildStock()
+}
+
+function admStockTab(tab) {
+  ['fil','prod','key'].forEach(t => {
+    const el = document.getElementById('adm-'+t+'-stock')
+    if(el) el.style.display = tab===t?'block':'none'
+    const btn = document.getElementById('stab-'+t)
+    if(btn) btn.classList.toggle('on', tab===t)
+  })
+  if(tab==='key') admBuildKeyStock()
+}
+
+// Keychain color groups
+const ALL_KEY_COLORS = [
+  {name:'White',hex:'#FFFFFF',light:1},{name:'Ivory',hex:'#F5F0E8',light:1},
+  {name:'Yellow',hex:'#F7D959',light:1},{name:'Pink',hex:'#E8AFCF',light:1},
+  {name:'Mint',hex:'#A3D8E1',light:1},{name:'Sky Blue',hex:'#56B7E6',light:1},
+  {name:'Lilac',hex:'#C3B1E1'},{name:'Purple',hex:'#AE96D4'},
+  {name:'Orange',hex:'#F99963',light:1},{name:'Terracotta',hex:'#C4714A'},
+  {name:'Scarlet',hex:'#DE4343'},{name:'Mocha',hex:'#7D6556'},
+  {name:'Dark Green',hex:'#68724D'},{name:'Marine Blue',hex:'#0078BF'},
+  {name:'Dark Blue',hex:'#042F56'},{name:'Charcoal',hex:'#2C2C2C'},
+]
+const LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('')
+let keyStockData = JSON.parse(localStorage.getItem('fx_key_stock')||'{}')
+let keyCombos = JSON.parse(localStorage.getItem('fx_key_combos')||'[]')
+let cbBody=null,cbLetter=null,cbRail=null,activeCombo=null
+
+function admBuildKeyStock() {
+  buildSwatchRow('cb-body-swatches',ALL_KEY_COLORS,c=>{cbBody=c;updateCbPreview();document.getElementById('cb-body-label').textContent=c.name})
+  buildSwatchRow('cb-letter-swatches',ALL_KEY_COLORS,c=>{cbLetter=c;updateCbPreview();document.getElementById('cb-letter-label').textContent=c.name})
+  buildSwatchRow('cb-rail-swatches',ALL_KEY_COLORS,c=>{cbRail=c;updateCbPreview();document.getElementById('cb-rail-label').textContent=c.name})
+  renderCombos()
+  renderRailStock()
+}
+
+function buildSwatchRow(id,colors,onSelect){
+  const el=document.getElementById(id)
+  if(!el||el.children.length)return
+  colors.forEach((c,i)=>{
+    const d=document.createElement('div')
+    d.style.cssText='width:20px;height:20px;border-radius:50%;cursor:pointer;border:2px solid transparent;flex-shrink:0;background:'+c.hex+(c.light?';box-shadow:inset 0 0 0 1px rgba(0,0,0,.2)':'')
+    d.title=c.name
+    d.onclick=()=>{el.querySelectorAll('div').forEach(x=>x.style.borderColor='transparent');d.style.borderColor='var(--accent)';onSelect(c)}
+    el.appendChild(d)
+  })
+}
+
+function updateCbPreview(){
+  if(!cbBody)return
+  const p=document.getElementById('cb-preview')
+  const s=document.getElementById('cb-preview-swatch')
+  const n=document.getElementById('cb-preview-name')
+  if(p)p.style.display='block'
+  if(s){s.style.background=cbBody.hex;s.style.borderColor=cbRail?cbRail.hex:'transparent';s.style.color=cbLetter?cbLetter.hex:'rgba(240,237,232,.5)';s.textContent='A'}
+  if(n)n.textContent=(cbBody?cbBody.name:'?')+' + '+(cbLetter?cbLetter.name:'?')+' + Rail: '+(cbRail?cbRail.name:'?')
+}
+
+function saveCbCombo(){
+  if(!cbBody||!cbLetter||!cbRail){showToast('⚠️ เลือกสีให้ครบ 3 อย่างก่อน');return}
+  const nameEl=document.getElementById('cb-combo-name')
+  const name=nameEl.value.trim()||(cbBody.name+'+'+cbLetter.name)
+  keyCombos.push({id:Date.now(),name,body:cbBody,letter:cbLetter,rail:cbRail})
+  localStorage.setItem('fx_key_combos',JSON.stringify(keyCombos))
+  nameEl.value=''
+  renderCombos()
+  showToast('✅ บันทึก combo "'+name+'" แล้ว!')
+}
+
+function renderCombos(){
+  const list=document.getElementById('cb-combo-list')
+  if(!list)return
+  if(!keyCombos.length){list.innerHTML='<div style="font-size:11px;color:var(--muted);font-family:var(--font-mono);padding:8px">ยังไม่มี combo — สร้างจากด้านซ้าย</div>';return}
+  list.innerHTML=keyCombos.map((c,i)=>`
+    <div style="display:flex;align-items:center;gap:8px;padding:8px;background:${activeCombo&&activeCombo.id===c.id?'rgba(232,133,90,.08)':'transparent'};border:1px solid ${activeCombo&&activeCombo.id===c.id?'rgba(232,133,90,.3)':'transparent'};border-radius:4px;margin-bottom:4px;cursor:pointer" onclick="selectCombo(${i})">
+      <div style="width:22px;height:22px;border-radius:4px;background:${c.body.hex};border:3px solid ${c.rail.hex};display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:bold;color:${c.letter.hex};flex-shrink:0">A</div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:12px;color:var(--text);font-family:var(--font-mono)">${c.name}</div>
+        <div style="font-size:10px;color:var(--muted)">${c.body.name} · ${c.letter.name} · ${c.rail.name}</div>
+      </div>
+      <button onclick="event.stopPropagation();deleteCombo(${i})" style="background:none;border:none;color:rgba(229,85,85,.5);cursor:pointer;font-size:16px;line-height:1">×</button>
+    </div>`).join('')
+}
+
+function selectCombo(i){
+  activeCombo=keyCombos[i]
+  renderCombos()
+  const sec=document.getElementById('cb-letter-section')
+  if(sec)sec.style.display='block'
+  const t=document.getElementById('cb-active-combo-title')
+  if(t)t.textContent=activeCombo.name+' — A to Z'
+  renderKeyGrid()
+}
+
+function deleteCombo(i){
+  if(!confirm('ลบ "'+keyCombos[i].name+'" ?'))return
+  keyCombos.splice(i,1)
+  localStorage.setItem('fx_key_combos',JSON.stringify(keyCombos))
+  if(activeCombo&&!keyCombos.find(c=>c.id===activeCombo.id)){activeCombo=null;const s=document.getElementById('cb-letter-section');if(s)s.style.display='none'}
+  renderCombos()
+}
+
+function renderKeyGrid(){
+  if(!activeCombo)return
+  const grid=document.getElementById('adm-key-grid')
+  if(!grid)return
+  const colorKey=activeCombo.name
+  grid.innerHTML=LETTERS.map(letter=>{
+    const k=colorKey+'|'+letter
+    const qty=keyStockData[k]||0
+    return `<div class="adm-stock-cell" style="justify-content:space-between">
+      <span style="font-family:var(--font-display);font-size:22px;color:var(--text)">${letter}</span>
+      <input class="adm-stock-input" type="number" min="0" step="1" value="${qty}" id="kst-${letter}" style="${qty<=0?'border-color:rgba(229,85,85,.4)':''}" oninput="keyStockData['${colorKey}|${letter}']=parseInt(this.value)||0">
+      <span class="adm-stock-unit" style="${qty<=0?'color:#e55':qty<=2?'color:#fa8':''}">ชิ้น</span>
+    </div>`
+  }).join('')
+}
+
+// Rail colors
+const RAIL_COLORS = [
+  {name:'White',hex:'#FFFFFF',light:1},
+  {name:'Black',hex:'#2C2C2C'},
+  {name:'Terracotta',hex:'#C4714A'},
+  {name:'Pink',hex:'#E8AFCF',light:1},
+  {name:'Blue',hex:'#0078BF'},
+  {name:'Teal',hex:'#61C680',light:1},
+  {name:'Purple',hex:'#AE96D4'},
+  {name:'Yellow',hex:'#F7D959',light:1},
+]
+let railStockData = JSON.parse(localStorage.getItem('fx_rail_stock2') || 'null') || {}
+
+// Init rail defaults
+if(!Object.keys(railStockData).length) {
+  RAIL_COLORS.forEach(c => { railStockData[c.name] = {start:0, sold:0} })
+}
+
+function renderRailStock(){
+  const grid = document.getElementById('adm-rail-grid')
+  if(!grid) return
+  grid.innerHTML = `
+    <div class="rail-row rail-header" style="grid-template-columns:auto 1fr repeat(3,70px) 70px">
+      <div></div><div>สีราง</div><div>เริ่มต้น</div><div>ขายไป</div><div>คงเหลือ</div><div></div>
+    </div>` +
+  RAIL_COLORS.map((c,i) => {
+    const d = railStockData[c.name] || {start:0,sold:0}
+    const remain = Math.max(0, d.start - d.sold)
+    const remainColor = remain<=0?'color:#e55':remain<=5?'color:#fa8':'color:var(--text)'
+    const isLight = c.light
+    return `<div class="rail-row" style="grid-template-columns:auto 1fr repeat(3,70px) 70px">
+      <div style="width:16px;height:16px;border-radius:3px;background:${c.hex};${isLight?'box-shadow:inset 0 0 0 1px rgba(0,0,0,.2)':''}"></div>
+      <div style="color:var(--text)">${c.name}</div>
+      <input class="rail-input" type="number" min="0" value="${d.start}" id="rail-start-${i}" oninput="updateRailRemain(${i})">
+      <input class="rail-input" type="number" min="0" value="${d.sold}" id="rail-sold-${i}" oninput="updateRailRemain(${i})">
+      <div class="rail-remain" id="rail-remain-${i}" style="${remainColor}">${remain}</div>
+      <div style="font-size:10px;color:var(--muted)">เส้น</div>
+    </div>`
+  }).join('')
+}
+
+function updateRailRemain(i) {
+  const start = parseInt(document.getElementById('rail-start-'+i)?.value)||0
+  const sold = parseInt(document.getElementById('rail-sold-'+i)?.value)||0
+  const remain = Math.max(0, start-sold)
+  const el = document.getElementById('rail-remain-'+i)
+  if(el) {
+    el.textContent = remain
+    el.style.color = remain<=0?'#e55':remain<=5?'#fa8':'var(--text)'
+  }
+  railStockData[RAIL_COLORS[i].name] = {start, sold}
+}
+
+function saveRailStock() {
+  RAIL_COLORS.forEach((c,i) => {
+    const start = parseInt(document.getElementById('rail-start-'+i)?.value)||0
+    const sold = parseInt(document.getElementById('rail-sold-'+i)?.value)||0
+    railStockData[c.name] = {start, sold}
+  })
+  localStorage.setItem('fx_rail_stock2', JSON.stringify(railStockData))
+  showToast('✅ บันทึก Rail Stock แล้ว!')
+}
+
+function saveKeyStock(){
+  if(activeCombo){
+    LETTERS.forEach(letter=>{
+      const el=document.getElementById('kst-'+letter)
+      if(el)keyStockData[activeCombo.name+'|'+letter]=parseInt(el.value)||0
+    })
+  }
+  localStorage.setItem('fx_key_stock',JSON.stringify(keyStockData))
+  showToast('✅ บันทึก Keychain Stock แล้ว!')
+}
+
+
+let stockBuilt = false
+function admBuildStock() {
+  if(stockBuilt) { admRefreshStock(); return }
+  stockBuilt = true
+
+  // Filament grid
+  const filStock = JSON.parse(localStorage.getItem('fx_fil_stock')||'{}')
+  const filGrid = document.getElementById('adm-fil-grid')
+  const bambu = colorPalette.filter(c=>c.brand==='Bambu Matte')
+  filGrid.innerHTML = bambu.map((c,i) => {
+    const qty = filStock[c.name]||0
+    const low = qty<=1 ? ' adm-low' : ''
+    const light = parseInt(c.hex.slice(1,3),16)>200&&parseInt(c.hex.slice(3,5),16)>200
+    return `<div class="adm-stock-cell">
+      <div class="adm-stock-swatch" style="background:${c.hex};${light?'box-shadow:inset 0 0 0 1px rgba(0,0,0,.2)':''}"></div>
+      <span class="adm-stock-name${low}">${c.name}</span>
+      <input class="adm-stock-input" type="number" min="0" step="0.5" value="${qty}" id="fst-${i}" onchange="admMarkDirty('fil')">
+      <span class="adm-stock-unit">spool</span>
+    </div>`
+  }).join('')
+
+  // Product grid
+  const prodStock = JSON.parse(localStorage.getItem('fx_prod_stock')||'{}')
+  const prodGrid = document.getElementById('adm-prod-grid')
+  prodGrid.innerHTML = products.map((p,i) => {
+    const qty = prodStock[p.id]||0
+    const low = qty<=2 ? ' adm-low' : ''
+    return `<div class="adm-stock-cell">
+      <span class="adm-stock-name${low}" style="font-size:13px">${p.name}</span>
+      <input class="adm-stock-input" type="number" min="0" step="1" value="${qty}" id="pst-${p.id}" onchange="admMarkDirty('prod')">
+      <span class="adm-stock-unit">ชิ้น</span>
+    </div>`
+  }).join('')
+}
+
+function admRefreshStock() {
+  const filStock = JSON.parse(localStorage.getItem('fx_fil_stock')||'{}')
+  const bambu = colorPalette.filter(c=>c.brand==='Bambu Matte')
+  bambu.forEach((c,i) => {
+    const el = document.getElementById('fst-'+i)
+    if(el) el.value = filStock[c.name]||0
+  })
+  const prodStock = JSON.parse(localStorage.getItem('fx_prod_stock')||'{}')
+  products.forEach(p => {
+    const el = document.getElementById('pst-'+p.id)
+    if(el) el.value = prodStock[p.id]||0
+  })
+}
+
+function admMarkDirty(type) { /* auto-save on change */ }
+
+function saveFilStock() {
+  const bambu = colorPalette.filter(c=>c.brand==='Bambu Matte')
+  const data = {}
+  bambu.forEach((c,i) => {
+    const el = document.getElementById('fst-'+i)
+    if(el) data[c.name] = parseFloat(el.value)||0
+  })
+  localStorage.setItem('fx_fil_stock', JSON.stringify(data))
+  showToast('✅ บันทึก Filament Stock แล้ว!')
+  admBuildStock()
+}
+
+function saveProdStock() {
+  const data = {}
+  products.forEach(p => {
+    const el = document.getElementById('pst-'+p.id)
+    if(el) data[p.id] = parseInt(el.value)||0
+  })
+  localStorage.setItem('fx_prod_stock', JSON.stringify(data))
+  showToast('✅ บันทึก Product Stock แล้ว!')
+}
+
+</script>
+<!--End of Tawk.to Script-->
+
+<!-- ADMIN PASSWORD -->
+<div class="admin-overlay" id="admin-pw-overlay">
+  <div class="admin-pw-box">
+    <div class="admin-pw-title">ADMIN</div>
+    <div class="admin-pw-sub">Fixtory.Studio · Price Calculator</div>
+    <input class="admin-pw-input" type="password" id="admin-pw-input" placeholder="••••••" maxlength="10" onkeydown="if(event.key==='Enter')adminLogin()">
+    <button class="admin-pw-btn" onclick="adminLogin()">เข้าสู่ระบบ</button>
+    <div class="admin-pw-err" id="admin-pw-err"></div>
+  </div>
+</div>
+
+<!-- ADMIN CALCULATOR -->
+<div class="admin-overlay" id="admin-overlay">
+  <div class="admin-box">
+    <div class="admin-header">
+      <div style="display:flex;gap:4px">
+        <button class="adm-tab on" id="tab-calc" onclick="admSwitchTab('calc')">Calculator</button>
+        <button class="adm-tab" id="tab-stock" onclick="admSwitchTab('stock')">Stock</button>
+      </div>
+      <button class="admin-close" onclick="closeAdmin()">✕</button>
+    </div>
+    <div id="adm-calc-panel">
+    <div class="adm-grid">
+      <div class="adm-panel">
+        <div class="adm-title">Print Data</div>
+        <div class="adm-field"><label>Filament รวม</label><input type="number" id="adm-g" value="75" min="1" step="0.1" oninput="admCalc()"><span class="adm-unit">g</span></div>
+        <div class="adm-field"><label>Print time</label><input type="number" id="adm-h" value="5.25" min="0.1" step="0.1" oninput="admCalc()"><span class="adm-unit">hr</span></div>
+        <div class="adm-field"><label>Filament change</label><input type="number" id="adm-ch" value="0" min="0" step="1" oninput="admCalc()"><span class="adm-unit">×</span></div>
+        <div class="adm-field"><label>วัสดุเพิ่ม</label><input type="number" id="adm-ex" value="0" min="0" step="1" oninput="admCalc()"><span class="adm-unit">฿</span></div>
+        <div class="adm-div"></div>
+        <div class="adm-title">Bambu Matte · เลือกสี</div>
+        <div style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px" id="adm-swatches"></div>
+        <div style="font-size:11px;color:rgba(240,237,232,.35);font-family:var(--font-mono);min-height:16px" id="adm-color-note">— ยังไม่ได้เลือกสี —</div>
+      </div>
+      <div class="adm-panel">
+        <div class="adm-title">ช่องทางขาย</div>
+        <div class="adm-pills" id="adm-ch-pills">
+          <button class="adm-pill on" onclick="admSetCh('shopee',this)">Shopee</button>
+          <button class="adm-pill" onclick="admSetCh('tiktok',this)">TikTok</button>
+          <button class="adm-pill" onclick="admSetCh('web',this)">เว็บตรง</button>
+          <button class="adm-pill" onclick="admSetCh('aff',this)">เว็บ+Aff</button>
+        </div>
+        <div style="font-size:10px;color:rgba(240,237,232,.2);font-family:var(--font-mono);margin-bottom:12px" id="adm-fee-note">Shopee · 8.2%</div>
+        <div class="adm-div"></div>
+        <div class="adm-title">Breakdown</div>
+        <div id="adm-bk"></div>
+        <div style="font-size:10px;color:rgba(240,237,232,.2);font-family:var(--font-mono);margin-top:6px" id="adm-change-note"></div>
+      </div>
+    </div>
+    <div style="height:2px"></div>
+    <div class="adm-results">
+      <div class="adm-rc"><div class="adm-rl">ต้นทุนรวม</div><div class="adm-rv" id="adm-cost">฿0</div><div class="adm-rs" id="adm-mgn">margin —</div></div>
+      <div class="adm-rc terra"><div class="adm-rl">Catalog</div><div class="adm-rv" id="adm-price">฿0</div><div class="adm-rs">หน้าเว็บ / platform</div></div>
+      <div class="adm-rc blue"><div class="adm-rl">Custom +30%</div><div class="adm-rv" id="adm-custom">฿0</div><div class="adm-rs">บวก premium</div></div>
+      <div class="adm-rc"><div class="adm-rl">กำไรสุทธิ</div><div class="adm-rv" id="adm-profit">฿0</div><div class="adm-rs" id="adm-psub">หลังหักช่องทาง</div></div>
+    </div>
+    </div><!-- end adm-calc-panel -->
+
+    <!-- STOCK PANEL -->
+    <div id="adm-stock-panel" style="display:none">
+      <div style="display:flex;gap:6px;margin-bottom:12px">
+        <button class="adm-pill on" id="stab-fil" onclick="admStockTab('fil')">🎨 Filament</button>
+        <button class="adm-pill" id="stab-prod" onclick="admStockTab('prod')">📦 สินค้า</button>
+        <button class="adm-pill" id="stab-key" onclick="admStockTab('key')">🔑 Keychain</button>
+      </div>
+      <div id="adm-fil-stock">
+        <div class="adm-title" style="margin-bottom:10px">Bambu Matte · จำนวน Spool คงเหลือ</div>
+        <div id="adm-fil-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:2px;background:rgba(255,255,255,.06);border-radius:8px;overflow:hidden;max-height:380px;overflow-y:auto"></div>
+        <button onclick="saveFilStock()" style="margin-top:10px;background:var(--accent);border:none;color:#fff;padding:12px;font-family:var(--font-body);font-size:13px;cursor:pointer;width:100%;letter-spacing:.5px">💾 บันทึก Filament Stock</button>
+      </div>
+      <div id="adm-prod-stock" style="display:none">
+        <div class="adm-title" style="margin-bottom:10px">สินค้า · จำนวนพร้อมส่ง</div>
+        <div id="adm-prod-grid" style="display:grid;grid-template-columns:repeat(2,1fr);gap:2px;background:rgba(255,255,255,.06);border-radius:8px;overflow:hidden;max-height:380px;overflow-y:auto"></div>
+        <button onclick="saveProdStock()" style="margin-top:10px;background:var(--accent);border:none;color:#fff;padding:12px;font-family:var(--font-body);font-size:13px;cursor:pointer;width:100%;letter-spacing:.5px">💾 บันทึก Product Stock</button>
+      </div>
+
+      <!-- Keychain Stock -->
+      <div id="adm-key-stock" style="display:none">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:2px;background:rgba(255,255,255,.06);border-radius:8px;overflow:hidden;margin-bottom:2px">
+
+          <!-- LEFT: Combo Builder -->
+          <div style="background:#181818;padding:16px">
+            <div class="adm-title" style="margin-bottom:12px">🎨 สร้าง Color Combo</div>
+
+            <div style="margin-bottom:10px">
+              <div style="font-size:10px;color:var(--muted);font-family:var(--font-mono);margin-bottom:6px">Body สี</div>
+              <div id="cb-body-swatches" style="display:flex;flex-wrap:wrap;gap:4px"></div>
+              <div style="font-size:10px;color:var(--accent);font-family:var(--font-mono);margin-top:4px" id="cb-body-label">—</div>
+            </div>
+
+            <div style="margin-bottom:10px">
+              <div style="font-size:10px;color:var(--muted);font-family:var(--font-mono);margin-bottom:6px">Letter สี</div>
+              <div id="cb-letter-swatches" style="display:flex;flex-wrap:wrap;gap:4px"></div>
+              <div style="font-size:10px;color:var(--accent);font-family:var(--font-mono);margin-top:4px" id="cb-letter-label">—</div>
+            </div>
+
+            <div style="margin-bottom:12px">
+              <div style="font-size:10px;color:var(--muted);font-family:var(--font-mono);margin-bottom:6px">Rail สี</div>
+              <div id="cb-rail-swatches" style="display:flex;flex-wrap:wrap;gap:4px"></div>
+              <div style="font-size:10px;color:var(--accent);font-family:var(--font-mono);margin-top:4px" id="cb-rail-label">—</div>
+            </div>
+
+            <!-- Preview -->
+            <div id="cb-preview" style="background:#0a0a0a;border:1px solid rgba(255,255,255,.08);border-radius:6px;padding:12px;margin-bottom:10px;text-align:center;display:none">
+              <div style="font-size:10px;color:var(--muted);font-family:var(--font-mono);margin-bottom:8px">PREVIEW</div>
+              <div id="cb-preview-swatch" style="width:48px;height:48px;border-radius:8px;margin:0 auto 6px;border:3px solid transparent;display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:22px"></div>
+              <div id="cb-preview-name" style="font-size:11px;color:rgba(240,237,232,.5);font-family:var(--font-mono)"></div>
+            </div>
+
+            <div style="display:flex;gap:6px">
+              <input id="cb-combo-name" placeholder="ชื่อ combo เช่น KAO" style="flex:1;background:#0a0a0a;border:1px solid var(--border);color:var(--text);padding:7px 10px;font-family:var(--font-body);font-size:12px;outline:none">
+              <button onclick="saveCbCombo()" style="background:var(--accent);border:none;color:#fff;padding:7px 14px;font-family:var(--font-body);font-size:12px;cursor:pointer">+ บันทึก</button>
+            </div>
+          </div>
+
+          <!-- RIGHT: Saved Combos + Stock -->
+          <div style="background:#181818;padding:16px">
+            <div class="adm-title" style="margin-bottom:10px">📦 Combos & Stock</div>
+            <div id="cb-combo-list" style="max-height:320px;overflow-y:auto"></div>
+          </div>
+        </div>
+
+        <!-- Letters grid for selected combo -->
+        <div id="cb-letter-section" style="display:none;background:rgba(255,255,255,.06);border-radius:8px;overflow:hidden;margin-bottom:2px">
+          <div style="background:#181818;padding:14px">
+            <div class="adm-title" style="margin-bottom:4px" id="cb-active-combo-title">เลือก combo ด้านบน</div>
+            <div style="font-size:10px;color:var(--muted);font-family:var(--font-mono);margin-bottom:10px">กรอกจำนวน ready-made แต่ละตัวอักษร</div>
+            <div id="adm-key-grid" style="display:grid;grid-template-columns:repeat(6,1fr);gap:2px;background:rgba(255,255,255,.06);border-radius:6px;overflow:hidden"></div>
+          </div>
+        </div>
+
+        <!-- Rail Stock — แยกอิสระ -->
+        <div style="background:rgba(255,255,255,.06);border-radius:8px;overflow:hidden;margin-bottom:2px">
+          <div style="background:#181818;padding:16px">
+            <div class="adm-title" style="margin-bottom:4px">ราง (Rail) · Stock แยกอิสระ</div>
+            <div style="font-size:10px;color:var(--muted);font-family:var(--font-mono);margin-bottom:12px">ราง 1 สีใช้ได้กับหลาย combo · นับแยกจาก keychain</div>
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:2px;background:rgba(255,255,255,.06);border-radius:6px;overflow:hidden;margin-bottom:10px" id="adm-rail-grid"></div>
+            <button onclick="saveRailStock()" style="background:#333;border:none;color:#fff;padding:10px;font-family:var(--font-body);font-size:12px;cursor:pointer;width:100%;letter-spacing:.5px">💾 บันทึก Rail Stock</button>
+          </div>
+        </div>
+
+        <button onclick="saveKeyStock()" style="background:var(--accent);border:none;color:#fff;padding:12px;font-family:var(--font-body);font-size:13px;cursor:pointer;width:100%;letter-spacing:.5px">💾 บันทึก Keychain Stock</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>
