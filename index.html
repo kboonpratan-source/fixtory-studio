@@ -2787,20 +2787,20 @@ function saveProdStock() {
             <div class="adm-title" style="margin-bottom:10px">📦 Combos & Stock</div>
             <div id="cb-combo-list" style="max-height:320px;overflow-y:auto"></div>
           </div>
-        </div>
+        </div><!-- end 2-col grid -->
 
-        <!-- Letters grid for selected combo -->
-        <div id="cb-letter-section" style="display:none;background:rgba(255,255,255,.06);border-radius:8px;overflow:hidden;margin-bottom:2px">
-          <div style="background:#181818;padding:14px">
+        <!-- Letters grid for selected combo — FULL WIDTH -->
+        <div id="cb-letter-section" style="display:none;background:#111;border:1px solid rgba(255,255,255,.07);border-radius:8px;overflow:hidden;margin-top:2px">
+          <div style="padding:16px">
             <div class="adm-title" style="margin-bottom:4px" id="cb-active-combo-title">เลือก combo ด้านบน</div>
-            <div style="font-size:10px;color:var(--muted);font-family:var(--font-mono);margin-bottom:10px">กรอกจำนวน ready-made แต่ละตัวอักษร</div>
+            <div style="font-size:10px;color:var(--muted);font-family:var(--font-mono);margin-bottom:12px">กรอกจำนวน ready-made แต่ละตัวอักษร</div>
             <div id="adm-key-grid" style="background:rgba(255,255,255,.06);border-radius:6px;overflow:hidden"></div>
           </div>
         </div>
 
-        <!-- Rail Stock — แยกอิสระ -->
-        <div style="background:rgba(255,255,255,.06);border-radius:8px;overflow:hidden;margin-bottom:2px">
-          <div style="background:#181818;padding:16px">
+        <!-- Rail Stock — FULL WIDTH -->
+        <div style="background:#111;border:1px solid rgba(255,255,255,.07);border-radius:8px;overflow:hidden;margin-top:2px">
+          <div style="padding:16px">
             <div class="adm-title" style="margin-bottom:4px">ราง (Rail) · Stock แยกอิสระ</div>
             <div style="font-size:10px;color:var(--muted);font-family:var(--font-mono);margin-bottom:12px">ราง 1 สีใช้ได้กับหลาย combo · นับแยกจาก keychain</div>
             <div id="adm-rail-grid" style="background:rgba(255,255,255,.06);border-radius:6px;overflow:hidden;margin-bottom:10px"></div>
@@ -2808,7 +2808,7 @@ function saveProdStock() {
           </div>
         </div>
 
-        <button onclick="saveKeyStock()" style="background:var(--accent);border:none;color:#fff;padding:12px;font-family:var(--font-body);font-size:13px;cursor:pointer;width:100%;letter-spacing:.5px">💾 บันทึก Keychain Stock</button>
+        <button onclick="saveKeyStock()" style="margin-top:2px;background:var(--accent);border:none;color:#fff;padding:12px;font-family:var(--font-body);font-size:13px;cursor:pointer;width:100%;letter-spacing:.5px">💾 บันทึก Keychain Stock</button>
       </div>
     </div>
 
