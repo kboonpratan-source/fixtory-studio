@@ -2482,15 +2482,39 @@ function renderKeyGrid(){
   const grid=document.getElementById('adm-key-grid')
   if(!grid)return
   const colorKey=activeCombo.name
-  grid.innerHTML=LETTERS.map(letter=>{
+  const header='<div style="display:grid;grid-template-columns:36px 1fr 64px 64px 52px;gap:6px;background:#0a0a0a;padding:7px 12px;font-size:9px;letter-spacing:1.5px;color:var(--muted);text-transform:uppercase;font-family:var(--font-mono)"><div></div><div></div><div style='text-align:center'>เริ่มต้น</div><div style='text-align:center'>ขายไป</div><div style='text-align:center'>คงเหลือ</div></div>'
+  const rows=LETTERS.map((letter,i)=>{
     const k=colorKey+'|'+letter
-    const qty=keyStockData[k]||0
-    return `<div class="adm-stock-cell" style="justify-content:space-between">
+    const d=keyStockData[k]||{start:0,sold:0}
+    // support old format (number) and new format (object)
+    const start=typeof d==='object'?d.start:d
+    const sold=typeof d==='object'?d.sold:0
+    const remain=Math.max(0,start-sold)
+    const remainColor=remain<=0?'#e55':remain<=2?'#fa8':'var(--text)'
+    return `<div style="display:grid;grid-template-columns:36px 1fr 64px 64px 52px;gap:6px;align-items:center;background:${i%2===0?'#181818':'#141414'};padding:6px 12px">
       <span style="font-family:var(--font-display);font-size:22px;color:var(--text)">${letter}</span>
-      <input class="adm-stock-input" type="number" min="0" step="1" value="${qty}" id="kst-${letter}" style="${qty<=0?'border-color:rgba(229,85,85,.4)':''}" oninput="keyStockData['${colorKey}|${letter}']=parseInt(this.value)||0">
-      <span class="adm-stock-unit" style="${qty<=0?'color:#e55':qty<=2?'color:#fa8':''}">ชิ้น</span>
+      <div></div>
+      <input class="adm-stock-input" type="number" min="0" value="${start}" id="kst-start-${letter}" style="width:100%;text-align:center" oninput="updateKeyRemain('${colorKey}','${letter}')">
+      <input class="adm-stock-input" type="number" min="0" value="${sold}" id="kst-sold-${letter}" style="width:100%;text-align:center" oninput="updateKeyRemain('${colorKey}','${letter}')">
+      <div style="font-family:var(--font-display);font-size:18px;text-align:center;color:${remainColor}" id="kst-remain-${letter}">${remain}</div>
     </div>`
   }).join('')
+  grid.innerHTML=header+rows
+}
+
+function updateKeyRemain(colorKey, letter){
+  const start=parseInt(document.getElementById('kst-start-'+letter)?.value)||0
+  const sold=parseInt(document.getElementById('kst-sold-'+letter)?.value)||0
+  const remain=Math.max(0,start-sold)
+  const el=document.getElementById('kst-remain-'+letter)
+  if(el){
+    el.textContent=remain
+    el.style.color=remain<=0?'#e55':remain<=2?'#fa8':'var(--text)'
+  }
+  if(!keyStockData[colorKey+'|'+letter]||typeof keyStockData[colorKey+'|'+letter]!=='object')
+    keyStockData[colorKey+'|'+letter]={start:0,sold:0}
+  keyStockData[colorKey+'|'+letter].start=start
+  keyStockData[colorKey+'|'+letter].sold=sold
 }
 
 // Rail colors
@@ -2514,24 +2538,23 @@ if(!Object.keys(railStockData).length) {
 function renderRailStock(){
   const grid = document.getElementById('adm-rail-grid')
   if(!grid) return
-  grid.innerHTML = `
-    <div class="rail-row rail-header" style="grid-template-columns:auto 1fr repeat(3,70px) 70px">
-      <div></div><div>สีราง</div><div>เริ่มต้น</div><div>ขายไป</div><div>คงเหลือ</div><div></div>
-    </div>` +
-  RAIL_COLORS.map((c,i) => {
+  // Header row
+  const header = '<div style="display:grid;grid-template-columns:20px 1fr 72px 72px 60px 30px;gap:8px;background:#0a0a0a;padding:8px 14px;font-size:9px;letter-spacing:1.5px;color:var(--muted);text-transform:uppercase;font-family:var(--font-mono)"><div></div><div>สีราง</div><div style='text-align:center'>เริ่มต้น</div><div style='text-align:center'>ขายไป</div><div style='text-align:center'>คงเหลือ</div><div></div></div>'
+  const rows = RAIL_COLORS.map((c,i) => {
     const d = railStockData[c.name] || {start:0,sold:0}
     const remain = Math.max(0, d.start - d.sold)
-    const remainColor = remain<=0?'color:#e55':remain<=5?'color:#fa8':'color:var(--text)'
+    const remainColor = remain<=0?'#e55':remain<=5?'#fa8':'var(--text)'
     const isLight = c.light
-    return `<div class="rail-row" style="grid-template-columns:auto 1fr repeat(3,70px) 70px">
-      <div style="width:16px;height:16px;border-radius:3px;background:${c.hex};${isLight?'box-shadow:inset 0 0 0 1px rgba(0,0,0,.2)':''}"></div>
-      <div style="color:var(--text)">${c.name}</div>
-      <input class="rail-input" type="number" min="0" value="${d.start}" id="rail-start-${i}" oninput="updateRailRemain(${i})">
-      <input class="rail-input" type="number" min="0" value="${d.sold}" id="rail-sold-${i}" oninput="updateRailRemain(${i})">
-      <div class="rail-remain" id="rail-remain-${i}" style="${remainColor}">${remain}</div>
-      <div style="font-size:10px;color:var(--muted)">เส้น</div>
+    return `<div style="display:grid;grid-template-columns:20px 1fr 72px 72px 60px 30px;gap:8px;align-items:center;background:${i%2===0?'#181818':'#141414'};padding:8px 14px">
+      <div style="width:16px;height:16px;border-radius:3px;flex-shrink:0;background:${c.hex};${isLight?'box-shadow:inset 0 0 0 1px rgba(0,0,0,.2)':''}"></div>
+      <div style="font-size:12px;color:var(--text);font-family:var(--font-mono)">${c.name}</div>
+      <input class="rail-input" type="number" min="0" value="${d.start}" id="rail-start-${i}" oninput="updateRailRemain(${i})" style="width:100%">
+      <input class="rail-input" type="number" min="0" value="${d.sold}" id="rail-sold-${i}" oninput="updateRailRemain(${i})" style="width:100%">
+      <div style="font-family:var(--font-display);font-size:20px;text-align:center;color:${remainColor}" id="rail-remain-${i}">${remain}</div>
+      <div style="font-size:10px;color:var(--muted);font-family:var(--font-mono)">เส้น</div>
     </div>`
   }).join('')
+  grid.innerHTML = header + rows
 }
 
 function updateRailRemain(i) {
@@ -2559,8 +2582,9 @@ function saveRailStock() {
 function saveKeyStock(){
   if(activeCombo){
     LETTERS.forEach(letter=>{
-      const el=document.getElementById('kst-'+letter)
-      if(el)keyStockData[activeCombo.name+'|'+letter]=parseInt(el.value)||0
+      const start=parseInt(document.getElementById('kst-start-'+letter)?.value)||0
+      const sold=parseInt(document.getElementById('kst-sold-'+letter)?.value)||0
+      keyStockData[activeCombo.name+'|'+letter]={start,sold}
     })
   }
   localStorage.setItem('fx_key_stock',JSON.stringify(keyStockData))
