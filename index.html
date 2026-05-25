@@ -955,6 +955,7 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:40px;dis
           <div class="brand-tabs" id="m-brand-tabs">
             <button class="brand-tab active" onclick="filterBrand('Bambu Matte')">Bambu Matte</button>
             <button class="brand-tab" onclick="filterBrand('eSUN Matte')">eSUN Matte</button>
+            <button class="brand-tab" onclick="filterBrand('Panchroma Matte')">Panchroma Matte</button>
             <button class="brand-tab" onclick="filterBrand('Polymaker Matte')">Polymaker Matte</button>
           </div>
           <div class="color-swatches" id="m-color-swatches"></div>
@@ -1051,6 +1052,53 @@ const colorPalette = [
   {hex:"#C44F26", name:"Muted Red",       brand:"Polymaker Matte"},
   {hex:"#656D60", name:"Muted Green",     brand:"Polymaker Matte"},
   {hex:"#7C5577", name:"Muted Purple",    brand:"Polymaker Matte"},
+
+  // ── Panchroma Matte (Polymaker) — official hex ──
+  {hex:"#1C1C1C", name:"Charcoal Black",  brand:"Panchroma Matte"},
+  {hex:"#E6DDDB", name:"Cotton White",    brand:"Panchroma Matte", light:1},
+  {hex:"#AD7441", name:"Wood Brown",      brand:"Panchroma Matte"},
+  {hex:"#F2B67A", name:"Pastel Peach",    brand:"Panchroma Matte", light:1},
+  {hex:"#F78E0E", name:"Sunrise Orange",  brand:"Panchroma Matte", light:1},
+  {hex:"#F5CF6F", name:"Pastel Banana",   brand:"Panchroma Matte", light:1},
+  {hex:"#A78403", name:"Army Light Green",brand:"Panchroma Matte"},
+  {hex:"#F0BE02", name:"Savannah Yellow", brand:"Panchroma Matte", light:1},
+  {hex:"#D0E740", name:"Lime Green",      brand:"Panchroma Matte", light:1},
+  {hex:"#515234", name:"Army Dark Green", brand:"Panchroma Matte"},
+  {hex:"#BEC9A5", name:"Pastel Mint",     brand:"Panchroma Matte", light:1},
+  {hex:"#519F61", name:"Forest Green",    brand:"Panchroma Matte"},
+  {hex:"#5AABB1", name:"Arctic Teal",     brand:"Panchroma Matte"},
+  {hex:"#95C5D3", name:"Pastel Ice",      brand:"Panchroma Matte", light:1},
+  {hex:"#005AA2", name:"Sapphire Blue",   brand:"Panchroma Matte"},
+  {hex:"#8A68B5", name:"Lavender Purple", brand:"Panchroma Matte"},
+  {hex:"#DE1619", name:"Lava Red",        brand:"Panchroma Matte"},
+  {hex:"#E0A8BB", name:"Sakura Pink",     brand:"Panchroma Matte", light:1},
+  {hex:"#C29572", name:"Pastel Peanut",   brand:"Panchroma Matte", light:1},
+  {hex:"#724E3D", name:"Army Brown",      brand:"Panchroma Matte"},
+  {hex:"#E93A3F", name:"Watermelon",      brand:"Panchroma Matte"},
+  {hex:"#2C3449", name:"Metallic Blue",   brand:"Panchroma Matte"},
+  {hex:"#6F727E", name:"Fossil Grey",     brand:"Panchroma Matte"},
+
+  // ── eSUN ePLA-Matte — approximate hex ──
+  {hex:"#F2F0EB", name:"Milky White",     brand:"eSUN Matte", light:1},
+  {hex:"#1A1A1A", name:"Deep Black",      brand:"eSUN Matte"},
+  {hex:"#D0D0D0", name:"Light Grey",      brand:"eSUN Matte", light:1},
+  {hex:"#6B6B6B", name:"Grey",            brand:"eSUN Matte"},
+  {hex:"#C83232", name:"Fire Engine Red", brand:"eSUN Matte"},
+  {hex:"#E0785A", name:"Orange",          brand:"eSUN Matte", light:1},
+  {hex:"#F5D060", name:"Yellow",          brand:"eSUN Matte", light:1},
+  {hex:"#2E7D32", name:"Dark Green",      brand:"eSUN Matte"},
+  {hex:"#66BB6A", name:"Light Green",     brand:"eSUN Matte", light:1},
+  {hex:"#1565C0", name:"Navy Blue",       brand:"eSUN Matte"},
+  {hex:"#42A5F5", name:"Sky Blue",        brand:"eSUN Matte", light:1},
+  {hex:"#7B1FA2", name:"Purple",          brand:"eSUN Matte"},
+  {hex:"#C890C0", name:"Lilac",           brand:"eSUN Matte", light:1},
+  {hex:"#8C4A6A", name:"Morandi Purple",  brand:"eSUN Matte"},
+  {hex:"#E84A6F", name:"Strawberry Red",  brand:"eSUN Matte"},
+  {hex:"#F4956A", name:"Tangerine",       brand:"eSUN Matte", light:1},
+  {hex:"#6BAE8A", name:"Matcha Green",    brand:"eSUN Matte", light:1},
+  {hex:"#7A9E8A", name:"Morandi Green",   brand:"eSUN Matte"},
+  {hex:"#E8B4C0", name:"Pink",            brand:"eSUN Matte", light:1},
+  {hex:"#8D6E63", name:"Brown",           brand:"eSUN Matte"},
 ]
 
 const products = [
@@ -1060,31 +1108,31 @@ const products = [
    emoji:"🍯", badge:"evergreen", badgeLabel:"Evergreen",
    desc:"กล่องเก็บของดีไซน์ Honeycomb สวยงาม พิมพ์จาก PLA+ คุณภาพสูง เหมาะจัดระเบียบโต๊ะทำงาน",
    points:["ดีไซน์ Honeycomb สุดยูนีค","เลือกสีได้ตามต้องการ","PLA+ คุณภาพสูง","Made to Order ผลิตในไทย"],
-   web:199, shopee:199, tiktok:199},
+   web:239, shopee:239, tiktok:239},
   {id:2, name:"HIVE Tray", sortOrder:2, cat:"Storage & Organization", tag:"storage",
    imgSrc:"hive_labeled.jpg", imgSrc2:"hive_set.jpg",
    emoji:"🐝", badge:"evergreen", badgeLabel:"Evergreen",
    desc:"ถาดวางของดีไซน์ Honeycomb เข้าชุดกับ HIVE BOX จัดโต๊ะให้สวยงามเป็นระเบียบ",
    points:["เข้าชุดกับ HIVE BOX","เลือกสีได้","PLA+ คุณภาพสูง","สั่งเป็น set ได้"],
-   web:199, shopee:199, tiktok:199},
+   web:169, shopee:169, tiktok:169},
   {id:3, name:"HIVE Tall", sortOrder:3, cat:"Storage & Organization", tag:"storage",
    imgSrc:"hive_labeled.jpg", imgSrc2:"hive_set.jpg",
    emoji:"📐", badge:"evergreen", badgeLabel:"Evergreen",
    desc:"กระบอกทรงสูง Honeycomb ใส่ปากกา ดินสอ แปรง หรือใช้เป็นแจกันตกแต่ง",
    points:["ทรงสูงเก็บได้เยอะ","เข้าชุด HIVE series","เลือกสีได้","งานพิมพ์ละเอียด"],
-   web:249, shopee:249, tiktok:249},
+   web:259, shopee:259, tiktok:259},
   {id:4, name:"HIVE Mini", sortOrder:4, cat:"Storage & Organization", tag:"storage",
    imgSrc:"hive_labeled.jpg", imgSrc2:"hive_set.jpg",
    emoji:"💛", badge:"evergreen", badgeLabel:"Evergreen",
    desc:"กล่องมินิ Honeycomb เหมาะวางแหวน ต่างหู ของเล็กน้อย หรือทำเป็นของขวัญ",
    points:["ขนาดมินิน่ารัก","เหมาะเป็นของขวัญ","เข้าชุด HIVE series","เลือกสีได้"],
-   web:249, shopee:249, tiktok:249},
+   web:169, shopee:169, tiktok:169},
   {id:5, name:"HIVE Full Set (4 ชิ้น)", sortOrder:5, cat:"Storage & Organization", tag:"storage",
    imgSrc:"hive_labeled.jpg", imgSrc2:"hive_set.jpg",
    emoji:"🍯", badge:"new", badgeLabel:"New",
-   desc:"HIVE ครบ set 4 ชิ้น (BOX + Tray + Tall + Mini) ประหยัดกว่าซื้อแยก ฿117",
-   points:["ครบ 4 ชิ้นในชุดเดียว","ประหยัดกว่าซื้อแยก ฿117","เลือกสีได้","Made to Order ผลิตในไทย"],
-   web:699, shopee:699, tiktok:699},
+   desc:"HIVE ครบ set 4 ชิ้น (BOX + Tray + Tall + Mini) ประหยัดกว่าซื้อแยก ฿57",
+   points:["ครบ 4 ชิ้นในชุดเดียว","ประหยัดกว่าซื้อแยก ฿57","เลือกสีได้","Made to Order ผลิตในไทย"],
+   web:779, shopee:779, tiktok:779},
 
   // ── COOKIES series ─────────────────────────────────────────
   {id:10, name:"COOKIES Tall", sortOrder:1, cat:"Storage & Organization", tag:"storage",
@@ -1287,12 +1335,12 @@ const products = [
    web:119, shopee:119, tiktok:119},
 
   // ── ป้ายตัวอักษร ────────────────────────────────────────────
-  {id:34, name:"ป้ายตัวอักษร", hidden:true, cat:"Storage & Organization", tag:"storage",
+  {id:34, name:"Name Sign ป้ายชื่อ", cat:"Home Decor", tag:"decor",
    imgSrc:"alphabet_sign.jpg",
-   emoji:"🔤", badge:"new", badgeLabel:"New",
-   desc:"ป้ายตัวอักษรสำหรับติดชั้นวาง โต๊ะ หรือตกแต่งบ้าน custom ข้อความได้",
-   points:["custom ข้อความได้","หลากสีให้เลือก","ติดตกแต่งได้หลายที่","Made to Order","เลือกสีได้"],
-   web:369, shopee:369, tiktok:369},
+   emoji:"🔤", badge:"new", badgeLabel:"Custom",
+   desc:"ป้ายชื่อตัวอักษร custom — ตัวอักษรใหญ่ + ชื่อ cursive 2 สี ตั้งโต๊ะหรือตกแต่งบ้าน สั่งทำตามชื่อที่ต้องการ",
+   points:["custom ชื่อได้","ตัวอักษร + ชื่อ 2 สี","ของขวัญสุดพิเศษ","Made to Order","เลือกสีได้"],
+   web:679, shopee:679, tiktok:679},
 
   // ── อื่นๆ ───────────────────────────────────────────────────
   {id:35, name:"Lip", hidden:true, cat:"Home Decor", tag:"decor",
