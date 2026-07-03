@@ -453,6 +453,7 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:40px;dis
     <li><a href="#custom">Custom</a></li>
     <li><a href="#quote">Quote</a></li>
     <li><a href="#contact">Contact</a></li>
+    <li><a href="javascript:void(0)" onclick="openCatalog()">Catalog</a></li>
     <li><a href="javascript:void(0)" onclick="document.getElementById('admin-pw-overlay').classList.add('open');document.body.style.overflow='hidden';setTimeout(()=>document.getElementById('admin-pw-input').focus(),100)">Admin</a></li>
   </ul>
   <button class="nav-cta" onclick="openCart()">
@@ -1336,10 +1337,10 @@ const products = [
 
   // ── ป้ายตัวอักษร ────────────────────────────────────────────
   {id:34, name:"Name Sign ป้ายชื่อ", cat:"Home Decor", tag:"decor",
-   imgSrc:"name_sign_1.jpg", imgSrc2:"name_sign_2.jpg", imgSrc3:"name_sign_3.jpg",
+   imgSrc:"alphabet_sign.jpg",
    emoji:"🔤", badge:"new", badgeLabel:"Custom",
-   desc:"ป้ายชื่อตั้งโต๊ะ พิมพ์ 3D 2 สี — ตัวอักษรใหญ่ + ชื่อ cursive สวยงาม ของขวัญสุดพิเศษ custom ชื่อได้ทุกชื่อ · name sign ป้ายชื่อ ของขวัญ birthday",
-   points:["ตัวอักษรใหญ่ + ชื่อ cursive สวยงาม","พิมพ์ 2 สี ต่างกัน","ตั้งโต๊ะได้เลย ไม่ต้องติดผนัง","เหมาะเป็นของขวัญ birthday / วันพิเศษ","Made to Order · custom ทุกชื่อ"],
+   desc:"ป้ายชื่อตัวอักษร custom — ตัวอักษรใหญ่ + ชื่อ cursive 2 สี ตั้งโต๊ะหรือตกแต่งบ้าน สั่งทำตามชื่อที่ต้องการ",
+   points:["custom ชื่อได้","ตัวอักษร + ชื่อ 2 สี","ของขวัญสุดพิเศษ","Made to Order","เลือกสีได้"],
    web:679, shopee:679, tiktok:679},
 
   // ── อื่นๆ ───────────────────────────────────────────────────
@@ -2760,6 +2761,7 @@ function saveProdStock() {
   <div class="admin-box">
     <div class="admin-header">
       <div style="display:flex;gap:4px">
+        <a href="/dashboard" target="_blank" style="display:inline-flex;align-items:center;gap:6px;background:var(--accent);color:#fff;text-decoration:none;padding:8px 14px;font-size:11px;letter-spacing:1px;font-family:var(--font-mono)">📊 INVENTORY</a>
         <button class="adm-tab on" id="tab-calc" onclick="admSwitchTab('calc')">Calculator</button>
         <button class="adm-tab" id="tab-stock" onclick="admSwitchTab('stock')">Stock</button>
       </div>
@@ -2892,5 +2894,506 @@ function saveProdStock() {
   </div>
 </div>
 
+
+<!-- ===== CATALOG OVERLAY (embedded catalog_slide) ===== -->
+<div id="catalog-overlay" style="display:none;position:fixed;inset:0;z-index:9999;background:#0a0a0a">
+  <button onclick="closeCatalog()" aria-label="Close catalog" style="position:absolute;top:14px;right:14px;z-index:10001;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);color:#f0ede8;width:38px;height:38px;border-radius:50%;font-size:16px;cursor:pointer;line-height:1;backdrop-filter:blur(6px)">✕</button>
+  <iframe id="catalog-frame" title="Fixtory Catalog 2026" style="width:100%;height:100%;border:0;display:block"></iframe>
+</div>
+<script type="text/html" id="catalog-src">
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Fixtory.Studio — Catalog 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Noto+Sans+Thai:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0a0a0a;--bg2:#111;--bg3:#181818;
+  --border:rgba(255,255,255,0.07);
+  --accent:#C4714A;--accent2:#a85a35;
+  --text:#f0ede8;--muted:#666460;
+  --font-display:'Bebas Neue',sans-serif;
+  --font-body:'Noto Sans Thai',sans-serif;
+  --font-mono:'DM Mono',monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:var(--font-body)}
+
+/* ── VIEWER ── */
+.viewer{position:fixed;inset:0;overflow:hidden}
+.track{display:flex;height:100%;transition:transform .45s cubic-bezier(.4,0,.2,1);will-change:transform}
+.slide{flex-shrink:0;width:100vw;height:100vh;position:relative;overflow:hidden;display:flex;flex-direction:column}
+
+/* ── COVER SLIDE ── */
+.slide-cover{background:var(--bg);align-items:center;justify-content:center;text-align:center}
+.cover-grid{position:absolute;inset:0;background-image:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px);background-size:60px 60px;opacity:.3;pointer-events:none}
+.cover-glow{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:500px;height:500px;background:radial-gradient(circle,rgba(196,113,74,.15) 0%,transparent 70%);pointer-events:none}
+.cover-content{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center}
+.cover-logo-text{font-family:var(--font-display);font-size:clamp(52px,12vw,96px);letter-spacing:6px;line-height:1}
+.cover-logo-text span{color:var(--accent)}
+.cover-tag{font-family:var(--font-mono);font-size:11px;color:var(--accent);letter-spacing:3px;text-transform:uppercase;margin-bottom:16px}
+.cover-tagline{font-family:var(--font-mono);font-size:11px;color:var(--muted);letter-spacing:2px;margin-top:10px;text-transform:uppercase}
+.cover-anim{width:min(440px,85vw);margin-top:20px;filter:drop-shadow(0 0 30px rgba(196,113,74,.2))}
+.cover-anim svg{width:100%;height:auto}
+.cover-hint{position:absolute;bottom:32px;font-family:var(--font-mono);font-size:12px;color:rgba(240,237,232,.5);letter-spacing:2px;display:flex;align-items:center;gap:8px;animation:hintBounce 2s ease-in-out infinite}
+@keyframes hintBounce{0%,100%{transform:translateX(0)}50%{transform:translateX(6px)}}
+
+/* ── CATEGORY SLIDE ── */
+.slide-cat{background:var(--bg2);align-items:center;justify-content:center}
+.cat-content{position:relative;z-index:1;text-align:center;padding:20px}
+.cat-num{font-family:var(--font-display);font-size:clamp(100px,20vw,180px);color:rgba(196,113,74,.1);line-height:1;letter-spacing:4px}
+.cat-name-big{font-family:var(--font-display);font-size:clamp(40px,8vw,80px);letter-spacing:4px;margin-top:-20px;line-height:1}
+.cat-desc-text{font-size:16px;color:rgba(240,237,232,.7);margin-top:16px;max-width:480px;line-height:1.8}
+.cat-count{font-family:var(--font-mono);font-size:12px;color:var(--accent);letter-spacing:2px;margin-top:20px}
+
+/* ── PRODUCT SLIDE ── */
+.slide-product{background:var(--bg);display:grid;grid-template-columns:1fr 1fr}
+@media(max-width:600px){.slide-product{grid-template-columns:1fr;grid-template-rows:45vh 1fr}}
+.prod-visual{background:var(--bg3);display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative}
+.prod-visual img{width:100%;height:100%;object-fit:contain;transition:transform .3s}
+.prod-visual:hover img{transform:scale(1.05)}
+.prod-visual-emoji{font-size:100px;opacity:.4}
+.prod-info{padding:clamp(28px,5vw,60px);display:flex;flex-direction:column;justify-content:center;overflow-y:auto;border-left:1px solid var(--border);gap:0}
+@media(max-width:600px){.prod-info{border-left:none;border-top:1px solid var(--border)}}
+.prod-series{font-family:var(--font-mono);font-size:11px;color:var(--accent);letter-spacing:4px;text-transform:uppercase;margin-bottom:12px}
+.prod-name-big{font-family:var(--font-display);font-size:clamp(48px,6vw,84px);letter-spacing:2px;line-height:.95;margin-bottom:20px}
+.prod-desc-text{font-size:clamp(16px,2vw,20px);color:rgba(240,237,232,.9);line-height:1.75;margin-bottom:24px}
+.prod-desc-text .hi{color:var(--accent);font-weight:500}
+.prod-desc-text .hi2{color:#f0ede8;background:rgba(196,113,74,.18);padding:1px 6px;border-radius:3px}
+.prod-points-wrap{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:28px}
+.prod-pt{font-size:13px;padding:7px 16px;border:1px solid rgba(255,255,255,.15);color:rgba(240,237,232,.9);letter-spacing:.5px;background:rgba(255,255,255,.04)}
+.prod-price-wrap{border-top:1px solid rgba(255,255,255,.1);padding-top:20px;display:flex;align-items:baseline;gap:16px;flex-wrap:wrap}
+.prod-price-label{font-family:var(--font-mono);font-size:11px;color:rgba(240,237,232,.4);letter-spacing:2px;text-transform:uppercase;margin-bottom:0}
+.prod-price-num{font-family:var(--font-display);font-size:clamp(52px,7vw,80px);color:var(--accent);letter-spacing:2px;line-height:1}
+.prod-price-num.empty{color:rgba(255,255,255,.15);font-size:clamp(32px,4vw,48px)}
+.prod-price-note{font-size:12px;color:rgba(240,237,232,.4);margin-top:4px;font-family:var(--font-mono);width:100%}
+
+/* ── NAV ── */
+.nav-bar{position:fixed;bottom:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:16px 28px;background:rgba(10,10,10,.96);backdrop-filter:blur(16px);border-top:1px solid rgba(255,255,255,.12)}
+.nav-btn{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.2);color:rgba(240,237,232,.9);padding:11px 28px;font-family:var(--font-mono);font-size:14px;letter-spacing:1px;cursor:pointer;transition:all .2s;border-radius:4px;font-weight:500}
+.nav-btn:hover:not(:disabled){border-color:var(--accent);color:var(--accent);background:rgba(196,113,74,.1)}
+.nav-btn:disabled{opacity:.2;cursor:not-allowed}
+.nav-progress{display:flex;align-items:center;gap:12px;flex:1;justify-content:center;padding:0 20px}
+.nav-dots{display:flex;gap:5px;flex-wrap:wrap;justify-content:center;max-width:220px}
+.nav-dot{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.2);cursor:pointer;transition:all .2s;flex-shrink:0}
+.nav-dot.active{background:var(--accent);width:22px;border-radius:4px}
+.nav-dot.is-cat{background:rgba(196,113,74,.5)}
+.nav-counter{font-family:var(--font-mono);font-size:15px;color:rgba(240,237,232,.8);white-space:nowrap;font-weight:500}
+
+/* ── CAT BADGE (top-left) ── */
+.slide-badge{position:absolute;top:16px;left:16px;font-family:var(--font-mono);font-size:9px;padding:4px 10px;border:1px solid rgba(196,113,74,.3);color:var(--accent);letter-spacing:1px;text-transform:uppercase;z-index:10}
+
+/* ── SWIPE HINT ── */
+.swipe-overlay{position:fixed;inset:0;z-index:200;pointer-events:none}
+
+/* ── ANIMATIONS ── */
+@keyframes arrowFlow{0%{stroke-dashoffset:20}100%{stroke-dashoffset:0}}
+@keyframes layerUp3{0%{opacity:0;transform:translateY(3px)}12%{opacity:1;transform:translateY(0)}88%{opacity:1}100%{opacity:0}}
+@keyframes nozzle3{0%,100%{transform:translateX(0)}25%{transform:translateX(36px)}75%{transform:translateX(36px)}50%{transform:translateX(72px)}}
+@keyframes filamentGrow{0%{stroke-dashoffset:60;opacity:0}10%{opacity:1}60%{stroke-dashoffset:0;opacity:1}80%,100%{stroke-dashoffset:0;opacity:.85}}
+@keyframes dripFall{0%,30%{opacity:0;transform:translateY(0)}40%{opacity:1;transform:translateY(0)}80%{opacity:.8;transform:translateY(18px)}100%{opacity:0;transform:translateY(24px)}}
+@keyframes dripFall2{0%,45%{opacity:0;transform:translateY(0)}55%{opacity:.8;transform:translateY(0)}90%{opacity:.6;transform:translateY(14px)}100%{opacity:0;transform:translateY(18px)}}
+@keyframes glowPulse{0%,100%{opacity:.4}50%{opacity:1}}
+@keyframes screenBlink{0%,100%{opacity:.5}50%{opacity:1}}
+@keyframes dotPulse{0%,100%{opacity:0}50%{opacity:1}}
+@keyframes printerGlow{0%,100%{opacity:.1}50%{opacity:.28}}
+.lyr3{animation:layerUp3 3s ease-in-out infinite;opacity:0}
+.l1{animation-delay:.25s}.l2{animation-delay:.5s}.l3{animation-delay:.75s}
+.l4{animation-delay:1s}.l5{animation-delay:1.25s}.l6{animation-delay:1.5s}
+.l7{animation-delay:1.75s}.l8{animation-delay:2s}
+.arr{stroke-dasharray:6,4;animation:arrowFlow .8s linear infinite}
+</style>
+</head>
+<body>
+
+<div class="viewer">
+  <div class="track" id="track"></div>
+</div>
+
+<div class="nav-bar">
+  <button class="nav-btn" id="btn-prev" onclick="go(-1)">‹ ก่อนหน้า</button>
+  <div class="nav-progress">
+    <div class="nav-dots" id="nav-dots"></div>
+    <div class="nav-counter" id="nav-counter"></div>
+  </div>
+  <button class="nav-btn" id="btn-next" onclick="go(1)">ถัดไป ›</button>
+</div>
+
+<script>
+const CATALOG = [
+  {type:'cat', id:'storage', num:'01', name:'STORAGE', desc:'โต๊ะรกไม่ใช่นิสัย — แต่เพราะไม่มีที่ดีพอ ให้ HIVE และ COOKIES จัดระเบียบให้คุณ'},
+
+  {type:'product', cat:'Storage', name:'HIVE BOX', img:'hive_labeled.jpg',
+   desc:'โต๊ะรกเพราะของ<span class="hi">ไม่มีที่อยู่</span> — HIVE BOX แก้ด้วยดีไซน์ Honeycomb ที่<span class="hi2">สวยพอตั้งโชว์ได้เลย</span> ทำจาก PLA+ แข็งแรง เลือกสีได้ตามใจ',
+   points:['Honeycomb design','เลือกสีได้ทุกเฉด','PLA+ แข็งแรงทนทาน','Made to Order ผลิตตามสั่ง'], price:''},
+
+  {type:'product', cat:'Storage', name:'HIVE Tray', img:'hive_labeled.jpg',
+   desc:'วางรีโมท กุญแจ น้ำหอมบนถาดที่<span class="hi">ดูดี</span> แทนที่จะวาง<span class="hi2">เกลื่อนบนโต๊ะ</span> ดีไซน์ Honeycomb เข้าชุด HIVE BOX ได้สวยงาม',
+   points:['เข้าชุด HIVE series','ลาย Honeycomb สวยงาม','เลือกสีได้','Made to Order'], price:''},
+
+  {type:'product', cat:'Storage', name:'HIVE Tall', img:'hive_labeled.jpg',
+   desc:'ปากกา ดินสอ แปรง — ทุกอย่างที่ยืนตั้งได้มี<span class="hi">บ้านที่เหมาะสม</span>แล้ว วางบนโต๊ะทำงานแล้ว<span class="hi2">ดูเป็นมืออาชีพทันที</span>',
+   points:['ทรงสูง เก็บได้เยอะ','เข้าชุด HIVE series','เลือกสีได้','Made to Order'], price:''},
+
+  {type:'product', cat:'Storage', name:'HIVE Mini', img:'hive_labeled.jpg',
+   desc:'แหวน ต่างหู คลิป — ของจิ๋วที่<span class="hi">มักหายบ่อย</span> มีบ้านใน HIVE Mini แล้ว เล็กน่ารัก<span class="hi2">เหมาะเป็นของขวัญวันเกิด</span>ที่คิดมาดี',
+   points:['ขนาดมินิน่ารัก','เหมาะเก็บเครื่องประดับ','ของขวัญสุดพิเศษ','เลือกสีได้'], price:''},
+
+  {type:'product', cat:'Storage', name:'HIVE Full Set', img:'hive_set.jpg',
+   desc:'จัดโต๊ะ<span class="hi">ครั้งเดียวให้สวยทั้งชุด</span> BOX + Tray + Tall + Mini ในสีเดียวกัน ดูเป็น collection จริงๆ<span class="hi2">ประหยัดกว่าซื้อแยก</span>',
+   points:['ครบ 4 ชิ้นในชุดเดียว','สีเดียวกันทั้งชุด','ประหยัดกว่าซื้อแยก','Made to Order'], price:''},
+
+  {type:'product', cat:'Storage', name:'COOKIES Tall', img:'cookies_labeled.jpg',
+   desc:'กระบอกใส่ปากกาที่<span class="hi">ดูดีพอตั้งหน้ากล้อง</span>ได้ ดีไซน์ ribbed texture มีมิติ<span class="hi2">จับแล้วรู้สึกคุณภาพ</span>',
+   points:['Ribbed texture มีมิติ','เข้าชุด COOKIES','เลือกสีได้','Made to Order'], price:''},
+
+  {type:'product', cat:'Storage', name:'COOKIES L', img:'cookies_labeled.jpg',
+   desc:'กล่องฝาปิด size L สำหรับของที่<span class="hi">ไม่อยากให้ฝุ่นจับ</span> ดีไซน์ beaded border รอบขอบ<span class="hi2">วางบนชั้นแล้วดูเป็น collection</span>',
+   points:['มีฝาปิดมิดชิด','Beaded border สวยงาม','เลือกสีได้','Made to Order'], price:''},
+
+  {type:'product', cat:'Storage', name:'COOKIES M', img:'cookies_labeled.jpg',
+   desc:'แหวน กำไล ต่างหู — เปิดฝาแล้ว<span class="hi">เจอสิ่งที่หาง่าย ไม่พันกัน</span> ดีไซน์น่ารัก<span class="hi2">วางบนโต๊ะแต่งหน้าได้เลย</span>',
+   points:['เหมาะเก็บเครื่องประดับ','เปิด-ปิดง่าย','เลือกสีได้','Made to Order'], price:''},
+
+  {type:'product', cat:'Storage', name:'COOKIES S', img:'cookies_labeled.jpg',
+   desc:'กล่องเล็กสุด<span class="hi">น่ารักสุด</span> เหมาะใส่ยา วิตามิน ของจิ๋ว หรือเป็น<span class="hi2">ของขวัญที่แพ็คสวย</span>',
+   points:['ขนาดพกพาได้','เหมาะเป็นของขวัญ','เลือกสีได้','Made to Order'], price:''},
+
+  {type:'product', cat:'Storage', name:'COOKIES Full Set', img:'cookies_set.jpg',
+   desc:'COOKIES ครบ 4 ชิ้นในสีเดียวกัน<span class="hi">วางเรียงกันแล้วสวยมาก</span> ได้ความ match ทั้งชุดและ<span class="hi2">ประหยัดกว่าซื้อแยก</span>',
+   points:['ครบ 4 ชิ้น','สีเดียวกันทั้งชุด','ประหยัดกว่าซื้อแยก','Made to Order'], price:''},
+
+  {type:'product', cat:'Storage', name:'Javik Hanger', img:'javik_hanger.jpg',
+   desc:'ที่แขวนกุญแจที่<span class="hi">ไม่รกผนัง</span> ติดง่ายไม่ต้องเจาะรู ดีไซน์ minimal<span class="hi2">เห็นแล้วไม่รู้ว่า print 3D</span>',
+   points:['ติดตั้งง่าย','ดีไซน์ minimal','เลือกสีได้','Made to Order'], price:''},
+
+  {type:'cat', id:'decor', num:'02', name:'HOME DECOR', desc:'บ้านคือ reflection ของตัวคุณ — เพิ่ม personality ด้วยของตกแต่งที่ไม่มีใครเหมือน'},
+
+  {type:'product', cat:'Home Decor', name:'SHAPIES 5pc', img:'shapies_5pc.jpg',
+   desc:'ใส่ดอกไม้แห้งสักช่อ แล้ว<span class="hi">ตู้เย็นธรรมดากลายเป็น focal point</span>ของห้องครัว แม่เหล็กในตัว<span class="hi2">ติดได้เลยไม่ต้องเจาะ</span> 5 ดีไซน์ในชุดเดียว',
+   points:['แม่เหล็กในตัว ติดได้เลย','5 ดีไซน์ไม่ซ้ำกัน','เหมาะดอกไม้แห้ง','เลือกสีได้'], price:''},
+
+  {type:'product', cat:'Home Decor', name:'SHAPIES 4pc', img:'shapies_4pc.jpg',
+   desc:'แต่ละชิ้น shape ต่างกัน ติดตู้เย็นหรือกระดานแม่เหล็ก<span class="hi">ได้เลยทันที</span> เหมาะคนชอบดอกไม้แห้ง<span class="hi2">อยากเพิ่มสีสันให้บ้าน</span>',
+   points:['แม่เหล็กในตัว','4 ดีไซน์ไม่ซ้ำ','ติดผิวโลหะได้','เลือกสีได้'], price:''},
+
+  {type:'product', cat:'Home Decor', name:'RIPPLE', img:'ripple_1.jpg',
+   desc:'แว่นกันแดดที่วางบนโต๊ะสมควรได้<span class="hi">ที่อยู่ที่ดีกว่านี้</span> ติดผนังง่าย รับได้หลายอัน ดีไซน์ minimal<span class="hi2">เข้ากับทุกสไตล์ห้อง</span>',
+   points:['ติดผนัง ไม่เปลืองโต๊ะ','รับได้หลายอัน','ดีไซน์ minimal','เลือกสีได้'], price:''},
+
+  {type:'product', cat:'Home Decor', name:'Gravik Hanger', img:'gravik_1.jpg',
+   desc:'ล็อกอัตโนมัติเมื่อของถูกแขวน<span class="hi">ไม่ต้องเจาะผนัง</span> ติดแล้วดูสะอาดตา<span class="hi2">รับน้ำหนักได้ดี</span> เหมาะแขวนกระเป๋า หมวก สร้อย',
+   points:['ล็อกอัตโนมัติ','ไม่ต้องเจาะผนัง','รับน้ำหนักได้ดี','Made to Order'], price:''},
+
+  {type:'product', cat:'Home Decor', name:'Name Sign', img:'name_sign_1.jpg',
+   desc:'ป้ายชื่อที่ทำให้คนเห็นแล้ว<span class="hi">ถามว่าซื้อที่ไหน</span> ตัวอักษรใหญ่ + ชื่อ cursive 2 สี<span class="hi2">ของขวัญที่ไม่มีซ้ำในโลก</span>',
+   points:['Custom ชื่อได้ทุกชื่อ','2 สีสวยงาม','ของขวัญที่ไม่มีซ้ำ','Made to Order'], price:''},
+
+  {type:'cat', id:'travel', num:'03', name:'TRAVEL', desc:'เดินทางบ่อย ของพันกัน หายบ่อย — FLYLIA และ TRINKET แก้ปัญหานั้นให้คุณ'},
+
+  {type:'product', cat:'Travel', name:'TRINKET', img:'trinket_1.jpg',
+   desc:'เปิดกระเป๋าแล้วเจอ<span class="hi">แหวนพันสร้อย ต่างหูหาย</span> — TRINKET แก้ด้วยช่องแยกที่ออกแบบมาเพื่อเครื่องประดับ<span class="hi2">compact พกได้ทุก trip</span>',
+   points:['ช่องแยกเครื่องประดับ','compact พกได้ทุกที่','เครื่องประดับไม่พันกัน','เลือกสีได้'], price:''},
+
+  {type:'product', cat:'Travel', name:'FLYLIA Tall', img:'flylia_tall_1.jpg',
+   desc:'แปรงสีฟัน ยาสีฟัน ของใช้เดินทาง — ฝาปิด<span class="hi">แน่น ไม่หลุด ไม่รั่ว</span> วางในกระเป๋าเดินทางได้<span class="hi2">โดยไม่กังวล</span>',
+   points:['ฝาปิดแน่นไม่รั่ว','เหมาะของใช้เดินทาง','เลือกสีได้','Made to Order'], price:''},
+
+  {type:'product', cat:'Travel', name:'FLYLIA Middle', img:'flylia_middle.jpg',
+   desc:'โลชั่น ครีมกันแดด ยาหยอด — ใส่ในนี้แล้ว<span class="hi">ไม่ต้องกลัวหกในกระเป๋า</span> ฝาล็อค<span class="hi2">ปิดแน่นได้ดี</span>',
+   points:['ขนาดกะทัดรัด','ฝาปิดมิดชิด','เลือกสีได้','Made to Order'], price:''},
+
+  {type:'product', cat:'Travel', name:'FLYLIA Small', img:'flylia_small.jpg',
+   desc:'ยาเม็ด วิตามิน ยาแก้ปวด — เก็บในกระบอกเล็กๆ นี้<span class="hi">แทนกล่องยาใหญ่</span> ประหยัดพื้นที่<span class="hi2">หยิบง่าย ไม่วุ่นวาย</span>',
+   points:['เหมาะใส่ยาและวิตามิน','ประหยัดพื้นที่','ฝาปิดแน่น','เลือกสีได้'], price:''},
+
+  {type:'product', cat:'Travel', name:'FLYLIA Mini', img:'flylia_mini.jpg',
+   desc:'เล็กสุดในซีรีส์<span class="hi">แต่มีประโยชน์มากสุด</span> ใส่แหวน ต่างหู ของจิ๋วมีค่า<span class="hi2">เบาจนแทบไม่รู้สึกว่าพกอยู่</span>',
+   points:['เล็กสุดพกสะดวก','เหมาะของจิ๋วมีค่า','ฝาปิดแน่น','เลือกสีได้'], price:''},
+
+  {type:'product', cat:'Travel', name:'FLYLIA Full Set', img:'flylia_full_set.jpg',
+   desc:'ครบทุก size ที่ต้องการใน<span class="hi">ทุก trip</span> Tall + Middle + Small + Mini<span class="hi2">จัดระเบียบของเดินทางได้ทั้งหมด</span>',
+   points:['ครบทุก size ที่ต้องการ','จัดระเบียบ trip ได้เลย','ประหยัดกว่าซื้อแยก','Made to Order'], price:''},
+
+  {type:'cat', id:'workspace', num:'04', name:'WORKSPACE', desc:'โต๊ะทำงานที่ดีสร้าง mood ที่ดี — เพิ่มประสิทธิภาพด้วยของที่ออกแบบมาเพื่อ workspace'},
+
+  {type:'product', cat:'Workspace', name:'Smart Doc Clip', img:'smart_doc_clip_1.jpg',
+   desc:'คลิปหนีบเอกสารที่<span class="hi">custom ข้อความได้</span> เหมาะออฟฟิศ ร้านค้า event — ใส่ชื่อบริษัทหรือ<span class="hi2">ข้อความอะไรก็ได้</span> 20 ชิ้น/set',
+   points:['Custom ข้อความได้เลย','20 ชิ้น/set','หลากสีเลือกได้','Made to Order'], price:''},
+
+  {type:'product', cat:'Workspace', name:'Laptop Stand', img:'notebook_stand_1.jpg',
+   desc:'ยกจอสูงขึ้น<span class="hi">คอไม่ปวด</span> อากาศระบายดีขึ้น พับเก็บ<span class="hi2">บางเสียบข้างเครื่องได้เลย</span> ไม่ต้องพกอุปกรณ์เพิ่ม',
+   points:['พับเก็บบางมาก','ระบาย heat ดีขึ้น','ลดอาการปวดคอ','PLA+ เลือกสีได้'], price:''},
+
+  {type:'cat', id:'accessories', num:'05', name:'ACCESSORIES', desc:'พวงกุญแจที่เป็นมากกว่าพวงกุญแจ — บอกว่าคุณเป็นใคร และคนที่คุณรักคือใคร'},
+
+  {type:'product', cat:'Accessories', name:'Clicky Keychain x1', img:'keycap_set.jpg',
+   desc:'กด<span class="hi">clicky แล้วรู้สึกดี</span> — keycap พวงกุญแจ custom ตัวอักษรและสีได้เอง ของขวัญที่<span class="hi2">ทำให้คนรับยิ้มทุกครั้งที่หยิบกุญแจ</span>',
+   points:['กดแล้ว clicky สนุก','Custom ตัวอักษรได้','ครบชุด keycap+ราง+สาย','Made to Order'], price:''},
+
+  {type:'product', cat:'Accessories', name:'Clicky Keychain x3 set', img:'keycap_kao.jpg',
+   desc:'สะกดชื่อ ชื่อเล่น หรือคำที่มีความหมาย — แต่ละตัว<span class="hi">เลือกสีต่างกันได้</span> ได้ชุดที่<span class="hi2">ไม่มีใครเหมือนในโลก</span>',
+   points:['3 ตัวในราคาพิเศษ','สะกดชื่อได้','สีต่างกันแต่ละตัว','Made to Order'], price:''},
+
+  {type:'product', cat:'Accessories', name:'LOCKET', img:'locket_1.jpg',
+   desc:'กล่องจิ๋วใส่ลิปบาล์ม น้ำหอมเล็ก ยา<span class="hi">แขวนพวงกุญแจหรือกระเป๋าได้เลย</span> ฝาล็อคแน่น<span class="hi2">สวยพอห้อยกระเป๋าออกงาน</span>',
+   points:['แขวนกุญแจหรือกระเป๋าได้','ฝาล็อคแน่น ไม่หลุด','เหมาะลิปบาล์มและน้ำหอมเล็ก','เลือกสีได้'], price:''},
+
+  {type:'cat', id:'premium', num:'06', name:'PREMIUM', desc:'สำหรับคนที่อยากได้สิ่งที่ดีที่สุด — licensed products และ premium items ที่ผลิตด้วยความตั้งใจ'},
+
+  {type:'product', cat:'Premium', name:'Man Utd Wall Plaque', img:'',
+   desc:'สำหรับแฟน Man United ที่อยากโชว์ความรักต่อทีม<span class="hi">อย่างมีสไตล์</span> ป้ายลิขสิทธิ์แท้ ดีไซน์ 3D คม<span class="hi2">ของขวัญแฟนบอลตัวจริง</span>',
+   points:['Licensed product แท้','ดีไซน์ 3D คมชัด','ของขวัญแฟนบอล','Made to Order'], price:''},
+
+  {type:'product', cat:'Premium', name:'Man Utd Devil', img:'',
+   desc:'Devil ตัวน้อยที่<span class="hi">มีพลัง</span> วางบนโต๊ะทำงานหรือชั้นสะสม<span class="hi2">บอก personality โดยไม่ต้องพูด</span> collector item ที่หายากและ unique',
+   points:['Licensed product แท้','Collector item','วางโชว์บนโต๊ะได้','Made to Order'], price:''},
+]
+
+const PRINTER_SVG = `<svg viewBox="0 0 520 480" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" fill="none">
+  <defs>
+    <linearGradient id="sG" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#1e2a1e"/><stop offset="100%" stop-color="#0d150d"/></linearGradient>
+    <radialGradient id="pH" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#E8724A" stop-opacity=".18"/><stop offset="100%" stop-color="#E8724A" stop-opacity="0"/></radialGradient>
+    <filter id="sG2" x="-50%" y="-50%" width="200%" height="200%" color-interpolation-filters="sRGB"><feGaussianBlur stdDeviation="2.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  </defs>
+  <g transform="translate(6,115)" opacity=".85">
+    <rect x="0" y="0" width="82" height="108" rx="6" fill="#161616" stroke="#3a3a3a" stroke-width="1.2"/>
+    <rect x="5" y="5" width="72" height="80" rx="3" fill="url(#sG)"/>
+    <g transform="translate(41,46)">
+      <polygon points="0,-20 17,-10 0,0 -17,-10" stroke="#E8724A" stroke-width="1.1" fill="rgba(232,114,74,.07)"/>
+      <polygon points="17,-10 17,10 0,20 0,0" stroke="#E8724A" stroke-width="1.1" fill="rgba(232,114,74,.04)"/>
+      <polygon points="-17,-10 -17,10 0,20 0,0" stroke="#E8724A" stroke-width="1.1" fill="rgba(0,0,0,.25)"/>
+    </g>
+    <circle cx="12" cy="78" r="2.5" fill="#E8724A" opacity=".5" style="animation:screenBlink 1.5s infinite"/>
+    <rect x="33" y="108" width="16" height="6" rx="1.5" fill="#222" stroke="#333" stroke-width=".7"/>
+    <rect x="24" y="114" width="34" height="4" rx="2" fill="#252525"/>
+    <text x="41" y="132" font-size="6.5" fill="#E8724A" text-anchor="middle" font-family="monospace" opacity=".65">STEP 01</text>
+    <text x="41" y="142" font-size="8" fill="rgba(240,237,232,.65)" text-anchor="middle">3D Model</text>
+  </g>
+  <g transform="translate(92,168)">
+    <line x1="0" y1="0" x2="28" y2="0" stroke="#E8724A" stroke-width="1.3" stroke-linecap="round" class="arr"/>
+    <polygon points="26,-3.5 36,0 26,3.5" fill="#E8724A"/>
+  </g>
+  <g transform="translate(130,18)">
+    <ellipse cx="122" cy="200" rx="110" ry="90" fill="url(#pH)" style="animation:printerGlow 3s ease-in-out infinite"/>
+    <text x="122" y="16" font-size="8" fill="#E8724A" text-anchor="middle" font-family="monospace" letter-spacing="2" opacity=".85">STEP 02</text>
+    <text x="122" y="29" font-size="11" fill="rgba(240,237,232,.9)" text-anchor="middle" font-weight="600">พิมพ์ 3D</text>
+    <rect x="10" y="35" width="224" height="260" rx="10" fill="rgba(255,255,255,.02)" stroke="#E8724A" stroke-width="1" opacity=".35"/>
+    <line x1="28" y1="48" x2="28" y2="272" stroke="#3a3a3a" stroke-width="4"/>
+    <line x1="216" y1="48" x2="216" y2="272" stroke="#3a3a3a" stroke-width="4"/>
+    <rect x="24" y="43" width="196" height="10" rx="5" fill="#2a2a2a" stroke="#555" stroke-width="1"/>
+    <circle cx="33" cy="48" r="3.5" fill="#3a3a3a" stroke="#666" stroke-width=".8"/>
+    <circle cx="211" cy="48" r="3.5" fill="#3a3a3a" stroke="#666" stroke-width=".8"/>
+    <g transform="translate(196,74)">
+      <ellipse cx="0" cy="0" rx="20" ry="7" fill="#1e1e1e" stroke="#444" stroke-width="1"/>
+      <ellipse cx="0" cy="0" rx="12" ry="4.5" fill="#252525" stroke="#E8724A" stroke-width=".8" opacity=".6"/>
+      <text x="0" y="1.8" font-size="5" fill="#E8724A" text-anchor="middle" font-family="monospace">PLA</text>
+      <ellipse cx="0" cy="-20" rx="20" ry="7" fill="#1e1e1e" stroke="#444" stroke-width="1"/>
+      <path d="M-16,0 Q-40,10 -68,18" stroke="#E8724A" stroke-width="1" stroke-dasharray="3,3" opacity=".4"/>
+    </g>
+    <rect x="26" y="100" width="192" height="6" rx="3" fill="#2a2a2a" stroke="#555" stroke-width=".9"/>
+    <g style="animation:nozzle3 3s ease-in-out infinite">
+      <rect x="88" y="82" width="46" height="34" rx="5" fill="#202020" stroke="#4a4a4a" stroke-width="1"/>
+      <circle cx="111" cy="94" r="10" fill="#181818" stroke="#E8724A" stroke-width="1.1"/>
+      <line x1="111" y1="85" x2="111" y2="103" stroke="#E8724A" stroke-width=".9" opacity=".65"/>
+      <line x1="102" y1="94" x2="120" y2="94" stroke="#E8724A" stroke-width=".9" opacity=".65"/>
+      <circle cx="111" cy="94" r="3" fill="#E8724A" opacity=".55"/>
+      <rect x="103" y="114" width="16" height="9" rx="2" fill="#E8724A" opacity=".6"/>
+      <polygon points="104,123 118,123 115,134 107,134" fill="#E8724A"/>
+      <line x1="111" y1="134" x2="111" y2="175" stroke="#E8724A" stroke-width="2.2" stroke-linecap="round" stroke-dasharray="60" stroke-dashoffset="60" filter="url(#sG2)" style="animation:filamentGrow 3s ease-in-out infinite"/>
+      <circle cx="111" cy="178" r="2.8" fill="#E8724A" style="animation:dripFall 3s ease-in infinite;opacity:0" filter="url(#sG2)"/>
+      <circle cx="111" cy="175" r="1.8" fill="#E8724A" opacity=".7" style="animation:dripFall2 3s ease-in infinite"/>
+      <circle cx="111" cy="134" r="6" fill="#E8724A" opacity=".12" style="animation:glowPulse 1.5s ease-in-out infinite"/>
+    </g>
+    <polygon points="28,260 122,210 216,260 122,310" fill="#1e1e1e" stroke="#E8724A" stroke-width="1.2"/>
+    <polygon points="216,260 216,278 122,328 122,310" fill="#161616" stroke="#2a2a2a" stroke-width=".9"/>
+    <polygon points="28,260 28,278 122,328 122,310" fill="#1a1a1a" stroke="#2a2a2a" stroke-width=".9"/>
+    <g class="lyr3 l1"><polygon points="76,252 122,232 168,252 122,272" fill="#E8724A" opacity=".95"/><polygon points="168,252 168,259 122,279 122,272" fill="#b8562e" opacity=".95"/><polygon points="76,252 76,259 122,279 122,272" fill="#cf6438" opacity=".95"/></g>
+    <g class="lyr3 l2"><polygon points="76,244 122,224 168,244 122,264" fill="#E8724A" opacity=".88"/><polygon points="168,244 168,251 122,271 122,264" fill="#b8562e" opacity=".88"/><polygon points="76,244 76,251 122,271 122,264" fill="#cf6438" opacity=".88"/></g>
+    <g class="lyr3 l3"><polygon points="76,236 122,216 168,236 122,256" fill="#E8724A" opacity=".82"/><polygon points="168,236 168,243 122,263 122,256" fill="#b8562e" opacity=".82"/><polygon points="76,236 76,243 122,263 122,256" fill="#cf6438" opacity=".82"/></g>
+    <g class="lyr3 l4"><polygon points="76,228 122,208 168,228 122,248" fill="#E8724A" opacity=".74"/><polygon points="168,228 168,235 122,255 122,248" fill="#b8562e" opacity=".74"/><polygon points="76,228 76,235 122,255 122,248" fill="#cf6438" opacity=".74"/></g>
+    <g class="lyr3 l5"><polygon points="76,220 122,200 168,220 122,240" fill="#E8724A" opacity=".64"/><polygon points="168,220 168,227 122,247 122,240" fill="#b8562e" opacity=".64"/><polygon points="76,220 76,227 122,247 122,240" fill="#cf6438" opacity=".64"/></g>
+    <g class="lyr3 l6"><polygon points="76,212 122,192 168,212 122,232" fill="#E8724A" opacity=".52"/><polygon points="168,212 168,219 122,239 122,232" fill="#b8562e" opacity=".52"/><polygon points="76,212 76,219 122,239 122,232" fill="#cf6438" opacity=".52"/></g>
+    <g class="lyr3 l7"><polygon points="76,204 122,184 168,204 122,224" fill="#E8724A" opacity=".4"/></g>
+    <g class="lyr3 l8"><polygon points="76,196 122,176 168,196 122,216" fill="#E8724A" opacity=".3"/></g>
+    <text x="122" y="345" font-size="7" fill="rgba(240,237,232,.2)" text-anchor="middle" font-family="monospace" letter-spacing="1.5">FIXTORY.STUDIO</text>
+  </g>
+  <g transform="translate(392,168)">
+    <line x1="0" y1="0" x2="28" y2="0" stroke="#E8724A" stroke-width="1.3" stroke-linecap="round" class="arr"/>
+    <polygon points="26,-3.5 36,0 26,3.5" fill="#E8724A"/>
+  </g>
+  <g transform="translate(430,115)" opacity=".85">
+    <rect x="0" y="0" width="82" height="108" rx="6" fill="#141414" stroke="#3a3a3a" stroke-width="1.2"/>
+    <rect x="5" y="5" width="72" height="80" rx="3" fill="#0f0f0f" stroke="#222" stroke-width=".7"/>
+    <rect x="14" y="47" width="15" height="15" rx="3" fill="rgba(232,114,74,.06)" stroke="#E8724A" stroke-width="1" opacity=".8"/>
+    <text x="21.5" y="58" font-size="7" fill="#E8724A" text-anchor="middle" font-family="monospace" opacity=".7">Y</text>
+    <rect x="33" y="47" width="15" height="15" rx="3" fill="rgba(232,114,74,.06)" stroke="#E8724A" stroke-width="1" opacity=".8"/>
+    <text x="40.5" y="58" font-size="7" fill="#E8724A" text-anchor="middle" font-family="monospace" opacity=".7">O</text>
+    <rect x="52" y="47" width="15" height="15" rx="3" fill="rgba(232,114,74,.06)" stroke="#E8724A" stroke-width="1" opacity=".8"/>
+    <text x="59.5" y="58" font-size="7" fill="#E8724A" text-anchor="middle" font-family="monospace" opacity=".7">U</text>
+    <rect x="0" y="91" width="82" height="17" fill="#111"/>
+    <text x="41" y="100.5" font-size="5.5" fill="#E8724A" text-anchor="middle" font-family="monospace">FIXTORY.STUDIO</text>
+    <text x="41" y="126" font-size="6.5" fill="#E8724A" text-anchor="middle" font-family="monospace" opacity=".65">STEP 03</text>
+    <text x="41" y="136" font-size="8" fill="rgba(240,237,232,.65)" text-anchor="middle">สินค้า</text>
+  </g>
+  <text x="252" y="375" font-size="9" fill="#E8724A" text-anchor="middle" font-family="monospace" letter-spacing="3" opacity=".5">Layer by Layer</text>
+</svg>`
+
+// Build slides
+const track = document.getElementById('track')
+const allSlides = []
+
+// Cover
+const cover = document.createElement('div')
+cover.className = 'slide slide-cover'
+cover.innerHTML = `
+  <div class="cover-grid"></div>
+  <div class="cover-glow"></div>
+  <div class="cover-content">
+    <div class="cover-tag">Product Catalog · 2026</div>
+    <div class="cover-logo-text">FIXTORY<span>.studio</span></div>
+    <div class="cover-tagline">From Craft to Smart Design · Bangkok, Thailand</div>
+    <div class="cover-anim">${PRINTER_SVG}</div>
+  </div>
+  <div class="cover-hint">เลื่อนไปดูสินค้า ›</div>
+`
+track.appendChild(cover)
+allSlides.push({type:'cover'})
+
+// Products + categories
+CATALOG.forEach(item => {
+  const slide = document.createElement('div')
+  if (item.type === 'cat') {
+    slide.className = 'slide slide-cat'
+    slide.innerHTML = `
+      <div class="cat-content">
+        <div class="cat-num">${item.num}</div>
+        <div class="cat-name-big">${item.name}</div>
+        <div class="cat-desc-text">${item.desc}</div>
+        <div class="cat-count">${CATALOG.filter(p=>p.type==='product'&&p.cat===item.name.replace('HOME ','Home ').replace('WORKSPACE','Workspace').replace('ACCESSORIES','Accessories').replace('TRAVEL','Travel').replace('STORAGE','Storage').replace('PREMIUM','Premium')).length} สินค้า</div>
+      </div>
+    `
+  } else {
+    const priceHtml = item.price
+      ? `<div class="prod-price-num">฿${Number(item.price).toLocaleString()}</div><div class="prod-price-note">ราคาเดียวกันทุก platform</div>`
+      : `<div class="prod-price-num empty">฿ — — —</div><div class="prod-price-note">ติดต่อสอบถามราคา</div>`
+    const imgHtml = item.img
+      ? `<img src="${item.img}" alt="${item.name}" onerror="this.parentElement.innerHTML='<div class=prod-visual-emoji>📦</div>'">`
+      : `<div class="prod-visual-emoji">📦</div>`
+    slide.className = 'slide slide-product'
+    slide.innerHTML = `
+      <div class="slide-badge">${item.cat}</div>
+      <div class="prod-visual">${imgHtml}</div>
+      <div class="prod-info">
+        <div class="prod-series">${item.cat}</div>
+        <div class="prod-name-big">${item.name}</div>
+        <div class="prod-desc-text">${item.desc}</div>
+        <div class="prod-points-wrap">${item.points.map(p=>`<span class="prod-pt">${p}</span>`).join('')}</div>
+        <div class="prod-price-wrap">
+          <div class="prod-price-label">ราคา</div>
+          ${priceHtml}
+        </div>
+      </div>
+    `
+  }
+  track.appendChild(slide)
+  allSlides.push(item)
+})
+
+// Back cover
+const back = document.createElement('div')
+back.className = 'slide slide-cat'
+back.style.textAlign = 'center'
+back.innerHTML = `
+  <div class="cat-content">
+    <div class="cat-name-big" style="font-size:clamp(48px,10vw,96px);letter-spacing:6px">FIXTORY<span style="color:var(--accent)">.studio</span></div>
+      <div style="font-family:var(--font-mono);font-size:12px;color:rgba(240,237,232,.4);letter-spacing:3px;text-transform:uppercase;margin-top:8px">From Craft to Smart Design</div>
+      <div style="margin-top:40px;display:flex;flex-direction:column;gap:18px;align-items:center">
+        <div style="display:flex;align-items:center;gap:20px">
+          <span style="font-family:var(--font-mono);font-size:11px;color:var(--accent);letter-spacing:2px;text-transform:uppercase;min-width:72px;text-align:right">โทร</span>
+          <span style="font-family:var(--font-display);font-size:clamp(36px,5vw,60px);letter-spacing:3px;color:var(--accent)">081-336-8232</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:20px">
+          <span style="font-family:var(--font-mono);font-size:11px;color:var(--accent);letter-spacing:2px;text-transform:uppercase;min-width:72px;text-align:right">เว็บ</span>
+          <span style="font-size:clamp(15px,2vw,20px);color:rgba(240,237,232,.7)">fixtory-studio.pages.dev</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:20px">
+          <span style="font-family:var(--font-mono);font-size:11px;color:var(--accent);letter-spacing:2px;text-transform:uppercase;min-width:72px;text-align:right">ช้อปปี้</span>
+          <span style="font-size:clamp(15px,2vw,20px);color:rgba(240,237,232,.7)">Fixtory.Studio</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:20px">
+          <span style="font-family:var(--font-mono);font-size:11px;color:var(--accent);letter-spacing:2px;text-transform:uppercase;min-width:72px;text-align:right">TikTok</span>
+          <span style="font-size:clamp(15px,2vw,20px);color:rgba(240,237,232,.7)">@fixtory.studio</span>
+        </div>
+      </div>
+      <div style="margin-top:40px;font-family:var(--font-mono);font-size:11px;color:rgba(240,237,232,.2);letter-spacing:1px">Made with ❤️ & PLA+ in Bangkok, Thailand</div>
+  </div>
+`
+track.appendChild(back)
+allSlides.push({type:'back'})
+
+// Nav dots
+const dotsEl = document.getElementById('nav-dots')
+allSlides.forEach((s, i) => {
+  const d = document.createElement('div')
+  d.className = 'nav-dot' + (s.type==='cat'?' is-cat':'') + (i===0?' active':'')
+  d.onclick = () => goTo(i)
+  dotsEl.appendChild(d)
+})
+
+// Navigation
+let cur = 0
+function goTo(n) {
+  cur = Math.max(0, Math.min(allSlides.length - 1, n))
+  track.style.transform = `translateX(-${cur * 100}vw)`
+  document.querySelectorAll('.nav-dot').forEach((d,i) => d.classList.toggle('active', i===cur))
+  document.getElementById('btn-prev').disabled = cur === 0
+  document.getElementById('btn-next').disabled = cur === allSlides.length - 1
+  document.getElementById('nav-counter').textContent = `${cur + 1} / ${allSlides.length}`
+}
+
+function go(d) { goTo(cur + d) }
+
+// Keyboard
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight' || e.key === 'ArrowDown') go(1)
+  if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') go(-1)
+})
+
+// Touch/swipe
+let tx = 0
+document.addEventListener('touchstart', e => { tx = e.touches[0].clientX }, {passive:true})
+document.addEventListener('touchend', e => {
+  const dx = tx - e.changedTouches[0].clientX
+  if (Math.abs(dx) > 50) go(dx > 0 ? 1 : -1)
+}, {passive:true})
+
+goTo(0)
+<\/script>
+</body>
+</html>
+
+</script>
+<script>
+function openCatalog(){
+  const ov=document.getElementById('catalog-overlay');
+  const fr=document.getElementById('catalog-frame');
+  if(!fr.dataset.loaded){
+    fr.srcdoc=document.getElementById('catalog-src').innerHTML.replace(/<\\\/script>/g,'<\/script>');
+    fr.dataset.loaded='1';
+  }
+  ov.style.display='block';
+  document.body.style.overflow='hidden';
+}
+function closeCatalog(){
+  document.getElementById('catalog-overlay').style.display='none';
+  document.body.style.overflow='';
+}
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'&&document.getElementById('catalog-overlay').style.display==='block')closeCatalog();
+});
+</script>
 </body>
 </html>
