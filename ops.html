@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fixtory.studio — Operations HQ</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Noto+Sans+Thai:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0a0a0a; --bg2:#111111; --bg3:#181818;
+  --border:rgba(255,255,255,.07);
+  --accent:#e8855a; --accent2:#c96a40;
+  --text:#f0ede8; --muted:#666460;
+  --green:#1D9E75; --red:#e05a5a;
+  --font-display:'Bebas Neue',sans-serif;
+  --font-body:'Noto Sans Thai',sans-serif;
+  --font-mono:'DM Mono',monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-weight:300;line-height:1.6;min-height:100vh}
+a{color:inherit}
+
+/* top bar */
+.topbar{position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 24px;border-bottom:1px solid var(--border);background:rgba(10,10,10,.94);backdrop-filter:blur(12px);flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:10px}
+.brand-text{font-family:var(--font-display);font-size:20px;letter-spacing:3px}
+.brand-text span{color:var(--accent)}
+.brand-sub{font-family:var(--font-mono);font-size:10px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-left:10px;padding-left:10px;border-left:1px solid var(--border)}
+.topbar-links{display:flex;gap:10px;align-items:center}
+.topbar-links a{font-size:11px;color:var(--muted);text-decoration:none;letter-spacing:1px;text-transform:uppercase;border:1px solid var(--border);padding:7px 14px;transition:all .2s}
+.topbar-links a:hover{border-color:var(--accent);color:var(--accent)}
+
+/* layout */
+.layout{display:grid;grid-template-columns:250px 1fr;min-height:calc(100vh - 58px)}
+.sidebar{border-right:1px solid var(--border);background:var(--bg2);padding:18px 10px;position:sticky;top:58px;align-self:start;height:calc(100vh - 58px);overflow-y:auto}
+.side-btn{width:100%;display:flex;align-items:center;gap:10px;background:transparent;border:none;color:var(--muted);text-align:left;padding:10px 12px;font-family:var(--font-body);font-size:12.5px;cursor:pointer;border-radius:4px;transition:all .15s;letter-spacing:.3px}
+.side-btn:hover{background:rgba(255,255,255,.04);color:var(--text)}
+.side-btn.active{background:rgba(232,133,90,.1);color:var(--accent)}
+.side-num{font-family:var(--font-mono);font-size:10px;opacity:.6;width:18px;flex-shrink:0}
+.side-divider{height:1px;background:var(--border);margin:10px 6px}
+
+.main{padding:32px 40px;max-width:1000px}
+.panel{display:none}
+.panel.active{display:block;animation:fadeIn .25s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+.p-tag{font-family:var(--font-mono);font-size:10px;color:var(--accent);letter-spacing:2.5px;text-transform:uppercase;margin-bottom:8px}
+.p-title{font-family:var(--font-display);font-size:clamp(30px,4vw,44px);letter-spacing:2px;line-height:1;margin-bottom:8px}
+.p-sub{font-size:13px;color:var(--muted);max-width:640px;margin-bottom:28px}
+
+/* kpi row */
+.kpi-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1px;background:var(--border);margin-bottom:28px}
+.kpi-tile{background:var(--bg2);padding:16px 18px}
+.kpi-label{font-size:10px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;font-family:var(--font-mono)}
+.kpi-input-row{display:flex;align-items:baseline;gap:6px}
+.kpi-input{background:transparent;border:none;border-bottom:1px solid var(--border);color:var(--accent);font-family:var(--font-display);font-size:26px;letter-spacing:1px;width:100%;outline:none;padding:2px 0}
+.kpi-input:focus{border-color:var(--accent)}
+.kpi-unit{font-size:11px;color:var(--muted);font-family:var(--font-mono)}
+
+/* checklist */
+.block-title{font-size:11px;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;margin:0 0 12px;font-family:var(--font-mono)}
+.checklist{border:1px solid var(--border);margin-bottom:28px}
+.check-item{display:flex;align-items:flex-start;gap:12px;padding:12px 16px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .15s}
+.check-item:last-child{border-bottom:none}
+.check-item:hover{background:rgba(255,255,255,.02)}
+.check-box{width:16px;height:16px;border:1px solid var(--muted);border-radius:3px;flex-shrink:0;margin-top:2px;display:flex;align-items:center;justify-content:center;font-size:11px;transition:all .15s}
+.check-item.done .check-box{background:var(--accent);border-color:var(--accent);color:#fff}
+.check-text{font-size:13px;color:var(--text)}
+.check-item.done .check-text{color:var(--muted);text-decoration:line-through}
+
+.notes-area{width:100%;min-height:90px;background:var(--bg2);border:1px solid var(--border);color:var(--text);padding:14px;font-family:var(--font-body);font-size:13px;outline:none;resize:vertical}
+.notes-area:focus{border-color:var(--accent)}
+.notes-saved{font-size:10px;color:var(--muted);font-family:var(--font-mono);margin-top:6px;min-height:14px}
+
+/* overview */
+.printer-row{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border);margin-bottom:32px}
+.printer-card{background:var(--bg2);padding:18px 20px}
+.printer-name{font-family:var(--font-display);font-size:20px;letter-spacing:1px;margin-bottom:2px}
+.printer-model{font-size:10px;color:var(--muted);font-family:var(--font-mono);letter-spacing:1px;text-transform:uppercase;margin-bottom:12px}
+.printer-select{background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:8px 10px;font-family:var(--font-body);font-size:12px;outline:none;width:100%;margin-bottom:8px}
+.printer-job{background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:8px 10px;font-family:var(--font-body);font-size:12px;outline:none;width:100%}
+.printer-select:focus,.printer-job:focus{border-color:var(--accent)}
+
+.dept-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1px;background:var(--border)}
+.dept-card{background:var(--bg2);padding:18px 20px;cursor:pointer;transition:background .15s}
+.dept-card:hover{background:var(--bg3)}
+.dept-card-top{display:flex;align-items:baseline;gap:8px;margin-bottom:4px}
+.dept-card-num{font-family:var(--font-mono);font-size:11px;color:var(--accent)}
+.dept-card-name{font-family:var(--font-display);font-size:17px;letter-spacing:.5px}
+.dept-card-tag{font-size:11px;color:var(--muted);margin-bottom:14px}
+.progress-bar{height:4px;background:var(--bg3);border-radius:2px;overflow:hidden;margin-bottom:6px}
+.progress-fill{height:100%;background:var(--accent);transition:width .3s}
+.progress-label{font-size:10px;color:var(--muted);font-family:var(--font-mono)}
+
+@media(max-width:800px){
+  .layout{grid-template-columns:1fr}
+  .sidebar{position:static;height:auto;display:flex;overflow-x:auto;gap:4px;border-right:none;border-bottom:1px solid var(--border)}
+  .side-btn{white-space:nowrap}
+  .side-divider{display:none}
+  .main{padding:24px 18px}
+  .printer-row{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand">
+    <div class="brand-text">FIXTORY<span>.studio</span></div>
+    <div class="brand-sub">Operations HQ</div>
+  </div>
+  <div class="topbar-links">
+    <a href="index.html">← Storefront</a>
+    <a href="dashboard.html" target="_blank">📊 Inventory</a>
+  </div>
+</div>
+
+<div class="layout">
+  <nav class="sidebar" id="sidebar"></nav>
+  <main class="main" id="main"></main>
+</div>
+
+<script>
+const PRINTERS = [
+  {id:'a1', name:'A1 Combo', model:'Bambu Lab A1 Combo · AMS'},
+  {id:'p2s', name:'P2S Combo', model:'Bambu Lab P2S Combo · AMS'}
+];
+
+const DEPARTMENTS = [
+  {
+    id:'strategy', num:'01', name:'Business Strategy', tag:'ทิศทางและเป้าหมายธุรกิจ',
+    sub:'วางวิสัยทัศน์ กลุ่มเป้าหมาย และจุดยืนของแบรนด์ Fixtory.studio ในตลาดสินค้าพิมพ์ 3D ของไทย',
+    kpis:[
+      {label:'North Star Metric', unit:'', def:'รายได้/เดือน'},
+      {label:'Target Segment หลัก', unit:'', def:'คนแต่งบ้าน/ของขวัญ'},
+      {label:'เครื่องพิมพ์ปัจจุบัน', unit:'เครื่อง', def:'2'},
+      {label:'เป้าเครื่องที่ 3', unit:'', def:'เมื่อ utilization > 80%'}
+    ],
+    checklist:[
+      'กำหนด Vision / Mission ของแบรนด์ Fixtory.studio',
+      'นิยาม Target Customer หลัก (คนรักของแต่งบ้าน, คนหาของขวัญ, นักสะสม keycap)',
+      'วาง Positioning เทียบคู่แข่งในตลาด 3D print ไทย (Shopee/TikTok)',
+      'กำหนด Product Pillars: Home Decor, Keycap/Gadget, Custom Signage',
+      'วางแผนขยายกำลังผลิต (เครื่องที่ 3) เมื่อ utilization เกิน 80%',
+      'ทบทวนกลยุทธ์รายไตรมาส เทียบกับเป้าหมายปี'
+    ]
+  },
+  {
+    id:'cost', num:'02', name:'Cost Optimization', tag:'ควบคุมต้นทุนการผลิต',
+    sub:'ติดตามต้นทุน filament ค่าไฟ ค่าเสื่อมเครื่องพิมพ์ และของเสีย เพื่อรักษามาร์จิ้นให้แข็งแรง',
+    kpis:[
+      {label:'Filament / กก.', unit:'฿', def:'690'},
+      {label:'ค่าไฟ / หน่วย', unit:'฿', def:'4.5'},
+      {label:'ค่าเสื่อมเครื่อง / ชม.', unit:'฿', def:'8'},
+      {label:'Failed print rate', unit:'%', def:'5'}
+    ],
+    checklist:[
+      'บันทึกต้นทุน Filament แยกตามยี่ห้อ/สี/ล็อต',
+      'คำนวณค่าไฟต่อชั่วโมงพิมพ์ (A1 Combo เทียบ P2S Combo)',
+      'ตั้งค่าเสื่อมราคาเครื่องพิมพ์ (อายุใช้งานประมาณ 3–5 ปี)',
+      'ทบทวนต้นทุนบรรจุภัณฑ์และค่าส่งทุกไตรมาส',
+      'หาซัพพลายเออร์ filament ราคาส่ง / แผนซื้อจำนวนมาก',
+      'ติดตามอัตราของเสีย (failed print) และหาสาเหตุลดต้นทุนแฝง'
+    ]
+  },
+  {
+    id:'product', num:'03', name:'Develop Products & Services', tag:'พัฒนาสินค้าและบริการ',
+    sub:'บริหาร pipeline สินค้าใหม่ ตั้งแต่ไอเดียถึงวางขายจริง และมาตรฐาน BOM ต่อชิ้นงาน',
+    kpis:[
+      {label:'SKU ที่ขายอยู่', unit:'ชิ้น', def:'12'},
+      {label:'เป้า SKU ใหม่ / เดือน', unit:'ชิ้น', def:'2'},
+      {label:'อยู่ระหว่างทดสอบ', unit:'ชิ้น', def:'0'},
+      {label:'Custom order / เดือน', unit:'ออเดอร์', def:'0'}
+    ],
+    checklist:[
+      'ทดสอบวัสดุใหม่ (PETG, PLA-CF) บนเครื่อง P2S Combo',
+      'เก็บ feedback ลูกค้าไปพัฒนาสินค้าขายดีเป็นเวอร์ชัน 2',
+      'วางแผน SKU ใหม่ทุกเดือน (เป้า 2 ชิ้น/เดือน)',
+      'ปรับปรุงบริการ Custom Order (สลักชื่อ/สั่งสี) ให้ลื่นไหลขึ้น',
+      'ทำมาตรฐาน BOM ต่อ SKU: กรัม filament, ชั่วโมงพิมพ์, ตั้งค่าเครื่อง',
+      'จัด SKU ปัจจุบันเป็นกลุ่ม: Home Decor / Keycap-Gadget / Custom Signage'
+    ]
+  },
+  {
+    id:'channel', num:'04', name:'Channel & Distribution', tag:'ช่องทางขายและการกระจายสินค้า',
+    sub:'บริหารช่องทางขาย Shopee, TikTok Shop, เว็บตรง และเครือข่าย affiliate ให้สอดคล้องกัน',
+    kpis:[
+      {label:'Shopee fee', unit:'%', def:'8.2'},
+      {label:'TikTok fee', unit:'%', def:'—'},
+      {label:'ช่องทางที่เปิดใช้งาน', unit:'ช่องทาง', def:'2'},
+      {label:'Affiliate ที่ใช้งานอยู่', unit:'คน', def:'0'}
+    ],
+    checklist:[
+      'เปิดร้าน Shopee/TikTok Shop ให้ครบพร้อม SEO ชื่อสินค้า/แท็ก',
+      'เชื่อมระบบ Affiliate ในเว็บให้ influencer/รีวิวเวอร์ใช้งานได้จริง',
+      'วาง SOP fulfillment/แพ็คสินค้า ต่อ courier (Flash, J&T, ไปรษณีย์)',
+      'พิจารณาเปิด LINE Official Account สำหรับลูกค้าประจำ',
+      'Cross-list ราคาและสต็อกให้ตรงกันทุกช่องทาง'
+    ]
+  },
+  {
+    id:'marketing', num:'05', name:'Marketing & Sales', tag:'การตลาดและการขาย',
+    sub:'สร้างคอนเทนต์ โปรโมชัน และช่องทางกระตุ้นยอดขายให้สม่ำเสมอ',
+    kpis:[
+      {label:'คอนเทนต์ / สัปดาห์', unit:'ชิ้น', def:'3'},
+      {label:'ยอดขายเดือนนี้', unit:'฿', def:'0'},
+      {label:'Conversion rate', unit:'%', def:'—'},
+      {label:'CAC โดยประมาณ', unit:'฿', def:'—'}
+    ],
+    checklist:[
+      'วางปฏิทินคอนเทนต์ (Reels/TikTok) โชว์กระบวนการพิมพ์ 3D',
+      'รันโปรโมชันตามเทศกาล (วาเลนไทน์, ปีใหม่, เปิดเทอม)',
+      'ทำ Bundle/Cross-sell เช่น Keycap set + Notebook stand',
+      'เก็บ UGC จากลูกค้าและรีโพสต์พร้อมเครดิต',
+      'ทดลอง Live Commerce บน TikTok Live / Shopee Live'
+    ]
+  },
+  {
+    id:'voc', num:'06', name:'Monitor & Tracking & VOC', tag:'ติดตามผลและเสียงลูกค้า',
+    sub:'ติดตามสถานะออเดอร์และรวบรวมเสียงลูกค้า (Voice of Customer) เพื่อปรับปรุงต่อเนื่อง',
+    kpis:[
+      {label:'On-time delivery', unit:'%', def:'—'},
+      {label:'CSAT/NPS', unit:'', def:'—'},
+      {label:'Complaint / เดือน', unit:'ครั้ง', def:'0'},
+      {label:'Repeat purchase rate', unit:'%', def:'—'}
+    ],
+    checklist:[
+      'ใช้ระบบ Order Tracking ในเว็บให้ลูกค้าเช็คสถานะได้เอง',
+      'รวบรวมรีวิว/คอมเมนต์จากทุกช่องทางไว้ในที่เดียว (VOC log)',
+      'ตั้ง SLA ตอบแชท/คอมเมนต์ภายในกี่ชั่วโมง',
+      'สำรวจความพึงพอใจหลังส่งของด้วยแบบสอบถามสั้น',
+      'ติดตามอัตราเคลม/พิมพ์ซ้ำ (reprint rate) และสาเหตุ'
+    ]
+  },
+  {
+    id:'finance', num:'07', name:'Financial & Accounting', tag:'การเงินและบัญชี',
+    sub:'ควบคุมกระแสเงินสด กำไรขาดทุน และเตรียมพร้อมด้านภาษีสำหรับธุรกิจ SME',
+    kpis:[
+      {label:'รายรับเดือนนี้', unit:'฿', def:'0'},
+      {label:'รายจ่ายเดือนนี้', unit:'฿', def:'0'},
+      {label:'Gross margin', unit:'%', def:'—'},
+      {label:'เป้า Reinvest', unit:'%', def:'20'}
+    ],
+    checklist:[
+      'บันทึกรายรับ-รายจ่ายทุกวันแยกตามช่องทาง',
+      'ทำงบกำไรขาดทุนอย่างง่ายทุกเดือน (P&L)',
+      'แยกบัญชีธุรกิจกับบัญชีส่วนตัวให้ชัดเจน',
+      'เตรียมข้อมูลสำหรับยื่นภาษี (ตรวจเกณฑ์ VAT/ผู้มีเงินได้)',
+      'ตั้งเป้า reinvest กี่ % สำหรับซื้อเครื่องพิมพ์/วัสดุเพิ่ม'
+    ]
+  },
+  {
+    id:'process', num:'08', name:'Process', tag:'กระบวนการผลิตและ SOP',
+    sub:'มาตรฐานการทำงานตั้งแต่ออกแบบถึงจัดส่ง และดูแลรักษาเครื่องพิมพ์ทั้งสองเครื่อง',
+    kpis:[
+      {label:'A1 Combo utilization', unit:'%', def:'—'},
+      {label:'P2S Combo utilization', unit:'%', def:'—'},
+      {label:'Avg turnaround', unit:'วัน', def:'—'},
+      {label:'Print success rate', unit:'%', def:'—'}
+    ],
+    checklist:[
+      'เขียน SOP ทุกขั้นตอน: Design → Slice → Print → Post-process → QC → Pack → Ship',
+      'ตั้งตารางบำรุงรักษาเครื่อง (ทำความสะอาด nozzle, cali AMS) ทุก 2 สัปดาห์',
+      'จัดคิวพิมพ์ให้ A1 Combo และ P2S Combo ทำงานคู่ขนานอย่างมีประสิทธิภาพ',
+      'ทำ QC checklist ก่อนแพ็ค (ตำหนิ, สี, ความแข็งแรงชิ้นงาน)',
+      'มาตรฐานบรรจุภัณฑ์ (กันกระแทก, ป้ายแบรนด์)'
+    ]
+  },
+  {
+    id:'rnd', num:'09', name:'R & D', tag:'วิจัยและพัฒนา',
+    sub:'ทดลองวัสดุ เทคโนโลยี และสินค้าต้นแบบใหม่เพื่อขยายขีดความสามารถของธุรกิจ',
+    kpis:[
+      {label:'ทดลองวัสดุ / เดือน', unit:'ครั้ง', def:'0'},
+      {label:'ต้นแบบใหม่ / ไตรมาส', unit:'ชิ้น', def:'0'},
+      {label:'เทคโนโลยีที่กำลังศึกษา', unit:'', def:'Resin printing'},
+      {label:'Multi-color test', unit:'', def:'AMS on P2S'}
+    ],
+    checklist:[
+      'ทดสอบ filament ใหม่ (Silk, CF, TPU) ความเหมาะสมกับ AMS',
+      'ศึกษาเทคโนโลยีเสริม เช่น resin printing สำหรับงานดีเทลสูง',
+      'ทดลองงานพิมพ์ multi-color บน P2S Combo ผ่านระบบ AMS',
+      'เก็บข้อมูลงานพิมพ์ที่ fail มาวิเคราะห์หาสาเหตุ',
+      'ออกแบบต้นแบบสินค้าคอลเลกชันใหม่ทุกไตรมาส'
+    ]
+  }
+];
+
+const LS = {
+  active: 'fx_ops_active',
+  checklist: id => `fx_ops_checklist_${id}`,
+  notes: id => `fx_ops_notes_${id}`,
+  kpi: (id,i) => `fx_ops_kpi_${id}_${i}`,
+  printer: id => `fx_ops_printer_${id}`,
+  printerJob: id => `fx_ops_printerjob_${id}`
+};
+
+function getChecklist(dept){
+  const raw = localStorage.getItem(LS.checklist(dept.id));
+  if(raw){ try{ const arr = JSON.parse(raw); if(arr.length===dept.checklist.length) return arr; }catch(e){} }
+  return dept.checklist.map(()=>false);
+}
+function setChecklist(dept, arr){ localStorage.setItem(LS.checklist(dept.id), JSON.stringify(arr)); }
+function progressOf(dept){
+  const arr = getChecklist(dept);
+  const done = arr.filter(Boolean).length;
+  return {done, total: arr.length, pct: Math.round(done/arr.length*100)};
+}
+
+function renderSidebar(){
+  const sb = document.getElementById('sidebar');
+  let html = `<button class="side-btn" data-panel="overview">📋&nbsp; Overview</button><div class="side-divider"></div>`;
+  DEPARTMENTS.forEach(d=>{
+    html += `<button class="side-btn" data-panel="${d.id}"><span class="side-num">${d.num}</span>${d.name}</button>`;
+  });
+  sb.innerHTML = html;
+  sb.querySelectorAll('.side-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=> showPanel(btn.dataset.panel));
+  });
+}
+
+function overviewHtml(){
+  let printerCards = PRINTERS.map(p=>{
+    const status = localStorage.getItem(LS.printer(p.id)) || 'idle';
+    const job = localStorage.getItem(LS.printerJob(p.id)) || '';
+    return `
+    <div class="printer-card">
+      <div class="printer-name">${p.name}</div>
+      <div class="printer-model">${p.model}</div>
+      <select class="printer-select" data-pid="${p.id}">
+        <option value="idle" ${status==='idle'?'selected':''}>🟢 ว่าง</option>
+        <option value="printing" ${status==='printing'?'selected':''}>🟠 กำลังพิมพ์</option>
+        <option value="maintenance" ${status==='maintenance'?'selected':''}>🔧 ซ่อมบำรุง</option>
+      </select>
+      <input class="printer-job" data-pid="${p.id}" placeholder="งานที่กำลังพิมพ์..." value="${job.replace(/"/g,'&quot;')}">
+    </div>`;
+  }).join('');
+
+  let deptCards = DEPARTMENTS.map(d=>{
+    const p = progressOf(d);
+    return `
+    <div class="dept-card" data-goto="${d.id}">
+      <div class="dept-card-top"><span class="dept-card-num">${d.num}</span><span class="dept-card-name">${d.name}</span></div>
+      <div class="dept-card-tag">${d.tag}</div>
+      <div class="progress-bar"><div class="progress-fill" style="width:${p.pct}%"></div></div>
+      <div class="progress-label">${p.done}/${p.total} เสร็จแล้ว · ${p.pct}%</div>
+    </div>`;
+  }).join('');
+
+  return `
+  <div class="p-tag">Fixtory.studio · Operations HQ</div>
+  <div class="p-title">ภาพรวมธุรกิจ 3D Printing</div>
+  <div class="p-sub">เครื่องพิมพ์ 2 เครื่อง (Bambu Lab A1 Combo + P2S Combo) กับ 9 แผนกที่ขับเคลื่อนร้าน — เลือกแผนกด้านซ้ายเพื่อดูรายละเอียดและเช็คลิสต์งาน</div>
+  <div class="block-title">สถานะเครื่องพิมพ์</div>
+  <div class="printer-row">${printerCards}</div>
+  <div class="block-title">9 แผนก</div>
+  <div class="dept-grid">${deptCards}</div>
+  `;
+}
+
+function deptHtml(d){
+  const kpis = d.kpis.map((k,i)=>{
+    const val = localStorage.getItem(LS.kpi(d.id,i)) ?? k.def;
+    return `
+    <div class="kpi-tile">
+      <div class="kpi-label">${k.label}</div>
+      <div class="kpi-input-row">
+        <input class="kpi-input" data-dept="${d.id}" data-idx="${i}" value="${String(val).replace(/"/g,'&quot;')}">
+        <span class="kpi-unit">${k.unit}</span>
+      </div>
+    </div>`;
+  }).join('');
+
+  const arr = getChecklist(d);
+  const items = d.checklist.map((text,i)=>`
+    <div class="check-item ${arr[i]?'done':''}" data-dept="${d.id}" data-idx="${i}">
+      <div class="check-box">${arr[i]?'✓':''}</div>
+      <div class="check-text">${text}</div>
+    </div>`).join('');
+
+  const notes = localStorage.getItem(LS.notes(d.id)) || '';
+
+  return `
+  <div class="p-tag">แผนก ${d.num} · ${d.tag}</div>
+  <div class="p-title">${d.name}</div>
+  <div class="p-sub">${d.sub}</div>
+  <div class="block-title">KPI / ตัวเลขติดตาม</div>
+  <div class="kpi-row">${kpis}</div>
+  <div class="block-title">Checklist</div>
+  <div class="checklist">${items}</div>
+  <div class="block-title">Notes</div>
+  <textarea class="notes-area" data-dept="${d.id}" placeholder="บันทึกไอเดีย ข้อสังเกต หรือแผนงานของแผนกนี้...">${notes}</textarea>
+  <div class="notes-saved" data-dept-saved="${d.id}"></div>
+  `;
+}
+
+function renderMain(){
+  const main = document.getElementById('main');
+  let html = `<div class="panel" id="panel-overview">${overviewHtml()}</div>`;
+  DEPARTMENTS.forEach(d=>{
+    html += `<div class="panel" id="panel-${d.id}">${deptHtml(d)}</div>`;
+  });
+  main.innerHTML = html;
+}
+
+const notesTimers = {};
+
+function bindEvents(){
+  document.addEventListener('click', e=>{
+    const card = e.target.closest('.dept-card');
+    if(card){ showPanel(card.dataset.goto); return; }
+
+    const item = e.target.closest('.check-item');
+    if(item){
+      const dept = DEPARTMENTS.find(d=>d.id===item.dataset.dept);
+      const idx = Number(item.dataset.idx);
+      const arr = getChecklist(dept);
+      arr[idx] = !arr[idx];
+      setChecklist(dept, arr);
+      item.classList.toggle('done', arr[idx]);
+      item.querySelector('.check-box').textContent = arr[idx] ? '✓' : '';
+    }
+  });
+
+  document.addEventListener('change', e=>{
+    if(e.target.matches('.printer-select')){
+      localStorage.setItem(LS.printer(e.target.dataset.pid), e.target.value);
+    }
+    if(e.target.matches('.kpi-input')){
+      localStorage.setItem(LS.kpi(e.target.dataset.dept, e.target.dataset.idx), e.target.value);
+    }
+  });
+
+  document.addEventListener('input', e=>{
+    if(e.target.matches('.printer-job')){
+      localStorage.setItem(LS.printerJob(e.target.dataset.pid), e.target.value);
+    }
+    if(e.target.matches('.notes-area')){
+      const dept = e.target.dataset.dept;
+      clearTimeout(notesTimers[dept]);
+      notesTimers[dept] = setTimeout(()=>{
+        localStorage.setItem(LS.notes(dept), e.target.value);
+        const saved = document.querySelector(`[data-dept-saved="${dept}"]`);
+        if(saved){ saved.textContent = '✓ บันทึกแล้ว'; setTimeout(()=> saved.textContent='', 1500); }
+      }, 400);
+    }
+  });
+}
+
+function showPanel(id){
+  document.querySelectorAll('.panel').forEach(p=> p.classList.remove('active'));
+  document.querySelectorAll('.side-btn').forEach(b=> b.classList.toggle('active', b.dataset.panel===id));
+  const panel = document.getElementById(`panel-${id}`);
+  if(panel) panel.classList.add('active');
+  if(id==='overview') renderOverviewInPlace();
+  localStorage.setItem(LS.active, id);
+  window.scrollTo({top:0});
+}
+
+function renderOverviewInPlace(){
+  const panel = document.getElementById('panel-overview');
+  if(panel){ panel.innerHTML = overviewHtml(); }
+}
+
+renderSidebar();
+renderMain();
+bindEvents();
+showPanel(localStorage.getItem(LS.active) || 'overview');
+</script>
+</body>
+</html>
