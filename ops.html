@@ -149,8 +149,8 @@ const DEPARTMENTS = [
     id:'cost', num:'02', name:'Cost Optimization', tag:'ควบคุมต้นทุนการผลิต',
     sub:'ติดตามต้นทุน filament ค่าไฟ ค่าเสื่อมเครื่องพิมพ์ และของเสีย เพื่อรักษามาร์จิ้นให้แข็งแรง',
     kpis:[
-      {label:'Filament / กก.', unit:'฿', def:'690'},
-      {label:'ค่าไฟ / หน่วย', unit:'฿', def:'4.5'},
+      {label:'Filament / กก. (Bambu Matte)', unit:'฿', def:'690'},
+      {label:'ค่าไฟ / หน่วย', unit:'฿', def:'4.83'},
       {label:'ค่าเสื่อมเครื่อง / ชม.', unit:'฿', def:'8'},
       {label:'Failed print rate', unit:'%', def:'5'}
     ],
@@ -165,9 +165,9 @@ const DEPARTMENTS = [
   },
   {
     id:'product', num:'03', name:'Develop Products & Services', tag:'พัฒนาสินค้าและบริการ',
-    sub:'บริหาร pipeline สินค้าใหม่ ตั้งแต่ไอเดียถึงวางขายจริง และมาตรฐาน BOM ต่อชิ้นงาน',
+    sub:'บริหาร pipeline สินค้าใหม่ ตั้งแต่ไอเดียถึงวางขายจริง และมาตรฐาน BOM ต่อชิ้นงาน · ปัจจุบันมี 27 SKU ใน 6 หมวด (Storage & Organization, Home Decor, Travel, Accessories, Workspace, Premium)',
     kpis:[
-      {label:'SKU ที่ขายอยู่', unit:'ชิ้น', def:'12'},
+      {label:'SKU ที่ขายอยู่', unit:'ชิ้น', def:'27'},
       {label:'เป้า SKU ใหม่ / เดือน', unit:'ชิ้น', def:'2'},
       {label:'อยู่ระหว่างทดสอบ', unit:'ชิ้น', def:'0'},
       {label:'Custom order / เดือน', unit:'ออเดอร์', def:'0'}
@@ -186,9 +186,9 @@ const DEPARTMENTS = [
     sub:'บริหารช่องทางขาย Shopee, TikTok Shop, เว็บตรง และเครือข่าย affiliate ให้สอดคล้องกัน',
     kpis:[
       {label:'Shopee fee', unit:'%', def:'8.2'},
-      {label:'TikTok fee', unit:'%', def:'—'},
-      {label:'ช่องทางที่เปิดใช้งาน', unit:'ช่องทาง', def:'2'},
-      {label:'Affiliate ที่ใช้งานอยู่', unit:'คน', def:'0'}
+      {label:'TikTok fee', unit:'%', def:'11.4'},
+      {label:'เว็บตรง fee', unit:'%', def:'1.5'},
+      {label:'เว็บ+Affiliate fee', unit:'%', def:'11.5'}
     ],
     checklist:[
       'เปิดร้าน Shopee/TikTok Shop ให้ครบพร้อม SEO ชื่อสินค้า/แท็ก',
