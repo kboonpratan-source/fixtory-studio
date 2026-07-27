@@ -357,6 +357,14 @@ function overviewHtml(){
   `;
 }
 
+function kpiFontSize(value){
+  const len = String(value).length;
+  if(len <= 6) return '26px';
+  if(len <= 12) return '19px';
+  if(len <= 20) return '15px';
+  return '13px';
+}
+
 function deptHtml(d){
   const kpis = d.kpis.map((k,i)=>{
     const val = localStorage.getItem(LS.kpi(d.id,i)) ?? k.def;
@@ -364,7 +372,7 @@ function deptHtml(d){
     <div class="kpi-tile">
       <div class="kpi-label">${k.label}</div>
       <div class="kpi-input-row">
-        <input class="kpi-input" data-dept="${d.id}" data-idx="${i}" value="${String(val).replace(/"/g,'&quot;')}">
+        <input class="kpi-input" style="font-size:${kpiFontSize(val)}" data-dept="${d.id}" data-idx="${i}" value="${String(val).replace(/"/g,'&quot;')}">
         <span class="kpi-unit">${k.unit}</span>
       </div>
     </div>`;
@@ -431,6 +439,9 @@ function bindEvents(){
   });
 
   document.addEventListener('input', e=>{
+    if(e.target.matches('.kpi-input')){
+      e.target.style.fontSize = kpiFontSize(e.target.value);
+    }
     if(e.target.matches('.printer-job')){
       localStorage.setItem(LS.printerJob(e.target.dataset.pid), e.target.value);
     }
