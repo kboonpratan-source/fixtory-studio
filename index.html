@@ -576,7 +576,7 @@ function buildOrderSummaryLines(){
   return lines;
 }
 
-document.getElementById('saveOrderImg').addEventListener('click',()=>{
+function renderOrderCanvas(callback){
   const {svg,viewW,viewH}=buildSVG(previewOrientation);
   const lines=buildOrderSummaryLines();
 
@@ -656,18 +656,48 @@ document.getElementById('saveOrderImg').addEventListener('click',()=>{
     ctx.strokeStyle='#e2e0d8';
     ctx.strokeRect(6,6,canvasW-12,canvasH-12);
 
-    canvas.toBlob(blob=>{
-      const url=URL.createObjectURL(blob);
-      const a=document.createElement('a');
-      a.href=url;
-      a.download='fixtory-order-summary.png';
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-    },'image/png');
+    callback(canvas);
   };
   img.src=svgDataUrl;
+}
+
+document.getElementById('saveOrderImg').addEventListener('click',()=>{
+  const btn=document.getElementById('saveOrderImg');
+  const originalText=btn.textContent;
+  btn.textContent='กำลังสร้างรูป...';
+  renderOrderCanvas(canvas=>{
+    canvas.toBlob(async blob=>{
+      const file=new File([blob],'fixtory-order-summary.png',{type:'image/png'});
+      // มือถือส่วนใหญ่ (โดยเฉพาะ iPhone) ไม่รองรับการ "ดาวน์โหลด" ไฟล์ตรงๆ แบบเดสก์ท็อป
+      // ต้องใช้ Web Share API ให้ขึ้นเมนูแชร์/บันทึกรูปของเครื่องแทน
+      if(navigator.canShare && navigator.canShare({files:[file]})){
+        try{
+          await navigator.share({files:[file], title:'สรุปออเดอร์ Fixtory Studio'});
+          btn.textContent=originalText;
+          return;
+        }catch(err){
+          // ผู้ใช้กดยกเลิกหน้าต่างแชร์ ไม่ต้อง fallback ต่อ
+          btn.textContent=originalText;
+          return;
+        }
+      }
+      // คอมพิวเตอร์ทั่วไป หรือมือถือที่ไม่รองรับ Web Share: เปิดรูปในแท็บใหม่ให้กดค้างเพื่อบันทึกเอง
+      const url=URL.createObjectURL(blob);
+      const isDesktop=!/Mobi|Android|iPhone|iPad/i.test(navigator.userAgent);
+      if(isDesktop){
+        const a=document.createElement('a');
+        a.href=url;
+        a.download='fixtory-order-summary.png';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+      } else {
+        window.open(url,'_blank');
+      }
+      setTimeout(()=>URL.revokeObjectURL(url), 30000);
+      btn.textContent=originalText;
+    },'image/png');
+  });
 });
 
 heartColorsRow.style.display='flex';
@@ -703,7 +733,7 @@ submitOrderBtn.addEventListener('click',()=>{
     return;
   }
   submitOrderBtn.disabled=true;
-  submitOrderBtn.textContent='กำลังส่งคำสั่งซื้อ...';
+  submitOrderBtn.textContent='กำลังเตรียมรูปสรุปออเดอร์...';
 
   function markSubmitted(orderNumberText){
     submitOrderBtn.textContent='✔ ส่งคำสั่งซื้อสำเร็จ';
@@ -716,21 +746,33 @@ submitOrderBtn.addEventListener('click',()=>{
     }
   }
 
-  fetch(GAS_URL,{
-    method:'POST',
-    headers:{'Content-Type':'text/plain'},
-    body:JSON.stringify(buildOrderPayload())
-  }).then(res=>res.json())
-    .then(data=>{
-      markSubmitted(data && data.orderNumber ? data.orderNumber : null);
-    })
-    .catch(()=>{
-      // คำสั่งซื้อน่าจะถูกบันทึกแล้วฝั่ง server (เขียนก่อนตอบกลับ) แต่เบราว์เซอร์บล็อกการอ่านผลลัพธ์
-      // (ข้อจำกัด CORS ของ Google Apps Script) — ไม่ยิงซ้ำเพื่อกันแถวซ้ำ
-      markSubmitted(null);
-      document.getElementById('orderNumberNote').style.display='block';
-      document.getElementById('orderNumberValue').textContent='เช็คกับแอดมิน (ระบบอ่านเลขที่อัตโนมัติไม่ได้)';
-    });
+  // สร้างรูปสรุปออเดอร์ก่อน แล้วแนบไปกับข้อมูลออเดอร์ในครั้งเดียวกัน
+  // เพื่อให้ Apps Script เซฟรูปเข้า Google Drive ให้ร้านอัตโนมัติ ไม่ต้องรอลูกค้าส่งรูปเอง
+  renderOrderCanvas(canvas=>{
+    const dataUrl=canvas.toDataURL('image/png');
+    const base64Only=dataUrl.split(',')[1]; // ตัด "data:image/png;base64," ออก เหลือแค่ตัวข้อมูล
+
+    submitOrderBtn.textContent='กำลังส่งคำสั่งซื้อ...';
+
+    const payload=buildOrderPayload();
+    payload.orderImageBase64=base64Only;
+
+    fetch(GAS_URL,{
+      method:'POST',
+      headers:{'Content-Type':'text/plain'},
+      body:JSON.stringify(payload)
+    }).then(res=>res.json())
+      .then(data=>{
+        markSubmitted(data && data.orderNumber ? data.orderNumber : null);
+      })
+      .catch(()=>{
+        // คำสั่งซื้อน่าจะถูกบันทึกแล้วฝั่ง server (เขียนก่อนตอบกลับ) แต่เบราว์เซอร์บล็อกการอ่านผลลัพธ์
+        // (ข้อจำกัด CORS ของ Google Apps Script) — ไม่ยิงซ้ำเพื่อกันแถวซ้ำ
+        markSubmitted(null);
+        document.getElementById('orderNumberNote').style.display='block';
+        document.getElementById('orderNumberValue').textContent='เช็คกับแอดมิน (ระบบอ่านเลขที่อัตโนมัติไม่ได้)';
+      });
+  });
 });
 </script>
 </body>
