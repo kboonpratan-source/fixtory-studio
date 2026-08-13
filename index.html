@@ -668,32 +668,37 @@ document.getElementById('saveOrderImg').addEventListener('click',()=>{
   renderOrderCanvas(canvas=>{
     canvas.toBlob(async blob=>{
       const file=new File([blob],'fixtory-order-summary.png',{type:'image/png'});
-      // มือถือส่วนใหญ่ (โดยเฉพาะ iPhone) ไม่รองรับการ "ดาวน์โหลด" ไฟล์ตรงๆ แบบเดสก์ท็อป
-      // ต้องใช้ Web Share API ให้ขึ้นเมนูแชร์/บันทึกรูปของเครื่องแทน
-      if(navigator.canShare && navigator.canShare({files:[file]})){
-        try{
-          await navigator.share({files:[file], title:'สรุปออเดอร์ Fixtory Studio'});
-          btn.textContent=originalText;
-          return;
-        }catch(err){
-          // ผู้ใช้กดยกเลิกหน้าต่างแชร์ ไม่ต้อง fallback ต่อ
-          btn.textContent=originalText;
-          return;
-        }
-      }
-      // คอมพิวเตอร์ทั่วไป หรือมือถือที่ไม่รองรับ Web Share: เปิดรูปในแท็บใหม่ให้กดค้างเพื่อบันทึกเอง
-      const url=URL.createObjectURL(blob);
-      const isDesktop=!/Mobi|Android|iPhone|iPad/i.test(navigator.userAgent);
-      if(isDesktop){
+      const isMobile=/Mobi|Android|iPhone|iPad/i.test(navigator.userAgent);
+
+      // คอมพิวเตอร์: ดาวน์โหลดตรงเข้าโฟลเดอร์ Downloads เสมอ — ไม่ใช้เมนูแชร์
+      // (Windows/Edge ก็รองรับ Web Share เหมือนมือถือ แต่เมนูนั้นไม่มีตัวเลือก "บันทึกลงเครื่อง" ตรงๆ ทำให้งงว่ารูปหายไปไหน)
+      if(!isMobile){
+        const url=URL.createObjectURL(blob);
         const a=document.createElement('a');
         a.href=url;
         a.download='fixtory-order-summary.png';
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
-      } else {
-        window.open(url,'_blank');
+        setTimeout(()=>URL.revokeObjectURL(url), 30000);
+        btn.textContent=originalText;
+        return;
       }
+
+      // มือถือ: ใช้เมนูแชร์ของเครื่อง (มี "บันทึกรูปภาพ" ให้เลือกในนั้น)
+      if(navigator.canShare && navigator.canShare({files:[file]})){
+        try{
+          await navigator.share({files:[file], title:'สรุปออเดอร์ Fixtory Studio'});
+        }catch(err){
+          // ผู้ใช้กดยกเลิกหน้าต่างแชร์ ไม่ต้องทำอะไรต่อ
+        }
+        btn.textContent=originalText;
+        return;
+      }
+
+      // มือถือที่ไม่รองรับ Web Share: เปิดรูปในแท็บใหม่ให้กดค้างเพื่อบันทึกเอง
+      const url=URL.createObjectURL(blob);
+      window.open(url,'_blank');
       setTimeout(()=>URL.revokeObjectURL(url), 30000);
       btn.textContent=originalText;
     },'image/png');
