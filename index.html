@@ -192,6 +192,16 @@
 
 <canvas id="orderCanvas" style="display:none"></canvas>
 
+<div id="imageSaveOverlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:20;align-items:center;justify-content:center;flex-direction:column;padding:20px;box-sizing:border-box">
+  <p style="color:#fff;font-size:14px;text-align:center;margin:0 0 4px;font-weight:600">กดค้างที่รูปด้านล่าง แล้วเลือก "บันทึกรูปภาพ"</p>
+  <p style="color:#ddd;font-size:11.5px;text-align:center;margin:0 0 14px">ถ้าเปิดจากแอป LINE/Facebook อยู่ ให้แตะเมนู "..." แล้วเลือก "เปิดในเบราว์เซอร์" ก่อน จะบันทึกได้สะดวกกว่า</p>
+  <img id="imageSaveTarget" src="" style="max-width:92%;max-height:65vh;border-radius:10px;box-shadow:0 4px 24px rgba(0,0,0,.4)">
+  <div style="display:flex;gap:10px;margin-top:16px">
+    <button id="imageSaveShareBtn" style="display:none;padding:10px 18px;border:none;border-radius:9px;background:#d4537e;color:#fff;font-size:13.5px;font-weight:600">แชร์ / บันทึก</button>
+    <button id="imageSaveCloseBtn" style="padding:10px 18px;border:1px solid #fff;border-radius:9px;background:transparent;color:#fff;font-size:13.5px">ปิด</button>
+  </div>
+</div>
+
 <script>
 // วาง Web App URL จาก Google Apps Script (ดูวิธีใน fixtory-orders-apps-script.gs) แทนที่ตรงนี้
 const GAS_URL = "https://script.google.com/macros/s/AKfycbwfy2uHH4QJOM851_HBz3eoUCbwBvnZo1fGzf8DNChs5hS03Ml-335eATS3XTbifVYo9Q/exec";
@@ -666,13 +676,11 @@ document.getElementById('saveOrderImg').addEventListener('click',()=>{
   const originalText=btn.textContent;
   btn.textContent='กำลังสร้างรูป...';
   renderOrderCanvas(canvas=>{
-    canvas.toBlob(async blob=>{
-      const file=new File([blob],'fixtory-order-summary.png',{type:'image/png'});
-      const isMobile=/Mobi|Android|iPhone|iPad/i.test(navigator.userAgent);
+    const isMobile=/Mobi|Android|iPhone|iPad/i.test(navigator.userAgent);
 
-      // คอมพิวเตอร์: ดาวน์โหลดตรงเข้าโฟลเดอร์ Downloads เสมอ — ไม่ใช้เมนูแชร์
-      // (Windows/Edge ก็รองรับ Web Share เหมือนมือถือ แต่เมนูนั้นไม่มีตัวเลือก "บันทึกลงเครื่อง" ตรงๆ ทำให้งงว่ารูปหายไปไหน)
-      if(!isMobile){
+    // คอมพิวเตอร์: ดาวน์โหลดตรงเข้าโฟลเดอร์ Downloads เสมอ — เร็วและตรงไปตรงมาที่สุด
+    if(!isMobile){
+      canvas.toBlob(blob=>{
         const url=URL.createObjectURL(blob);
         const a=document.createElement('a');
         a.href=url;
@@ -682,28 +690,45 @@ document.getElementById('saveOrderImg').addEventListener('click',()=>{
         document.body.removeChild(a);
         setTimeout(()=>URL.revokeObjectURL(url), 30000);
         btn.textContent=originalText;
-        return;
-      }
+      },'image/png');
+      return;
+    }
 
-      // มือถือ: ใช้เมนูแชร์ของเครื่อง (มี "บันทึกรูปภาพ" ให้เลือกในนั้น)
-      if(navigator.canShare && navigator.canShare({files:[file]})){
+    // มือถือ: โชว์รูปเต็มจอให้กดค้างเพื่อบันทึก — วิธีนี้ใช้ได้แม้เปิดจากเบราว์เซอร์ในตัวแอป
+    // LINE/Facebook ที่บล็อกการดาวน์โหลดไฟล์และ Web Share บางส่วน เพราะเป็นฟีเจอร์กดค้างของ
+    // เบราว์เซอร์เอง ไม่ต้องพึ่ง JS API ที่โดนบล็อกได้
+    const dataUrl=canvas.toDataURL('image/png');
+    document.getElementById('imageSaveTarget').src=dataUrl;
+    document.getElementById('imageSaveOverlay').style.display='flex';
+    btn.textContent=originalText;
+
+    const shareBtn=document.getElementById('imageSaveShareBtn');
+    if(navigator.share){
+      shareBtn.style.display='inline-block';
+      shareBtn.onclick=async ()=>{
         try{
-          await navigator.share({files:[file], title:'สรุปออเดอร์ Fixtory Studio'});
+          canvas.toBlob(async blob=>{
+            const file=new File([blob],'fixtory-order-summary.png',{type:'image/png'});
+            if(navigator.canShare && navigator.canShare({files:[file]})){
+              await navigator.share({files:[file], title:'สรุปออเดอร์ Fixtory Studio'});
+            } else {
+              await navigator.share({title:'สรุปออเดอร์ Fixtory Studio'});
+            }
+          },'image/png');
         }catch(err){
-          // ผู้ใช้กดยกเลิกหน้าต่างแชร์ ไม่ต้องทำอะไรต่อ
+          // ผู้ใช้กดยกเลิก หรือเบราว์เซอร์บล็อก — รูปที่โชว์อยู่ให้กดค้างเซฟได้อยู่แล้ว ไม่ต้องแจ้ง error
         }
-        btn.textContent=originalText;
-        return;
-      }
-
-      // มือถือที่ไม่รองรับ Web Share: เปิดรูปในแท็บใหม่ให้กดค้างเพื่อบันทึกเอง
-      const url=URL.createObjectURL(blob);
-      window.open(url,'_blank');
-      setTimeout(()=>URL.revokeObjectURL(url), 30000);
-      btn.textContent=originalText;
-    },'image/png');
+      };
+    } else {
+      shareBtn.style.display='none';
+    }
   });
 });
+
+document.getElementById('imageSaveCloseBtn').addEventListener('click',()=>{
+  document.getElementById('imageSaveOverlay').style.display='none';
+});
+
 
 heartColorsRow.style.display='flex';
 buildLetterRows();
