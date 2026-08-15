@@ -697,31 +697,33 @@ document.getElementById('saveOrderImg').addEventListener('click',()=>{
     // มือถือ: โชว์รูปเต็มจอให้กดค้างเพื่อบันทึก — วิธีนี้ใช้ได้แม้เปิดจากเบราว์เซอร์ในตัวแอป
     // LINE/Facebook ที่บล็อกการดาวน์โหลดไฟล์และ Web Share บางส่วน เพราะเป็นฟีเจอร์กดค้างของ
     // เบราว์เซอร์เอง ไม่ต้องพึ่ง JS API ที่โดนบล็อกได้
-    const dataUrl=canvas.toDataURL('image/png');
-    document.getElementById('imageSaveTarget').src=dataUrl;
-    document.getElementById('imageSaveOverlay').style.display='flex';
-    btn.textContent=originalText;
+    // ใช้ blob: URL แทน data: URI เพราะเบราว์เซอร์ในแอป LINE บางเวอร์ชันไม่ยอมให้ "บันทึกรูปภาพ"
+    // จากรูปที่เป็น data: URI แต่ยอมให้บันทึกจาก blob: URL
+    canvas.toBlob(blob=>{
+      const blobUrl=URL.createObjectURL(blob);
+      document.getElementById('imageSaveTarget').src=blobUrl;
+      document.getElementById('imageSaveOverlay').style.display='flex';
+      btn.textContent=originalText;
 
-    const shareBtn=document.getElementById('imageSaveShareBtn');
-    if(navigator.share){
-      shareBtn.style.display='inline-block';
-      shareBtn.onclick=async ()=>{
-        try{
-          canvas.toBlob(async blob=>{
+      const shareBtn=document.getElementById('imageSaveShareBtn');
+      if(navigator.share){
+        shareBtn.style.display='inline-block';
+        shareBtn.onclick=async ()=>{
+          try{
             const file=new File([blob],'fixtory-order-summary.png',{type:'image/png'});
             if(navigator.canShare && navigator.canShare({files:[file]})){
               await navigator.share({files:[file], title:'สรุปออเดอร์ Fixtory Studio'});
             } else {
               await navigator.share({title:'สรุปออเดอร์ Fixtory Studio'});
             }
-          },'image/png');
-        }catch(err){
-          // ผู้ใช้กดยกเลิก หรือเบราว์เซอร์บล็อก — รูปที่โชว์อยู่ให้กดค้างเซฟได้อยู่แล้ว ไม่ต้องแจ้ง error
-        }
-      };
-    } else {
-      shareBtn.style.display='none';
-    }
+          }catch(err){
+            // ผู้ใช้กดยกเลิก หรือเบราว์เซอร์บล็อก — รูปที่โชว์อยู่ให้กดค้างเซฟได้อยู่แล้ว ไม่ต้องแจ้ง error
+          }
+        };
+      } else {
+        shareBtn.style.display='none';
+      }
+    },'image/png');
   });
 });
 
