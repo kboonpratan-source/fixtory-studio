@@ -68,6 +68,11 @@
     <h2>Alphabet Clicker — สั่งทำ</h2>
     <p class="sub">เลือกสีแต่ละส่วน เห็นภาพจริงก่อนยืนยัน</p>
 
+    <div id="lineAppBanner" style="display:none;background:#fff3cd;border:1px solid #ffe08a;border-radius:9px;padding:10px 12px;margin-bottom:14px;font-size:12px;line-height:1.6;color:#6b5a1f">
+      📱 กำลังเปิดจากแอป LINE — ถ้าอยาก<b>บันทึกรูปสรุปออเดอร์ไว้เอง</b> ต้องแตะเมนู <b>"..."</b> มุมขวาบน แล้วเลือก <b>"เปิดในเบราว์เซอร์"</b> ก่อน
+      (ไม่บังคับ — ทางร้านได้รับรูปอัตโนมัติอยู่แล้วหลังยืนยันคำสั่งซื้อ)
+    </div>
+
     <div class="field">
       <label>สี Case</label>
       <select id="caseColor">
@@ -194,7 +199,7 @@
 
 <div id="imageSaveOverlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:20;align-items:center;justify-content:center;flex-direction:column;padding:20px;box-sizing:border-box">
   <p style="color:#fff;font-size:14px;text-align:center;margin:0 0 4px;font-weight:600">กดค้างที่รูปด้านล่าง แล้วเลือก "บันทึกรูปภาพ"</p>
-  <p style="color:#ddd;font-size:11.5px;text-align:center;margin:0 0 14px">ถ้าเปิดจากแอป LINE/Facebook อยู่ ให้แตะเมนู "..." แล้วเลือก "เปิดในเบราว์เซอร์" ก่อน จะบันทึกได้สะดวกกว่า</p>
+  <p style="color:#ddd;font-size:11.5px;text-align:center;margin:0 0 14px">ทางร้านได้รับรูปนี้อัตโนมัติแล้ว — ไม่บันทึกก็ได้ ไม่กระทบคำสั่งซื้อ<br>ถ้าเปิดจากแอป LINE/Facebook แล้วกดค้างไม่ขึ้นเมนู ให้แตะ "..." แล้วเลือก "เปิดในเบราว์เซอร์" ก่อน</p>
   <img id="imageSaveTarget" src="" style="max-width:92%;max-height:65vh;border-radius:10px;box-shadow:0 4px 24px rgba(0,0,0,.4)">
   <div style="display:flex;gap:10px;margin-top:16px">
     <button id="imageSaveShareBtn" style="display:none;padding:10px 18px;border:none;border-radius:9px;background:#d4537e;color:#fff;font-size:13.5px;font-weight:600">แชร์ / บันทึก</button>
@@ -733,6 +738,12 @@ document.getElementById('imageSaveCloseBtn').addEventListener('click',()=>{
 
 
 heartColorsRow.style.display='flex';
+
+// เช็คว่าเปิดจากเบราว์เซอร์ในตัวแอป LINE อยู่ไหม — ถ้าใช่ เตือนล่วงหน้าไว้เลย
+// กันลูกค้าเจอปัญหาเซฟรูปไม่ได้ตอนกดปุ่มบันทึกรูปแล้วค่อยมางง
+if(/Line/i.test(navigator.userAgent)){
+  document.getElementById('lineAppBanner').style.display='block';
+}
 buildLetterRows();
 
 function buildOrderPayload(){
