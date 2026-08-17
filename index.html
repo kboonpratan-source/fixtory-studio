@@ -760,7 +760,8 @@ function buildOrderPayload(){
     strapLabel:preset.label,
     collection:colName,
     heart:heartOn.checked?heartValue:'',
-    price:price.textContent
+    price:price.textContent,
+    priceValue:parseInt(price.textContent,10)||0
   };
   for(let i=0;i<8;i++){
     payload['letter'+(i+1)]=val[i]||'';
