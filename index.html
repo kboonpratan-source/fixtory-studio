@@ -744,6 +744,14 @@ heartColorsRow.style.display='flex';
 if(/Line/i.test(navigator.userAgent)){
   document.getElementById('lineAppBanner').style.display='block';
 }
+
+// อ่านชื่อ/รหัสเซลล์จาก URL เช่น ?sale=ploy — ใช้แท็กออเดอร์ว่ามาจากลิงก์ของใคร
+// เก็บไว้ใน sessionStorage กันหลุดหายถ้าลูกค้ากดลิงก์อื่นในหน้าเดียวกันระหว่างกรอกฟอร์ม
+const urlParams=new URLSearchParams(window.location.search);
+const saleRefFromUrl=urlParams.get('sale');
+if(saleRefFromUrl) sessionStorage.setItem('fixtorySaleRef', saleRefFromUrl);
+const saleRef=sessionStorage.getItem('fixtorySaleRef') || '';
+
 buildLetterRows();
 
 function buildOrderPayload(){
@@ -761,7 +769,8 @@ function buildOrderPayload(){
     collection:colName,
     heart:heartOn.checked?heartValue:'',
     price:price.textContent,
-    priceValue:parseInt(price.textContent,10)||0
+    priceValue:parseInt(price.textContent,10)||0,
+    saleRef:saleRef
   };
   for(let i=0;i<8;i++){
     payload['letter'+(i+1)]=val[i]||'';
