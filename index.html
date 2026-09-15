@@ -176,8 +176,18 @@
       <input type="text" id="customerNote" placeholder="เช่น ขอส่งหลัง 20 ส.ค., ฝากเขียนการ์ดด้วย">
     </div>
 
+    <div id="cartBox" style="display:none;background:#faf9f5;border-radius:10px;padding:12px;margin-bottom:12px">
+      <p style="font-size:13px;font-weight:700;margin:0 0 8px">🛒 ตะกร้า (<span id="cartCount">0</span> ชิ้น)</p>
+      <div id="cartItemsList" style="font-size:12.5px;line-height:1.8"></div>
+      <div style="display:flex;justify-content:space-between;font-size:13px;font-weight:700;margin-top:8px;padding-top:8px;border-top:1px solid #e2e0d8">
+        <span>รวมในตะกร้า</span>
+        <span id="cartSubtotalDisplay">0 บาท</span>
+      </div>
+    </div>
+    <button class="ghost" id="addToCartBtn" style="width:100%;box-sizing:border-box;margin-bottom:10px">🛒 เพิ่มชิ้นนี้ลงตะกร้า (ตั้งค่าชิ้นถัดไปต่อได้เลย)</button>
+
     <div class="price-row" style="border-top:none;padding-top:0">
-      <span class="price-label">ค่าสินค้า</span>
+      <span class="price-label">ชิ้นที่กำลังตั้งค่า</span>
       <span id="productPrice" style="font-size:14px;font-weight:600">100 บาท</span>
     </div>
     <div class="price-row" style="border-top:none;padding-top:2px;margin-bottom:6px">
@@ -185,7 +195,7 @@
       <span id="shippingFeeDisplay" style="font-size:14px;font-weight:600">— เลือกจังหวัดก่อน —</span>
     </div>
     <div class="price-row">
-      <span class="price-label">ราคารวม</span>
+      <span class="price-label">ยอดรวมทั้งหมด</span>
       <span class="price-val" id="price">100 บาท</span>
     </div>
     <button class="submit" id="openConfirm">ยืนยันคำสั่งซื้อ</button>
@@ -247,6 +257,10 @@
 <script>
 // วาง Web App URL จาก Google Apps Script (ดูวิธีใน fixtory-orders-apps-script.gs) แทนที่ตรงนี้
 const GAS_URL = "https://script.google.com/macros/s/AKfycbwfy2uHH4QJOM851_HBz3eoUCbwBvnZo1fGzf8DNChs5hS03Ml-335eATS3XTbifVYo9Q/exec";
+
+// ตะกร้าสินค้า — ประกาศไว้บนสุดของสคริปต์ เพราะ updatePrice() ถูกเรียกใช้ตั้งแต่ตอน init หน้า
+// ถ้าประกาศทีหลัง จะชน temporal dead zone ของ let ทำให้หน้าเว็บพังตั้งแต่โหลด
+let cart=[];
 
 const colorHex={
   "ฟ้า":"#7FC4E0","ชมพู":"#EFA9C6","ม่วง":"#B7A3E0","เหลือง":"#F2D34D","เนื้อ":"#E6C09C",
@@ -483,6 +497,8 @@ function updatePrice(){
   const productP=computeProductPrice();
   document.getElementById('productPrice').textContent=productP+' บาท';
 
+  const cartSubtotal=computeCartSubtotal();
+
   const shipFee=computeShippingFee();
   const shipDisplay=document.getElementById('shippingFeeDisplay');
   if(shipFee===null){
@@ -491,9 +507,79 @@ function updatePrice(){
     shipDisplay.textContent=shipFee+' บาท';
   }
 
-  const grand=productP+(shipFee||0);
+  const grand=cartSubtotal+productP+(shipFee||0);
   price.textContent=grand+' บาท';
 }
+
+// ── ตะกร้าสินค้า (สั่งหลายชิ้นในออเดอร์เดียว) ──────────────────────
+
+function snapshotCurrentItem(){
+  const val=letterState();
+  const colName={pastel:'Pastel',dark:'Dark mode',polar:'Polar White'}[collectionSel.value];
+  const preset=strapPresets[selectedStrap];
+  const orientName=previewOrientation==='vertical'?'แนวตั้ง':'แนวนอน';
+  const productP=computeProductPrice();
+  const item={
+    orientation:orientName,
+    caseColor:caseColor.value,
+    strapLabel:preset.label,
+    collection:colName,
+    heart:heartOn.checked?heartValue:'',
+    price:productP+' บาท',
+    priceValue:productP,
+    letters:[...val]
+  };
+  for(let i=0;i<8;i++){
+    item['letter'+(i+1)]=val[i]||'';
+    item['letterColor'+(i+1)]=letterValues[i]||'';
+  }
+  return item;
+}
+
+function computeCartSubtotal(){
+  return cart.reduce((sum,item)=>sum+item.priceValue,0);
+}
+
+function renderCart(){
+  const box=document.getElementById('cartBox');
+  const list=document.getElementById('cartItemsList');
+  if(cart.length===0){
+    box.style.display='none';
+    return;
+  }
+  box.style.display='block';
+  document.getElementById('cartCount').textContent=cart.length;
+  list.innerHTML=cart.map((item,i)=>{
+    const wordStr=item.letters.join('')||'(ไม่มีตัวอักษร)';
+    return '<div style="display:flex;justify-content:space-between;align-items:center;gap:8px">'+
+      '<span>'+(i+1)+'. '+wordStr+' — '+item.collection+' — '+item.price+'</span>'+
+      '<button type="button" data-idx="'+i+'" class="cartRemoveBtn" style="border:none;background:none;color:#c0392b;cursor:pointer;font-size:12px;flex-shrink:0">ลบ</button>'+
+    '</div>';
+  }).join('');
+  list.querySelectorAll('.cartRemoveBtn').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      cart.splice(parseInt(btn.getAttribute('data-idx'),10),1);
+      renderCart();
+      updatePrice();
+    });
+  });
+  document.getElementById('cartSubtotalDisplay').textContent=computeCartSubtotal()+' บาท';
+}
+
+document.getElementById('addToCartBtn').addEventListener('click',()=>{
+  if(letterState().length===0 && !heartOn.checked){
+    alert('กรุณาเลือกตัวอักษรอย่างน้อย 1 ตัว (หรือติ๊กหัวใจ) ก่อนเพิ่มลงตะกร้า');
+    return;
+  }
+  cart.push(snapshotCurrentItem());
+  renderCart();
+  // ล้างค่าตัวอักษร+หัวใจให้ตั้งค่าชิ้นถัดไปได้เลย (สี Case/สายคล้อง/คอลเลกชันคงไว้ เผื่อชิ้นถัดไปแบบเดียวกัน)
+  textInput.value='';
+  heartOn.checked=false;
+  buildLetterRows();
+  refreshHeartSelect();
+  updatePrice();
+});
 
 function keycapSVG(x,y,size,bodyC,frameC,letter){
   const r=8;
@@ -647,6 +733,10 @@ document.getElementById('openConfirm').addEventListener('click',()=>{
     provEl.focus();
     return;
   }
+  if(buildAllItems().length===0){
+    alert('กรุณาเลือกตัวอักษรอย่างน้อย 1 ตัว หรือเพิ่มสินค้าลงตะกร้าก่อนยืนยันคำสั่งซื้อ');
+    return;
+  }
   const {svg,viewW,viewH}=buildSVG(previewOrientation);
   const el=document.getElementById('svgConfirm');
   el.setAttribute('viewBox',`0 0 ${viewW} ${viewH}`);
@@ -668,11 +758,7 @@ document.getElementById('backEdit').addEventListener('click',()=>{
 });
 
 function buildOrderSummaryLines(){
-  const val=letterState();
-  const colName={pastel:'Pastel',dark:'Dark mode',polar:'Polar White'}[collectionSel.value];
-  const rows=[...val].map((ch,i)=>`${ch}:${letterValues[i]}`).join(', ');
-  const preset=strapPresets[selectedStrap];
-  const orientName=previewOrientation==='vertical'?'แนวตั้ง':'แนวนอน';
+  const items=buildAllItems();
   const custName=document.getElementById('customerName').value.trim();
   const custPhone=document.getElementById('customerPhone').value.trim();
   const addr=document.getElementById('shippingAddress').value.trim();
@@ -685,18 +771,26 @@ function buildOrderSummaryLines(){
     isSelfDeliver
       ? `จุดนัดรับ: ${addr || '-'} (จัดส่งเอง ไม่ผ่านขนส่ง)`
       : `ที่อยู่จัดส่ง: ${addr || '-'}${prov?(' จ.'+prov):''}${postcode?(' '+postcode):''}`,
-    `แนววาง: ${orientName}`,
-    `Case: ${caseColor.value}`,
-    `สายคล้อง: ${preset.label}`,
-    `คอลเลกชัน: ${colName}`,
-    `ตัวอักษร: ${rows}`,
   ];
-  if(heartOn.checked) lines.push(`หัวใจ: ${heartValue}`);
+
+  items.forEach((item,i)=>{
+    const wordStr=item.letters.join('')||'(ไม่มีตัวอักษร)';
+    const prefix=items.length>1?`ชิ้นที่ ${i+1} `:'';
+    lines.push(`${prefix}แนววาง: ${item.orientation}`);
+    lines.push(`${prefix}Case: ${item.caseColor}`);
+    lines.push(`${prefix}สายคล้อง: ${item.strapLabel}`);
+    lines.push(`${prefix}คอลเลกชัน: ${item.collection}`);
+    const letterDetail=item.letters.map((ch,j)=>`${ch}:${item['letterColor'+(j+1)]}`).join(', ');
+    lines.push(`${prefix}ตัวอักษร: ${wordStr} (${letterDetail})`);
+    if(item.heart) lines.push(`${prefix}หัวใจ: ${item.heart}`);
+    lines.push(`${prefix}ราคา: ${item.price}`);
+  });
+
   const custNote=document.getElementById('customerNote').value.trim();
   if(custNote) lines.push(`หมายเหตุ: ${custNote}`);
-  const productP=document.getElementById('productPrice').textContent;
+  const itemsSubtotal=items.reduce((sum,item)=>sum+item.priceValue,0);
   const shipDisp=document.getElementById('shippingFeeDisplay').textContent;
-  lines.push(`ค่าสินค้า: ${productP}`);
+  lines.push(`รวมค่าสินค้า (${items.length} ชิ้น): ${itemsSubtotal} บาท`);
   lines.push(`ค่าจัดส่ง: ${shipDisp}`);
   lines.push(`ราคารวมทั้งหมด: ${price.textContent}`);
   return lines;
@@ -865,12 +959,19 @@ const saleRef=sessionStorage.getItem('fixtorySaleRef') || '';
 
 buildLetterRows();
 
+function buildAllItems(){
+  // รวมของในตะกร้า + ชิ้นที่กำลังตั้งค่าอยู่ตอนนี้ (ถ้ามีตัวอักษร/หัวใจเลือกไว้) เข้าด้วยกัน
+  // ทำให้ยังสั่งแบบเดิม (ชิ้นเดียว ไม่ต้องกดเพิ่มลงตะกร้า) ได้ตามปกติ ไม่ต้องเปลี่ยนพฤติกรรมเดิม
+  const items=cart.map(item=>({...item}));
+  if(letterState().length>0 || heartOn.checked){
+    items.push(snapshotCurrentItem());
+  }
+  return items;
+}
+
 function buildOrderPayload(){
-  const val=letterState();
-  const colName={pastel:'Pastel',dark:'Dark mode',polar:'Polar White'}[collectionSel.value];
-  const preset=strapPresets[selectedStrap];
-  const orientName=previewOrientation==='vertical'?'แนวตั้ง':'แนวนอน';
-  const productP=computeProductPrice();
+  const items=buildAllItems();
+  const itemsSubtotal=items.reduce((sum,item)=>sum+item.priceValue,0);
   const shipFee=computeShippingFee()||0;
   const payload={
     customerName:document.getElementById('customerName').value.trim(),
@@ -880,23 +981,15 @@ function buildOrderPayload(){
     shippingProvince:document.getElementById('selfDeliver').checked ? '' : document.getElementById('shippingProvince').value,
     shippingPostcode:document.getElementById('selfDeliver').checked ? '' : document.getElementById('shippingPostcode').value.trim(),
     selfDeliver:document.getElementById('selfDeliver').checked,
-    orientation:orientName,
-    caseColor:caseColor.value,
-    strapLabel:preset.label,
-    collection:colName,
-    heart:heartOn.checked?heartValue:'',
-    price:productP+' บาท',        // ราคาสินค้าอย่างเดียว (ไม่รวมค่าส่ง) — ใช้คำนวณค่าคอม ห้ามรวมค่าส่งเข้ามา
-    priceValue:productP,           // เช่นเดียวกัน เป็นตัวเลขล้วนของสินค้าอย่างเดียว
+    items:items,                    // แต่ละชิ้นในออเดอร์ — ฝั่ง Apps Script จะเขียนคนละแถวต่อชิ้น ใช้เลขที่ออเดอร์เดียวกัน
+    price:itemsSubtotal+' บาท',     // ราคาสินค้ารวมทุกชิ้น (ไม่รวมค่าส่ง) — ใช้คำนวณค่าคอม ห้ามรวมค่าส่งเข้ามา
+    priceValue:itemsSubtotal,
     shippingFeeValue:shipFee,
     shippingFeeText:shipFee+' บาท',
-    grandTotalValue:productP+shipFee,
-    grandTotalText:(productP+shipFee)+' บาท',
+    grandTotalValue:itemsSubtotal+shipFee,
+    grandTotalText:(itemsSubtotal+shipFee)+' บาท',
     saleRef:saleRef
   };
-  for(let i=0;i<8;i++){
-    payload['letter'+(i+1)]=val[i]||'';
-    payload['letterColor'+(i+1)]=letterValues[i]||'';
-  }
   return payload;
 }
 
@@ -920,6 +1013,14 @@ submitOrderBtn.addEventListener('click',()=>{
     }
     document.getElementById('paymentAmountValue').textContent=price.textContent;
     document.getElementById('paymentQrBox').style.display='block';
+
+    // ล้างตะกร้า+ตัวอักษรปัจจุบัน เพราะออเดอร์นี้ส่งไปแล้ว กันสั่งซ้ำถ้าลูกค้ากดยืนยันคำสั่งซื้อใหม่ต่อ
+    cart=[];
+    renderCart();
+    textInput.value='';
+    heartOn.checked=false;
+    buildLetterRows();
+    refreshHeartSelect();
   }
 
   // สร้างรูปสรุปออเดอร์ก่อน แล้วแนบไปกับข้อมูลออเดอร์ในครั้งเดียวกัน
