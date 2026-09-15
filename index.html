@@ -148,12 +148,17 @@
       </div>
     </div>
 
+    <div class="field" style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+      <input type="checkbox" id="selfDeliver" style="width:auto;margin:0">
+      <label for="selfDeliver" style="margin:0;cursor:pointer">จัดส่งเอง/นัดรับด้วยตัวเอง ไม่ผ่านขนส่ง (ไม่มีค่าจัดส่ง)</label>
+    </div>
+
     <div class="field">
-      <label>ที่อยู่จัดส่ง (บ้านเลขที่ / ถนน / ตำบล-แขวง / อำเภอ-เขต)</label>
+      <label id="shippingAddressLabel">ที่อยู่จัดส่ง (บ้านเลขที่ / ถนน / ตำบล-แขวง / อำเภอ-เขต)</label>
       <textarea id="shippingAddress" rows="2" placeholder="เช่น 123/45 ถ.สุขุมวิท แขวงคลองตัน เขตวัฒนา" style="width:100%;box-sizing:border-box;padding:9px 10px;border-radius:8px;border:1px solid #ddd;font-size:14px;background:#fafaf8;font-family:inherit;resize:vertical"></textarea>
     </div>
 
-    <div class="row">
+    <div class="row" id="shippingProvinceRow">
       <div>
         <label>จังหวัด</label>
         <select id="shippingProvince">
@@ -396,6 +401,21 @@ THAI_PROVINCES.forEach(p=>{
 });
 provinceSelect.addEventListener('change',updatePrice);
 
+const selfDeliverEl=document.getElementById('selfDeliver');
+const shippingProvinceRowEl=document.getElementById('shippingProvinceRow');
+const shippingAddressLabelEl=document.getElementById('shippingAddressLabel');
+function toggleSelfDeliverUI(){
+  if(selfDeliverEl.checked){
+    shippingProvinceRowEl.style.display='none';
+    shippingAddressLabelEl.textContent='จุดนัดรับ (เช่น หน้าคอนโด, ที่ทำงาน, นัดเจอที่ไหน)';
+  } else {
+    shippingProvinceRowEl.style.display='flex';
+    shippingAddressLabelEl.textContent='ที่อยู่จัดส่ง (บ้านเลขที่ / ถนน / ตำบล-แขวง / อำเภอ-เขต)';
+  }
+  updatePrice();
+}
+selfDeliverEl.addEventListener('change',toggleSelfDeliverUI);
+
 
 function buildLetterRows(){
   const val=letterState();
@@ -453,6 +473,7 @@ function computeProductPrice(){
 }
 
 function computeShippingFee(){
+  if(document.getElementById('selfDeliver').checked) return 0;
   const prov=document.getElementById('shippingProvince').value;
   if(!prov) return null;
   return SHIP_FEE_FLAT;
@@ -617,11 +638,11 @@ document.getElementById('openConfirm').addEventListener('click',()=>{
     return;
   }
   if(!addrEl.value.trim()){
-    alert('กรุณากรอกที่อยู่จัดส่งก่อนยืนยันคำสั่งซื้อ');
+    alert(document.getElementById('selfDeliver').checked ? 'กรุณากรอกจุดนัดรับก่อนยืนยันคำสั่งซื้อ' : 'กรุณากรอกที่อยู่จัดส่งก่อนยืนยันคำสั่งซื้อ');
     addrEl.focus();
     return;
   }
-  if(!provEl.value){
+  if(!document.getElementById('selfDeliver').checked && !provEl.value){
     alert('กรุณาเลือกจังหวัดก่อนยืนยันคำสั่งซื้อ');
     provEl.focus();
     return;
@@ -657,10 +678,13 @@ function buildOrderSummaryLines(){
   const addr=document.getElementById('shippingAddress').value.trim();
   const prov=document.getElementById('shippingProvince').value;
   const postcode=document.getElementById('shippingPostcode').value.trim();
+  const isSelfDeliver=document.getElementById('selfDeliver').checked;
   const lines=[
     `ชื่อลูกค้า: ${custName || '-'}`,
     `เบอร์โทร/LINE: ${custPhone || '-'}`,
-    `ที่อยู่จัดส่ง: ${addr || '-'}${prov?(' จ.'+prov):''}${postcode?(' '+postcode):''}`,
+    isSelfDeliver
+      ? `จุดนัดรับ: ${addr || '-'} (จัดส่งเอง ไม่ผ่านขนส่ง)`
+      : `ที่อยู่จัดส่ง: ${addr || '-'}${prov?(' จ.'+prov):''}${postcode?(' '+postcode):''}`,
     `แนววาง: ${orientName}`,
     `Case: ${caseColor.value}`,
     `สายคล้อง: ${preset.label}`,
@@ -853,8 +877,9 @@ function buildOrderPayload(){
     customerPhone:document.getElementById('customerPhone').value.trim(),
     customerNote:document.getElementById('customerNote').value.trim(),
     shippingAddress:document.getElementById('shippingAddress').value.trim(),
-    shippingProvince:document.getElementById('shippingProvince').value,
-    shippingPostcode:document.getElementById('shippingPostcode').value.trim(),
+    shippingProvince:document.getElementById('selfDeliver').checked ? '' : document.getElementById('shippingProvince').value,
+    shippingPostcode:document.getElementById('selfDeliver').checked ? '' : document.getElementById('shippingPostcode').value.trim(),
+    selfDeliver:document.getElementById('selfDeliver').checked,
     orientation:orientName,
     caseColor:caseColor.value,
     strapLabel:preset.label,
