@@ -267,6 +267,7 @@ const GAS_URL = "https://script.google.com/macros/s/AKfycbwfy2uHH4QJOM851_HBz3eo
 // ตะกร้าสินค้า — ประกาศไว้บนสุดของสคริปต์ เพราะ updatePrice() ถูกเรียกใช้ตั้งแต่ตอน init หน้า
 // ถ้าประกาศทีหลัง จะชน temporal dead zone ของ let ทำให้หน้าเว็บพังตั้งแต่โหลด
 let cart=[];
+let previewOrientation='vertical'; // ต้องประกาศบนสุดเช่นกัน — snapshotCurrentItem() ใช้ตั้งแต่ตอนโหลดหน้า
 
 const colorHex={
   "ฟ้า":"#7FC4E0","ชมพู":"#EFA9C6","ม่วง":"#B7A3E0","เหลือง":"#F2D34D","เนื้อ":"#E6C09C",
@@ -734,7 +735,7 @@ function buildSVG(orientation){
   }
 }
 
-let previewOrientation='vertical';
+// previewOrientation ประกาศไว้บนสุดของสคริปต์แล้ว (ข้าง cart)
 
 function renderPreview(){
   const elV=document.getElementById('svgPreview');
