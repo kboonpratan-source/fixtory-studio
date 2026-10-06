@@ -127,21 +127,10 @@
         <button type="button" class="ghost" id="kbBackspace" style="flex:1;padding:6px;font-size:11.5px;margin-top:0">⌫ ลบตัวสุดท้าย</button>
         <button type="button" class="ghost" id="kbClear" style="flex:1;padding:6px;font-size:11.5px;margin-top:0">ล้างข้อความ</button>
       </div>
-      <input type="hidden" id="textInput" maxlength="8" value="FIXTORY">
+      <input type="hidden" id="textInput" value="FIXTORY❤">
     </div>
 
     <div class="letters" id="letterColors"></div>
-
-    <div class="heart-row">
-      <input type="checkbox" id="heartOn" style="width:16px;height:16px" checked>
-      <label style="margin:0" for="heartOn">เพิ่มหัวใจท้ายชิ้น</label>
-    </div>
-    <div class="row" id="heartColorsRow">
-      <div style="flex:1">
-        <label id="heartColorLabel">สีหัวใจ</label>
-        <div class="heart-swatches" id="heartSwatches"></div>
-      </div>
-    </div>
 
     <div class="row">
       <div>
@@ -267,7 +256,44 @@ const GAS_URL = "https://script.google.com/macros/s/AKfycbwfy2uHH4QJOM851_HBz3eo
 // ตะกร้าสินค้า — ประกาศไว้บนสุดของสคริปต์ เพราะ updatePrice() ถูกเรียกใช้ตั้งแต่ตอน init หน้า
 // ถ้าประกาศทีหลัง จะชน temporal dead zone ของ let ทำให้หน้าเว็บพังตั้งแต่โหลด
 let cart=[];
-let previewOrientation='vertical'; // ต้องประกาศบนสุดเช่นกัน — snapshotCurrentItem() ใช้ตั้งแต่ตอนโหลดหน้า
+let previewOrientation='vertical';
+const EMOJI_SET=['🙂','😉','😍','😎','😛','🤩','😊','❤']; // เรียงตามแบบ SMILEY / YELLOW RIM 01-07 + หัวใจ // ประกาศบนสุด เพราะ letterState() ใช้กรองตั้งแต่ตอนโหลดหน้า // ต้องประกาศบนสุดเช่นกัน — snapshotCurrentItem() ใช้ตั้งแต่ตอนโหลดหน้า
+// (ไลบรารีหน้ายิ้มต้องอยู่บนสุดเช่นกัน — buildEmojiKeyboard()/buildLetterRows() เรียกใช้ตั้งแต่ตอนโหลดหน้า)
+// ── หน้ายิ้มชิ้นจริง (SMILEY / YELLOW RIM) ───────────────────────────
+// วาดเองเป็น SVG ให้หน้าตาเหมือนชิ้นที่พิมพ์จริง ไม่ใช้อิโมจิของเครื่องลูกค้า (iPhone/Android/Windows หน้าตาไม่เหมือนกัน)
+// วาดในกรอบ 100x100 แล้วย่อ/ขยายด้วย transform — ใช้ได้ทั้งพรีวิว, รูปสรุปออเดอร์ และปุ่มบนแป้น
+const FACE_NAMES={'🙂':'01 Classic','😉':'02 Wink','😍':'03 Heart Eyes','😎':'04 Sunglasses','😛':'05 Tongue','🤩':'06 Star Eyes','😊':'07 Happy Eyes'};
+function faceInner(em){
+  const K='#161616', R='#E0193A'; // สีตาตามชิ้นจริง: Wink (ตาที่หลับ) / Heart / Star / Happy = แดง, ที่เหลือดำ
+  const mouth=`<path d="M27,60 Q50,82 73,60" fill="none" stroke="${K}" stroke-width="6" stroke-linecap="round"/>`;
+  const ovalEyes=`<ellipse cx="39" cy="37" rx="5.5" ry="9" fill="${K}"/><ellipse cx="61" cy="37" rx="5.5" ry="9" fill="${K}"/>`;
+  const heart=(cx,cy)=>`<path transform="translate(${cx},${cy})" d="M0,9 C-14,-1 -11,-11 -5,-11 C-2,-11 0,-8 0,-6 C0,-8 2,-11 5,-11 C11,-11 14,-1 0,9Z" fill="${R}"/>`;
+  const star=(cx,cy)=>{let pts=[];for(let i=0;i<10;i++){const r=i%2?4.5:10.5,a=-Math.PI/2+i*Math.PI/5;pts.push((cx+r*Math.cos(a)).toFixed(1)+','+(cy+r*Math.sin(a)).toFixed(1));}return `<polygon points="${pts.join(' ')}" fill="${R}" stroke="${R}" stroke-width="1.5" stroke-linejoin="round"/>`;};
+  let f='';
+  switch(em){
+    case '🙂': f=ovalEyes+mouth; break;
+    case '😉': f=`<ellipse cx="39" cy="37" rx="5.5" ry="9" fill="${K}"/><path d="M55,39 Q62,31 69,38" fill="none" stroke="${R}" stroke-width="5" stroke-linecap="round"/>`+mouth; break;
+    case '😍': f=heart(37,37)+heart(63,37)+mouth; break;
+    case '😎': f=`<path d="M17,27 L83,27 L82,32 Q80,46 66,46 Q57,46 54,34 Q50,31 46,34 Q43,46 34,46 Q20,46 18,32Z" fill="${K}"/><path d="M33,62 Q50,76 67,62" fill="none" stroke="${K}" stroke-width="6" stroke-linecap="round"/>`; break;
+    case '😛': f=ovalEyes+`<path d="M44,66 L44,74 Q44,84 52,84 Q60,84 59,74 L58,66Z" fill="${R}" stroke="${K}" stroke-width="3.5" stroke-linejoin="round"/>`+mouth; break;
+    case '🤩': f=star(37,37)+star(63,37)+mouth; break;
+    case '😊': f=`<path d="M32,41 Q38,29 44,41" fill="none" stroke="${R}" stroke-width="5.5" stroke-linecap="round"/><path d="M56,41 Q62,29 68,41" fill="none" stroke="${R}" stroke-width="5.5" stroke-linecap="round"/>`+mouth; break;
+    default: return null;
+  }
+  return `<circle cx="50" cy="50" r="47" fill="#C9A80F"/><circle cx="50" cy="49" r="45" fill="#F2D21B"/><circle cx="50" cy="49" r="41" fill="none" stroke="#C9A80F" stroke-width="1.2" opacity=".7"/>`+f;
+}
+// หน้ายิ้มขนาด d วางกึ่งกลางที่ (cx,cy) — ใช้ในพรีวิว
+function faceSVG(em,cx,cy,d){
+  const inner=faceInner(em); if(!inner) return '';
+  const sc=d/100;
+  return `<g transform="translate(${cx-d/2},${cy-d/2}) scale(${sc})">${inner}</g>`;
+}
+// หน้ายิ้มเป็น <svg> เล็กๆ สำหรับปุ่ม/ป้าย (คืน null ถ้าไม่ใช่หน้ายิ้ม)
+function faceIcon(em,px){
+  const inner=faceInner(em); if(!inner) return null;
+  return `<svg viewBox="0 0 100 100" width="${px}" height="${px}" style="display:block">${inner}</svg>`;
+}
+
 
 const colorHex={
   "ฟ้า":"#7FC4E0","ชมพู":"#EFA9C6","ม่วง":"#B7A3E0","เหลือง":"#F2D34D","เนื้อ":"#E6C09C",
@@ -296,16 +322,11 @@ const strapPresets=[
 
 const letterBox=document.getElementById('letterColors');
 const textInput=document.getElementById('textInput');
-const heartOn=document.getElementById('heartOn');
-const heartSwatches=document.getElementById('heartSwatches');
-const heartColorLabel=document.getElementById('heartColorLabel');
-const heartColorsRow=document.getElementById('heartColorsRow');
 const price=document.getElementById('price');
 const caseColor=document.getElementById('caseColor');
 const collectionSel=document.getElementById('collection');
 const strapGrid=document.getElementById('strapGrid');
 let selectedStrap=0;
-let heartValue=null;
 let letterValues=[];
 
 function strapIconSVG(preset){
@@ -346,28 +367,22 @@ function buildSwatches(container,options,selected,onPick){
   });
 }
 
-function refreshHeartSelect(){
-  const col=currentCollection();
-  heartColorLabel.textContent = col.fixedSlot==='frame' ? 'สีฐานหัวใจ' : 'สีหัวใจ';
-  if(!col.varyOptions.includes(heartValue)) heartValue=col.varyOptions[0];
-  buildSwatches(heartSwatches,col.varyOptions,heartValue,(c)=>{
-    heartValue=c;
-    refreshHeartSelect();
-    renderPreview();
-  });
-}
 
 let inputMode='letters'; // 'letters' หรือ 'emoji' — กำหนดว่าช่องข้อความรับตัวอักษร A-Z หรืออิโมจิ
 
+// ทั้งชิ้นไม่เกิน 8 ช่อง — ตัวอักษร / อิโมจิ / หัวใจ ❤ นับเป็นช่องละ 1 เท่ากันหมด
+// (หัวใจรวมอยู่ในแป้นแล้ว ไม่มี checkbox "หัวใจท้ายชิ้น" แยก — วางตรงไหนก็ได้ เลือกสีได้เหมือนตัวอื่น)
+const MAX_SLOTS=8;
+function maxChars(){ return MAX_SLOTS; }
+
 function letterState(){
-  if(inputMode==='emoji'){
-    // อิโมจิกินหลาย code unit ต่อตัว ต้องตัด/วัดความยาวแบบ code-point-safe ไม่ใช้ regex ตัวอักษรละตินกรอง
-    const chars=[...textInput.value].slice(0,8);
-    const val=chars.join('');
-    if(textInput.value!==val) textInput.value=val;
-    return val;
-  }
-  const val=textInput.value.toUpperCase().replace(/[^A-Z]/g,'').slice(0,8);
+  // รับได้ทั้งตัวอักษร A-Z และอิโมจิจาก EMOJI_SET ปนกันในชิ้นเดียว (สูงสุด 8 ตัว)
+  // ตัด/วัดความยาวแบบ code-point-safe เพราะอิโมจิกินหลาย code unit ต่อตัว
+  const chars=[...textInput.value]
+    .map(ch=>/^[a-z]$/.test(ch)?ch.toUpperCase():ch)
+    .filter(ch=>/^[A-Z]$/.test(ch)||EMOJI_SET.includes(ch))
+    .slice(0,maxChars());
+  const val=chars.join('');
   if(textInput.value!==val) textInput.value=val;
   return val;
 }
@@ -378,14 +393,14 @@ const ALPHA='ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
 function buildKeyboard(){
   keyboardEl.innerHTML='';
-  [...ALPHA].forEach((ch,i)=>{
+  [...ALPHA,'❤'].forEach((ch,i)=>{ // ❤ อยู่ท้ายแป้นตัวอักษรด้วย พิมพ์ I❤U ได้ไม่ต้องสลับแป้น
     const btn=document.createElement('button');
     btn.type='button';
     btn.className='key g'+(i%3);
     btn.textContent=ch;
     btn.addEventListener('click',()=>{
       const cur=letterState();
-      if(cur.length>=8) return;
+      if([...cur].length>=maxChars()) return; // นับทีละ code point — อิโมจิ 1 ตัว = 1 ช่อง
       textInput.value=cur+ch;
       buildLetterRows();
     });
@@ -396,7 +411,8 @@ function buildKeyboard(){
 
 function syncKeyboardState(){
   const cur=letterState();
-  [...keyboardEl.children].forEach(btn=>{ btn.disabled = cur.length>=8; });
+  const full=[...cur].length>=maxChars();
+  [...keyboardEl.children].forEach(btn=>{ btn.disabled = full; });
 }
 
 function renderWordDisplay(){
@@ -405,10 +421,12 @@ function renderWordDisplay(){
   [...val].forEach(ch=>{
     const chip=document.createElement('div');
     chip.className='word-chip';
-    chip.textContent=ch;
+    const ic=faceIcon(ch,16);
+    if(ic){ chip.innerHTML=ic; chip.style.background='transparent'; } else chip.textContent=ch;
     wordDisplay.appendChild(chip);
   });
   syncKeyboardState();
+  try{ syncEmojiKeyboardState(); }catch(e){} // แป้นอิโมจิอาจยังไม่ถูกสร้างตอนโหลดหน้า; // ให้แป้นอิโมจิเปิด/ปิดตามจำนวนตัวด้วย
 }
 
 document.getElementById('kbBackspace').addEventListener('click',()=>{
@@ -423,7 +441,6 @@ document.getElementById('kbClear').addEventListener('click',()=>{
 buildKeyboard();
 
 // ── โหมดอิโมจิ ──────────────────────────────────────────────
-const EMOJI_SET=['😍','😊','😁','😎','😉','😛','🤩','❤'];
 const emojiKeyboardEl=document.getElementById('emojiKeyboard');
 
 function buildEmojiKeyboard(){
@@ -433,10 +450,12 @@ function buildEmojiKeyboard(){
     btn.type='button';
     btn.className='key g'+(i%3);
     btn.style.fontSize='18px';
-    btn.textContent=em;
+    const bic=faceIcon(em,26);
+    if(bic){ btn.innerHTML=bic; btn.style.display='flex'; btn.style.justifyContent='center'; btn.title=FACE_NAMES[em]; }
+    else btn.textContent=em;
     btn.addEventListener('click',()=>{
       const cur=[...letterState()];
-      if(cur.length>=8) return;
+      if(cur.length>=maxChars()) return;
       textInput.value=cur.join('')+em;
       buildLetterRows();
     });
@@ -447,7 +466,7 @@ function buildEmojiKeyboard(){
 
 function syncEmojiKeyboardState(){
   const cur=[...letterState()];
-  [...emojiKeyboardEl.children].forEach(btn=>{ btn.disabled = cur.length>=8; });
+  [...emojiKeyboardEl.children].forEach(btn=>{ btn.disabled = cur.length>=maxChars(); });
 }
 buildEmojiKeyboard();
 
@@ -458,7 +477,7 @@ const keycapInputLabel=document.getElementById('keycapInputLabel');
 function setInputMode(mode,opts){
   const clear=!opts||opts.clear!==false;
   inputMode=mode;
-  if(clear) textInput.value=''; // สลับโหมดแล้วล้างของเดิมทิ้ง กันตัวอักษร/อิโมจิเก่าค้างปนโหมดใหม่
+  // สลับแป้นเฉยๆ ไม่ล้างข้อความเดิม — ตัวอักษรกับอิโมจิผสมกันในชิ้นเดียวได้
   if(mode==='emoji'){
     keyboardEl.style.display='none';
     emojiKeyboardEl.style.display='';
@@ -466,7 +485,7 @@ function setInputMode(mode,opts){
     modeEmojiBtn.style.color='#fff';
     modeLettersBtn.style.background='#fff';
     modeLettersBtn.style.color='#555';
-    keycapInputLabel.textContent='เลือกอิโมจิ (สูงสุด 8 ตัว) — กดเพื่อเลือก';
+    keycapInputLabel.textContent='ข้อความ (ตัวอักษร + อิโมจิ ผสมกันได้ รวมไม่เกิน 8 ตัว) — กดอิโมจิเพื่อเพิ่ม';
   } else {
     keyboardEl.style.display='';
     emojiKeyboardEl.style.display='none';
@@ -474,12 +493,12 @@ function setInputMode(mode,opts){
     modeLettersBtn.style.color='#fff';
     modeEmojiBtn.style.background='#fff';
     modeEmojiBtn.style.color='#555';
-    keycapInputLabel.textContent='ข้อความ (A-Z, สูงสุด 8 ตัว) — กดตัวอักษรเพื่อพิมพ์';
+    keycapInputLabel.textContent='ข้อความ (ตัวอักษร + อิโมจิ ผสมกันได้ รวมไม่เกิน 8 ตัว) — กดตัวอักษรเพื่อพิมพ์';
   }
   buildLetterRows();
 }
-modeLettersBtn.addEventListener('click',()=>setInputMode('letters'));
-modeEmojiBtn.addEventListener('click',()=>setInputMode('emoji'));
+modeLettersBtn.addEventListener('click',()=>setInputMode('letters',{clear:false}));
+modeEmojiBtn.addEventListener('click',()=>setInputMode('emoji',{clear:false}));
 setInputMode('letters',{clear:false}); // ตั้งค่าเริ่มต้น + สไตล์ปุ่ม active ให้ถูกต้องตั้งแต่โหลดหน้า ไม่ล้างข้อความ FIXTORY ตัวอย่าง
 
 const THAI_PROVINCES=["กรุงเทพมหานคร","กระบี่","กาญจนบุรี","กาฬสินธุ์","กำแพงเพชร","ขอนแก่น","จันทบุรี","ฉะเชิงเทรา","ชลบุรี","ชัยนาท","ชัยภูมิ","ชุมพร","เชียงราย","เชียงใหม่","ตรัง","ตราด","ตาก","นครนายก","นครปฐม","นครพนม","นครราชสีมา","นครศรีธรรมราช","นครสวรรค์","นนทบุรี","นราธิวาส","น่าน","บึงกาฬ","บุรีรัมย์","ปทุมธานี","ประจวบคีรีขันธ์","ปราจีนบุรี","ปัตตานี","พระนครศรีอยุธยา","พะเยา","พังงา","พัทลุง","พิจิตร","พิษณุโลก","เพชรบุรี","เพชรบูรณ์","แพร่","ภูเก็ต","มหาสารคาม","มุกดาหาร","แม่ฮ่องสอน","ยโสธร","ยะลา","ร้อยเอ็ด","ระนอง","ระยอง","ราชบุรี","ลพบุรี","ลำปาง","ลำพูน","เลย","ศรีสะเกษ","สกลนคร","สงขลา","สตูล","สมุทรปราการ","สมุทรสงคราม","สมุทรสาคร","สระแก้ว","สระบุรี","สิงห์บุรี","สุโขทัย","สุพรรณบุรี","สุราษฎร์ธานี","สุรินทร์","หนองคาย","หนองบัวลำภู","อ่างทอง","อำนาจเจริญ","อุดรธานี","อุตรดิตถ์","อุทัยธานี","อุบลราชธานี"];
@@ -526,7 +545,8 @@ function buildLetterRows(){
     top.className='letter-row-top';
     const tag=document.createElement('div');
     tag.className='letter-tag';
-    tag.textContent=ch;
+    const tic=faceIcon(ch,20);
+    if(tic){ tag.innerHTML=tic; tag.style.background='transparent'; } else tag.textContent=ch;
     top.appendChild(tag);
 
     const swatchWrap=document.createElement('div');
@@ -547,18 +567,15 @@ function buildLetterRows(){
 }
 
 collectionSel.addEventListener('change',()=>{
-  refreshHeartSelect();
   buildLetterRows();
 });
-refreshHeartSelect();
 
 // ค่าจัดส่งเดียวทั่วประเทศ (อิงเรตต่ำสุดของ J&T Express บวกเผื่อพื้นที่ห่างไกลเล็กน้อย)
 const SHIP_FEE_FLAT=35;
 
 function computeProductPrice(){
-  const n=letterState().length;
-  const heart=heartOn.checked?1:0;
-  const total=n+heart;
+  const n=[...letterState()].length; // นับทีละ code point ไม่งั้นอิโมจิถูกคิดเงินเป็น 2 ตัว
+  const total=n;
   return total<=0?0: total%3===0? (total/3)*100 : Math.floor(total/3)*100+(total%3)*35;
 }
 
@@ -600,13 +617,13 @@ function snapshotCurrentItem(){
     caseColor:caseColor.value,
     strapLabel:preset.label,
     collection:colName,
-    heart:heartOn.checked?heartValue:'',
+    heart:'', // คอลัมน์ "หัวใจ" เดิม — ตอนนี้ ❤ อยู่ในตัวที่1-8 แทน เก็บ key ไว้ให้ Sheet/Apps Script เดิมไม่พัง
     price:productP+' บาท',
     priceValue:productP,
     letters:[...val]
   };
   for(let i=0;i<8;i++){
-    item['letter'+(i+1)]=val[i]||'';
+    item['letter'+(i+1)]=item.letters[i]||''; // ใช้ array code point กันอิโมจิขาดครึ่งตัวในคอลัมน์ Sheet
     item['letterColor'+(i+1)]=letterValues[i]||'';
   }
   return item;
@@ -643,21 +660,27 @@ function renderCart(){
 }
 
 document.getElementById('addToCartBtn').addEventListener('click',()=>{
-  if(letterState().length===0 && !heartOn.checked){
-    alert('กรุณาเลือกตัวอักษรอย่างน้อย 1 ตัว (หรือติ๊กหัวใจ) ก่อนเพิ่มลงตะกร้า');
+  if(letterState().length===0){
+    alert('กรุณาเลือกตัวอักษร/อิโมจิอย่างน้อย 1 ตัว ก่อนเพิ่มลงตะกร้า');
     return;
   }
   cart.push(snapshotCurrentItem());
   renderCart();
   // ล้างค่าตัวอักษร+หัวใจให้ตั้งค่าชิ้นถัดไปได้เลย (สี Case/สายคล้อง/คอลเลกชันคงไว้ เผื่อชิ้นถัดไปแบบเดียวกัน)
   textInput.value='';
-  heartOn.checked=false;
   buildLetterRows();
-  refreshHeartSelect();
   updatePrice();
 });
 
 function keycapSVG(x,y,size,bodyC,frameC,letter){
+  if(FACE_NAMES[letter]){
+    const r=8;
+    return `
+  <rect x="${x}" y="${y}" width="${size}" height="${size}" rx="${r}" fill="${colorHex[bodyC]||'#ccc'}"/>
+  <rect x="${x+4}" y="${y+4}" width="${size-8}" height="${size-8}" rx="${r-3}" fill="none" stroke="${colorHex[frameC]||'#fff'}" stroke-width="3"/>
+  ${faceSVG(letter,x+size/2,y+size/2,size*0.58)}`;
+  }
+  if(letter==='❤') letter='♥'; // วาดหัวใจแบบชิ้นจริง (สีตาม frame) ไม่ใช่อิโมจิสีแดงของเครื่อง
   const r=8;
   return `
   <rect x="${x}" y="${y}" width="${size}" height="${size}" rx="${r}" fill="${colorHex[bodyC]||'#ccc'}"/>
@@ -675,8 +698,7 @@ function resolveColors(varyValue){
 function buildSVG(orientation){
   orientation = orientation || 'vertical';
   const val=letterState();
-  const heart=heartOn.checked;
-  const count=val.length+(heart?1:0);
+  const count=[...val].length;
   const size=orientation==='vertical'?38:30;
   const gap=3;
   const preset=strapPresets[selectedStrap];
@@ -700,10 +722,6 @@ function buildSVG(orientation){
       s+=keycapSVG(kx,ky,size,bodyC,frameC,ch);
       ky+=size+gap;
     });
-    if(heart){
-      const {bodyC,frameC}=resolveColors(heartValue);
-      s+=keycapSVG(kx,ky,size,bodyC,frameC,'♥');
-    }
     s+=`</g>`;
     return {svg:s,viewW:140,viewH:viewSize};
   } else {
@@ -726,10 +744,6 @@ function buildSVG(orientation){
       s+=keycapSVG(kx,ky,size,bodyC,frameC,ch);
       kx+=size+gap;
     });
-    if(heart){
-      const {bodyC,frameC}=resolveColors(heartValue);
-      s+=keycapSVG(kx,ky,size,bodyC,frameC,'♥');
-    }
     s+=`</g>`;
     return {svg:s,viewW,viewH};
   }
@@ -778,10 +792,6 @@ document.getElementById('orientHBtn').addEventListener('click',()=>{
 });
 
 textInput.addEventListener('input',buildLetterRows);
-heartOn.addEventListener('change',()=>{
-  heartColorsRow.style.display=heartOn.checked?'flex':'none';
-  renderPreview();
-});
 caseColor.addEventListener('change',renderPreview);
 
 document.getElementById('openConfirm').addEventListener('click',()=>{
@@ -1018,7 +1028,6 @@ document.getElementById('imageSaveCloseBtn').addEventListener('click',()=>{
 });
 
 
-heartColorsRow.style.display='flex';
 
 // เช็คว่าเปิดจากเบราว์เซอร์ในตัวแอป LINE อยู่ไหม — ถ้าใช่ เตือนล่วงหน้าไว้เลย
 // กันลูกค้าเจอปัญหาเซฟรูปไม่ได้ตอนกดปุ่มบันทึกรูปแล้วค่อยมางง
@@ -1039,7 +1048,7 @@ function buildAllItems(){
   // รวมของในตะกร้า + ชิ้นที่กำลังตั้งค่าอยู่ตอนนี้ (ถ้ามีตัวอักษร/หัวใจเลือกไว้) เข้าด้วยกัน
   // ทำให้ยังสั่งแบบเดิม (ชิ้นเดียว ไม่ต้องกดเพิ่มลงตะกร้า) ได้ตามปกติ ไม่ต้องเปลี่ยนพฤติกรรมเดิม
   const items=cart.map(item=>({...item}));
-  if(letterState().length>0 || heartOn.checked){
+  if(letterState().length>0){
     items.push(snapshotCurrentItem());
   }
   return items;
@@ -1094,9 +1103,7 @@ submitOrderBtn.addEventListener('click',()=>{
     cart=[];
     renderCart();
     textInput.value='';
-    heartOn.checked=false;
     buildLetterRows();
-    refreshHeartSelect();
   }
 
   // สร้างรูปสรุปออเดอร์ก่อน แล้วแนบไปกับข้อมูลออเดอร์ในครั้งเดียวกัน
