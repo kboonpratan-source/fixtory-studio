@@ -278,7 +278,7 @@ const THAI_PROVINCES=["กรุงเทพมหานคร","กระบี
 
 // ข้อมูลสินค้า — ต้องตรงกับหน้าแคตตาล็อก ถ้าแก้ราคา/แบบที่แคตตาล็อก ให้แก้ที่นี่ด้วย
 const CATALOG_URL='https://claude.ai/artifact/464DJRbj5uyXQzqGRXmeTy';
-const IMG_V='?v=20261028g'; // เปลี่ยนเลขนี้เมื่อแก้รูป เพื่อให้เบราว์เซอร์โหลดรูปใหม่
+const IMG_V='?v=20261028h'; // เปลี่ยนเลขนี้เมื่อแก้รูป เพื่อให้เบราว์เซอร์โหลดรูปใหม่
 const PLA_CARE='PLA ทนร้อนได้ประมาณ 55–60°C ห้ามทิ้งไว้ในรถกลางแดด ห้ามใส่น้ำร้อนหรือเครื่องล้างจาน ล้างด้วยน้ำเย็นกับสบู่อ่อน';
 const PRODUCTS={
   phapchoo:{name:'น้องพับชู่',sub:'ที่วางทิชชูม้วน',img:'phapchoo.jpg?v=20261028b',from:399,
@@ -325,17 +325,20 @@ function kcShade(hex,k){ // k<0 เข้มขึ้น, k>0 สว่างข
   const n=parseInt((hex||'#cccccc').slice(1),16);let r=n>>16,g=n>>8&255,b=n&255;
   const f=v=>Math.round(k<0?v*(1+k):v+(255-v)*k);return '#'+[f(r),f(g),f(b)].map(v=>v.toString(16).padStart(2,'0')).join('');
 }
-// คีย์แคปแบบนูน: เงาใต้คีย์ + ขอบล่างเข้ม + หน้าคีย์สว่างด้านบน ให้ลอยเด่นจากเคสทุกสี
+// คีย์แคปแบบนูน (มองจากด้านบน): ขอบข้างเอียงสีเข้ม + หน้าคีย์เล็กกว่าฐานและสว่าง + เงาตกกระทบ
 function kcKey(x,y,s,body,frame,ch,ghost){
-  const op=ghost?' opacity=".6"':'',B=KC_HEX[body]||'#cccccc',F=KC_HEX[frame]||'#ffffff',lip=3,top=s-lip;
-  let g=`<g${op}><rect x="${x+.5}" y="${y+2.5}" width="${s-1}" height="${s}" rx="8" fill="#000" opacity=".38"/>`;
-  g+=`<rect x="${x}" y="${y}" width="${s}" height="${s}" rx="8" fill="${kcShade(B,-.28)}"/>`;
-  g+=`<rect x="${x}" y="${y}" width="${s}" height="${top}" rx="8" fill="${B}"/>`;
-  g+=`<rect x="${x+2}" y="${y+1.5}" width="${s-4}" height="${top*.42}" rx="6" fill="#fff" opacity=".22"/>`;
-  g+=`<rect x="${x+4}" y="${y+4}" width="${s-8}" height="${top-8}" rx="5" fill="none" stroke="${F}" stroke-width="3"/>`;
-  const face=kcFaceInner(ch),cy=y+top/2;
-  if(face){const d=s*.56;g+=`<g transform="translate(${x+s/2-d/2},${cy-d/2}) scale(${d/100})">${face}</g>`}
-  else{const t=ch==='❤'?'♥':ch;g+=`<text x="${x+s/2}" y="${cy+6.5}" text-anchor="middle" font-size="${t==='♥'?19:17}" font-weight="700" fill="${F}" font-family="Prompt, Segoe UI, sans-serif">${t}</text>`}
+  const B=KC_HEX[body]||'#cccccc',F=KC_HEX[frame]||'#ffffff';
+  const tx=x+s*.13,ty=y+s*.07,tw=s*.74,th=s*.72; // หน้าคีย์ (ยกขึ้นด้านบนเล็กน้อย เห็นขอบล่างหนากว่า)
+  let g=`<g>`;
+  g+=`<rect x="${x+1}" y="${y+3.5}" width="${s}" height="${s}" rx="8" fill="#000" opacity=".22"/><rect x="${x+.5}" y="${y+2}" width="${s}" height="${s}" rx="8" fill="#000" opacity=".25"/>`;
+  g+=`<rect x="${x}" y="${y}" width="${s}" height="${s}" rx="7" fill="${kcShade(B,-.34)}"/>`;
+  g+=`<path d="M${x+7} ${y}H${x+s-7}Q${x+s} ${y} ${x+s} ${y+7}L${tx+tw} ${ty+th*.5}H${tx}L${x} ${y+7}Q${x} ${y} ${x+7} ${y}Z" fill="${kcShade(B,-.12)}"/>`;
+  g+=`<rect x="${tx}" y="${ty}" width="${tw}" height="${th}" rx="5" fill="${B}"/>`;
+  g+=`<rect x="${tx+1.5}" y="${ty+1}" width="${tw-3}" height="${th*.4}" rx="4" fill="#fff" opacity=".28"/>`;
+  g+=`<rect x="${tx+2.5}" y="${ty+2.5}" width="${tw-5}" height="${th-5}" rx="3.5" fill="none" stroke="${F}" stroke-width="2.4"/>`;
+  const face=kcFaceInner(ch),cx=tx+tw/2,cy=ty+th/2;
+  if(face){const d=tw*.72;g+=`<g transform="translate(${cx-d/2},${cy-d/2}) scale(${d/100})">${face}</g>`}
+  else{const t=ch==='❤'?'♥':ch;g+=`<text x="${cx}" y="${cy+th*.2}" text-anchor="middle" font-size="${(t==='♥'?.6:.55)*th}" font-weight="700" fill="${F}" font-family="Prompt, Segoe UI, sans-serif"${ghost?' opacity=".75"':''}>${t}</text>`}
   return g+'</g>';
 }
 // วาดชิ้นงาน คืน {svg, w, h}
