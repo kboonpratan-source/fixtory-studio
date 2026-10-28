@@ -78,6 +78,11 @@ textarea{min-height:76px;resize:vertical}
 .done img{max-width:240px;width:100%;border-radius:12px;margin:12px auto;display:block}
 .done .amt{font-size:22px;font-weight:600;color:var(--accent-text)}
 .inapp{background:#FFF4E0;color:#7A4B00;border-radius:12px;padding:10px 12px;font-size:13px;margin-bottom:14px}
+.ptab small.ptip{display:block;font-size:11.5px;color:var(--accent-text);margin-top:2px}
+.pimg{position:relative;flex:none;cursor:zoom-in;border-radius:10px;display:block}
+.pimg img{display:block}
+.pimg i{position:absolute;right:-5px;bottom:-5px;width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;display:grid;place-items:center;box-shadow:0 0 0 2px var(--surface)}
+.pimg:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .detail-btn{display:flex;align-items:center;gap:12px;width:100%;text-align:left;border:0;background:var(--sunk);border-radius:14px;padding:10px 14px 10px 16px;font:inherit;color:inherit;cursor:pointer;margin-bottom:4px}
 .detail-btn img{width:40px;height:54px;object-fit:cover;border-radius:8px;flex:none}
 .detail-btn span{flex:1;min-width:0;display:grid;line-height:1.35}
@@ -208,7 +213,7 @@ const PRODUCTS={
 function phapPrice(n){const t=[0,399,699];return Math.floor(n/3)*999+t[n%3]}
 
 const $=s=>document.querySelector(s);
-const el=(t,a={},...k)=>{const e=document.createElement(t);for(const[x,v]of Object.entries(a)){if(v==null||v===false)continue;if(x==='class')e.className=v;else if(x.startsWith('on'))e.addEventListener(x.slice(2),v);else e.setAttribute(x,v===true?'':v)}for(const c of k.flat()){if(c==null||c===false)continue;e.append(c.nodeType?c:document.createTextNode(c))}return e};
+const el=(t,a={},...k)=>{const e=document.createElement(t);for(const[x,v]of Object.entries(a)){if(v==null||v===false)continue;if(x==='class')e.className=v;else if(x==='html')e.innerHTML=v;else if(x.startsWith('on'))e.addEventListener(x.slice(2),v);else e.setAttribute(x,v===true?'':v)}for(const c of k.flat()){if(c==null||c===false)continue;e.append(c.nodeType?c:document.createTextNode(c))}return e};
 const fmt=n=>'฿'+Number(n).toLocaleString('th-TH');
 
 const params=new URLSearchParams(location.search);
@@ -222,7 +227,7 @@ let sipSel={design:null,opt:0,name:''};
 
 function renderTabs(){
   $('#ptabs').replaceChildren(...Object.entries(PRODUCTS).map(([id,p])=>el('button',{type:'button',class:'ptab','aria-pressed':String(id===current),onclick:()=>{current=id;renderTabs();renderConf()}},
-    el('img',{src:p.img,alt:''}),el('div',{},el('b',{},p.name),el('span',{},p.sub+' · เริ่ม '+fmt(p.from))))));
+    el('span',{class:'pimg',role:'button',tabindex:'0','aria-label':'ดูรูปและรายละเอียด '+p.name,onclick:e=>{e.stopPropagation();openDetail(id)},onkeydown:e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();e.stopPropagation();openDetail(id)}}},el('img',{src:p.img,alt:''}),el('i',{'aria-hidden':'true',html:'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m20 20-4.5-4.5M10.5 7.5v6M7.5 10.5h6"/></svg>'})),el('div',{},el('b',{},p.name),el('span',{},p.sub+' · เริ่ม '+fmt(p.from)),el('small',{class:'ptip'},'แตะรูปเพื่อดูรายละเอียด')))));
 }
 function openDetail(id){
   const p=PRODUCTS[id],i=p.info||{};
@@ -246,7 +251,6 @@ function totalPieces(){return Object.values(phapQty).reduce((a,b)=>a+b,0)+sipCar
 
 function renderConf(){
   const box=$('#pconf');box.replaceChildren();
-  box.append(el('button',{type:'button',class:'detail-btn',onclick:()=>openDetail(current)},el('span',{},el('b',{},'ดูรูปและรายละเอียด '+PRODUCTS[current].name),el('small',{},'แตะเพื่อดูรูปใหญ่ วัสดุ และการดูแล')),el('i',{'aria-hidden':'true'},'›')));
   if(current==='phapchoo'){
     const p=PRODUCTS.phapchoo;
     box.append(el('span',{class:'lbl'},'เลือกสีและจำนวน',el('small',{},'1 ชิ้น 399 · 2 ชิ้น 699 · 3 ชิ้น 999')),
