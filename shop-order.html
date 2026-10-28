@@ -145,11 +145,14 @@ textarea{min-height:76px;resize:vertical}
   </div>
   <label class="check"><input type="checkbox" id="selfDeliver"> นัดรับเอง ไม่ผ่านขนส่ง (ไม่มีค่าส่ง)</label>
   <div id="shipBox">
-    <label class="lbl" for="cAddr">ที่อยู่จัดส่ง</label><textarea id="cAddr" autocomplete="street-address" placeholder="บ้านเลขที่ ถนน แขวง/ตำบล เขต/อำเภอ"></textarea>
     <div class="two">
-      <div><label class="lbl" for="cProv">จังหวัด</label><select id="cProv"><option value="">เลือกจังหวัด</option></select></div>
-      <div><label class="lbl" for="cZip">รหัสไปรษณีย์</label><input type="text" id="cZip" inputmode="numeric" maxlength="5" autocomplete="postal-code"></div>
+      <div><label class="lbl" for="cZip">รหัสไปรษณีย์</label><input type="text" id="cZip" inputmode="numeric" maxlength="5" autocomplete="postal-code" placeholder="เช่น 10110"></div>
+      <div><label class="lbl" for="cSub">แขวง/ตำบล · เขต/อำเภอ</label><select id="cSub" disabled><option value="">ใส่รหัสไปรษณีย์ก่อน</option></select></div>
     </div>
+    <p class="hint" id="zipMsg" hidden></p>
+    <div id="manualSub" hidden><label class="lbl" for="cSubText">แขวง/ตำบล และ เขต/อำเภอ</label><input type="text" id="cSubText" placeholder="เช่น ต.ท่าศาลา อ.เมืองเชียงใหม่"></div>
+    <label class="lbl" for="cProv">จังหวัด</label><select id="cProv"><option value="">เลือกจังหวัด</option></select>
+    <label class="lbl" for="cAddr">บ้านเลขที่ หมู่บ้าน/อาคาร ซอย ถนน</label><textarea id="cAddr" autocomplete="address-line1" placeholder="เช่น 99/1 หมู่บ้านสุขใจ ซอย 5 ถนนสุขุมวิท" style="min-height:64px"></textarea>
   </div>
   <div id="pickupBox" hidden><label class="lbl" for="cPickup">จุดนัดรับ / วันเวลาที่สะดวก</label><input type="text" id="cPickup"></div>
   <label class="lbl" for="cNote">หมายเหตุ <small>ไม่บังคับ</small></label><textarea id="cNote" placeholder="เช่น ต้องการใช้ของภายในวันที่…"></textarea>
@@ -317,19 +320,55 @@ function showErr(m){const e=$('#err');e.textContent=m;e.hidden=false;
 function hideErr(){$('#err').hidden=true}
 
 THAI_PROVINCES.forEach(p=>$('#cProv').append(el('option',{value:p},p)));
+// ---------- ที่อยู่จากรหัสไปรษณีย์ (ข้อมูล: thai-address-database) ----------
+let PC=null,pcLoading=null;
+function loadPC(){if(PC)return Promise.resolve(PC);if(!pcLoading)pcLoading=fetch('th-postcodes.json').then(r=>r.json()).then(d=>PC=d).catch(()=>null);return pcLoading}
+const isBKK=pv=>pv==='กรุงเทพมหานคร';
+function subLabel(r){const pv=PC.p[r[2]];return (isBKK(pv)?'แขวง':'ต.')+r[0]+' · '+(isBKK(pv)?'เขต':'อ.')+r[1]}
+async function onZip(keep){
+  const z=$('#cZip').value.replace(/\D/g,'').slice(0,5);if($('#cZip').value!==z)$('#cZip').value=z;
+  const sel=$('#cSub'),msg=$('#zipMsg'),man=$('#manualSub');
+  if(z.length<5){sel.disabled=true;sel.replaceChildren(el('option',{value:''},'ใส่รหัสไปรษณีย์ก่อน'));msg.hidden=true;man.hidden=true;return}
+  const d=await loadPC();
+  if(!d){man.hidden=false;sel.disabled=true;sel.replaceChildren(el('option',{value:''},'โหลดข้อมูลไม่ได้'));msg.textContent='พิมพ์ตำบลและอำเภอเองได้เลย';msg.hidden=false;return}
+  const rows=d.z[z]||[];
+  if(!rows.length){sel.disabled=true;sel.replaceChildren(el('option',{value:''},'ไม่พบรหัสนี้'));msg.textContent='ไม่พบรหัสไปรษณีย์ '+z+' กรุณาตรวจสอบอีกครั้ง หรือพิมพ์ตำบลและอำเภอเอง';msg.hidden=false;man.hidden=false;return}
+  msg.hidden=true;man.hidden=true;sel.disabled=false;
+  sel.replaceChildren(...(rows.length>1?[el('option',{value:''},'เลือกแขวง/ตำบล ('+rows.length+' รายการ)')]:[]),...rows.map((r,i)=>el('option',{value:String(i)},subLabel(r))),el('option',{value:'other'},'ไม่มีในรายการ (พิมพ์เอง)'));
+  if(keep!=null&&sel.querySelector('option[value="'+keep+'"]'))sel.value=keep;else if(rows.length===1)sel.value='0';
+  onSub();
+}
+function onSub(){
+  const v=$('#cSub').value,z=$('#cZip').value;$('#manualSub').hidden=v!=='other';
+  if(v!==''&&v!=='other'&&PC&&PC.z[z]){const r=PC.z[z][+v];$('#cProv').value=PC.p[r[2]]}
+}
+function subText(){
+  const v=$('#cSub').value,z=$('#cZip').value;
+  if(v!==''&&v!=='other'&&PC&&PC.z[z]){const r=PC.z[z][+v],pv=PC.p[r[2]];return (isBKK(pv)?'แขวง':'ต.')+r[0]+' '+(isBKK(pv)?'เขต':'อ.')+r[1]}
+  return $('#manualSub').hidden?'':$('#cSubText').value.trim();
+}
+$('#cZip').addEventListener('input',()=>onZip());
+$('#cZip').addEventListener('focus',loadPC,{once:true});
+$('#cSub').addEventListener('change',onSub);
 $('#selfDeliver').addEventListener('change',()=>{const s=$('#selfDeliver').checked;$('#shipBox').hidden=s;$('#pickupBox').hidden=!s;renderCart()});
-try{const d=JSON.parse(localStorage.getItem('fxCustomer')||'{}');['cName','cPhone','cAddr','cProv','cZip'].forEach(k=>{if(d[k])$('#'+k).value=d[k]})}catch(e){}
+try{const d=JSON.parse(localStorage.getItem('fxCustomer')||'{}');['cName','cPhone','cAddr','cProv','cZip','cSubText'].forEach(k=>{if(d[k])$('#'+k).value=d[k]});if(d.cZip&&d.cZip.length===5)onZip(d.cSub)}catch(e){}
 
 $('#submitBtn').addEventListener('click',async()=>{
   hideErr();
   const items=lines();
   if(!items.length){showErr('กรุณาเลือกสินค้าใส่ตะกร้าก่อน');return}
   const name=$('#cName').value.trim(),phone=$('#cPhone').value.trim(),self=$('#selfDeliver').checked;
-  const addr=self?$('#cPickup').value.trim():$('#cAddr').value.trim(),prov=$('#cProv').value,zip=$('#cZip').value.trim();
+  const house=$('#cAddr').value.trim(),sub=self?'':subText();
+  const addr=self?$('#cPickup').value.trim():[house,sub].filter(Boolean).join(' '),prov=$('#cProv').value,zip=$('#cZip').value.trim();
   if(!name){showErr('กรุณากรอกชื่อผู้รับ');$('#cName').focus();return}
   if(!phone){showErr('กรุณากรอกเบอร์โทรหรือ LINE ID');$('#cPhone').focus();return}
-  if(!addr){showErr(self?'กรุณากรอกจุดนัดรับ':'กรุณากรอกที่อยู่จัดส่ง');return}
-  if(!self&&(!prov||!/^\d{5}$/.test(zip))){showErr('กรุณาเลือกจังหวัดและกรอกรหัสไปรษณีย์ 5 หลัก');return}
+  if(self&&!addr){showErr('กรุณากรอกจุดนัดรับ');return}
+  if(!self){
+    if(!/^\d{5}$/.test(zip)){showErr('กรุณากรอกรหัสไปรษณีย์ 5 หลัก');$('#cZip').focus();return}
+    if(!sub){showErr('กรุณาเลือกแขวง/ตำบล');$('#cSub').disabled?$('#cSubText').focus():$('#cSub').focus();return}
+    if(!prov){showErr('กรุณาเลือกจังหวัด');return}
+    if(!house){showErr('กรุณากรอกบ้านเลขที่ ถนน');$('#cAddr').focus();return}
+  }
   const st=subtotal(),sf=shipFee(),gt=st+sf;
   const payload={customerName:name,customerPhone:phone,customerNote:$('#cNote').value.trim(),
     shippingAddress:addr,shippingProvince:self?'':prov,shippingPostcode:self?'':zip,selfDeliver:self,
@@ -350,7 +389,7 @@ $('#submitBtn').addEventListener('click',async()=>{
 let lastOrder=null;
 function finish(order,no){
   order.no=no;lastOrder=order;
-  try{localStorage.setItem('fxCustomer',JSON.stringify({cName:order.name,cPhone:order.phone,cAddr:order.self?'':order.addr,cProv:order.prov,cZip:order.zip}))}catch(e){}
+  try{localStorage.setItem('fxCustomer',JSON.stringify({cName:order.name,cPhone:order.phone,cAddr:order.self?'':$('#cAddr').value.trim(),cProv:order.prov,cZip:order.zip,cSub:$('#cSub').value,cSubText:$('#cSubText').value.trim()}))}catch(e){}
   $('#dNo').textContent=no||'รอร้านยืนยัน';$('#dChk').hidden=!!no;$('#dAmt').textContent=fmt(order.gt);
   $('#formView').hidden=true;$('#bar').hidden=true;$('#doneView').hidden=false;scrollTo({top:0});
 }
