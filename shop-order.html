@@ -224,12 +224,13 @@ const THAI_PROVINCES=["กรุงเทพมหานคร","กระบี
 
 // ข้อมูลสินค้า — ต้องตรงกับหน้าแคตตาล็อก ถ้าแก้ราคา/แบบที่แคตตาล็อก ให้แก้ที่นี่ด้วย
 const CATALOG_URL='https://claude.ai/artifact/464DJRbj5uyXQzqGRXmeTy';
+const IMG_V='?v=20261028b'; // เปลี่ยนเลขนี้เมื่อแก้รูป เพื่อให้เบราว์เซอร์โหลดรูปใหม่
 const PLA_CARE='PLA ทนร้อนได้ประมาณ 55–60°C ห้ามทิ้งไว้ในรถกลางแดด ห้ามใส่น้ำร้อนหรือเครื่องล้างจาน ล้างด้วยน้ำเย็นกับสบู่อ่อน';
 const PRODUCTS={
-  phapchoo:{name:'น้องพับชู่',sub:'ที่วางทิชชูม้วน',img:'phapchoo.jpg',from:399,
+  phapchoo:{name:'น้องพับชู่',sub:'ที่วางทิชชูม้วน',img:'phapchoo.jpg?v=20261028b',from:399,
     info:{summary:'ที่วางทิชชูม้วนหน้ายิ้ม นั่งห้อยขาริมชั้นวางเป็นเพื่อนคุณ ขาขยับได้',points:['ใส่ทิชชูม้วนมาตรฐาน จนถึงม้วนยาวพิเศษ 3 เท่า','ขาเป็นข้อต่อ ขยับท่าได้','นั่งห้อยขาริมชั้นหรือโต๊ะได้','สีพาสเทลเลือกได้ 6 สี'],spec:[['วัสดุ','PLA'],['ระยะเวลาผลิต','1 วัน'],['ที่มาของแบบ','ร้านออกแบบเอง']]},
     colors:[['ม่วงลาเวนเดอร์','#CDB8F0','lavender'],['ชมพู','#F6C3D3','pink'],['ฟ้า','#9EC3F0','blue'],['เขียวมิ้นต์','#B8E3CF','mint'],['เหลือง','#F7E3A1','yellow'],['ครีม','#EFE9E1','cream']]},
-  sipbuddy:{name:'Sip Buddy',sub:'ที่ใส่กล่องนม',img:'sipbuddy.jpg',from:590,
+  sipbuddy:{name:'Sip Buddy',sub:'ที่ใส่กล่องนม',img:'sipbuddy.jpg?v=20261028b',from:590,
     info:{summary:'ที่ใส่กล่องนมและน้ำผลไม้รูปสัตว์ มีหูจับสองข้าง ใช้กับกล่องทรงสูง 150–250 มล. (ไม่รองรับกล่องทรงแบนกว้าง)',points:['เลือกได้ 13 แบบ แจ้งหมายเลขแบบตอนสั่งซื้อ','พิมพ์ด้วยเส้นสีรุ้ง สีไล่เองระหว่างพิมพ์ ทุกใบจึงไม่ซ้ำกัน','แบบ Color Pop เพิ่มสีที่ใบหน้าตัวสัตว์','สลักชื่อด้านหลังได้ ไทยหรืออังกฤษ 4–6 ตัวอักษร'],spec:[['วัสดุ','PLA'],['ระยะเวลาผลิต','1 วัน'],['ที่มาของแบบ','Licensed design']]},
     options:[['สีเดียว',590,false],['หลายสี (Color Pop)',690,false],['หลายสี + สลักชื่อด้านหลัง',790,true]],
     designs:['ไดโนเสาร์','จิ้งจอกยิ้ม','น้องหมา','น้องแมว','ก้อนเมฆ','น้องไก่','น้องหมี','แมวยิ้ม','เม่น','แพนด้า','บีเวอร์','จิ้งจอกคลาสสิก','นกฮูก']}
@@ -282,7 +283,7 @@ function renderConf(){
     const cv=p.colors[pcView];
     box.append(el('span',{class:'lbl'},'เลือกสีและจำนวน',el('small',{},'1 ชิ้น 399 · 2 ชิ้น 699 · 3 ชิ้น 999')),
       el('div',{class:'pv-wrap'},
-      el('figure',{class:'pv'},el('img',{src:'pc/pc-'+cv[2]+'.jpg',alt:'น้องพับชู่ สี'+cv[0],width:'520',height:'658'}),el('figcaption',{},el('i',{style:'background:'+cv[1]}),'สี'+cv[0])),
+      el('figure',{class:'pv'},el('img',{src:'pc/pc-'+cv[2]+'.jpg'+IMG_V,alt:'น้องพับชู่ สี'+cv[0],width:'520',height:'658'}),el('figcaption',{},el('i',{style:'background:'+cv[1]}),'สี'+cv[0])),
       el('div',{},
       el('div',{class:'colorrow'},p.colors.map(([n,h],ci)=>{const q=phapQty[n]||0;return el('div',{class:'crow'+(ci===pcView?' on':'')},el('button',{type:'button',class:'cpick','aria-pressed':String(ci===pcView),'aria-label':'ดูตัวอย่างสี'+n,onclick:()=>{pcView=ci;renderConf()}},el('i',{style:'background:'+h}),el('span',{},n)),
         el('div',{class:'step'},el('button',{type:'button','aria-label':'ลด '+n,onclick:()=>{if(q>0){phapQty[n]=q-1;if(!phapQty[n])delete phapQty[n];renderConf();renderCart()}}},'−'),el('b',{},String(q)),
@@ -296,7 +297,7 @@ function renderConf(){
     box.append(
       el('span',{class:'lbl'},'1) เลือกแบบ',el('small',{},'แตะหมายเลขแบบที่ต้องการ')),
       el('div',{class:'pv-wrap'},
-      sipSel.design!=null?el('figure',{class:'pv sip'},el('img',{src:'sip/sip-'+String(sipSel.design+1).padStart(2,'0')+'.jpg',alt:'Sip Buddy แบบ '+p.designs[sipSel.design]})):el('figure',{class:'pv sip empty'},el('span',{},'แตะหมายเลขแบบ เพื่อดูรูป')),
+      sipSel.design!=null?el('figure',{class:'pv sip'},el('img',{src:'sip/sip-'+String(sipSel.design+1).padStart(2,'0')+'.jpg'+IMG_V,alt:'Sip Buddy แบบ '+p.designs[sipSel.design]})):el('figure',{class:'pv sip empty'},el('span',{},'แตะหมายเลขแบบ เพื่อดูรูป')),
       el('div',{class:'chips'},p.designs.map((d,i)=>el('button',{type:'button',class:'chip','aria-pressed':String(sipSel.design===i),onclick:()=>{sipSel.design=i;renderConf()}},el('b',{},String(i+1).padStart(2,'0')),d))),
       ),
       el('span',{class:'lbl'},'2) เลือกแบบสี'),
