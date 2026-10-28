@@ -301,7 +301,7 @@ function renderConf(){
       el('span',{class:'lbl'},'2) เลือกแบบสี'),
       el('div',{class:'opts'},p.options.map(([n,pr],i)=>el('button',{type:'button',class:'opt','aria-pressed':String(sipSel.opt===i),onclick:()=>{sipSel.opt=i;renderConf()}},el('span',{},n),el('b',{},pr)))),
       needName?el('div',{},el('label',{class:'lbl',for:'sipName'},'3) ชื่อที่จะสลักด้านหลัง'),nameIn):'',
-      el('div',{class:'note'},'ทุกใบพิมพ์ด้วยเส้นสีรุ้ง สีจะไล่เองระหว่างพิมพ์ แต่ละใบจึงไม่เหมือนกันและอาจต่างจากภาพตัวอย่าง · ใช้กับกล่องนมทรงสูง 150–250 มล. เท่านั้น'),
+      el('div',{class:'note'},'ทุกใบพิมพ์ด้วยเส้นสีรุ้ง สีจะไล่เองระหว่างพิมพ์ แต่ละใบจึงไม่เหมือนกันและอาจต่างจากภาพตัวอย่าง · แบบ Color Pop จะเพิ่มสีที่ใบหน้าตัวสัตว์ · ใช้กับกล่องนมทรงสูง 150–250 มล. เท่านั้น'),
       el('button',{type:'button',class:'btn primary full',onclick:addSip},'+ เพิ่มลงตะกร้า'));
   }
 }
