@@ -132,6 +132,54 @@ textarea{min-height:76px;resize:vertical}
 .ov img{max-width:min(420px,100%);max-height:66vh;border-radius:12px;background:#fff;-webkit-touch-callout:default;user-select:auto}
 .ov .row{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
 .chk{background:#FFF4E0;border-radius:12px;padding:10px 12px;font-size:13px;margin-top:10px;text-align:left}
+/* ---------- Alphabet Clicker ---------- */
+.ptabs{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+.kc-top{display:grid;grid-template-columns:200px minmax(0,1fr);gap:14px;align-items:start}
+.kc-pv{margin:0;background:var(--sunk);border-radius:14px;padding:14px 10px 10px;display:flex;flex-direction:column;align-items:center;gap:10px;min-height:260px;justify-content:center}
+.kc-pv svg{display:block;max-width:100%;height:auto}
+.kc-pv.h{grid-column:1/-1;min-height:0}
+.kc-pv .seg button{padding:4px 9px;font-size:12px;white-space:nowrap}
+.kc-pv .cap{font-size:11.5px;color:var(--muted);text-align:center;margin:0}
+.seg{display:inline-flex;background:var(--surface);border-radius:999px;padding:3px;box-shadow:inset 0 0 0 1.5px var(--line)}
+.seg button{border:0;background:none;border-radius:999px;padding:5px 12px;font:inherit;font-size:13px;cursor:pointer;color:var(--muted)}
+.seg button[aria-pressed="true"]{background:var(--ink);color:#fff}
+.colopts{display:grid;gap:6px}
+.colopt{display:flex;align-items:center;gap:10px;border:0;background:var(--bg);box-shadow:inset 0 0 0 1.5px var(--line);border-radius:12px;padding:7px 10px;font:inherit;color:inherit;cursor:pointer;text-align:left}
+.colopt[aria-pressed="true"]{box-shadow:inset 0 0 0 2.5px var(--accent);background:#FFF9F4}
+.colopt svg{flex:none}
+.colopt span{display:grid;line-height:1.3;font-size:13.5px}
+.colopt small{color:var(--muted);font-size:12px}
+.dots{display:flex;flex-wrap:wrap;gap:8px}
+.dot{width:34px;height:34px;border-radius:50%;border:0;cursor:pointer;box-shadow:inset 0 0 0 1px rgba(44,36,32,.18);position:relative;padding:0}
+.dot[aria-pressed="true"]{box-shadow:0 0 0 2.5px var(--surface),0 0 0 4.5px var(--accent)}
+.dotlbl{font-size:12.5px;color:var(--muted);margin-left:4px}
+.word{display:flex;flex-wrap:wrap;gap:5px;min-height:46px;align-items:center;background:var(--bg);border-radius:12px;padding:6px 8px;box-shadow:inset 0 0 0 1.5px var(--line)}
+.word .ph{color:var(--muted);font-size:13px;padding-left:4px}
+.word svg{display:block}
+.kb{display:grid;grid-template-columns:repeat(9,minmax(0,1fr));gap:5px;margin-top:8px}
+.kb button{border:0;background:var(--surface);box-shadow:inset 0 0 0 1.5px var(--line);border-radius:9px;padding:0;height:40px;font:inherit;font-weight:600;font-size:15px;cursor:pointer;color:var(--ink);display:grid;place-items:center}
+.kb button:active{background:var(--sunk)}
+.kb button:disabled{opacity:.35;cursor:not-allowed}
+.kb.emo{grid-template-columns:repeat(8,minmax(0,1fr))}
+.kbrow{display:flex;gap:8px;margin-top:8px;align-items:center;flex-wrap:wrap}
+.kbrow .btn{padding:7px 14px;font-size:13.5px;font-weight:500}
+.kbrow .cnt{margin-left:auto;font-size:12.5px;color:var(--muted);font-variant-numeric:tabular-nums}
+.lc{display:flex;flex-wrap:wrap;gap:8px}
+.lcr{display:flex;align-items:center;gap:8px;background:var(--bg);border-radius:12px;padding:6px 8px;box-shadow:inset 0 0 0 1.5px var(--line)}
+.lcr svg{flex:none;display:block}
+.sw{display:flex;gap:5px}
+.sw button{width:24px;height:24px;border-radius:50%;border:0;padding:0;cursor:pointer;box-shadow:inset 0 0 0 1px rgba(44,36,32,.18)}
+.sw button[aria-pressed="true"]{box-shadow:0 0 0 2px var(--surface),0 0 0 3.5px var(--ink)}
+.straps{display:flex;gap:8px;overflow-x:auto;padding:2px 2px 6px;scrollbar-width:thin}
+.strap{flex:0 0 84px;border:0;background:var(--bg);box-shadow:inset 0 0 0 1.5px var(--line);border-radius:12px;padding:6px 4px;font:inherit;font-size:11.5px;color:var(--muted);cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px}
+.strap[aria-pressed="true"]{box-shadow:inset 0 0 0 2.5px var(--accent);background:#FFF9F4;color:var(--ink)}
+.linkbtn{border:0;background:none;padding:0;font:inherit;font-size:13px;color:var(--accent-text);font-weight:600;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+.kc-price{display:flex;justify-content:space-between;align-items:baseline;margin-top:14px;font-size:14px}
+.kc-price b{font-size:18px;color:var(--accent-text);font-variant-numeric:tabular-nums}
+.gal{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px}
+.gal img{height:220px;width:auto;border-radius:12px;flex:none}
+.cart-item .thumb{display:block;margin-top:6px;max-width:100%;height:auto}
+@media (max-width:560px){.kc-top{grid-template-columns:132px minmax(0,1fr);gap:10px}.kc-pv{min-height:200px;padding:10px 4px 8px}.kc-pv .seg button{padding:4px 7px;font-size:11.5px}.kb button{height:38px;font-size:14px}.dot{width:30px;height:30px}}
 [hidden]{display:none!important}
 </style>
 </head>
@@ -222,6 +270,8 @@ textarea{min-height:76px;resize:vertical}
 
 <script>
 const GAS_URL="https://script.google.com/macros/s/AKfycbwfy2uHH4QJOM851_HBz3eoUCbwBvnZo1fGzf8DNChs5hS03Ml-335eATS3XTbifVYo9Q/exec";
+// หน้าสั่งซื้อรวม — รวม Alphabet Clicker ไว้ในตะกร้าเดียวกับสินค้าแคตตาล็อก
+// ฟอร์ม keycap เดิม (index.html) ยังใช้งานแยกได้ตามปกติ
 const SHIP_FEE_FLAT=35;   // ค่าส่งเท่ากับฟอร์ม Alphabet Clicker
 const MAX_PIECES=10;      // มากกว่านี้ให้ติดต่อร้าน
 const THAI_PROVINCES=["กรุงเทพมหานคร","กระบี่","กาญจนบุรี","กาฬสินธุ์","กำแพงเพชร","ขอนแก่น","จันทบุรี","ฉะเชิงเทรา","ชลบุรี","ชัยนาท","ชัยภูมิ","ชุมพร","เชียงราย","เชียงใหม่","ตรัง","ตราด","ตาก","นครนายก","นครปฐม","นครพนม","นครราชสีมา","นครศรีธรรมราช","นครสวรรค์","นนทบุรี","นราธิวาส","น่าน","บึงกาฬ","บุรีรัมย์","ปทุมธานี","ประจวบคีรีขันธ์","ปราจีนบุรี","ปัตตานี","พระนครศรีอยุธยา","พะเยา","พังงา","พัทลุง","พิจิตร","พิษณุโลก","เพชรบุรี","เพชรบูรณ์","แพร่","ภูเก็ต","มหาสารคาม","มุกดาหาร","แม่ฮ่องสอน","ยโสธร","ยะลา","ร้อยเอ็ด","ระนอง","ระยอง","ราชบุรี","ลพบุรี","ลำปาง","ลำพูน","เลย","ศรีสะเกษ","สกลนคร","สงขลา","สตูล","สมุทรปราการ","สมุทรสงคราม","สมุทรสาคร","สระแก้ว","สระบุรี","สิงห์บุรี","สุโขทัย","สุพรรณบุรี","สุราษฎร์ธานี","สุรินทร์","หนองคาย","หนองบัวลำภู","อ่างทอง","อำนาจเจริญ","อุดรธานี","อุตรดิตถ์","อุทัยธานี","อุบลราชธานี"];
@@ -237,8 +287,72 @@ const PRODUCTS={
   sipbuddy:{name:'Sip Buddy',sub:'ที่ใส่กล่องนม',img:'sipbuddy.jpg?v=20261028b',from:590,
     info:{summary:'ที่ใส่กล่องนมและน้ำผลไม้รูปสัตว์ มีหูจับสองข้าง ใช้กับกล่องทรงสูง 150–250 มล. (ไม่รองรับกล่องทรงแบนกว้าง)',points:['เลือกได้ 13 แบบ แจ้งหมายเลขแบบตอนสั่งซื้อ','พิมพ์ด้วยเส้นสีรุ้ง สีไล่เองระหว่างพิมพ์ ทุกใบจึงไม่ซ้ำกัน','แบบ Color Pop เพิ่มสีที่ใบหน้าตัวสัตว์','สลักชื่อด้านหลังได้ ไทยหรืออังกฤษ 4–6 ตัวอักษร'],spec:[['วัสดุ','PLA'],['ระยะเวลาผลิต','1 วัน'],['ที่มาของแบบ','Licensed design']]},
     options:[['สีเดียว',590,false],['หลายสี (Color Pop)',690,false],['หลายสี + สลักชื่อด้านหลัง',790,true]],
-    designs:['ไดโนเสาร์','จิ้งจอกยิ้ม','น้องหมา','น้องแมว','ก้อนเมฆ','น้องไก่','น้องหมี','แมวยิ้ม','เม่น','แพนด้า','บีเวอร์','จิ้งจอกคลาสสิก','นกฮูก']}
+    designs:['ไดโนเสาร์','จิ้งจอกยิ้ม','น้องหมา','น้องแมว','ก้อนเมฆ','น้องไก่','น้องหมี','แมวยิ้ม','เม่น','แพนด้า','บีเวอร์','จิ้งจอกคลาสสิก','นกฮูก']},
+  keycap:{name:'Alphabet Clicker',sub:'พวงกุญแจคีย์แคป',img:'kc/keycap-thumb.jpg'+IMG_V,big:'kc/keycap-set.jpg'+IMG_V,from:35,
+    info:{summary:'พวงกุญแจคีย์แคปกดคลิกได้ เรียงตัวอักษรเป็นชื่อหรือคำที่ชอบ เลือกสีคีย์ สีเคส และสายคล้องเองได้',points:['ตัวอักษร A–Z หน้ายิ้ม 7 แบบ และหัวใจ ผสมกันได้ รวมไม่เกิน 8 ช่อง','เลือกสีคีย์ทีละตัว จาก 3 คอลเลกชัน: Pastel, Dark mode, Polar White','สีเคส 5 สี สายคล้อง 8 แบบ','ราคา 3 ช่อง 100 บาท ช่องที่เหลือช่องละ 35 บาท'],spec:[['วัสดุ','PLA'],['ระยะเวลาผลิต','1 วัน'],['ที่มาของแบบ','ร้านออกแบบเอง']],
+      gallery:['kc/col-1.jpg','kc/col-2.jpg','kc/col-4.jpg','kc/col-3.jpg','kc/col-5.jpg']}}
 };
+// ---------- Alphabet Clicker (ยกมาจากฟอร์ม keycap เดิม index.html — ชื่อสี/สายคล้อง/คอลเลกชันต้องตรงกับแท็บสต๊อกใน Sheet) ----------
+const KC_HEX={"ฟ้า":"#7FC4E0","ชมพู":"#EFA9C6","ม่วง":"#B7A3E0","เหลือง":"#F2D34D","เนื้อ":"#E6C09C","ขาว":"#F5F5F2","ดำ":"#2B2B2B","ส้ม":"#F0954A","แดง":"#E0435A","เขียว":"#7FC97F","มิ้นท์":"#8FDDC6","ทราย":"#D8C6A8","น้ำเงิน":"#3F63C7","น้ำตาล":"#9A6B44","ชมพูอมแดง":"#E85C7A","เขียวอมฟ้า":"#3FB6B0"};
+const KC_COLS={pastel:{name:'Pastel',desc:'ตัวอักษรขาว ฐานพาสเทล',fixedSlot:'frame',fixedColor:'ขาว',vary:["ฟ้า","ชมพู","เหลือง","ม่วง"]},
+  dark:{name:'Dark mode',desc:'ตัวอักษรดำ ฐานสี',fixedSlot:'frame',fixedColor:'ดำ',vary:["ฟ้า","ชมพู","เหลือง","ม่วง","น้ำตาล"]},
+  polar:{name:'Polar White',desc:'ฐานขาว ตัวอักษรสี',fixedSlot:'body',fixedColor:'ขาว',vary:["ฟ้า","ชมพู","ม่วง","น้ำเงิน"]}};
+const KC_CASES=["ดำ","ขาว","ม่วง","ชมพูอมแดง","เขียวอมฟ้า"];
+const KC_STRAPS=[{label:"ฟ้า / ขาว",loop:"ฟ้า",knot:"ขาว",ring:"ขาว"},{label:"ชมพู / แดง",loop:"ชมพู",knot:"แดง",ring:"แดง"},{label:"เหลือง / ส้ม",loop:"เหลือง",knot:"ส้ม",ring:"เหลือง"},{label:"ม่วง / แดง",loop:"ม่วง",knot:"แดง",ring:"ม่วง"},{label:"มิ้นท์ / ชมพู",loop:"มิ้นท์",knot:"ชมพู",ring:"ชมพู"},{label:"เขียว / ขาว",loop:"เขียว",knot:"ขาว",ring:"เหลือง"},{label:"ดำ / ชมพู",loop:"ดำ",knot:"ชมพู",ring:"ดำ"},{label:"แดง / ขาว",loop:"แดง",knot:"ขาว",ring:"แดง"}];
+const KC_EMOJI=['🙂','😉','😍','😎','😛','🤩','😊','❤'];
+const KC_FACE={'🙂':'หน้ายิ้ม','😉':'ขยิบตา','😍':'ตาหัวใจ','😎':'แว่นดำ','😛':'แลบลิ้น','🤩':'ตาดาว','😊':'ยิ้มตาปิด'};
+const KC_MAX=8;
+function kcPrice(n){return n<=0?0:Math.floor(n/3)*100+(n%3)*35}
+function kcFaceInner(em){
+  const K='#161616',R='#E0193A',mouth=`<path d="M27,60 Q50,82 73,60" fill="none" stroke="${K}" stroke-width="6" stroke-linecap="round"/>`,oval=`<ellipse cx="39" cy="37" rx="5.5" ry="9" fill="${K}"/><ellipse cx="61" cy="37" rx="5.5" ry="9" fill="${K}"/>`;
+  const heart=(cx,cy)=>`<path transform="translate(${cx},${cy})" d="M0,9 C-14,-1 -11,-11 -5,-11 C-2,-11 0,-8 0,-6 C0,-8 2,-11 5,-11 C11,-11 14,-1 0,9Z" fill="${R}"/>`;
+  const star=(cx,cy)=>{let p=[];for(let i=0;i<10;i++){const r=i%2?4.5:10.5,a=-Math.PI/2+i*Math.PI/5;p.push((cx+r*Math.cos(a)).toFixed(1)+','+(cy+r*Math.sin(a)).toFixed(1))}return `<polygon points="${p.join(' ')}" fill="${R}" stroke="${R}" stroke-width="1.5" stroke-linejoin="round"/>`};
+  let f='';
+  switch(em){
+    case '🙂':f=oval+mouth;break;
+    case '😉':f=`<ellipse cx="39" cy="37" rx="5.5" ry="9" fill="${K}"/><path d="M55,39 Q62,31 69,38" fill="none" stroke="${R}" stroke-width="5" stroke-linecap="round"/>`+mouth;break;
+    case '😍':f=heart(37,37)+heart(63,37)+mouth;break;
+    case '😎':f=`<path d="M17,27 L83,27 L82,32 Q80,46 66,46 Q57,46 54,34 Q50,31 46,34 Q43,46 34,46 Q20,46 18,32Z" fill="${K}"/><path d="M33,62 Q50,76 67,62" fill="none" stroke="${K}" stroke-width="6" stroke-linecap="round"/>`;break;
+    case '😛':f=oval+`<path d="M44,66 L44,74 Q44,84 52,84 Q60,84 59,74 L58,66Z" fill="${R}" stroke="${K}" stroke-width="3.5" stroke-linejoin="round"/>`+mouth;break;
+    case '🤩':f=star(37,37)+star(63,37)+mouth;break;
+    case '😊':f=`<path d="M32,41 Q38,29 44,41" fill="none" stroke="${R}" stroke-width="5.5" stroke-linecap="round"/><path d="M56,41 Q62,29 68,41" fill="none" stroke="${R}" stroke-width="5.5" stroke-linecap="round"/>`+mouth;break;
+    default:return null;
+  }
+  return `<circle cx="50" cy="50" r="47" fill="#C9A80F"/><circle cx="50" cy="49" r="45" fill="#F2D21B"/><circle cx="50" cy="49" r="41" fill="none" stroke="#C9A80F" stroke-width="1.2" opacity=".7"/>`+f;
+}
+function kcResolve(col,v){const c=KC_COLS[col];return c.fixedSlot==='frame'?{body:v,frame:c.fixedColor}:{body:c.fixedColor,frame:v}}
+function kcKey(x,y,s,body,frame,ch,ghost){
+  const op=ghost?' opacity=".35"':'';
+  let g=`<g${op}><rect x="${x}" y="${y}" width="${s}" height="${s}" rx="8" fill="${KC_HEX[body]||'#ccc'}"/><rect x="${x+4}" y="${y+4}" width="${s-8}" height="${s-8}" rx="5" fill="none" stroke="${KC_HEX[frame]||'#fff'}" stroke-width="3"/>`;
+  const face=kcFaceInner(ch);
+  if(face){const d=s*.58;g+=`<g transform="translate(${x+s/2-d/2},${y+s/2-d/2}) scale(${d/100})">${face}</g>`}
+  else{const t=ch==='❤'?'♥':ch;g+=`<text x="${x+s/2}" y="${y+s/2+7}" text-anchor="middle" font-size="${t==='♥'?20:18}" font-weight="700" fill="${KC_HEX[frame]||'#fff'}" font-family="Prompt, Segoe UI, sans-serif">${t}</text>`}
+  return g+'</g>';
+}
+// วาดชิ้นงาน คืน {svg, w, h}
+function kcSVG(it,orient){
+  let chars=it.chars,cols=it.colors,ghost=false;
+  if(!chars.length){chars=['A','B','C'];cols=KC_COLS[it.col].vary.slice(0,3);ghost=true}
+  const n=chars.length,gap=3,st=KC_STRAPS[it.strap];let s='';
+  if(orient==='vertical'){
+    const size=38,railW=size+16,railH=n*size+(n-1)*gap+16,H=66+railH+12;
+    s+=`<circle cx="70" cy="12" r="9" fill="none" stroke="${KC_HEX[st.ring]}" stroke-width="3.5"/><path d="M70,17 C52,26 52,48 70,54 C88,48 88,26 70,17" fill="none" stroke="${KC_HEX[st.loop]}" stroke-width="6" stroke-linecap="round"/><rect x="63" y="50" width="14" height="16" rx="4" fill="${KC_HEX[st.knot]}"/>`;
+    const rx=70-railW/2;s+=`<rect x="${rx}" y="66" width="${railW}" height="${railH}" rx="14" fill="${KC_HEX[it.caseColor]}" stroke="rgba(0,0,0,.12)"/>`;
+    chars.forEach((ch,i)=>{const c=kcResolve(it.col,cols[i]||KC_COLS[it.col].vary[0]);s+=kcKey(rx+8,74+i*(size+gap),size,c.body,c.frame,ch,ghost)});
+    return {svg:s,w:140,h:H};
+  }
+  const size=30,railH=size+16,railW=n*size+(n-1)*gap+16,W=56+railW+10,H=Math.max(railH+16,80),cy=H/2;
+  s+=`<circle cx="14" cy="${cy}" r="9" fill="none" stroke="${KC_HEX[st.ring]}" stroke-width="3.5"/><path d="M19,${cy} C28,${cy-18} 50,${cy-18} 56,${cy} C50,${cy+18} 28,${cy+18} 19,${cy}" fill="none" stroke="${KC_HEX[st.loop]}" stroke-width="6" stroke-linecap="round"/><rect x="52" y="${cy-7}" width="16" height="14" rx="4" fill="${KC_HEX[st.knot]}"/>`;
+  s+=`<rect x="56" y="${cy-railH/2}" width="${railW}" height="${railH}" rx="14" fill="${KC_HEX[it.caseColor]}" stroke="rgba(0,0,0,.12)"/>`;
+  chars.forEach((ch,i)=>{const c=kcResolve(it.col,cols[i]||KC_COLS[it.col].vary[0]);s+=kcKey(64+i*(size+gap),cy-railH/2+8,size,c.body,c.frame,ch,ghost)});
+  return {svg:s,w:W,h:H};
+}
+function kcSvgEl(it,orient,maxW,maxH){const r=kcSVG(it,orient);let w=r.w,h=r.h,k=Math.min(maxW/w,maxH?maxH/h:Infinity);w*=k;h*=k;
+  return el('span',{html:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${r.w} ${r.h}" width="${Math.round(w)}" height="${Math.round(h)}" role="img" aria-label="ตัวอย่าง ${it.chars.join('')||'ชิ้นงาน'}">${r.svg}</svg>`}).firstChild}
+function kcDetail(it){
+  const word=it.chars.map(c=>KC_FACE[c]?'['+KC_FACE[c]+']':c).join('');
+  return word+' · '+KC_COLS[it.col].name+' · เคส'+it.caseColor+' · สาย '+KC_STRAPS[it.strap].label+' · '+(it.orient==='vertical'?'แนวตั้ง':'แนวนอน')+' · สี: '+it.chars.map((c,i)=>c+':'+it.colors[i]).join(', ');
+}
 // ราคาน้องพับชู่ตามจำนวนรวม: 1 = 399, 2 = 699, 3 = 999 (ชุดละ 3 ชิ้นซ้ำได้)
 function phapPrice(n){const t=[0,399,699];return Math.floor(n/3)*999+t[n%3]}
 
@@ -255,6 +369,8 @@ let phapQty={};            // สี -> จำนวน
 let sipCart=[];            // [{design, opt, name}]
 let sipSel={design:null,opt:0,name:''};
 let pcView=0; // สีที่แสดงในรูปตัวอย่างน้องพับชู่
+let kcCart=[];             // ชิ้น Alphabet Clicker ในตะกร้า
+let kc={chars:[],colors:[],col:'pastel',caseColor:'ดำ',strap:0,orient:'vertical',mode:'letters'};
 
 function renderTabs(){
   $('#ptabs').replaceChildren(...Object.entries(PRODUCTS).map(([id,p])=>el('button',{type:'button',class:'ptab','aria-pressed':String(id===current),onclick:()=>{current=id;renderTabs();renderConf()}},
@@ -264,21 +380,27 @@ function openDetail(id){
   const p=PRODUCTS[id],i=p.info||{};
   $('#dmTitle').textContent=p.name+' · '+p.sub;
   $('#dmBody').replaceChildren(
-    el('div',{},el('img',{src:p.img,alt:p.name})),
+    el('div',{},el('img',{src:p.big||p.img,alt:p.name})),
     el('div',{},
       i.summary?el('p',{},i.summary):null,
       i.points&&i.points.length?el('ul',{},i.points.map(x=>el('li',{},x))):null,
       i.spec?el('div',{class:'dm-spec'},i.spec.map(([k,v])=>el('div',{},el('span',{},k),el('b',{},v)))):null,
-      el('div',{class:'dm-care'},PLA_CARE),
-      el('a',{class:'dm-link',href:CATALOG_URL+'#p-'+id,target:'_blank',rel:'noopener'},'ดูหน้าสินค้าเต็มในแคตตาล็อก (มีวิดีโอ) ›'),
-      el('button',{type:'button',class:'btn primary full',onclick:()=>{closeDetail();current=id;renderTabs();renderConf()}},'เลือกสินค้านี้')));
+      p.noCare?null:el('div',{class:'dm-care'},PLA_CARE),
+      p.noCatalog?null:el('a',{class:'dm-link',href:CATALOG_URL+'#p-'+id,target:'_blank',rel:'noopener'},'ดูหน้าสินค้าเต็มในแคตตาล็อก (มีวิดีโอ) ›'),
+      el('button',{type:'button',class:'btn primary full',onclick:()=>{closeDetail();current=id;renderTabs();renderConf()}},'เลือกสินค้านี้')),
+    i.gallery?el('div',{class:'gal',style:'grid-column:1/-1'},i.gallery.map(s=>el('img',{src:s+IMG_V,alt:'',loading:'lazy'}))):null);
   $('#dm').hidden=false;document.body.style.overflow='hidden';$('#dmClose').focus();
 }
 function closeDetail(){$('#dm').hidden=true;document.body.style.overflow=''}
 $('#dmClose').addEventListener('click',closeDetail);
 $('#dm').addEventListener('click',e=>{if(e.target.id==='dm')closeDetail()});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#dm').hidden)closeDetail()});
-function totalPieces(){return Object.values(phapQty).reduce((a,b)=>a+b,0)+sipCart.length}
+function totalPieces(){return Object.values(phapQty).reduce((a,b)=>a+b,0)+sipCart.length+kcCart.length}
+function openGallery(title,srcs){
+  $('#dmTitle').textContent=title;
+  $('#dmBody').replaceChildren(el('div',{class:'gal',style:'grid-column:1/-1'},srcs.map(s=>el('img',{src:s+IMG_V,alt:'',loading:'lazy'}))));
+  $('#dm').hidden=false;document.body.style.overflow='hidden';$('#dmClose').focus();
+}
 
 function renderConf(){
   const box=$('#pconf');box.replaceChildren();
@@ -293,6 +415,8 @@ function renderConf(){
         el('div',{class:'step'},el('button',{type:'button','aria-label':'ลด '+n,onclick:()=>{if(q>0){phapQty[n]=q-1;if(!phapQty[n])delete phapQty[n];renderConf();renderCart()}}},'−'),el('b',{},String(q)),
           el('button',{type:'button','aria-label':'เพิ่ม '+n,onclick:()=>{if(totalPieces()>=MAX_PIECES){showErr('สั่งมากกว่า '+MAX_PIECES+' ชิ้น โปรดติดต่อร้านโดยตรง');return}phapQty[n]=q+1;pcView=ci;renderConf();renderCart()}},'+')))})),
       el('p',{class:'hint'},'แตะชื่อสีเพื่อดูตัวอย่าง · ราคาคิดจากจำนวนรวมทุกสี เช่น 3 ชิ้นคละสี = 999 บาท'))));
+  }else if(current==='keycap'){
+    renderKC(box);
   }else{
     const p=PRODUCTS.sipbuddy;
     const nameIn=el('input',{type:'text',id:'sipName',maxlength:'6',placeholder:'4–6 ตัวอักษร ไทยหรืออังกฤษ',value:sipSel.name});
@@ -310,6 +434,60 @@ function renderConf(){
       el('div',{class:'note'},'ทุกใบพิมพ์ด้วยเส้นสีรุ้ง สีจะไล่เองระหว่างพิมพ์ แต่ละใบจึงไม่เหมือนกันและอาจต่างจากภาพตัวอย่าง · แบบ Color Pop จะเพิ่มสีที่ใบหน้าตัวสัตว์ · ใช้กับกล่องนมทรงสูง 150–250 มล. เท่านั้น'),
       el('button',{type:'button',class:'btn primary full',onclick:addSip},'+ เพิ่มลงตะกร้า'));
   }
+}
+// ---------- ตั้งค่า Alphabet Clicker ----------
+function kcFixColors(){const v=KC_COLS[kc.col].vary;kc.colors=kc.chars.map((c,i)=>v.includes(kc.colors[i])?kc.colors[i]:v[i%v.length])}
+function kcChip(ch,i,px){ // ช่องเดียว สีตามที่เลือก
+  const c=kcResolve(kc.col,kc.colors[i]);
+  return el('span',{html:`<svg viewBox="0 0 38 38" width="${px}" height="${px}" aria-hidden="true">${kcKey(0,0,38,c.body,c.frame,ch)}</svg>`}).firstChild;
+}
+function kcType(ch){if(kc.chars.length>=KC_MAX)return;kc.chars.push(ch);kcFixColors();hideErr();renderConf()}
+function renderKC(box){
+  kcFixColors();
+  const n=kc.chars.length,full=n>=KC_MAX,cols=KC_COLS[kc.col];
+  const pv=kcSvgEl(kc,kc.orient,kc.orient==='vertical'?170:620,kc.orient==='vertical'?420:150);
+  const seg=(items,val,on)=>el('div',{class:'seg',role:'group'},items.map(([v,l])=>el('button',{type:'button','aria-pressed':String(val===v),onclick:()=>on(v)},l)));
+  const keys=kc.mode==='letters'?[...'ABCDEFGHIJKLMNOPQRSTUVWXYZ','❤']:KC_EMOJI;
+  box.append(...[
+    el('div',{class:'kc-top'},
+      el('figure',{class:'kc-pv'+(kc.orient==='vertical'?'':' h')},pv,
+        seg([['vertical','แนวตั้ง'],['horizontal','แนวนอน']],kc.orient,v=>{kc.orient=v;renderConf()}),
+        el('p',{class:'cap'},n?'สีในภาพเป็นตัวอย่าง':'ตัวอย่าง · พิมพ์ข้อความด้านล่าง')),
+      kc.orient==='vertical'?el('div',{},
+        el('span',{class:'lbl',style:'margin-top:0'},'คอลเลกชันสีคีย์'),
+        el('div',{class:'colopts'},Object.entries(KC_COLS).map(([k,c])=>el('button',{type:'button',class:'colopt','aria-pressed':String(kc.col===k),onclick:()=>{kc.col=k;renderConf()}},
+          el('span',{html:`<svg viewBox="0 0 80 24" width="64" height="20" aria-hidden="true">${c.vary.slice(0,3).map((v,i)=>{const r=kcResolve(k,v);return `<g transform="translate(${i*27},0) scale(.63)">${kcKey(0,0,38,r.body,r.frame,'ABC'[i])}</g>`}).join('')}</svg>`}).firstChild,
+          el('span',{},el('b',{style:'font-weight:600'},c.name),el('small',{},c.desc))))),
+        el('span',{class:'lbl'},'สีเคส',el('small',{},kc.caseColor)),
+        el('div',{class:'dots'},KC_CASES.map(c=>el('button',{type:'button',class:'dot',style:'background:'+KC_HEX[c],'aria-label':'เคสสี'+c,'aria-pressed':String(kc.caseColor===c),onclick:()=>{kc.caseColor=c;renderConf()}})))):null),
+    kc.orient==='vertical'?null:el('div',{class:'two'},
+      el('div',{},el('span',{class:'lbl'},'คอลเลกชันสีคีย์'),el('select',{'aria-label':'คอลเลกชันสีคีย์',onchange:e=>{kc.col=e.target.value;renderConf()}},Object.entries(KC_COLS).map(([k,c])=>el('option',{value:k,selected:kc.col===k},c.name+' — '+c.desc)))),
+      el('div',{},el('span',{class:'lbl'},'สีเคส',el('small',{},kc.caseColor)),el('div',{class:'dots'},KC_CASES.map(c=>el('button',{type:'button',class:'dot',style:'background:'+KC_HEX[c],'aria-label':'เคสสี'+c,'aria-pressed':String(kc.caseColor===c),onclick:()=>{kc.caseColor=c;renderConf()}}))))),
+    el('span',{class:'lbl'},'ข้อความ',el('small',{},'ตัวอักษร หน้ายิ้ม หัวใจ ผสมกันได้ ไม่เกิน '+KC_MAX+' ช่อง')),
+    el('div',{class:'word','aria-live':'polite'},n?kc.chars.map((ch,i)=>kcChip(ch,i,30)):el('span',{class:'ph'},'แตะแป้นด้านล่างเพื่อพิมพ์')),
+    el('div',{class:'kbrow'},seg([['letters','ABC'],['emoji','หน้ายิ้ม']],kc.mode,v=>{kc.mode=v;renderConf()}),el('span',{class:'cnt'},n+'/'+KC_MAX+' ช่อง')),
+    el('div',{class:'kb'+(kc.mode==='emoji'?' emo':'')},keys.map(ch=>{const f=kcFaceInner(ch);
+      return el('button',{type:'button',disabled:full,'aria-label':KC_FACE[ch]||(ch==='❤'?'หัวใจ':ch),onclick:()=>kcType(ch),html:f?`<svg viewBox="0 0 100 100" width="26" height="26" aria-hidden="true">${f}</svg>`:null},f?null:(ch==='❤'?'♥':ch))})),
+    el('div',{class:'kbrow'},
+      el('button',{type:'button',class:'btn ghost',disabled:!n,onclick:()=>{kc.chars.pop();kc.colors.pop();renderConf()}},'⌫ ลบตัวสุดท้าย'),
+      el('button',{type:'button',class:'btn ghost',disabled:!n,onclick:()=>{kc.chars=[];kc.colors=[];renderConf()}},'ล้าง')),
+    n?el('span',{class:'lbl'},'สีคีย์แต่ละตัว',el('small',{},cols.name)):null,
+    n?el('div',{class:'lc'},kc.chars.map((ch,i)=>el('div',{class:'lcr'},kcChip(ch,i,28),el('div',{class:'sw'},cols.vary.map(v=>{const r=kcResolve(kc.col,v);return el('button',{type:'button','aria-label':'ตัวที่ '+(i+1)+' สี'+v,'aria-pressed':String(kc.colors[i]===v),style:'background:'+KC_HEX[r.body]+(r.body===r.frame?'':';box-shadow:inset 0 0 0 3px '+KC_HEX[r.frame]),onclick:()=>{kc.colors[i]=v;renderConf()}})}))))):null,
+    el('span',{class:'lbl'},'สายคล้อง',el('small',{},KC_STRAPS[kc.strap].label)),
+    el('div',{class:'straps'},KC_STRAPS.map((s,i)=>el('button',{type:'button',class:'strap','aria-pressed':String(kc.strap===i),onclick:()=>{kc.strap=i;renderConf()},
+      html:`<svg viewBox="0 0 60 70" width="40" height="46" aria-hidden="true"><path d="M30,6 C16,12 16,32 30,38 C44,32 44,12 30,6" fill="none" stroke="${KC_HEX[s.loop]}" stroke-width="6" stroke-linecap="round"/><rect x="24" y="34" width="12" height="14" rx="3" fill="${KC_HEX[s.knot]}"/><circle cx="30" cy="56" r="8" fill="none" stroke="${KC_HEX[s.ring]}" stroke-width="3.5"/></svg><span>${s.label}</span>`}))),
+    el('button',{type:'button',class:'linkbtn',onclick:()=>openGallery('สายคล้องจริงจากสต๊อก',['kc/strap-1.jpg','kc/strap-2.jpg','kc/strap-3.jpg','kc/strap-4.jpg','kc/strap-5.jpg'])},'ดูรูปสายคล้องจริง'),
+    el('div',{class:'kc-price'},el('span',{},'ราคาชิ้นนี้ ('+n+' ช่อง)',el('div',{class:'hint',style:'margin:0'},'3 ช่อง 100 บาท ช่องที่เหลือช่องละ 35')),el('b',{},fmt(kcPrice(n)))),
+    el('button',{type:'button',class:'btn primary full',onclick:addKC},'+ เพิ่มลงตะกร้า')].filter(Boolean));
+  const sl=box.querySelector('.straps'),sa=sl&&sl.querySelector('[aria-pressed="true"]');if(sa)sl.scrollLeft=Math.max(0,sa.offsetLeft-sl.offsetLeft-sl.clientWidth/2+sa.offsetWidth/2); // ให้สายที่เลือกยังอยู่ในจอหลังวาดใหม่
+}
+function addKC(){
+  if(!kc.chars.length){showErr('กรุณาพิมพ์ตัวอักษรอย่างน้อย 1 ตัว');return}
+  if(totalPieces()>=MAX_PIECES){showErr('สั่งมากกว่า '+MAX_PIECES+' ชิ้น โปรดติดต่อร้านโดยตรง');return}
+  kcFixColors();
+  kcCart.push({chars:[...kc.chars],colors:[...kc.colors],col:kc.col,caseColor:kc.caseColor,strap:kc.strap,orient:kc.orient});
+  kc.chars=[];kc.colors=[];kc.mode='letters';hideErr();renderConf();renderCart(); // สี/เคส/สาย คงไว้ เผื่อสั่งชิ้นถัดไปแบบเดียวกัน
+  $('#cart').scrollIntoView({behavior:'smooth',block:'center'});
 }
 function addSip(){
   const p=PRODUCTS.sipbuddy;
@@ -331,6 +509,14 @@ function lines(){ // แต่ละชิ้น = 1 แถวใน Sheet (ต�
   }
   sipCart.forEach(s=>{const p=PRODUCTS.sipbuddy;const [on,pr]=p.options[s.opt];
     out.push({productName:'Sip Buddy',detail:'แบบ '+String(s.design+1).padStart(2,'0')+' '+p.designs[s.design]+' · '+on+(s.name?' · ชื่อ: '+s.name:''),price:pr+' บาท',priceValue:pr})});
+  kcCart.forEach(k=>{const v=kcPrice(k.chars.length);
+    // ช่อง orientation/caseColor/strapLabel/collection/letterN/letterColorN ใช้ชื่อเดียวกับฟอร์ม keycap เดิม
+    // เพื่อให้ Apps Script ลงคอลัมน์เดิม หักสต๊อก keycap/สายคล้อง และหน้า sale อ่านได้เหมือนเดิม
+    const it={kind:'keycap',productName:'Alphabet Clicker',detail:kcDetail(k),price:v+' บาท',priceValue:v,
+      orientation:k.orient==='vertical'?'แนวตั้ง':'แนวนอน',caseColor:k.caseColor,strapLabel:KC_STRAPS[k.strap].label,collection:KC_COLS[k.col].name,heart:''};
+    for(let i=0;i<8;i++){it['letter'+(i+1)]=k.chars[i]||'';it['letterColor'+(i+1)]=k.chars[i]?k.colors[i]:''}
+    Object.defineProperty(it,'_kc',{value:k,enumerable:false}); // ใช้วาดรูปสรุป ไม่ส่งไป Sheet
+    out.push(it)});
   return out;
 }
 function subtotal(){return lines().reduce((a,b)=>a+b.priceValue,0)}
@@ -339,11 +525,15 @@ function shipFee(){return $('#selfDeliver').checked||!lines().length?0:SHIP_FEE_
 function renderCart(){
   const c=$('#cart');c.replaceChildren();
   const phapN=Object.values(phapQty).reduce((a,b)=>a+b,0);
-  if(!phapN&&!sipCart.length){c.append(el('p',{class:'empty'},'ยังไม่มีสินค้าในตะกร้า'))}
+  if(!phapN&&!sipCart.length&&!kcCart.length){c.append(el('p',{class:'empty'},'ยังไม่มีสินค้าในตะกร้า'))}
   if(phapN)c.append(el('div',{class:'cart-item'},el('div',{},el('b',{},'น้องพับชู่ × '+phapN),el('div',{class:'hint',style:'margin:0'},Object.entries(phapQty).map(([k,v])=>k+' '+v).join(', '))),
     el('div',{style:'white-space:nowrap'},fmt(phapPrice(phapN)),el('button',{type:'button',class:'x',onclick:()=>{phapQty={};renderConf();renderCart()}},'ลบ'))));
   sipCart.forEach((s,i)=>{const p=PRODUCTS.sipbuddy;c.append(el('div',{class:'cart-item'},el('div',{},el('b',{},'Sip Buddy · '+String(s.design+1).padStart(2,'0')+' '+p.designs[s.design]),el('div',{class:'hint',style:'margin:0'},p.options[s.opt][0]+(s.name?' · ชื่อ "'+s.name+'"':''))),
     el('div',{style:'white-space:nowrap'},fmt(p.options[s.opt][1]),el('button',{type:'button',class:'x',onclick:()=>{sipCart.splice(i,1);renderCart()}},'ลบ'))))});
+  kcCart.forEach((k,i)=>{const th=kcSvgEl(k,'horizontal',260,56);th.classList.add('thumb');
+    c.append(el('div',{class:'cart-item'},el('div',{style:'min-width:0'},el('b',{},'Alphabet Clicker · '+k.chars.map(x=>KC_FACE[x]?'☺':x==='❤'?'♥':x).join('')),
+      el('div',{class:'hint',style:'margin:0'},KC_COLS[k.col].name+' · เคส'+k.caseColor+' · สาย '+KC_STRAPS[k.strap].label+' · '+(k.orient==='vertical'?'แนวตั้ง':'แนวนอน')),th),
+    el('div',{style:'white-space:nowrap'},fmt(kcPrice(k.chars.length)),el('button',{type:'button',class:'x',onclick:()=>{kcCart.splice(i,1);renderCart()}},'ลบ'))))});
   const st=subtotal(),sf=shipFee();
   $('#sum').replaceChildren(...(st?[el('div',{},el('span',{},'ค่าสินค้า'),el('span',{},fmt(st))),el('div',{},el('span',{},'ค่าจัดส่ง'),el('span',{},sf?fmt(sf):'ไม่มี')),el('div',{class:'grand'},el('span',{},'ยอดรวม'),el('span',{},fmt(st+sf)))]:[]));
   $('#barTotal').textContent=fmt(st+sf);
@@ -479,10 +669,14 @@ async function drawSummary(o){
   const ph=o.items.filter(it=>it.productName==='น้องพับชู่'),other=o.items.filter(it=>it.productName!=='น้องพับชู่');
   const cnt={};ph.forEach(it=>{const c=it.detail.replace(/^สี /,'').replace(/ \(.*$/,'');cnt[c]=(cnt[c]||0)+1});
   const rows=(ph.length?[{title:'น้องพับชู่ × '+ph.length,lines:wrap('สี '+Object.entries(cnt).map(([k,v])=>k+' '+v).join(', '),'28px '+F,W-2*P-200),price:ph.reduce((a,b)=>a+b.priceValue,0)}]:[])
-    .concat(other.map(it=>({title:it.productName,lines:wrap(it.detail,'28px '+F,W-2*P-200),price:it.priceValue})));
+    .concat(other.map(it=>({title:it.productName,lines:wrap(it._kc?it.detail.split(' · สี: ')[0]:it.detail,'28px '+F,W-2*P-200),price:it.priceValue,kc:it._kc})));
+  // รูปชิ้น Alphabet Clicker (แนวนอน) ในรูปสรุป ให้ร้านเห็นสีครบทุกตัวตอนผลิต
+  for(const r of rows){if(!r.kc)continue;const v=kcSVG(r.kc,'horizontal');
+    const img=new Image();await new Promise(ok=>{img.onload=ok;img.onerror=ok;img.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${v.w} ${v.h}" width="${v.w*4}" height="${v.h*4}">${v.svg}</svg>`)});
+    const dw=Math.min(W-2*P,v.w*3.2);r.img=img;r.iw=dw;r.ih=dw*v.h/v.w}
   const addr=o.self?'นัดรับ: '+o.addr:o.addr+(o.prov?' จ.'+o.prov:'')+(o.zip?' '+o.zip:'');
   const addrL=wrap(addr,'28px '+F,W-2*P);
-  let H=420+addrL.length*40+rows.reduce((a,r)=>a+62+r.lines.length*38,0)+400;
+  let H=420+addrL.length*40+rows.reduce((a,r)=>a+62+r.lines.length*38+(r.img?r.ih+16:0),0)+400;
   const c=document.createElement('canvas');c.width=W;c.height=H;const g=c.getContext('2d');
   g.fillStyle='#FAF8F4';g.fillRect(0,0,W,H);
   g.fillStyle='#2C2420';g.fillRect(0,0,W,170);
@@ -495,7 +689,9 @@ async function drawSummary(o){
   g.font='28px '+F;g.fillStyle='#76665C';addrL.forEach(l=>{g.fillText(l,P,y);y+=40});y+=16;
   g.strokeStyle='#EDE2D6';g.lineWidth=3;g.beginPath();g.moveTo(P,y);g.lineTo(W-P,y);g.stroke();y+=56;
   rows.forEach(r=>{g.font='600 30px '+F;g.fillStyle='#2C2420';g.fillText(r.title,P,y);g.textAlign='right';g.fillText(fmt(r.price),W-P,y);g.textAlign='left';y+=40;
-    g.font='28px '+F;g.fillStyle='#76665C';r.lines.forEach(l=>{g.fillText(l,P,y);y+=38});y+=22});
+    g.font='28px '+F;g.fillStyle='#76665C';r.lines.forEach(l=>{g.fillText(l,P,y);y+=38});
+    if(r.img){try{g.drawImage(r.img,P,y-10,r.iw,r.ih)}catch(e){}y+=r.ih+16}
+    y+=22});
   g.beginPath();g.moveTo(P,y-10);g.lineTo(W-P,y-10);g.stroke();y+=40;
   const kv=(k,v,big)=>{g.font=(big?'600 36px ':'28px ')+F;g.fillStyle=big?'#2C2420':'#76665C';g.fillText(k,P,y);g.textAlign='right';g.fillStyle=big?'#A9572F':'#2C2420';g.fillText(v,W-P,y);g.textAlign='left';y+=big?60:44};
   kv('ค่าสินค้า',fmt(o.st));kv('ค่าจัดส่ง',o.sf?fmt(o.sf):'ไม่มี (นัดรับ)');kv('ยอดที่ต้องโอน',fmt(o.gt),true);y+=20;
@@ -518,7 +714,7 @@ async function openSaveOverlay(){
 $('#saveImgBtn').addEventListener('click',openSaveOverlay);
 $('#ovClose').addEventListener('click',()=>$('#ov').hidden=true);
 if(/Line\/|FBAN|FBAV|Instagram|musical_ly|BytedanceWebview|TikTok/i.test(navigator.userAgent))$('#inapp').hidden=false;
-$('#againBtn').addEventListener('click',()=>{phapQty={};sipCart=[];sipSel={design:null,opt:0,name:''};$('#doneView').hidden=true;$('#formView').hidden=false;$('#bar').hidden=false;renderConf();renderCart();scrollTo({top:0})});
+$('#againBtn').addEventListener('click',()=>{phapQty={};sipCart=[];kcCart=[];sipSel={design:null,opt:0,name:''};$('#doneView').hidden=true;$('#formView').hidden=false;$('#bar').hidden=false;renderConf();renderCart();scrollTo({top:0})});
 
 renderTabs();renderConf();renderCart();
 </script>
