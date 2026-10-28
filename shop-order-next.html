@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>สั่งซื้อสินค้า · Fixtory Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Chonburi&family=Prompt:wght@300;400;500;600&display=swap">
+<style>
+:root{--bg:#FAF8F4;--surface:#FFFFFF;--sunk:#F5E8DC;--soft:#E8C4A8;--ink:#2C2420;--muted:#76665C;--line:#EDE2D6;--accent:#C4714A;--accent-text:#A9572F;--olive:#6B7A4A;--danger:#B42318;
+  --f-display:"DM Serif Display","Chonburi",Georgia,serif;--f-body:"Prompt",system-ui,-apple-system,"Segoe UI",sans-serif;color-scheme:light}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.6;font-weight:400}
+.wrap{max-width:720px;margin:0 auto;padding:20px max(16px,env(safe-area-inset-left)) 120px max(16px,env(safe-area-inset-right))}
+header{display:flex;align-items:center;gap:12px;padding:6px 0 18px}
+header svg{width:26px;height:38px;flex:none}
+.wm{font-family:var(--f-display);text-transform:uppercase;letter-spacing:.1em;font-size:20px;white-space:nowrap}
+.wm em{font-style:normal;color:var(--accent)}
+h1{font-family:var(--f-display);font-weight:400;font-size:30px;margin:4px 0 2px;color:var(--accent)}
+.sub{color:var(--muted);margin:0 0 20px;font-size:14px}
+.card{background:var(--surface);border-radius:20px;padding:18px;box-shadow:0 1px 2px rgba(44,36,32,.06),0 8px 24px -14px rgba(44,36,32,.25);margin-bottom:16px}
+.card h2{font-family:var(--f-display);font-weight:400;font-size:21px;margin:0 0 12px}
+.ptabs{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+.ptab{display:flex;gap:10px;align-items:center;text-align:left;border:0;background:var(--surface);border-radius:16px;padding:8px;cursor:pointer;box-shadow:inset 0 0 0 1.5px var(--line);font:inherit;color:inherit}
+.ptab img{width:54px;height:72px;object-fit:cover;border-radius:10px;flex:none;background:var(--sunk)}
+.ptab b{display:block;font-weight:600;line-height:1.3}
+.ptab span{font-size:13px;color:var(--muted)}
+.ptab[aria-pressed="true"]{box-shadow:inset 0 0 0 2.5px var(--accent);background:#FFF9F4}
+.lbl{display:block;font-size:13.5px;font-weight:600;margin:14px 0 6px}
+.lbl small{font-weight:400;color:var(--muted);margin-left:6px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border:0;background:var(--bg);box-shadow:inset 0 0 0 1.5px var(--line);border-radius:999px;padding:6px 12px;font:inherit;font-size:13.5px;cursor:pointer;color:inherit}
+.chip b{font-weight:600;color:var(--accent-text);margin-right:4px;font-variant-numeric:tabular-nums}
+.chip[aria-pressed="true"]{background:var(--accent);color:#fff;box-shadow:none}
+.chip[aria-pressed="true"] b{color:#fff}
+.opts{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.opt{border:0;background:var(--bg);box-shadow:inset 0 0 0 1.5px var(--line);border-radius:14px;padding:10px 6px;font:inherit;cursor:pointer;color:inherit;display:flex;flex-direction:column;align-items:center;gap:2px;text-align:center}
+.opt span{font-size:12.5px;color:var(--muted);line-height:1.3}
+.opt b{font-family:var(--f-display);font-weight:400;font-size:22px;color:var(--accent)}
+.opt[aria-pressed="true"]{box-shadow:inset 0 0 0 2.5px var(--accent);background:#FFF9F4}
+.pv-wrap{display:grid;grid-template-columns:200px minmax(0,1fr);gap:14px;align-items:start}
+.pv{margin:0;background:var(--sunk);border-radius:14px;overflow:hidden;position:relative}
+.pv img{display:block;width:100%;height:auto}
+.pv figcaption{position:absolute;left:8px;bottom:8px;display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.92);border-radius:999px;padding:3px 10px 3px 4px;font-size:12.5px;font-weight:600}
+.pv figcaption i{width:16px;height:16px;border-radius:50%;box-shadow:inset 0 0 0 1px rgba(44,36,32,.15)}
+.pv.sip figcaption{padding-left:10px}
+.pv-tag{display:block;text-align:center;background:var(--surface);color:var(--accent-text);padding:6px 8px;font-size:12.5px;font-weight:600;border-top:1px solid var(--line)}
+.pv.empty{aspect-ratio:5/4;display:grid;place-items:center;color:var(--muted);font-size:13px;text-align:center;padding:12px;border:2px dashed var(--soft);background:transparent}
+.pv-wrap .colorrow{grid-template-columns:1fr 1fr}
+.crow.on{box-shadow:inset 0 0 0 2px var(--accent)}
+.cpick{display:flex;align-items:center;gap:8px;flex:1;min-width:0;border:0;background:none;padding:0;font:inherit;color:inherit;text-align:left;cursor:pointer}
+.cpick span{font-size:13.5px}
+@media (max-width:560px){.pv-wrap{grid-template-columns:130px minmax(0,1fr);gap:10px}.pv-wrap:has(.pv.sip){grid-template-columns:1fr}.pv.sip{max-width:260px;justify-self:center;width:100%}.pv.sip.empty{aspect-ratio:auto;padding:14px}.pv-wrap .colorrow{grid-template-columns:1fr}.pv figcaption{font-size:11px;left:5px;bottom:5px}}
+.colorrow{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px}
+.crow{display:flex;align-items:center;gap:8px;background:var(--bg);border-radius:12px;padding:6px 8px;box-shadow:inset 0 0 0 1.5px var(--line)}
+.crow i{width:24px;height:24px;border-radius:50%;flex:none;box-shadow:inset 0 0 0 1px rgba(44,36,32,.15)}
+.crow span{flex:1;min-width:0;font-size:13.5px}
+.step{display:flex;align-items:center;gap:4px}
+.step button{width:28px;height:28px;border-radius:50%;border:0;background:var(--surface);box-shadow:inset 0 0 0 1.5px var(--line);font:inherit;font-size:16px;line-height:1;cursor:pointer;color:var(--ink)}
+.step b{min-width:18px;text-align:center;font-variant-numeric:tabular-nums}
+input[type=text],input[type=tel],textarea,select{width:100%;border:0;box-shadow:inset 0 0 0 1.5px var(--line);background:var(--surface);border-radius:12px;padding:10px 12px;font:inherit;color:inherit}
+input:focus,textarea:focus,select:focus{outline:none;box-shadow:inset 0 0 0 2px var(--accent)}
+textarea{min-height:76px;resize:vertical}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media (max-width:480px){.two{grid-template-columns:1fr}.opts{grid-template-columns:1fr}.ptabs{grid-template-columns:1fr}}
+.hint{font-size:12.5px;color:var(--muted);margin:6px 0 0}
+.note{background:var(--sunk);border-radius:12px;padding:10px 12px;font-size:13px;color:var(--ink);margin-top:12px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:0;border-radius:999px;padding:11px 20px;font:inherit;font-weight:600;cursor:pointer}
+.btn.primary{background:var(--accent);color:#fff}
+.btn.ghost{background:var(--surface);box-shadow:inset 0 0 0 1.5px var(--line);color:var(--ink)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.full{width:100%;margin-top:14px}
+.cart-item{display:flex;justify-content:space-between;gap:10px;padding:9px 0;border-bottom:1px solid var(--line);font-size:14px}
+.cart-item:last-child{border-bottom:0}
+.cart-item b{font-weight:600}
+.cart-item .x{border:0;background:none;color:var(--danger);font:inherit;font-size:13px;cursor:pointer;padding:0 0 0 8px}
+.sum{display:grid;gap:4px;font-size:14px;margin-top:10px}
+.sum div{display:flex;justify-content:space-between}
+.sum .grand{font-size:17px;font-weight:600;border-top:1.5px solid var(--line);padding-top:8px;margin-top:4px}
+.sum .grand span:last-child{color:var(--accent-text);font-variant-numeric:tabular-nums}
+.empty{color:var(--muted);font-size:14px;text-align:center;padding:10px 0}
+.check{display:flex;align-items:center;gap:8px;font-size:14px;margin-top:12px}
+.err{color:var(--danger);font-size:13.5px;margin-top:10px}
+.bar{position:fixed;left:0;right:0;bottom:0;background:rgba(255,255,255,.94);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-top:1px solid var(--line);padding:10px max(16px,env(safe-area-inset-right)) calc(10px + env(safe-area-inset-bottom)) max(16px,env(safe-area-inset-left))}
+.bar .in{max-width:720px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.bar .t{font-size:13px;color:var(--muted)}
+.bar .t b{display:block;font-size:19px;color:var(--ink);font-variant-numeric:tabular-nums}
+.done{text-align:center}
+.done h2{color:var(--accent)}
+.done .ono{font-family:var(--f-display);font-size:34px;color:var(--ink);letter-spacing:.04em}
+.done img{max-width:240px;width:100%;border-radius:12px;margin:12px auto;display:block}
+.done .amt{font-size:22px;font-weight:600;color:var(--accent-text)}
+.inapp{background:#FFF4E0;color:#7A4B00;border-radius:12px;padding:10px 12px;font-size:13px;margin-bottom:14px}
+.ptab small.ptip{display:block;font-size:11.5px;color:var(--accent-text);margin-top:2px}
+.pimg{position:relative;flex:none;cursor:zoom-in;border-radius:10px;display:block}
+.pimg img{display:block}
+.pimg i{position:absolute;right:-5px;bottom:-5px;width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;display:grid;place-items:center;box-shadow:0 0 0 2px var(--surface)}
+.pimg:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.hint#zipMsg{color:var(--accent-text)}
+.ac{position:relative}
+.ac label small{font-weight:400;color:var(--muted);margin-left:4px}
+.ac-list{position:absolute;left:0;right:0;top:100%;margin:4px 0 0;padding:4px;list-style:none;background:var(--surface);border-radius:12px;box-shadow:0 12px 30px -10px rgba(44,36,32,.35),0 0 0 1px var(--line);z-index:20;max-height:300px;overflow:auto;min-width:min(340px,calc(100vw - 32px))}
+.ac-list li{display:flex;gap:10px;align-items:baseline;padding:8px 10px;border-radius:8px;cursor:pointer;font-size:13.5px}
+.ac-list li b{font-weight:600;font-variant-numeric:tabular-nums;color:var(--accent-text)}
+.ac-list li span{color:var(--muted)}
+.ac-list li:hover,.ac-list li[aria-selected="true"]{background:var(--sunk)}
+.ac-list li.ac-none{cursor:default;color:var(--muted)}
+.detail-btn{display:flex;align-items:center;gap:12px;width:100%;text-align:left;border:0;background:var(--sunk);border-radius:14px;padding:10px 14px 10px 16px;font:inherit;color:inherit;cursor:pointer;margin-bottom:4px}
+.detail-btn img{width:40px;height:54px;object-fit:cover;border-radius:8px;flex:none}
+.detail-btn span{flex:1;min-width:0;display:grid;line-height:1.35}
+.detail-btn b{font-weight:600;color:var(--accent-text)}
+.detail-btn small{font-size:12.5px;color:var(--muted)}
+.detail-btn i{font-style:normal;font-size:26px;color:var(--accent);line-height:1}
+.dm{position:fixed;inset:0;z-index:45;background:rgba(30,22,18,.6);display:flex;align-items:center;justify-content:center;padding:16px}
+.dm-card{background:var(--bg);border-radius:22px;width:min(760px,100%);max-height:100%;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 30px 80px -20px rgba(30,22,18,.5)}
+.dm-h{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 12px 12px 20px;border-bottom:1px solid var(--line)}
+.dm-h b{font-family:var(--f-display);font-weight:400;font-size:22px;color:var(--accent)}
+.dm-x{width:36px;height:36px;border-radius:50%;border:0;background:var(--sunk);font-size:22px;line-height:1;cursor:pointer;color:var(--ink)}
+.dm-b{overflow-y:auto;padding:16px 20px 20px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px}
+.dm-b img{width:100%;border-radius:14px;display:block}
+.dm-b p{margin:0 0 10px}
+.dm-b ul{margin:0 0 12px;padding-left:18px;display:grid;gap:4px;font-size:14px}
+.dm-spec{display:grid;gap:6px;font-size:14px;margin-bottom:12px}
+.dm-spec div{display:flex;justify-content:space-between;gap:10px;border-bottom:1px dashed var(--line);padding-bottom:5px}
+.dm-spec span{color:var(--muted)}
+.dm-care{background:var(--sunk);border-radius:12px;padding:10px 12px;font-size:13px;margin-bottom:12px}
+.dm-link{font-size:14px;color:var(--accent-text);font-weight:600}
+@media (max-width:620px){.dm{padding:0}.dm-card{border-radius:0;height:100%}.dm-b{grid-template-columns:1fr}}
+.ov{position:fixed;inset:0;background:rgba(30,22,18,.82);z-index:50;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:20px max(16px,env(safe-area-inset-right)) calc(20px + env(safe-area-inset-bottom)) max(16px,env(safe-area-inset-left))}
+.ov p{color:#fff;margin:0;text-align:center;font-size:14px}
+.ov p small{display:block;color:#ddd;font-size:12px}
+.ov img{max-width:min(420px,100%);max-height:66vh;border-radius:12px;background:#fff;-webkit-touch-callout:default;user-select:auto}
+.ov .row{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.chk{background:#FFF4E0;border-radius:12px;padding:10px 12px;font-size:13px;margin-top:10px;text-align:left}
+/* ---------- Alphabet Clicker ---------- */
+.ptabs{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+.kc-top{display:grid;grid-template-columns:200px minmax(0,1fr);gap:14px;align-items:start}
+.kc-pv{margin:0;background:var(--sunk);border-radius:14px;padding:14px 10px 10px;display:flex;flex-direction:column;align-items:center;gap:10px;min-height:260px;justify-content:center}
+.kc-pv svg{display:block;max-width:100%;height:auto}
+.kc-pv.h{grid-column:1/-1;min-height:0}
+.kc-pv .seg button{padding:4px 9px;font-size:12px;white-space:nowrap}
+.kc-pv .cap{font-size:11.5px;color:var(--muted);text-align:center;margin:0}
+.seg{display:inline-flex;background:var(--surface);border-radius:999px;padding:3px;box-shadow:inset 0 0 0 1.5px var(--line)}
+.seg button{border:0;background:none;border-radius:999px;padding:5px 12px;font:inherit;font-size:13px;cursor:pointer;color:var(--muted)}
+.seg button[aria-pressed="true"]{background:var(--ink);color:#fff}
+.colopts{display:grid;gap:6px}
+.colopt{display:flex;align-items:center;gap:10px;border:0;background:var(--bg);box-shadow:inset 0 0 0 1.5px var(--line);border-radius:12px;padding:7px 10px;font:inherit;color:inherit;cursor:pointer;text-align:left}
+.colopt[aria-pressed="true"]{box-shadow:inset 0 0 0 2.5px var(--accent);background:#FFF9F4}
+.colopt svg{flex:none}
+.colopt span{display:grid;line-height:1.3;font-size:13.5px}
+.colopt small{color:var(--muted);font-size:12px}
+.dots{display:flex;flex-wrap:wrap;gap:8px}
+.dot{width:34px;height:34px;border-radius:50%;border:0;cursor:pointer;box-shadow:inset 0 0 0 1px rgba(44,36,32,.18);position:relative;padding:0}
+.dot[aria-pressed="true"]{box-shadow:0 0 0 2.5px var(--surface),0 0 0 4.5px var(--accent)}
+.dotlbl{font-size:12.5px;color:var(--muted);margin-left:4px}
+.word{display:flex;flex-wrap:wrap;gap:5px;min-height:46px;align-items:center;background:var(--bg);border-radius:12px;padding:6px 8px;box-shadow:inset 0 0 0 1.5px var(--line)}
+.word .ph{color:var(--muted);font-size:13px;padding-left:4px}
+.word svg{display:block}
+.kb{display:grid;grid-template-columns:repeat(9,minmax(0,1fr));gap:5px;margin-top:8px}
+.kb button{border:0;background:var(--surface);box-shadow:inset 0 0 0 1.5px var(--line);border-radius:9px;padding:0;height:40px;font:inherit;font-weight:600;font-size:15px;cursor:pointer;color:var(--ink);display:grid;place-items:center}
+.kb button:active{background:var(--sunk)}
+.kb button:disabled{opacity:.35;cursor:not-allowed}
+.kb.emo{grid-template-columns:repeat(8,minmax(0,1fr))}
+.kbrow{display:flex;gap:8px;margin-top:8px;align-items:center;flex-wrap:wrap}
+.kbrow .btn{padding:7px 14px;font-size:13.5px;font-weight:500}
+.kbrow .cnt{margin-left:auto;font-size:12.5px;color:var(--muted);font-variant-numeric:tabular-nums}
+.lc{display:flex;flex-wrap:wrap;gap:8px}
+.lcr{display:flex;align-items:center;gap:8px;background:var(--bg);border-radius:12px;padding:6px 8px;box-shadow:inset 0 0 0 1.5px var(--line)}
+.lcr svg{flex:none;display:block}
+.sw{display:flex;gap:5px}
+.sw button{width:24px;height:24px;border-radius:50%;border:0;padding:0;cursor:pointer;box-shadow:inset 0 0 0 1px rgba(44,36,32,.18)}
+.sw button[aria-pressed="true"]{box-shadow:0 0 0 2px var(--surface),0 0 0 3.5px var(--ink)}
+.straps{display:flex;gap:8px;overflow-x:auto;padding:2px 2px 6px;scrollbar-width:thin}
+.strap{flex:0 0 84px;border:0;background:var(--bg);box-shadow:inset 0 0 0 1.5px var(--line);border-radius:12px;padding:6px 4px;font:inherit;font-size:11.5px;color:var(--muted);cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px}
+.strap[aria-pressed="true"]{box-shadow:inset 0 0 0 2.5px var(--accent);background:#FFF9F4;color:var(--ink)}
+.linkbtn{border:0;background:none;padding:0;font:inherit;font-size:13px;color:var(--accent-text);font-weight:600;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+.kc-price{display:flex;justify-content:space-between;align-items:baseline;margin-top:14px;font-size:14px}
+.kc-price b{font-size:18px;color:var(--accent-text);font-variant-numeric:tabular-nums}
+.gal{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px}
+.gal img{height:220px;width:auto;border-radius:12px;flex:none}
+.cart-item .thumb{display:block;margin-top:6px;max-width:100%;height:auto}
+@media (max-width:560px){.kc-top{grid-template-columns:132px minmax(0,1fr);gap:10px}.kc-pv{min-height:200px;padding:10px 4px 8px}.kc-pv .seg button{padding:4px 7px;font-size:11.5px}.kb button{height:38px;font-size:14px}.dot{width:30px;height:30px}}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+<svg viewBox="0 0 40 58" aria-hidden="true"><rect x="15.5" y="0" width="9" height="4.5" rx="1.6" fill="#C4714A"/><rect x="18" y="4" width="4" height="3.5" fill="#A85E3B"/><path d="M20 7.5L36 16.5L20 25.5L4 16.5Z" fill="#C97A53"/><path d="M4 16.5L20 25.5V28.5L4 19.5Z" fill="#A85E3B"/><path d="M36 16.5L20 25.5V28.5L36 19.5Z" fill="#B66A43"/><path d="M4 24L20 33L36 24V28.2L20 37.2L4 28.2Z" fill="#B4663F"/><path d="M4 29.2L20 38.2L36 29.2V33.4L20 42.4L4 33.4Z" fill="#9A5737"/><path d="M4 34.4L20 43.4L36 34.4V38.6L20 47.6L4 38.6Z" fill="#7C4830"/><path d="M4 39.6L20 48.6L36 39.6V43.8L20 52.8L4 43.8Z" fill="#5E3A2A"/><path d="M4 44.8L20 53.8L36 44.8V49L20 58L4 49Z" fill="#432D24"/></svg>
+<span class="wm">FIXTORY<em>.STUDIO</em></span>
+</header>
+
+<section id="formView">
+<div class="inapp" id="inapp" hidden>คุณกำลังเปิดหน้านี้ในแอป ถ้าบันทึกรูปสรุปออเดอร์ไม่ได้ ให้กดค้างที่รูปแล้วเลือก "บันทึกรูปภาพ" หรือเปิดหน้านี้ใน Chrome / Safari</div>
+<h1>สั่งซื้อสินค้า</h1>
+<p class="sub">เลือกสินค้า ใส่ตะกร้า แล้วกรอกที่อยู่จัดส่ง ร้านจะได้รับออเดอร์ทันที</p>
+
+<div class="card">
+  <h2>1. เลือกสินค้า</h2>
+  <div class="ptabs" id="ptabs"></div>
+  <div id="pconf"></div>
+</div>
+
+<div class="card">
+  <h2>2. ตะกร้า</h2>
+  <div id="cart"></div>
+  <div class="sum" id="sum"></div>
+</div>
+
+<div class="card">
+  <h2>3. ข้อมูลผู้สั่งและการจัดส่ง</h2>
+  <div class="two">
+    <div><label class="lbl" for="cName">ชื่อผู้รับ</label><input type="text" id="cName" autocomplete="name"></div>
+    <div><label class="lbl" for="cPhone">เบอร์โทร / LINE ID</label><input type="tel" id="cPhone" autocomplete="tel"></div>
+  </div>
+  <label class="check"><input type="checkbox" id="selfDeliver"> นัดรับเอง ไม่ผ่านขนส่ง (ไม่มีค่าส่ง)</label>
+  <div id="shipBox">
+    <div class="ac"><label class="lbl" for="cFind">ค้นหาที่อยู่เร็ว <small>ไม่บังคับ · พิมพ์ชื่อแขวง/ตำบล หรือรหัสไปรษณีย์</small></label><input type="text" id="cFind" autocomplete="off" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="zipList" placeholder="เช่น คลองเตย หรือ 50200"><ul id="zipList" class="ac-list" role="listbox" hidden></ul></div>
+    <div class="two">
+      <div><label class="lbl" for="cProv">จังหวัด</label><select id="cProv"><option value="">เลือกจังหวัด</option></select></div>
+      <div><label class="lbl" for="cAmp">เขต/อำเภอ</label><select id="cAmp" disabled><option value="">เลือกจังหวัดก่อน</option></select></div>
+    </div>
+    <div class="two">
+      <div><label class="lbl" for="cTam">แขวง/ตำบล</label><select id="cTam" disabled><option value="">เลือกอำเภอก่อน</option></select></div>
+      <div><label class="lbl" for="cZip">รหัสไปรษณีย์</label><input type="text" id="cZip" inputmode="numeric" maxlength="5" autocomplete="postal-code" placeholder="ขึ้นให้อัตโนมัติ"></div>
+    </div>
+    <p class="hint" id="zipMsg" hidden></p>
+    <div id="manualSub" hidden><label class="lbl" for="cSubText">แขวง/ตำบล และ เขต/อำเภอ</label><input type="text" id="cSubText" placeholder="เช่น ต.ท่าศาลา อ.เมืองเชียงใหม่"></div>
+    <label class="lbl" for="cAddr">บ้านเลขที่ หมู่บ้าน/อาคาร ซอย ถนน</label><textarea id="cAddr" autocomplete="address-line1" placeholder="เช่น 99/1 หมู่บ้านสุขใจ ซอย 5 ถนนสุขุมวิท" style="min-height:64px"></textarea>
+  </div>
+  <div id="pickupBox" hidden><label class="lbl" for="cPickup">จุดนัดรับ / วันเวลาที่สะดวก</label><input type="text" id="cPickup"></div>
+  <label class="lbl" for="cNote">หมายเหตุ <small>ไม่บังคับ</small></label><textarea id="cNote" placeholder="เช่น ต้องการใช้ของภายในวันที่…"></textarea>
+  <div class="err" id="err" role="alert" hidden></div>
+</div>
+</section>
+
+<section id="doneView" hidden>
+  <div class="card done">
+    <h2>ได้รับออเดอร์แล้ว ขอบคุณค่ะ</h2>
+    <p class="sub" style="margin:0">เลขที่ออเดอร์</p>
+    <div class="ono" id="dNo">-</div>
+    <div class="chk" id="dChk" hidden>ระบบอ่านเลขที่ออเดอร์อัตโนมัติไม่ได้ แต่ออเดอร์น่าจะถูกส่งถึงร้านแล้ว <b>กรุณาอย่ากดสั่งซ้ำ</b> ส่งรูปสรุปออเดอร์ให้ร้านเพื่อเช็คเลขที่ออเดอร์</div>
+    <button class="btn primary full" id="saveImgBtn" type="button">บันทึกรูปสรุปออเดอร์</button>
+    <p style="margin:14px 0 0">ยอดที่ต้องโอน</p>
+    <div class="amt" id="dAmt">-</div>
+    <img src="promptpay_qr.jpg" alt="QR PromptPay ของร้าน Fixtory Studio">
+    <p class="hint">สแกนแล้วพิมพ์จำนวนเงินเองตอนโอน (QR ไม่ได้ผูกจำนวนเงิน)</p>
+    <div class="note" style="text-align:left">โอนแล้ว ส่งสลิปพร้อมเลขที่ออเดอร์ให้ร้านทาง TikTok / Facebook: fixtory.studio หรือโทร 081-336-8232 ร้านจะเริ่มผลิตหลังได้รับยอดโอน</div>
+    <button class="btn ghost full" id="againBtn" type="button">สั่งซื้อเพิ่ม</button>
+  </div>
+</section>
+</div>
+
+<div class="dm" id="dm" hidden role="dialog" aria-modal="true" aria-labelledby="dmTitle">
+  <div class="dm-card">
+    <div class="dm-h"><b id="dmTitle"></b><button class="dm-x" id="dmClose" type="button" aria-label="ปิด">×</button></div>
+    <div class="dm-b" id="dmBody"></div>
+  </div>
+</div>
+<div class="ov" id="ov" hidden>
+  <p>กดค้างที่รูป แล้วเลือก "บันทึกรูปภาพ"<small>ร้านได้รับรูปนี้ทางอีเมลแล้ว ใช้รูปนี้แนบตอนส่งสลิป</small></p>
+  <img id="ovImg" alt="รูปสรุปออเดอร์">
+  <div class="row"><button class="btn primary" id="ovShare" type="button" hidden>แชร์ / บันทึก</button><a class="btn primary" id="ovDl" download="fixtory-order.png" hidden>ดาวน์โหลดรูป</a><button class="btn ghost" id="ovClose" type="button">ปิด</button></div>
+</div>
+
+<div class="bar" id="bar"><div class="in">
+  <div class="t">ยอดรวม<b id="barTotal">฿0</b></div>
+  <button class="btn primary" id="submitBtn" type="button">ยืนยันคำสั่งซื้อ</button>
+</div></div>
+
+<script>
+const GAS_URL="https://script.google.com/macros/s/AKfycbwfy2uHH4QJOM851_HBz3eoUCbwBvnZo1fGzf8DNChs5hS03Ml-335eATS3XTbifVYo9Q/exec";
+// หน้าสั่งซื้อรวม (ร่าง) — รวม Alphabet Clicker ไว้ในตะกร้าเดียวกับสินค้าแคตตาล็อก
+// ฟอร์ม keycap เดิม (index.html) ยังใช้งานแยกได้ตามปกติ
+const SHIP_FEE_FLAT=35;   // ค่าส่งเท่ากับฟอร์ม Alphabet Clicker
+const MAX_PIECES=10;      // มากกว่านี้ให้ติดต่อร้าน
+const THAI_PROVINCES=["กรุงเทพมหานคร","กระบี่","กาญจนบุรี","กาฬสินธุ์","กำแพงเพชร","ขอนแก่น","จันทบุรี","ฉะเชิงเทรา","ชลบุรี","ชัยนาท","ชัยภูมิ","ชุมพร","เชียงราย","เชียงใหม่","ตรัง","ตราด","ตาก","นครนายก","นครปฐม","นครพนม","นครราชสีมา","นครศรีธรรมราช","นครสวรรค์","นนทบุรี","นราธิวาส","น่าน","บึงกาฬ","บุรีรัมย์","ปทุมธานี","ประจวบคีรีขันธ์","ปราจีนบุรี","ปัตตานี","พระนครศรีอยุธยา","พะเยา","พังงา","พัทลุง","พิจิตร","พิษณุโลก","เพชรบุรี","เพชรบูรณ์","แพร่","ภูเก็ต","มหาสารคาม","มุกดาหาร","แม่ฮ่องสอน","ยโสธร","ยะลา","ร้อยเอ็ด","ระนอง","ระยอง","ราชบุรี","ลพบุรี","ลำปาง","ลำพูน","เลย","ศรีสะเกษ","สกลนคร","สงขลา","สตูล","สมุทรปราการ","สมุทรสงคราม","สมุทรสาคร","สระแก้ว","สระบุรี","สิงห์บุรี","สุโขทัย","สุพรรณบุรี","สุราษฎร์ธานี","สุรินทร์","หนองคาย","หนองบัวลำภู","อ่างทอง","อำนาจเจริญ","อุดรธานี","อุตรดิตถ์","อุทัยธานี","อุบลราชธานี"];
+
+// ข้อมูลสินค้า — ต้องตรงกับหน้าแคตตาล็อก ถ้าแก้ราคา/แบบที่แคตตาล็อก ให้แก้ที่นี่ด้วย
+const CATALOG_URL='https://claude.ai/artifact/464DJRbj5uyXQzqGRXmeTy';
+const IMG_V='?v=20261028b'; // เปลี่ยนเลขนี้เมื่อแก้รูป เพื่อให้เบราว์เซอร์โหลดรูปใหม่
+const PLA_CARE='PLA ทนร้อนได้ประมาณ 55–60°C ห้ามทิ้งไว้ในรถกลางแดด ห้ามใส่น้ำร้อนหรือเครื่องล้างจาน ล้างด้วยน้ำเย็นกับสบู่อ่อน';
+const PRODUCTS={
+  phapchoo:{name:'น้องพับชู่',sub:'ที่วางทิชชูม้วน',img:'phapchoo.jpg?v=20261028b',from:399,
+    info:{summary:'ที่วางทิชชูม้วนหน้ายิ้ม นั่งห้อยขาริมชั้นวางเป็นเพื่อนคุณ ขาขยับได้',points:['ใส่ทิชชูม้วนมาตรฐาน จนถึงม้วนยาวพิเศษ 3 เท่า','ขาเป็นข้อต่อ ขยับท่าได้','นั่งห้อยขาริมชั้นหรือโต๊ะได้','สีพาสเทลเลือกได้ 6 สี'],spec:[['วัสดุ','PLA'],['ระยะเวลาผลิต','1 วัน'],['ที่มาของแบบ','ร้านออกแบบเอง']]},
+    colors:[['ม่วงลาเวนเดอร์','#CDB8F0','lavender'],['ชมพู','#F6C3D3','pink'],['ฟ้า','#9EC3F0','blue'],['เขียวมิ้นต์','#B8E3CF','mint'],['เหลือง','#F7E3A1','yellow'],['ครีม','#EFE9E1','cream']]},
+  sipbuddy:{name:'Sip Buddy',sub:'ที่ใส่กล่องนม',img:'sipbuddy.jpg?v=20261028b',from:590,
+    info:{summary:'ที่ใส่กล่องนมและน้ำผลไม้รูปสัตว์ มีหูจับสองข้าง ใช้กับกล่องทรงสูง 150–250 มล. (ไม่รองรับกล่องทรงแบนกว้าง)',points:['เลือกได้ 13 แบบ แจ้งหมายเลขแบบตอนสั่งซื้อ','พิมพ์ด้วยเส้นสีรุ้ง สีไล่เองระหว่างพิมพ์ ทุกใบจึงไม่ซ้ำกัน','แบบ Color Pop เพิ่มสีที่ใบหน้าตัวสัตว์','สลักชื่อด้านหลังได้ ไทยหรืออังกฤษ 4–6 ตัวอักษร'],spec:[['วัสดุ','PLA'],['ระยะเวลาผลิต','1 วัน'],['ที่มาของแบบ','Licensed design']]},
+    options:[['สีเดียว',590,false],['หลายสี (Color Pop)',690,false],['หลายสี + สลักชื่อด้านหลัง',790,true]],
+    designs:['ไดโนเสาร์','จิ้งจอกยิ้ม','น้องหมา','น้องแมว','ก้อนเมฆ','น้องไก่','น้องหมี','แมวยิ้ม','เม่น','แพนด้า','บีเวอร์','จิ้งจอกคลาสสิก','นกฮูก']},
+  keycap:{name:'Alphabet Clicker',sub:'พวงกุญแจคีย์แคป',img:'kc/keycap-thumb.jpg'+IMG_V,big:'kc/keycap-set.jpg'+IMG_V,from:35,noCatalog:true,noCare:true,
+    info:{summary:'พวงกุญแจคีย์แคปกดคลิกได้ เรียงตัวอักษรเป็นชื่อหรือคำที่ชอบ เลือกสีคีย์ สีเคส และสายคล้องเองได้',points:['ตัวอักษร A–Z หน้ายิ้ม 7 แบบ และหัวใจ ผสมกันได้ รวมไม่เกิน 8 ช่อง','เลือกสีคีย์ทีละตัว จาก 3 คอลเลกชัน: Pastel, Dark mode, Polar White','สีเคส 5 สี สายคล้อง 8 แบบ','ราคา 3 ช่อง 100 บาท ช่องที่เหลือช่องละ 35 บาท'],spec:[['จำนวนช่อง','1–8 ช่อง']],
+      gallery:['kc/col-1.jpg','kc/col-2.jpg','kc/col-4.jpg','kc/col-3.jpg','kc/col-5.jpg']}}
+};
+// ---------- Alphabet Clicker (ยกมาจากฟอร์ม keycap เดิม index.html — ชื่อสี/สายคล้อง/คอลเลกชันต้องตรงกับแท็บสต๊อกใน Sheet) ----------
+const KC_HEX={"ฟ้า":"#7FC4E0","ชมพู":"#EFA9C6","ม่วง":"#B7A3E0","เหลือง":"#F2D34D","เนื้อ":"#E6C09C","ขาว":"#F5F5F2","ดำ":"#2B2B2B","ส้ม":"#F0954A","แดง":"#E0435A","เขียว":"#7FC97F","มิ้นท์":"#8FDDC6","ทราย":"#D8C6A8","น้ำเงิน":"#3F63C7","น้ำตาล":"#9A6B44","ชมพูอมแดง":"#E85C7A","เขียวอมฟ้า":"#3FB6B0"};
+const KC_COLS={pastel:{name:'Pastel',desc:'ตัวอักษรขาว ฐานพาสเทล',fixedSlot:'frame',fixedColor:'ขาว',vary:["ฟ้า","ชมพู","เหลือง","ม่วง"]},
+  dark:{name:'Dark mode',desc:'ตัวอักษรดำ ฐานสี',fixedSlot:'frame',fixedColor:'ดำ',vary:["ฟ้า","ชมพู","เหลือง","ม่วง","น้ำตาล"]},
+  polar:{name:'Polar White',desc:'ฐานขาว ตัวอักษรสี',fixedSlot:'body',fixedColor:'ขาว',vary:["ฟ้า","ชมพู","ม่วง","น้ำเงิน"]}};
+const KC_CASES=["ดำ","ขาว","ม่วง","ชมพูอมแดง","เขียวอมฟ้า"];
+const KC_STRAPS=[{label:"ฟ้า / ขาว",loop:"ฟ้า",knot:"ขาว",ring:"ขาว"},{label:"ชมพู / แดง",loop:"ชมพู",knot:"แดง",ring:"แดง"},{label:"เหลือง / ส้ม",loop:"เหลือง",knot:"ส้ม",ring:"เหลือง"},{label:"ม่วง / แดง",loop:"ม่วง",knot:"แดง",ring:"ม่วง"},{label:"มิ้นท์ / ชมพู",loop:"มิ้นท์",knot:"ชมพู",ring:"ชมพู"},{label:"เขียว / ขาว",loop:"เขียว",knot:"ขาว",ring:"เหลือง"},{label:"ดำ / ชมพู",loop:"ดำ",knot:"ชมพู",ring:"ดำ"},{label:"แดง / ขาว",loop:"แดง",knot:"ขาว",ring:"แดง"}];
+const KC_EMOJI=['🙂','😉','😍','😎','😛','🤩','😊','❤'];
+const KC_FACE={'🙂':'หน้ายิ้ม','😉':'ขยิบตา','😍':'ตาหัวใจ','😎':'แว่นดำ','😛':'แลบลิ้น','🤩':'ตาดาว','😊':'ยิ้มตาปิด'};
+const KC_MAX=8;
+function kcPrice(n){return n<=0?0:Math.floor(n/3)*100+(n%3)*35}
+function kcFaceInner(em){
+  const K='#161616',R='#E0193A',mouth=`<path d="M27,60 Q50,82 73,60" fill="none" stroke="${K}" stroke-width="6" stroke-linecap="round"/>`,oval=`<ellipse cx="39" cy="37" rx="5.5" ry="9" fill="${K}"/><ellipse cx="61" cy="37" rx="5.5" ry="9" fill="${K}"/>`;
+  const heart=(cx,cy)=>`<path transform="translate(${cx},${cy})" d="M0,9 C-14,-1 -11,-11 -5,-11 C-2,-11 0,-8 0,-6 C0,-8 2,-11 5,-11 C11,-11 14,-1 0,9Z" fill="${R}"/>`;
+  const star=(cx,cy)=>{let p=[];for(let i=0;i<10;i++){const r=i%2?4.5:10.5,a=-Math.PI/2+i*Math.PI/5;p.push((cx+r*Math.cos(a)).toFixed(1)+','+(cy+r*Math.sin(a)).toFixed(1))}return `<polygon points="${p.join(' ')}" fill="${R}" stroke="${R}" stroke-width="1.5" stroke-linejoin="round"/>`};
+  let f='';
+  switch(em){
+    case '🙂':f=oval+mouth;break;
+    case '😉':f=`<ellipse cx="39" cy="37" rx="5.5" ry="9" fill="${K}"/><path d="M55,39 Q62,31 69,38" fill="none" stroke="${R}" stroke-width="5" stroke-linecap="round"/>`+mouth;break;
+    case '😍':f=heart(37,37)+heart(63,37)+mouth;break;
+    case '😎':f=`<path d="M17,27 L83,27 L82,32 Q80,46 66,46 Q57,46 54,34 Q50,31 46,34 Q43,46 34,46 Q20,46 18,32Z" fill="${K}"/><path d="M33,62 Q50,76 67,62" fill="none" stroke="${K}" stroke-width="6" stroke-linecap="round"/>`;break;
+    case '😛':f=oval+`<path d="M44,66 L44,74 Q44,84 52,84 Q60,84 59,74 L58,66Z" fill="${R}" stroke="${K}" stroke-width="3.5" stroke-linejoin="round"/>`+mouth;break;
+    case '🤩':f=star(37,37)+star(63,37)+mouth;break;
+    case '😊':f=`<path d="M32,41 Q38,29 44,41" fill="none" stroke="${R}" stroke-width="5.5" stroke-linecap="round"/><path d="M56,41 Q62,29 68,41" fill="none" stroke="${R}" stroke-width="5.5" stroke-linecap="round"/>`+mouth;break;
+    default:return null;
+  }
+  return `<circle cx="50" cy="50" r="47" fill="#C9A80F"/><circle cx="50" cy="49" r="45" fill="#F2D21B"/><circle cx="50" cy="49" r="41" fill="none" stroke="#C9A80F" stroke-width="1.2" opacity=".7"/>`+f;
+}
+function kcResolve(col,v){const c=KC_COLS[col];return c.fixedSlot==='frame'?{body:v,frame:c.fixedColor}:{body:c.fixedColor,frame:v}}
+function kcKey(x,y,s,body,frame,ch,ghost){
+  const op=ghost?' opacity=".35"':'';
+  let g=`<g${op}><rect x="${x}" y="${y}" width="${s}" height="${s}" rx="8" fill="${KC_HEX[body]||'#ccc'}"/><rect x="${x+4}" y="${y+4}" width="${s-8}" height="${s-8}" rx="5" fill="none" stroke="${KC_HEX[frame]||'#fff'}" stroke-width="3"/>`;
+  const face=kcFaceInner(ch);
+  if(face){const d=s*.58;g+=`<g transform="translate(${x+s/2-d/2},${y+s/2-d/2}) scale(${d/100})">${face}</g>`}
+  else{const t=ch==='❤'?'♥':ch;g+=`<text x="${x+s/2}" y="${y+s/2+7}" text-anchor="middle" font-size="${t==='♥'?20:18}" font-weight="700" fill="${KC_HEX[frame]||'#fff'}" font-family="Prompt, Segoe UI, sans-serif">${t}</text>`}
+  return g+'</g>';
+}
+// วาดชิ้นงาน คืน {svg, w, h}
+function kcSVG(it,orient){
+  let chars=it.chars,cols=it.colors,ghost=false;
+  if(!chars.length){chars=['A','B','C'];cols=KC_COLS[it.col].vary.slice(0,3);ghost=true}
+  const n=chars.length,gap=3,st=KC_STRAPS[it.strap];let s='';
+  if(orient==='vertical'){
+    const size=38,railW=size+16,railH=n*size+(n-1)*gap+16,H=66+railH+12;
+    s+=`<circle cx="70" cy="12" r="9" fill="none" stroke="${KC_HEX[st.ring]}" stroke-width="3.5"/><path d="M70,17 C52,26 52,48 70,54 C88,48 88,26 70,17" fill="none" stroke="${KC_HEX[st.loop]}" stroke-width="6" stroke-linecap="round"/><rect x="63" y="50" width="14" height="16" rx="4" fill="${KC_HEX[st.knot]}"/>`;
+    const rx=70-railW/2;s+=`<rect x="${rx}" y="66" width="${railW}" height="${railH}" rx="14" fill="${KC_HEX[it.caseColor]}" stroke="rgba(0,0,0,.12)"/>`;
+    chars.forEach((ch,i)=>{const c=kcResolve(it.col,cols[i]||KC_COLS[it.col].vary[0]);s+=kcKey(rx+8,74+i*(size+gap),size,c.body,c.frame,ch,ghost)});
+    return {svg:s,w:140,h:H};
+  }
+  const size=30,railH=size+16,railW=n*size+(n-1)*gap+16,W=56+railW+10,H=Math.max(railH+16,80),cy=H/2;
+  s+=`<circle cx="14" cy="${cy}" r="9" fill="none" stroke="${KC_HEX[st.ring]}" stroke-width="3.5"/><path d="M19,${cy} C28,${cy-18} 50,${cy-18} 56,${cy} C50,${cy+18} 28,${cy+18} 19,${cy}" fill="none" stroke="${KC_HEX[st.loop]}" stroke-width="6" stroke-linecap="round"/><rect x="52" y="${cy-7}" width="16" height="14" rx="4" fill="${KC_HEX[st.knot]}"/>`;
+  s+=`<rect x="56" y="${cy-railH/2}" width="${railW}" height="${railH}" rx="14" fill="${KC_HEX[it.caseColor]}" stroke="rgba(0,0,0,.12)"/>`;
+  chars.forEach((ch,i)=>{const c=kcResolve(it.col,cols[i]||KC_COLS[it.col].vary[0]);s+=kcKey(64+i*(size+gap),cy-railH/2+8,size,c.body,c.frame,ch,ghost)});
+  return {svg:s,w:W,h:H};
+}
+function kcSvgEl(it,orient,maxW,maxH){const r=kcSVG(it,orient);let w=r.w,h=r.h,k=Math.min(maxW/w,maxH?maxH/h:Infinity);w*=k;h*=k;
+  return el('span',{html:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${r.w} ${r.h}" width="${Math.round(w)}" height="${Math.round(h)}" role="img" aria-label="ตัวอย่าง ${it.chars.join('')||'ชิ้นงาน'}">${r.svg}</svg>`}).firstChild}
+function kcDetail(it){
+  const word=it.chars.map(c=>KC_FACE[c]?'['+KC_FACE[c]+']':c).join('');
+  return word+' · '+KC_COLS[it.col].name+' · เคส'+it.caseColor+' · สาย '+KC_STRAPS[it.strap].label+' · '+(it.orient==='vertical'?'แนวตั้ง':'แนวนอน')+' · สี: '+it.chars.map((c,i)=>c+':'+it.colors[i]).join(', ');
+}
+// ราคาน้องพับชู่ตามจำนวนรวม: 1 = 399, 2 = 699, 3 = 999 (ชุดละ 3 ชิ้นซ้ำได้)
+function phapPrice(n){const t=[0,399,699];return Math.floor(n/3)*999+t[n%3]}
+
+const $=s=>document.querySelector(s);
+const el=(t,a={},...k)=>{const e=document.createElement(t);for(const[x,v]of Object.entries(a)){if(v==null||v===false)continue;if(x==='class')e.className=v;else if(x==='html')e.innerHTML=v;else if(x.startsWith('on'))e.addEventListener(x.slice(2),v);else e.setAttribute(x,v===true?'':v)}for(const c of k.flat()){if(c==null||c===false)continue;e.append(c.nodeType?c:document.createTextNode(c))}return e};
+const fmt=n=>'฿'+Number(n).toLocaleString('th-TH');
+
+const params=new URLSearchParams(location.search);
+try{if(params.get('sale'))sessionStorage.setItem('fixtorySaleRef',params.get('sale'))}catch(e){}
+let saleRef='';try{saleRef=sessionStorage.getItem('fixtorySaleRef')||''}catch(e){}
+
+let current=PRODUCTS[params.get('p')]?params.get('p'):'sipbuddy';
+let phapQty={};            // สี -> จำนวน
+let sipCart=[];            // [{design, opt, name}]
+let sipSel={design:null,opt:0,name:''};
+let pcView=0; // สีที่แสดงในรูปตัวอย่างน้องพับชู่
+let kcCart=[];             // ชิ้น Alphabet Clicker ในตะกร้า
+let kc={chars:[],colors:[],col:'pastel',caseColor:'ดำ',strap:0,orient:'vertical',mode:'letters'};
+
+function renderTabs(){
+  $('#ptabs').replaceChildren(...Object.entries(PRODUCTS).map(([id,p])=>el('button',{type:'button',class:'ptab','aria-pressed':String(id===current),onclick:()=>{current=id;renderTabs();renderConf()}},
+    el('span',{class:'pimg',role:'button',tabindex:'0','aria-label':'ดูรูปและรายละเอียด '+p.name,onclick:e=>{e.stopPropagation();openDetail(id)},onkeydown:e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();e.stopPropagation();openDetail(id)}}},el('img',{src:p.img,alt:''}),el('i',{'aria-hidden':'true',html:'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m20 20-4.5-4.5M10.5 7.5v6M7.5 10.5h6"/></svg>'})),el('div',{},el('b',{},p.name),el('span',{},p.sub+' · เริ่ม '+fmt(p.from)),el('small',{class:'ptip'},'แตะรูปเพื่อดูรายละเอียด')))));
+}
+function openDetail(id){
+  const p=PRODUCTS[id],i=p.info||{};
+  $('#dmTitle').textContent=p.name+' · '+p.sub;
+  $('#dmBody').replaceChildren(
+    el('div',{},el('img',{src:p.big||p.img,alt:p.name})),
+    el('div',{},
+      i.summary?el('p',{},i.summary):null,
+      i.points&&i.points.length?el('ul',{},i.points.map(x=>el('li',{},x))):null,
+      i.spec?el('div',{class:'dm-spec'},i.spec.map(([k,v])=>el('div',{},el('span',{},k),el('b',{},v)))):null,
+      p.noCare?null:el('div',{class:'dm-care'},PLA_CARE),
+      p.noCatalog?null:el('a',{class:'dm-link',href:CATALOG_URL+'#p-'+id,target:'_blank',rel:'noopener'},'ดูหน้าสินค้าเต็มในแคตตาล็อก (มีวิดีโอ) ›'),
+      el('button',{type:'button',class:'btn primary full',onclick:()=>{closeDetail();current=id;renderTabs();renderConf()}},'เลือกสินค้านี้')),
+    i.gallery?el('div',{class:'gal',style:'grid-column:1/-1'},i.gallery.map(s=>el('img',{src:s+IMG_V,alt:'',loading:'lazy'}))):null);
+  $('#dm').hidden=false;document.body.style.overflow='hidden';$('#dmClose').focus();
+}
+function closeDetail(){$('#dm').hidden=true;document.body.style.overflow=''}
+$('#dmClose').addEventListener('click',closeDetail);
+$('#dm').addEventListener('click',e=>{if(e.target.id==='dm')closeDetail()});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#dm').hidden)closeDetail()});
+function totalPieces(){return Object.values(phapQty).reduce((a,b)=>a+b,0)+sipCart.length+kcCart.length}
+function openGallery(title,srcs){
+  $('#dmTitle').textContent=title;
+  $('#dmBody').replaceChildren(el('div',{class:'gal',style:'grid-column:1/-1'},srcs.map(s=>el('img',{src:s+IMG_V,alt:'',loading:'lazy'}))));
+  $('#dm').hidden=false;document.body.style.overflow='hidden';$('#dmClose').focus();
+}
+
+function renderConf(){
+  const box=$('#pconf');box.replaceChildren();
+  if(current==='phapchoo'){
+    const p=PRODUCTS.phapchoo;
+    const cv=p.colors[pcView];
+    box.append(el('span',{class:'lbl'},'เลือกสีและจำนวน',el('small',{},'1 ชิ้น 399 · 2 ชิ้น 699 · 3 ชิ้น 999')),
+      el('div',{class:'pv-wrap'},
+      el('figure',{class:'pv'},el('img',{src:'pc/pc-'+cv[2]+'.jpg'+IMG_V,alt:'น้องพับชู่ สี'+cv[0],width:'520',height:'658'}),el('figcaption',{},el('i',{style:'background:'+cv[1]}),'สี'+cv[0])),
+      el('div',{},
+      el('div',{class:'colorrow'},p.colors.map(([n,h],ci)=>{const q=phapQty[n]||0;return el('div',{class:'crow'+(ci===pcView?' on':'')},el('button',{type:'button',class:'cpick','aria-pressed':String(ci===pcView),'aria-label':'ดูตัวอย่างสี'+n,onclick:()=>{pcView=ci;renderConf()}},el('i',{style:'background:'+h}),el('span',{},n)),
+        el('div',{class:'step'},el('button',{type:'button','aria-label':'ลด '+n,onclick:()=>{if(q>0){phapQty[n]=q-1;if(!phapQty[n])delete phapQty[n];renderConf();renderCart()}}},'−'),el('b',{},String(q)),
+          el('button',{type:'button','aria-label':'เพิ่ม '+n,onclick:()=>{if(totalPieces()>=MAX_PIECES){showErr('สั่งมากกว่า '+MAX_PIECES+' ชิ้น โปรดติดต่อร้านโดยตรง');return}phapQty[n]=q+1;pcView=ci;renderConf();renderCart()}},'+')))})),
+      el('p',{class:'hint'},'แตะชื่อสีเพื่อดูตัวอย่าง · ราคาคิดจากจำนวนรวมทุกสี เช่น 3 ชิ้นคละสี = 999 บาท'))));
+  }else if(current==='keycap'){
+    renderKC(box);
+  }else{
+    const p=PRODUCTS.sipbuddy;
+    const nameIn=el('input',{type:'text',id:'sipName',maxlength:'6',placeholder:'4–6 ตัวอักษร ไทยหรืออังกฤษ',value:sipSel.name});
+    nameIn.addEventListener('input',()=>sipSel.name=nameIn.value);
+    const needName=p.options[sipSel.opt][2];
+    box.append(
+      el('span',{class:'lbl'},'1) เลือกแบบ',el('small',{},'แตะหมายเลขแบบที่ต้องการ')),
+      el('div',{class:'pv-wrap'},
+      sipSel.design!=null?el('figure',{class:'pv sip'},el('img',{src:'sip/sip-'+String(sipSel.design+1).padStart(2,'0')+'.jpg'+IMG_V,alt:'Sip Buddy แบบ '+p.designs[sipSel.design]})):el('figure',{class:'pv sip empty'},el('span',{},'แตะหมายเลขแบบ เพื่อดูรูป')),
+      el('div',{class:'chips'},p.designs.map((d,i)=>el('button',{type:'button',class:'chip','aria-pressed':String(sipSel.design===i),onclick:()=>{sipSel.design=i;renderConf()}},el('b',{},String(i+1).padStart(2,'0')),d))),
+      ),
+      el('span',{class:'lbl'},'2) เลือกแบบสี'),
+      el('div',{class:'opts'},p.options.map(([n,pr],i)=>el('button',{type:'button',class:'opt','aria-pressed':String(sipSel.opt===i),onclick:()=>{sipSel.opt=i;renderConf()}},el('span',{},n),el('b',{},pr)))),
+      needName?el('div',{},el('label',{class:'lbl',for:'sipName'},'3) ชื่อที่จะสลักด้านหลัง'),nameIn):'',
+      el('div',{class:'note'},'ทุกใบพิมพ์ด้วยเส้นสีรุ้ง สีจะไล่เองระหว่างพิมพ์ แต่ละใบจึงไม่เหมือนกันและอาจต่างจากภาพตัวอย่าง · แบบ Color Pop จะเพิ่มสีที่ใบหน้าตัวสัตว์ · ใช้กับกล่องนมทรงสูง 150–250 มล. เท่านั้น'),
+      el('button',{type:'button',class:'btn primary full',onclick:addSip},'+ เพิ่มลงตะกร้า'));
+  }
+}
+// ---------- ตั้งค่า Alphabet Clicker ----------
+function kcFixColors(){const v=KC_COLS[kc.col].vary;kc.colors=kc.chars.map((c,i)=>v.includes(kc.colors[i])?kc.colors[i]:v[i%v.length])}
+function kcChip(ch,i,px){ // ช่องเดียว สีตามที่เลือก
+  const c=kcResolve(kc.col,kc.colors[i]);
+  return el('span',{html:`<svg viewBox="0 0 38 38" width="${px}" height="${px}" aria-hidden="true">${kcKey(0,0,38,c.body,c.frame,ch)}</svg>`}).firstChild;
+}
+function kcType(ch){if(kc.chars.length>=KC_MAX)return;kc.chars.push(ch);kcFixColors();hideErr();renderConf()}
+function renderKC(box){
+  kcFixColors();
+  const n=kc.chars.length,full=n>=KC_MAX,cols=KC_COLS[kc.col];
+  const pv=kcSvgEl(kc,kc.orient,kc.orient==='vertical'?170:620,kc.orient==='vertical'?420:150);
+  const seg=(items,val,on)=>el('div',{class:'seg',role:'group'},items.map(([v,l])=>el('button',{type:'button','aria-pressed':String(val===v),onclick:()=>on(v)},l)));
+  const keys=kc.mode==='letters'?[...'ABCDEFGHIJKLMNOPQRSTUVWXYZ','❤']:KC_EMOJI;
+  box.append(...[
+    el('div',{class:'kc-top'},
+      el('figure',{class:'kc-pv'+(kc.orient==='vertical'?'':' h')},pv,
+        seg([['vertical','แนวตั้ง'],['horizontal','แนวนอน']],kc.orient,v=>{kc.orient=v;renderConf()}),
+        el('p',{class:'cap'},n?'สีในภาพเป็นตัวอย่าง':'ตัวอย่าง · พิมพ์ข้อความด้านล่าง')),
+      kc.orient==='vertical'?el('div',{},
+        el('span',{class:'lbl',style:'margin-top:0'},'คอลเลกชันสีคีย์'),
+        el('div',{class:'colopts'},Object.entries(KC_COLS).map(([k,c])=>el('button',{type:'button',class:'colopt','aria-pressed':String(kc.col===k),onclick:()=>{kc.col=k;renderConf()}},
+          el('span',{html:`<svg viewBox="0 0 80 24" width="64" height="20" aria-hidden="true">${c.vary.slice(0,3).map((v,i)=>{const r=kcResolve(k,v);return `<g transform="translate(${i*27},0) scale(.63)">${kcKey(0,0,38,r.body,r.frame,'ABC'[i])}</g>`}).join('')}</svg>`}).firstChild,
+          el('span',{},el('b',{style:'font-weight:600'},c.name),el('small',{},c.desc))))),
+        el('span',{class:'lbl'},'สีเคส',el('small',{},kc.caseColor)),
+        el('div',{class:'dots'},KC_CASES.map(c=>el('button',{type:'button',class:'dot',style:'background:'+KC_HEX[c],'aria-label':'เคสสี'+c,'aria-pressed':String(kc.caseColor===c),onclick:()=>{kc.caseColor=c;renderConf()}})))):null),
+    kc.orient==='vertical'?null:el('div',{class:'two'},
+      el('div',{},el('span',{class:'lbl'},'คอลเลกชันสีคีย์'),el('select',{'aria-label':'คอลเลกชันสีคีย์',onchange:e=>{kc.col=e.target.value;renderConf()}},Object.entries(KC_COLS).map(([k,c])=>el('option',{value:k,selected:kc.col===k},c.name+' — '+c.desc)))),
+      el('div',{},el('span',{class:'lbl'},'สีเคส',el('small',{},kc.caseColor)),el('div',{class:'dots'},KC_CASES.map(c=>el('button',{type:'button',class:'dot',style:'background:'+KC_HEX[c],'aria-label':'เคสสี'+c,'aria-pressed':String(kc.caseColor===c),onclick:()=>{kc.caseColor=c;renderConf()}}))))),
+    el('span',{class:'lbl'},'ข้อความ',el('small',{},'ตัวอักษร หน้ายิ้ม หัวใจ ผสมกันได้ ไม่เกิน '+KC_MAX+' ช่อง')),
+    el('div',{class:'word','aria-live':'polite'},n?kc.chars.map((ch,i)=>kcChip(ch,i,30)):el('span',{class:'ph'},'แตะแป้นด้านล่างเพื่อพิมพ์')),
+    el('div',{class:'kbrow'},seg([['letters','ABC'],['emoji','หน้ายิ้ม']],kc.mode,v=>{kc.mode=v;renderConf()}),el('span',{class:'cnt'},n+'/'+KC_MAX+' ช่อง')),
+    el('div',{class:'kb'+(kc.mode==='emoji'?' emo':'')},keys.map(ch=>{const f=kcFaceInner(ch);
+      return el('button',{type:'button',disabled:full,'aria-label':KC_FACE[ch]||(ch==='❤'?'หัวใจ':ch),onclick:()=>kcType(ch),html:f?`<svg viewBox="0 0 100 100" width="26" height="26" aria-hidden="true">${f}</svg>`:null},f?null:(ch==='❤'?'♥':ch))})),
+    el('div',{class:'kbrow'},
+      el('button',{type:'button',class:'btn ghost',disabled:!n,onclick:()=>{kc.chars.pop();kc.colors.pop();renderConf()}},'⌫ ลบตัวสุดท้าย'),
+      el('button',{type:'button',class:'btn ghost',disabled:!n,onclick:()=>{kc.chars=[];kc.colors=[];renderConf()}},'ล้าง')),
+    n?el('span',{class:'lbl'},'สีคีย์แต่ละตัว',el('small',{},cols.name)):null,
+    n?el('div',{class:'lc'},kc.chars.map((ch,i)=>el('div',{class:'lcr'},kcChip(ch,i,28),el('div',{class:'sw'},cols.vary.map(v=>{const r=kcResolve(kc.col,v);return el('button',{type:'button','aria-label':'ตัวที่ '+(i+1)+' สี'+v,'aria-pressed':String(kc.colors[i]===v),style:'background:'+KC_HEX[r.body]+(r.body===r.frame?'':';box-shadow:inset 0 0 0 3px '+KC_HEX[r.frame]),onclick:()=>{kc.colors[i]=v;renderConf()}})}))))):null,
+    el('span',{class:'lbl'},'สายคล้อง',el('small',{},KC_STRAPS[kc.strap].label)),
+    el('div',{class:'straps'},KC_STRAPS.map((s,i)=>el('button',{type:'button',class:'strap','aria-pressed':String(kc.strap===i),onclick:()=>{kc.strap=i;renderConf()},
+      html:`<svg viewBox="0 0 60 70" width="40" height="46" aria-hidden="true"><path d="M30,6 C16,12 16,32 30,38 C44,32 44,12 30,6" fill="none" stroke="${KC_HEX[s.loop]}" stroke-width="6" stroke-linecap="round"/><rect x="24" y="34" width="12" height="14" rx="3" fill="${KC_HEX[s.knot]}"/><circle cx="30" cy="56" r="8" fill="none" stroke="${KC_HEX[s.ring]}" stroke-width="3.5"/></svg><span>${s.label}</span>`}))),
+    el('button',{type:'button',class:'linkbtn',onclick:()=>openGallery('สายคล้องจริงจากสต๊อก',['kc/strap-1.jpg','kc/strap-2.jpg','kc/strap-3.jpg','kc/strap-4.jpg','kc/strap-5.jpg'])},'ดูรูปสายคล้องจริง'),
+    el('div',{class:'kc-price'},el('span',{},'ราคาชิ้นนี้ ('+n+' ช่อง)',el('div',{class:'hint',style:'margin:0'},'3 ช่อง 100 บาท ช่องที่เหลือช่องละ 35')),el('b',{},fmt(kcPrice(n)))),
+    el('button',{type:'button',class:'btn primary full',onclick:addKC},'+ เพิ่มลงตะกร้า')].filter(Boolean));
+  const sl=box.querySelector('.straps'),sa=sl&&sl.querySelector('[aria-pressed="true"]');if(sa)sl.scrollLeft=Math.max(0,sa.offsetLeft-sl.offsetLeft-sl.clientWidth/2+sa.offsetWidth/2); // ให้สายที่เลือกยังอยู่ในจอหลังวาดใหม่
+}
+function addKC(){
+  if(!kc.chars.length){showErr('กรุณาพิมพ์ตัวอักษรอย่างน้อย 1 ตัว');return}
+  if(totalPieces()>=MAX_PIECES){showErr('สั่งมากกว่า '+MAX_PIECES+' ชิ้น โปรดติดต่อร้านโดยตรง');return}
+  kcFixColors();
+  kcCart.push({chars:[...kc.chars],colors:[...kc.colors],col:kc.col,caseColor:kc.caseColor,strap:kc.strap,orient:kc.orient});
+  kc.chars=[];kc.colors=[];kc.mode='letters';hideErr();renderConf();renderCart(); // สี/เคส/สาย คงไว้ เผื่อสั่งชิ้นถัดไปแบบเดียวกัน
+  $('#cart').scrollIntoView({behavior:'smooth',block:'center'});
+}
+function addSip(){
+  const p=PRODUCTS.sipbuddy;
+  if(sipSel.design==null){showErr('กรุณาเลือกแบบ Sip Buddy ก่อน');return}
+  const needName=p.options[sipSel.opt][2];const nm=(sipSel.name||'').trim();
+  if(needName&&(nm.length<1)){showErr('กรุณาใส่ชื่อที่จะสลัก');$('#sipName').focus();return}
+  if(totalPieces()>=MAX_PIECES){showErr('สั่งมากกว่า '+MAX_PIECES+' ชิ้น โปรดติดต่อร้านโดยตรง');return}
+  sipCart.push({design:sipSel.design,opt:sipSel.opt,name:needName?nm:''});
+  sipSel={design:null,opt:sipSel.opt,name:''};hideErr();renderConf();renderCart();
+  $('#cart').scrollIntoView({behavior:'smooth',block:'center'});
+}
+
+function lines(){ // แต่ละชิ้น = 1 แถวใน Sheet (ตามระบบเดิม)
+  const out=[];
+  const phapPieces=[];Object.entries(phapQty).forEach(([c,q])=>{for(let i=0;i<q;i++)phapPieces.push(c)});
+  if(phapPieces.length){
+    const total=phapPrice(phapPieces.length);const base=Math.floor(total/phapPieces.length);let rem=total-base*phapPieces.length;
+    phapPieces.forEach(c=>{const v=base+(rem>0?1:0);if(rem>0)rem--;out.push({productName:'น้องพับชู่',detail:'สี '+c+(phapPieces.length>1?' (ราคาชุด '+phapPieces.length+' ชิ้น '+total+' บาท)':''),price:v+' บาท',priceValue:v})});
+  }
+  sipCart.forEach(s=>{const p=PRODUCTS.sipbuddy;const [on,pr]=p.options[s.opt];
+    out.push({productName:'Sip Buddy',detail:'แบบ '+String(s.design+1).padStart(2,'0')+' '+p.designs[s.design]+' · '+on+(s.name?' · ชื่อ: '+s.name:''),price:pr+' บาท',priceValue:pr})});
+  kcCart.forEach(k=>{const v=kcPrice(k.chars.length);
+    // ช่อง orientation/caseColor/strapLabel/collection/letterN/letterColorN ใช้ชื่อเดียวกับฟอร์ม keycap เดิม
+    // เพื่อให้ Apps Script ลงคอลัมน์เดิม หักสต๊อก keycap/สายคล้อง และหน้า sale อ่านได้เหมือนเดิม
+    const it={kind:'keycap',productName:'Alphabet Clicker',detail:kcDetail(k),price:v+' บาท',priceValue:v,
+      orientation:k.orient==='vertical'?'แนวตั้ง':'แนวนอน',caseColor:k.caseColor,strapLabel:KC_STRAPS[k.strap].label,collection:KC_COLS[k.col].name,heart:''};
+    for(let i=0;i<8;i++){it['letter'+(i+1)]=k.chars[i]||'';it['letterColor'+(i+1)]=k.chars[i]?k.colors[i]:''}
+    Object.defineProperty(it,'_kc',{value:k,enumerable:false}); // ใช้วาดรูปสรุป ไม่ส่งไป Sheet
+    out.push(it)});
+  return out;
+}
+function subtotal(){return lines().reduce((a,b)=>a+b.priceValue,0)}
+function shipFee(){return $('#selfDeliver').checked||!lines().length?0:SHIP_FEE_FLAT}
+
+function renderCart(){
+  const c=$('#cart');c.replaceChildren();
+  const phapN=Object.values(phapQty).reduce((a,b)=>a+b,0);
+  if(!phapN&&!sipCart.length&&!kcCart.length){c.append(el('p',{class:'empty'},'ยังไม่มีสินค้าในตะกร้า'))}
+  if(phapN)c.append(el('div',{class:'cart-item'},el('div',{},el('b',{},'น้องพับชู่ × '+phapN),el('div',{class:'hint',style:'margin:0'},Object.entries(phapQty).map(([k,v])=>k+' '+v).join(', '))),
+    el('div',{style:'white-space:nowrap'},fmt(phapPrice(phapN)),el('button',{type:'button',class:'x',onclick:()=>{phapQty={};renderConf();renderCart()}},'ลบ'))));
+  sipCart.forEach((s,i)=>{const p=PRODUCTS.sipbuddy;c.append(el('div',{class:'cart-item'},el('div',{},el('b',{},'Sip Buddy · '+String(s.design+1).padStart(2,'0')+' '+p.designs[s.design]),el('div',{class:'hint',style:'margin:0'},p.options[s.opt][0]+(s.name?' · ชื่อ "'+s.name+'"':''))),
+    el('div',{style:'white-space:nowrap'},fmt(p.options[s.opt][1]),el('button',{type:'button',class:'x',onclick:()=>{sipCart.splice(i,1);renderCart()}},'ลบ'))))});
+  kcCart.forEach((k,i)=>{const th=kcSvgEl(k,'horizontal',260,56);th.classList.add('thumb');
+    c.append(el('div',{class:'cart-item'},el('div',{style:'min-width:0'},el('b',{},'Alphabet Clicker · '+k.chars.map(x=>KC_FACE[x]?'☺':x==='❤'?'♥':x).join('')),
+      el('div',{class:'hint',style:'margin:0'},KC_COLS[k.col].name+' · เคส'+k.caseColor+' · สาย '+KC_STRAPS[k.strap].label+' · '+(k.orient==='vertical'?'แนวตั้ง':'แนวนอน')),th),
+    el('div',{style:'white-space:nowrap'},fmt(kcPrice(k.chars.length)),el('button',{type:'button',class:'x',onclick:()=>{kcCart.splice(i,1);renderCart()}},'ลบ'))))});
+  const st=subtotal(),sf=shipFee();
+  $('#sum').replaceChildren(...(st?[el('div',{},el('span',{},'ค่าสินค้า'),el('span',{},fmt(st))),el('div',{},el('span',{},'ค่าจัดส่ง'),el('span',{},sf?fmt(sf):'ไม่มี')),el('div',{class:'grand'},el('span',{},'ยอดรวม'),el('span',{},fmt(st+sf)))]:[]));
+  $('#barTotal').textContent=fmt(st+sf);
+}
+
+function showErr(m){const e=$('#err');e.textContent=m;e.hidden=false;
+  // แสดงข้อความใกล้ปุ่มด้วย ถ้า error ไม่ได้อยู่ในจอ
+  const r=e.getBoundingClientRect();if(r.top<0||r.bottom>innerHeight)e.scrollIntoView({behavior:'smooth',block:'center'})}
+function hideErr(){$('#err').hidden=true}
+
+THAI_PROVINCES.forEach(p=>$('#cProv').append(el('option',{value:p},p)));
+// ---------- ที่อยู่: จังหวัด → อำเภอ → ตำบล → รหัสไปรษณีย์อัตโนมัติ (ข้อมูล: thai-address-database) ----------
+let PC=null,pcLoading=null,TREE=null;
+function loadPC(){if(PC)return Promise.resolve(PC);if(!pcLoading)pcLoading=fetch('th-postcodes.json'+IMG_V).then(r=>r.json()).then(d=>{PC=d;TREE={};for(const z in d.z)d.z[z].forEach(r=>{const pv=d.p[r[2]];((TREE[pv]=TREE[pv]||{})[r[1]]=TREE[pv][r[1]]||[]).push({t:r[0],z})});for(const pv in TREE)for(const a in TREE[pv])TREE[pv][a].sort((x,y)=>x.t.localeCompare(y.t,'th')||x.z.localeCompare(y.z));return d}).catch(()=>null);return pcLoading}
+const isBKK=pv=>pv==='กรุงเทพมหานคร';
+const ampWord=pv=>isBKK(pv)?'เขต':'อ.',tamWord=pv=>isBKK(pv)?'แขวง':'ต.';
+function opt(v,t){return el('option',{value:v},t)}
+function fillAmp(keep){
+  const pv=$('#cProv').value,a=$('#cAmp');
+  if(!pv||!TREE||!TREE[pv]){a.disabled=true;a.replaceChildren(opt('',pv?'กำลังโหลด…':'เลือกจังหวัดก่อน'));fillTam();return}
+  const list=Object.keys(TREE[pv]).sort((x,y)=>x.localeCompare(y,'th'));
+  a.disabled=false;a.replaceChildren(opt('',(isBKK(pv)?'เลือกเขต':'เลือกอำเภอ')+' ('+list.length+')'),...list.map(x=>opt(x,ampWord(pv)+x)));
+  if(keep&&TREE[pv][keep])a.value=keep;fillTam();
+}
+function fillTam(keep){
+  const pv=$('#cProv').value,am=$('#cAmp').value,t=$('#cTam');
+  if(!pv||!am||!TREE||!TREE[pv]||!TREE[pv][am]){t.disabled=true;t.replaceChildren(opt('','เลือกอำเภอก่อน'));$('#manualSub').hidden=true;return}
+  const rows=TREE[pv][am],dupe={};rows.forEach(r=>dupe[r.t]=(dupe[r.t]||0)+1);
+  t.disabled=false;t.replaceChildren(opt('',(isBKK(pv)?'เลือกแขวง':'เลือกตำบล')+' ('+rows.length+')'),...rows.map(r=>opt(r.t+'|'+r.z,tamWord(pv)+r.t+(dupe[r.t]>1?' ('+r.z+')':''))),opt('other','ไม่มีในรายการ (พิมพ์เอง)'));
+  if(keep&&t.querySelector('option[value="'+keep+'"]'))t.value=keep;else if(rows.length===1)t.value=rows[0].t+'|'+rows[0].z;
+  onTam();
+}
+function onTam(){
+  const v=$('#cTam').value;$('#manualSub').hidden=v!=='other';
+  if(v&&v!=='other'){$('#cZip').value=v.split('|')[1];$('#zipMsg').hidden=true}
+}
+function subText(){
+  const pv=$('#cProv').value,am=$('#cAmp').value,v=$('#cTam').value;
+  if(v&&v!=='other'&&am)return tamWord(pv)+v.split('|')[0]+' '+ampWord(pv)+am;
+  return $('#manualSub').hidden?'':$('#cSubText').value.trim();
+}
+function setAddress(pv,am,tm,z){ $('#cProv').value=pv;fillAmp(am);$('#cAmp').value=am;fillTam(tm+'|'+z) }
+$('#cProv').addEventListener('change',async()=>{await loadPC();fillAmp()});
+$('#cAmp').addEventListener('change',()=>fillTam());
+$('#cTam').addEventListener('change',onTam);
+// พิมพ์รหัสไปรษณีย์เอง: ถ้ามีตำบลเดียวในรหัสนั้น เลือกให้เลย
+$('#cZip').addEventListener('input',async()=>{
+  const z=$('#cZip').value.replace(/\D/g,'').slice(0,5);if($('#cZip').value!==z)$('#cZip').value=z;
+  if(z.length<5)return;const d=await loadPC();if(!d)return;const rows=d.z[z]||[];
+  const cur=$('#cTam').value;if(cur&&cur.endsWith('|'+z))return;
+  if(rows.length===1){const r=rows[0];setAddress(d.p[r[2]],r[1],r[0],z)}
+  else if(rows.length>1){const pv=d.p[rows[0][2]];if($('#cProv').value!==pv){$('#cProv').value=pv;fillAmp()}
+    const amps=[...new Set(rows.map(r=>r[1]))];if(amps.length===1){$('#cAmp').value=amps[0];fillTam()}
+    const m=$('#zipMsg');m.textContent='รหัส '+z+' มี '+rows.length+' แขวง/ตำบล กรุณาเลือกให้ตรง';m.hidden=false}
+  else{const m=$('#zipMsg');m.textContent='ไม่พบรหัสไปรษณีย์ '+z+' กรุณาตรวจสอบ';m.hidden=false}
+});
+// ค้นหาเร็ว
+let acItems=[],acIdx=-1;
+async function acSearch(){
+  const q=$('#cFind').value.trim(),ul=$('#zipList');
+  if(q.length<2){acClose();return}
+  const d=await loadPC();if(!d){acClose();return}
+  const out=[],digits=/^\d+$/.test(q);
+  for(const z in d.z){if(digits&&!z.startsWith(q))continue;d.z[z].forEach(r=>{if(out.length>=40)return;if(digits||r[0].includes(q)||r[1].includes(q)||d.p[r[2]].includes(q))out.push({z,r})})}
+  out.sort((a,b)=>a.z.localeCompare(b.z));acItems=out.slice(0,8);acIdx=-1;
+  if(!acItems.length){ul.replaceChildren(el('li',{class:'ac-none'},'ไม่พบ ลองพิมพ์ชื่ออื่น หรือเลือกจากรายการด้านล่าง'));ul.hidden=false;return}
+  ul.replaceChildren(...acItems.map((it,k)=>{const pv=d.p[it.r[2]];return el('li',{role:'option',id:'ac'+k,onmousedown:e=>{e.preventDefault();acPick(k)}},el('b',{},it.z),el('span',{},tamWord(pv)+it.r[0]+' · '+ampWord(pv)+it.r[1]+' · '+pv))}));
+  ul.hidden=false;$('#cFind').setAttribute('aria-expanded','true');
+}
+function acPick(k){const it=acItems[k];if(!it)return;setAddress(PC.p[it.r[2]],it.r[1],it.r[0],it.z);$('#cFind').value='';acClose();$('#zipMsg').hidden=true;$('#cAddr').focus()}
+function acClose(){$('#zipList').hidden=true;$('#cFind').setAttribute('aria-expanded','false');acIdx=-1}
+$('#cFind').addEventListener('input',acSearch);
+$('#cFind').addEventListener('focus',loadPC,{once:true});
+$('#cFind').addEventListener('keydown',e=>{
+  if($('#zipList').hidden||!acItems.length)return;
+  if(e.key==='ArrowDown'||e.key==='ArrowUp'){e.preventDefault();acIdx=(acIdx+(e.key==='ArrowDown'?1:-1)+acItems.length)%acItems.length;
+    $('#zipList').querySelectorAll('li').forEach((li,k)=>li.setAttribute('aria-selected',String(k===acIdx)));$('#cFind').setAttribute('aria-activedescendant','ac'+acIdx)}
+  else if(e.key==='Enter'&&acIdx>=0){e.preventDefault();acPick(acIdx)}
+  else if(e.key==='Escape')acClose();
+});
+$('#cFind').addEventListener('blur',()=>setTimeout(acClose,150));
+loadPC().then(()=>{if($('#cProv').value&&$('#cAmp').disabled)fillAmp()});
+$('#selfDeliver').addEventListener('change',()=>{const s=$('#selfDeliver').checked;$('#shipBox').hidden=s;$('#pickupBox').hidden=!s;renderCart()});
+try{const d=JSON.parse(localStorage.getItem('fxCustomer')||'{}');['cName','cPhone','cAddr','cProv','cZip','cSubText'].forEach(k=>{if(d[k])$('#'+k).value=d[k]});if(d.cProv&&d.cAmp)loadPC().then(x=>{if(!x)return;$('#cProv').value=d.cProv;fillAmp(d.cAmp);if(d.cTam)fillTam(d.cTam);if(d.cZip)$('#cZip').value=d.cZip})}catch(e){}
+
+$('#submitBtn').addEventListener('click',async()=>{
+  hideErr();
+  const items=lines();
+  if(!items.length){showErr('กรุณาเลือกสินค้าใส่ตะกร้าก่อน');return}
+  const name=$('#cName').value.trim(),phone=$('#cPhone').value.trim(),self=$('#selfDeliver').checked;
+  const house=$('#cAddr').value.trim(),sub=self?'':subText();
+  const addr=self?$('#cPickup').value.trim():[house,sub].filter(Boolean).join(' '),prov=$('#cProv').value,zip=$('#cZip').value.trim();
+  if(!name){showErr('กรุณากรอกชื่อผู้รับ');$('#cName').focus();return}
+  if(!phone){showErr('กรุณากรอกเบอร์โทรหรือ LINE ID');$('#cPhone').focus();return}
+  if(self&&!addr){showErr('กรุณากรอกจุดนัดรับ');return}
+  if(!self){
+    if(!prov){showErr('กรุณาเลือกจังหวัด');$('#cProv').focus();return}
+    if(!sub){showErr('กรุณาเลือกเขต/อำเภอ และแขวง/ตำบล');($('#cAmp').value?($('#manualSub').hidden?$('#cTam'):$('#cSubText')):$('#cAmp')).focus();return}
+    if(!/^\d{5}$/.test(zip)){showErr('กรุณากรอกรหัสไปรษณีย์ 5 หลัก');$('#cZip').focus();return}
+    if(!house){showErr('กรุณากรอกบ้านเลขที่ ถนน');$('#cAddr').focus();return}
+  }
+  const st=subtotal(),sf=shipFee(),gt=st+sf;
+  const payload={customerName:name,customerPhone:phone,customerNote:$('#cNote').value.trim(),
+    shippingAddress:addr,shippingProvince:self?'':prov,shippingPostcode:self?'':zip,selfDeliver:self,
+    items:items,price:st+' บาท',shippingFeeValue:sf,shippingFeeText:sf?sf+' บาท':'ไม่มี (นัดรับ)',grandTotalValue:gt,grandTotalText:gt+' บาท',
+    saleRef:saleRef,source:'catalog'};
+  const btn=$('#submitBtn');btn.disabled=true;btn.textContent='กำลังส่ง…';
+  const order={no:undefined,date:new Date(),name,phone,addr,prov,zip,self,items,st,sf,gt};
+  try{const c=await drawSummary(order);payload.orderImageBase64=c.toDataURL('image/png').split(',')[1]}catch(e){}
+  let res=null,data=null;
+  try{res=await fetch(GAS_URL,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify(payload)})}
+  catch(e){ // Apps Script มักบล็อกการอ่านผลลัพธ์ (CORS) ทั้งที่บันทึกออเดอร์แล้ว จึงไม่ให้ส่งซ้ำ เหมือนฟอร์ม keycap
+    finish(order,null);btn.disabled=false;btn.textContent='ยืนยันคำสั่งซื้อ';return}
+  try{data=await res.json()}catch(e){finish(order,null);btn.disabled=false;btn.textContent='ยืนยันคำสั่งซื้อ';return}
+  btn.disabled=false;btn.textContent='ยืนยันคำสั่งซื้อ';
+  if(!data||data.result!=='success'){showErr('ส่งออเดอร์ไม่สำเร็จ: '+((data&&data.message)||'ลองใหม่อีกครั้ง')+' หรือทักร้านทาง TikTok / Facebook');return}
+  finish(order,data.orderNumber||null);
+});
+let lastOrder=null;
+function finish(order,no){
+  order.no=no;lastOrder=order;
+  try{localStorage.setItem('fxCustomer',JSON.stringify({cName:order.name,cPhone:order.phone,cAddr:order.self?'':$('#cAddr').value.trim(),cProv:order.prov,cZip:order.zip,cAmp:$('#cAmp').value,cTam:$('#cTam').value,cSubText:$('#cSubText').value.trim()}))}catch(e){}
+  $('#dNo').textContent=no||'รอร้านยืนยัน';$('#dChk').hidden=!!no;$('#dAmt').textContent=fmt(order.gt);
+  $('#formView').hidden=true;$('#bar').hidden=true;$('#doneView').hidden=false;scrollTo({top:0});
+}
+
+// ---------- รูปสรุปออเดอร์ (แบบเดียวกับฟอร์ม keycap) ----------
+async function drawSummary(o){
+  try{await document.fonts.ready}catch(e){}
+  const W=1080,P=72,F='"Prompt",sans-serif',D='"DM Serif Display","Chonburi",serif';
+  const meas=document.createElement('canvas').getContext('2d');
+  const wrap=(t,font,w)=>{meas.font=font;const out=[];let line='';for(const ch of Array.from(t)){const test=line+ch;if(meas.measureText(test).width>w&&line){out.push(line);line=ch}else line=test}if(line)out.push(line);return out};
+  const ph=o.items.filter(it=>it.productName==='น้องพับชู่'),other=o.items.filter(it=>it.productName!=='น้องพับชู่');
+  const cnt={};ph.forEach(it=>{const c=it.detail.replace(/^สี /,'').replace(/ \(.*$/,'');cnt[c]=(cnt[c]||0)+1});
+  const rows=(ph.length?[{title:'น้องพับชู่ × '+ph.length,lines:wrap('สี '+Object.entries(cnt).map(([k,v])=>k+' '+v).join(', '),'28px '+F,W-2*P-200),price:ph.reduce((a,b)=>a+b.priceValue,0)}]:[])
+    .concat(other.map(it=>({title:it.productName,lines:wrap(it._kc?it.detail.split(' · สี: ')[0]:it.detail,'28px '+F,W-2*P-200),price:it.priceValue,kc:it._kc})));
+  // รูปชิ้น Alphabet Clicker (แนวนอน) ในรูปสรุป ให้ร้านเห็นสีครบทุกตัวตอนผลิต
+  for(const r of rows){if(!r.kc)continue;const v=kcSVG(r.kc,'horizontal');
+    const img=new Image();await new Promise(ok=>{img.onload=ok;img.onerror=ok;img.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${v.w} ${v.h}" width="${v.w*4}" height="${v.h*4}">${v.svg}</svg>`)});
+    const dw=Math.min(W-2*P,v.w*3.2);r.img=img;r.iw=dw;r.ih=dw*v.h/v.w}
+  const addr=o.self?'นัดรับ: '+o.addr:o.addr+(o.prov?' จ.'+o.prov:'')+(o.zip?' '+o.zip:'');
+  const addrL=wrap(addr,'28px '+F,W-2*P);
+  let H=420+addrL.length*40+rows.reduce((a,r)=>a+62+r.lines.length*38+(r.img?r.ih+16:0),0)+400;
+  const c=document.createElement('canvas');c.width=W;c.height=H;const g=c.getContext('2d');
+  g.fillStyle='#FAF8F4';g.fillRect(0,0,W,H);
+  g.fillStyle='#2C2420';g.fillRect(0,0,W,170);
+  g.font='44px '+D;g.fillStyle='#FAF8F4';g.textBaseline='middle';const wm1='FIXTORY';g.fillText(wm1,P,86);const w1=g.measureText(wm1).width;g.fillStyle='#E08A60';g.fillText('.STUDIO',P+w1,86);
+  g.font='24px '+F;g.fillStyle='#BFAE9F';g.textAlign='right';g.fillText('สรุปออเดอร์',W-P,72);g.fillText(o.date.toLocaleString('th-TH',{dateStyle:'medium',timeStyle:'short'}),W-P,106);g.textAlign='left';
+  let y=240;g.textBaseline='alphabetic';
+  g.font='26px '+F;g.fillStyle='#76665C';g.fillText('เลขที่ออเดอร์',P,y);
+  g.font='56px '+D;g.fillStyle='#C4714A';g.fillText(o.no===undefined?'–':(o.no||'รอร้านยืนยัน'),P,y+62);y+=120;
+  g.font='600 30px '+F;g.fillStyle='#2C2420';g.fillText(o.name+'  ·  '+o.phone,P,y);y+=44;
+  g.font='28px '+F;g.fillStyle='#76665C';addrL.forEach(l=>{g.fillText(l,P,y);y+=40});y+=16;
+  g.strokeStyle='#EDE2D6';g.lineWidth=3;g.beginPath();g.moveTo(P,y);g.lineTo(W-P,y);g.stroke();y+=56;
+  rows.forEach(r=>{g.font='600 30px '+F;g.fillStyle='#2C2420';g.fillText(r.title,P,y);g.textAlign='right';g.fillText(fmt(r.price),W-P,y);g.textAlign='left';y+=40;
+    g.font='28px '+F;g.fillStyle='#76665C';r.lines.forEach(l=>{g.fillText(l,P,y);y+=38});
+    if(r.img){try{g.drawImage(r.img,P,y-10,r.iw,r.ih)}catch(e){}y+=r.ih+16}
+    y+=22});
+  g.beginPath();g.moveTo(P,y-10);g.lineTo(W-P,y-10);g.stroke();y+=40;
+  const kv=(k,v,big)=>{g.font=(big?'600 36px ':'28px ')+F;g.fillStyle=big?'#2C2420':'#76665C';g.fillText(k,P,y);g.textAlign='right';g.fillStyle=big?'#A9572F':'#2C2420';g.fillText(v,W-P,y);g.textAlign='left';y+=big?60:44};
+  kv('ค่าสินค้า',fmt(o.st));kv('ค่าจัดส่ง',o.sf?fmt(o.sf):'ไม่มี (นัดรับ)');kv('ยอดที่ต้องโอน',fmt(o.gt),true);y+=20;
+  g.fillStyle='#F5E8DC';g.fillRect(P,y,W-2*P,96);g.font='24px '+F;g.fillStyle='#2C2420';
+  g.fillText('โอนแล้ว ส่งสลิป + รูปนี้ ทาง TikTok / Facebook: fixtory.studio',P+24,y+40);g.fillText('หรือโทร 081-336-8232',P+24,y+76);
+  return c;
+}
+async function openSaveOverlay(){
+  if(!lastOrder)return;const b=$('#saveImgBtn');b.disabled=true;b.textContent='กำลังสร้างรูป…';
+  const c=await drawSummary(lastOrder);b.disabled=false;b.textContent='บันทึกรูปสรุปออเดอร์';
+  c.toBlob(blob=>{ // ใช้ blob: URL เพราะเบราว์เซอร์ในแอป LINE บางรุ่นไม่ให้บันทึกรูปจาก data: URI
+    const url=URL.createObjectURL(blob);$('#ovImg').src=url;$('#ovDl').href=url;
+    const mobile=matchMedia('(pointer:coarse)').matches;$('#ovDl').hidden=mobile;
+    const sh=$('#ovShare');const file=new File([blob],'fixtory-order.png',{type:'image/png'});
+    sh.hidden=!(navigator.share&&navigator.canShare&&navigator.canShare({files:[file]}));
+    sh.onclick=async()=>{try{await navigator.share({files:[file],title:'สรุปออเดอร์ Fixtory Studio'})}catch(e){}};
+    $('#ov').hidden=false;
+  },'image/png');
+}
+$('#saveImgBtn').addEventListener('click',openSaveOverlay);
+$('#ovClose').addEventListener('click',()=>$('#ov').hidden=true);
+if(/Line\/|FBAN|FBAV|Instagram|musical_ly|BytedanceWebview|TikTok/i.test(navigator.userAgent))$('#inapp').hidden=false;
+$('#againBtn').addEventListener('click',()=>{phapQty={};sipCart=[];kcCart=[];sipSel={design:null,opt:0,name:''};$('#doneView').hidden=true;$('#formView').hidden=false;$('#bar').hidden=false;renderConf();renderCart();scrollTo({top:0})});
+
+renderTabs();renderConf();renderCart();
+</script>
+</body>
+</html>
