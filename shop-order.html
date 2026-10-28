@@ -296,7 +296,7 @@ function renderConf(){
     box.append(
       el('span',{class:'lbl'},'1) เลือกแบบ',el('small',{},'แตะหมายเลขแบบที่ต้องการ')),
       el('div',{class:'pv-wrap'},
-      sipSel.design!=null?el('figure',{class:'pv sip'},el('img',{src:'sip/sip-'+String(sipSel.design+1).padStart(2,'0')+(sipSel.opt===0?'-s':'-p')+'.jpg',alt:'Sip Buddy แบบ '+p.designs[sipSel.design]+(sipSel.opt===0?' สีเดียว':' Color Pop')}),el('span',{class:'pv-tag'},sipSel.opt===0?'สีเดียว (สีรุ้งทั้งตัว)':'Color Pop · ใบหน้าสีดำ')):el('figure',{class:'pv sip empty'},el('span',{},'แตะหมายเลขแบบ เพื่อดูรูป')),
+      sipSel.design!=null?el('figure',{class:'pv sip'},el('img',{src:'sip/sip-'+String(sipSel.design+1).padStart(2,'0')+'.jpg',alt:'Sip Buddy แบบ '+p.designs[sipSel.design]})):el('figure',{class:'pv sip empty'},el('span',{},'แตะหมายเลขแบบ เพื่อดูรูป')),
       el('div',{class:'chips'},p.designs.map((d,i)=>el('button',{type:'button',class:'chip','aria-pressed':String(sipSel.design===i),onclick:()=>{sipSel.design=i;renderConf()}},el('b',{},String(i+1).padStart(2,'0')),d))),
       ),
       el('span',{class:'lbl'},'2) เลือกแบบสี'),
