@@ -1,22 +1,827 @@
-<!DOCTYPE html>
-<html lang="th">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<!doctype html><html lang="th"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>แคตตาล็อกสินค้า · Fixtory Studio</title>
-<meta name="description" content="งานพิมพ์ 3 มิติจากสตูดิโอเล็ก ๆ ในกรุงเทพฯ — น้องพับชู่ Sip Buddy และ Alphabet Clicker ดูสินค้าและสั่งซื้อออนไลน์ได้เลย">
-<meta property="og:type" content="website">
-<meta property="og:title" content="แคตตาล็อกสินค้า Fixtory Studio">
+<meta name="description" content="งานพิมพ์ 3 มิติจากสตูดิโอเล็ก ๆ ในกรุงเทพฯ — ดูสินค้าและสั่งซื้อออนไลน์ได้เลย">
+<meta property="og:type" content="website"><meta property="og:title" content="แคตตาล็อกสินค้า Fixtory Studio">
 <meta property="og:description" content="น้องพับชู่ · Sip Buddy · Alphabet Clicker — ดูสินค้าและสั่งซื้อออนไลน์ได้เลย">
-<meta property="og:image" content="https://fixtory-studio.pages.dev/og-catalog.jpg">
-<meta property="og:url" content="https://fixtory-studio.pages.dev/catalog">
+<meta property="og:image" content="https://fixtory-studio.pages.dev/og-catalog.jpg"><meta property="og:url" content="https://fixtory-studio.pages.dev/catalog">
 <meta name="twitter:card" content="summary_large_image">
-<!-- ลิงก์ชื่อร้าน → พาไปแคตตาล็อกตัวจริง (แก้สินค้าได้ที่หน้านั้น) ถ้าย้ายแคตตาล็อกในอนาคต เปลี่ยนแค่ CATALOG ด้านล่าง -->
-<meta http-equiv="refresh" content="0; url=https://claude.ai/artifact/464DJRbj5uyXQzqGRXmeTy">
-<style>body{margin:0;min-height:100vh;display:grid;place-items:center;background:#FAF8F4;color:#2C2420;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;text-align:center;padding:24px}a{color:#A9572F;font-weight:600}</style>
-</head>
-<body>
-<p>กำลังเปิดแคตตาล็อก Fixtory Studio…<br><a href="https://claude.ai/artifact/464DJRbj5uyXQzqGRXmeTy">แตะที่นี่ถ้าหน้าไม่เปลี่ยน</a></p>
-<script>const CATALOG='https://claude.ai/artifact/464DJRbj5uyXQzqGRXmeTy';location.replace(CATALOG+location.hash)</script>
-</body>
-</html>
+<style>[hidden]{display:none!important}body{margin:0}img{max-width:100%}</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&family=Chonburi&family=Prompt:wght@300;400;500;600&display=swap">
+<style id="css">
+/* Layout: Fixtory brand storefront — warm cream ground, terracotta (#C4714A, the brand DNA colour) for name, prices and actions, soft-terra pedestals behind products, dark-brown ink; detail opens as a centred two-column card (full screen on phones) */
+:root{
+  --bg:#FAF8F4; --surface:#FFFFFF; --sunk:#F5E8DC; --lav:#F5E8DC; --lav-2:#E8C4A8;
+  --ink:#2C2420; --muted:#76665C; --line:#EDE2D6;
+  --accent:#C4714A; --accent-text:#A9572F; --accent-ink:#FFFFFF; --accent-soft:#F5E8DC;
+  --olive:#6B7A4A; --rose:#B89FA0;
+  --draft:#8A5A00; --draft-soft:#FBEBCF; --danger:#B42318; --danger-soft:#FDE7E5;
+  --shadow:0 1px 2px rgba(44,36,32,.06),0 8px 24px -12px rgba(44,36,32,.22);
+  --f-display:"DM Serif Display","Chonburi",Georgia,serif;
+  --f-body:"DM Sans","Prompt",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --r:20px; --r-s:12px;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#1B1613; --surface:#26201C; --sunk:#322822; --lav:#3A2D25; --lav-2:#5A4234;
+  --ink:#F5E8DC; --muted:#BFAE9F; --line:#3A302A;
+  --accent:#E08A60; --accent-text:#EFA07A; --accent-ink:#1B1613; --accent-soft:#3A2D25;
+  --olive:#A7B57E; --rose:#CDB5B6;
+  --draft:#F2B45A; --draft-soft:#3A2A12; --danger:#FF8A7D; --danger-soft:#3D1814;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px -14px rgba(0,0,0,.6); color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#1B1613; --surface:#26201C; --sunk:#322822; --lav:#3A2D25; --lav-2:#5A4234;
+  --ink:#F5E8DC; --muted:#BFAE9F; --line:#3A302A;
+  --accent:#E08A60; --accent-text:#EFA07A; --accent-ink:#1B1613; --accent-soft:#3A2D25;
+  --olive:#A7B57E; --rose:#CDB5B6;
+  --draft:#F2B45A; --draft-soft:#3A2A12; --danger:#FF8A7D; --danger-soft:#3D1814;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 28px -14px rgba(0,0,0,.6); color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.65}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:30;background:var(--bg)}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:2.5px solid var(--accent);outline-offset:2px}
+h1,h2,h3,h4{font-family:var(--f-display);font-weight:400;letter-spacing:0}
+.wrap{max-width:1120px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+
+/* top bar */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.top .wrap{display:flex;align-items:center;gap:10px;padding-block:12px}
+.brand{display:flex;align-items:center;gap:10px;min-width:0;flex:1;text-decoration:none;color:var(--ink);transition:opacity .25s ease,transform .25s ease}
+.top.hide-brand .brand{opacity:0;transform:translateY(-4px);pointer-events:none}
+.top.overlay{position:fixed;left:0;right:0;transition:opacity .25s ease,transform .25s ease;box-shadow:0 1px 0 var(--line)}
+.top.overlay.hide-brand{opacity:0;transform:translateY(-100%);pointer-events:none}
+.top.overlay+#app .hero{margin-top:16px}
+.hero-ctrl{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.hero .lang{background:var(--surface)}
+.hero .tabs{background:color-mix(in srgb,var(--surface) 55%,transparent)}
+@media (prefers-reduced-motion:reduce){.top.overlay{transition:none}}
+@media (prefers-reduced-motion:reduce){.brand{transition:none}}
+.mark{width:28px;height:41px;display:grid;place-items:center;flex:none}
+.logo-icon{width:100%;height:100%;display:block}
+.wm{font-family:var(--f-display);text-transform:uppercase;letter-spacing:.1em;color:var(--ink);white-space:nowrap}
+.wm em{font-style:normal;color:var(--accent)}
+.wm-tag{font-family:var(--f-body);text-transform:uppercase;letter-spacing:.32em;font-size:11px;color:var(--muted);white-space:nowrap}
+.brand b{font-weight:400;font-size:19px;overflow:hidden;text-overflow:ellipsis}
+.thm{border:0;background:var(--surface);box-shadow:inset 0 0 0 1.5px var(--line);border-radius:999px;width:34px;height:30px;padding:0;display:inline-grid;place-items:center;cursor:pointer;color:var(--accent-text);flex:none}
+.thm svg{width:16px;height:16px;display:block}
+@media (max-width:480px){.hero{flex-wrap:nowrap!important}.hero-ctrl{flex-direction:column;gap:6px;flex:none}}
+.lang{border:0;background:var(--surface);box-shadow:inset 0 0 0 1.5px var(--line);border-radius:999px;padding:5px 12px;font-family:var(--f-display);font-size:13px;font-weight:500;cursor:pointer;white-space:nowrap;color:var(--accent-text)}
+.tabs{display:flex;gap:2px;background:var(--lav);padding:3px;border-radius:999px}
+.tabs a{padding:5px 12px;border-radius:999px;font-size:13px;font-weight:500;color:var(--muted);text-decoration:none;white-space:nowrap}
+.top .wrap{flex-wrap:wrap}
+@media (max-width:440px){.tabs a{padding:5px 9px;font-size:12.5px}.brand b{font-size:15px;letter-spacing:.06em}}
+.tabs a[aria-current="page"]{background:var(--surface);color:var(--accent-text);box-shadow:var(--shadow)}
+
+/* hero */
+.hero{position:relative;margin-top:8px;display:flex!important;align-items:center;justify-content:space-between;flex-wrap:wrap;row-gap:14px;column-gap:20px;border-radius:24px;background:var(--lav);overflow:hidden;padding:clamp(18px,3vw,28px) clamp(20px,4vw,40px);display:grid;gap:10px;justify-items:start}
+.hero::before,.hero::after{content:"";position:absolute;border-radius:50%;background:var(--lav-2);opacity:.55}
+.hero::before{width:200px;height:200px;right:-60px;top:-100px}
+.hero::after{width:110px;height:110px;right:110px;bottom:-70px;opacity:.35}
+.hero>*{position:relative}
+.eyebrow{font-family:var(--f-display);font-style:italic;font-size:16px;color:var(--accent-text);background:var(--surface);padding:2px 14px;border-radius:999px}
+.lockup{display:flex;align-items:center;gap:clamp(12px,2vw,18px);max-width:100%}
+.mark.big{width:clamp(32px,4.4vw,44px);height:clamp(46px,6.4vw,64px)}
+.lockup-t{display:grid;gap:clamp(4px,1vw,10px);min-width:0}
+.hero h1{font-size:clamp(22px,3.6vw,36px);line-height:1;margin:0;font-weight:400}
+.hero .wm-tag{font-size:clamp(9px,1.1vw,11.5px);letter-spacing:.3em;white-space:normal}
+.hero .tag2{font-family:var(--f-display);font-style:italic;font-size:clamp(17px,2.6vw,21px);color:var(--ink);opacity:.85}
+.swoosh{display:block;width:clamp(120px,30vw,220px);height:12px;margin-top:-2px}
+.hero p{margin:0;color:var(--ink);max-width:52ch;font-size:clamp(15px,2.2vw,17px)}
+
+/* filters */
+.bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;padding-block:22px 18px}
+.search{flex:1 1 240px;min-width:0;display:flex;align-items:center;gap:8px;background:var(--surface);box-shadow:inset 0 0 0 1.5px var(--line);border-radius:999px;padding:9px 16px}
+.search:focus-within{box-shadow:inset 0 0 0 2px var(--accent)}
+.search input{border:0;background:none;outline:none;flex:1;min-width:0}
+.chips{display:flex;gap:6px;overflow-x:auto;max-width:100%;padding-bottom:2px}
+.chip{border:0;background:var(--surface);box-shadow:inset 0 0 0 1.5px var(--line);border-radius:999px;padding:7px 14px;font-size:14px;cursor:pointer;white-space:nowrap}
+.chip[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);box-shadow:none}
+
+/* grid */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:20px;padding-bottom:48px}
+.card{background:var(--surface);border:0;border-radius:var(--r);overflow:hidden;display:flex;flex-direction:column;cursor:pointer;text-align:left;padding:8px;box-shadow:var(--shadow);transition:transform .2s ease,box-shadow .2s ease}
+.card:hover{transform:translateY(-3px);box-shadow:0 2px 4px rgba(44,36,32,.08),0 18px 36px -16px rgba(44,36,32,.35)}
+.thumb{aspect-ratio:2/3;width:100%;max-width:100%;background:var(--sunk);position:relative;overflow:hidden;border-radius:14px}
+.thumb img,.thumb svg{width:100%;height:100%;object-fit:cover;display:block;transition:transform .4s ease}
+.thumb img{object-fit:contain}
+.card:hover .thumb img{transform:scale(1.03)}
+.badge{position:absolute;top:10px;left:10px;font-size:12px;font-weight:600;padding:2px 10px;border-radius:999px;background:var(--draft-soft);color:var(--draft)}
+.badge.nfc{left:auto;right:10px;background:var(--surface);color:var(--olive)}
+.card-b{padding:14px 8px 8px;display:grid;gap:4px;flex:1}
+.cat{font-size:12.5px;color:var(--muted);font-weight:500}
+.card h3{font-size:19px;line-height:1.3;margin:0;text-wrap:balance}
+.card .en{font-size:13px;color:var(--muted);margin-top:-2px}
+.row{display:flex;align-items:flex-end;justify-content:space-between;gap:8px;margin-top:auto;padding-top:10px}
+.price{font-family:var(--f-display);font-weight:400;font-size:24px;color:var(--accent);font-variant-numeric:tabular-nums;line-height:1}
+.price small{font-family:var(--f-body);font-size:12.5px;font-weight:500;color:var(--muted);margin-right:4px}
+.price.ask{font-size:15px;font-weight:500;color:var(--muted)}
+.sw{display:flex;gap:3px;flex-wrap:wrap;justify-content:flex-end;max-width:60%}
+.sw i{width:15px;height:15px;border-radius:50%;box-shadow:inset 0 0 0 1px rgba(44,36,32,.12)}
+.mats{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px}
+.h4-hint{font-family:var(--f-body);font-size:12.5px;font-weight:400;color:var(--muted);margin-left:8px}
+.vars{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:6px}
+.vars li{display:inline-flex;align-items:center;gap:6px;background:var(--surface);box-shadow:inset 0 0 0 1.5px var(--line);border-radius:999px;padding:3px 11px 3px 4px;font-size:13px}
+.vars b{font-size:11px;font-weight:600;background:var(--accent);color:var(--accent-ink);border-radius:999px;padding:1px 6px;font-variant-numeric:tabular-nums}
+.sec li::before{content:"";flex:none;width:8px;height:8px;border-radius:50%;background:var(--lav-2);transform:translateY(-1px)}
+.vars li::before{display:none}
+.gallery .main video{width:100%;height:100%;max-height:78vh;object-fit:contain;display:block;background:#000}
+.vid-link{position:relative;display:grid;place-items:center;width:100%;height:100%;min-height:260px;text-decoration:none;color:#fff;background:#2C2420;overflow:hidden}
+.vid-link img{position:absolute;inset:0;width:100%!important;height:100%!important;max-height:none!important;object-fit:cover!important;filter:blur(6px) brightness(.55);transform:scale(1.08)}
+.vid-link .vid-play{position:relative;width:76px;height:76px;border-radius:50%;background:rgba(255,255,255,.92);box-shadow:0 8px 30px rgba(0,0,0,.35)}
+.vid-link .vid-play::after{content:"";position:absolute;left:31px;top:23px;border-style:solid;border-width:15px 0 15px 24px;border-color:transparent transparent transparent #C4714A}
+.vid-link b{position:absolute;bottom:22%;font-weight:600;font-size:16px;text-shadow:0 1px 6px rgba(0,0,0,.5)}
+.vid-err{display:grid;place-items:center;height:100%;min-height:200px;color:var(--muted);background:var(--sunk)}
+.strip button{position:relative}
+.strip video{width:100%;height:100%;object-fit:cover;pointer-events:none}
+.vt-link{display:grid;place-items:end center;width:100%;height:100%;background:#2C2420;color:#fff;font-size:8.5px;font-weight:600;padding-bottom:3px;line-height:1.1}
+.vt-play{position:absolute;left:50%;top:50%;width:22px;height:22px;margin:-11px 0 0 -11px;border-radius:50%;background:rgba(255,255,255,.92);box-shadow:0 2px 6px rgba(0,0,0,.3)}
+.vt-play::after{content:"";position:absolute;left:8px;top:6px;border-style:solid;border-width:5px 0 5px 8px;border-color:transparent transparent transparent #C4714A}
+.vt-play.sm{position:relative;left:auto;top:auto;margin:0;width:14px;height:14px;display:inline-block;vertical-align:-2px;box-shadow:none}
+.vt-play.sm::after{left:5px;top:3.5px;border-width:3.5px 0 3.5px 5.5px}
+.badge.vid{top:auto;bottom:10px;left:10px;background:rgba(44,36,32,.82);color:#fff;display:inline-flex;align-items:center;gap:5px}
+.imgs figure video{width:100%;height:100%;object-fit:cover}
+.vrow{display:flex;gap:8px}
+.vrow input{flex:1}
+.matlinks{display:inline-flex;gap:6px;flex-wrap:wrap}
+.matinfo{display:inline-flex;align-items:center;gap:5px;border:0;background:none;padding:0;font:inherit;font-weight:600;color:var(--ink);cursor:pointer;text-decoration:underline dotted var(--accent);text-underline-offset:4px}
+.matinfo i{display:inline-grid;place-items:center;width:16px;height:16px;border-radius:50%;background:var(--accent);color:var(--accent-ink);font-style:normal;font-size:10.5px;font-weight:700;text-decoration:none;font-family:Georgia,serif}
+.matpop{position:fixed;z-index:70;background:var(--surface);color:var(--ink);border-radius:16px;padding:14px 16px 16px;box-shadow:0 20px 50px -12px rgba(30,22,18,.45),0 0 0 1px var(--line);font-size:13.5px;line-height:1.55;max-height:calc(100dvh - 24px);overflow:auto}
+.matpop .mp-h{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:4px}
+.matpop .mp-h b{font-family:var(--f-display);font-weight:400;font-size:19px;color:var(--accent-text)}
+.mp-x{border:0;background:var(--sunk);width:28px;height:28px;border-radius:50%;font-size:17px;line-height:1;cursor:pointer;color:var(--ink)}
+.mp-lead{margin:0 0 8px;color:var(--muted)}
+.matpop ul{margin:0;padding-left:18px;display:grid;gap:3px}
+.mp-care{margin-top:10px;background:var(--sunk);border-radius:10px;padding:9px 12px}
+.mp-care b{display:block;font-weight:600;margin-bottom:3px}
+.mat.own{background:color-mix(in srgb,var(--accent) 14%,var(--surface));color:var(--accent-text)}
+.mat.licd{background:var(--sunk);color:var(--muted)}
+.credit{font-size:13.5px;color:var(--muted);display:flex;gap:8px;align-items:center;flex-wrap:wrap;row-gap:4px}
+.credit .mat{flex:none}
+.credit b{color:var(--ink);font-weight:600}
+.credit a{color:var(--accent-text)}
+.mat.lead{background:color-mix(in srgb,var(--olive) 15%,var(--surface));color:var(--olive)}
+.mat{font-size:11.5px;font-weight:500;padding:1px 9px;border-radius:999px;background:var(--sunk);color:var(--muted)}
+
+.empty{padding:56px 20px;text-align:center;color:var(--muted);border-radius:var(--r);background:var(--surface);box-shadow:var(--shadow)}
+.empty b{display:block;color:var(--ink);font-family:var(--f-display);font-size:19px;font-weight:600;margin-bottom:4px}
+
+/* sheet (detail + editor) */
+.scrim{position:fixed;inset:0;background:rgba(44,36,32,.45);z-index:40;display:flex;align-items:center;justify-content:center;padding:max(16px,env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) max(16px,env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
+.sheet{background:var(--bg);width:min(680px,100%);max-height:100%;overflow-y:auto;display:flex;flex-direction:column;border-radius:24px;box-shadow:0 30px 80px -20px rgba(30,22,18,.5)}
+.sheet.wide{width:min(1000px,100%)}
+@media (max-width:700px){.scrim{padding:0}.sheet,.sheet.wide{width:100%;height:100%;max-height:none;border-radius:0;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}}
+.sheet-h{position:sticky;top:0;z-index:2;background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);display:flex;align-items:center;gap:10px;padding:10px 12px 10px 20px}
+.sheet-h b{flex:1;min-width:0;font-family:var(--f-display);font-weight:500;font-size:16px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sheet-b{padding:4px 20px 24px;display:grid;gap:20px}
+.d-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:28px;align-items:start}
+.d-info{display:grid;gap:20px;min-width:0}
+@media (max-width:760px){.d-grid{grid-template-columns:1fr;gap:20px}}
+.gallery{display:grid;gap:10px;position:sticky;top:64px}
+@media (max-width:760px){.gallery{position:static}}
+.gallery .main{aspect-ratio:4/5;border-radius:18px;overflow:hidden;background:var(--sunk)}
+.gallery .main img,.gallery .main svg{width:100%;height:100%;object-fit:cover;display:block}
+.gallery .main:has(img){aspect-ratio:auto;display:grid;place-items:center}
+.gallery .main img{height:auto;max-height:78vh;object-fit:contain}
+.strip{display:flex;gap:8px;overflow-x:auto}
+.strip button{flex:none;width:58px;height:72px;border-radius:10px;overflow:hidden;border:0;box-shadow:inset 0 0 0 2px transparent;padding:0;background:var(--sunk);cursor:pointer;opacity:.6}
+.strip button[aria-current="true"]{opacity:1;outline:2.5px solid var(--accent);outline-offset:2px}
+.strip img{width:100%;height:100%;object-fit:cover}
+.strip button{position:relative}
+.strip .lg{position:absolute;left:3px;bottom:3px;font-style:normal;font-size:10px;font-weight:600;line-height:1;padding:2px 5px;border-radius:999px;background:var(--ink);color:var(--bg)}
+.d-title .cat{display:inline-block;background:var(--lav);color:var(--accent-text);padding:2px 12px;border-radius:999px}
+.d-title h2{font-size:clamp(28px,4vw,38px);line-height:1.15;margin:10px 0 0;color:var(--accent);text-wrap:balance}
+.d-title .en{color:var(--muted);font-size:15px;margin-top:2px}
+.d-price{font-family:var(--f-display);font-size:32px;font-weight:400;color:var(--accent);font-variant-numeric:tabular-nums;line-height:1.1}
+.d-price small{display:block;font-family:var(--f-body);font-size:13.5px;font-weight:400;color:var(--muted);margin-top:6px}
+.tiers{display:grid;grid-template-columns:repeat(auto-fit,minmax(92px,1fr));gap:8px}
+.tier{background:var(--surface);border-radius:16px;padding:10px 8px 12px;text-align:center;box-shadow:inset 0 0 0 1.5px var(--line)}
+.tier span{display:block;font-family:var(--f-body);font-size:13px;font-weight:600;color:var(--accent-text);background:var(--lav);border-radius:999px;padding:1px 0;margin-bottom:6px}
+.tier b{font-family:var(--f-display);font-size:30px;font-weight:400;color:var(--accent);font-variant-numeric:tabular-nums;line-height:1}
+.tier b small{font-family:var(--f-body);font-size:12px;font-weight:600;margin-left:3px}
+.tier-note{font-size:13.5px;color:var(--muted);margin-top:8px;text-align:center}
+.spec{background:var(--surface);border-radius:16px;display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));margin:0;overflow:hidden;box-shadow:inset 0 0 0 1.5px var(--line)}
+.spec div{padding:11px 16px;border-right:1.5px solid var(--line);border-bottom:1.5px solid var(--line);margin:0 -1.5px -1.5px 0}
+.spec dt{font-size:12px;color:var(--muted)}
+.spec dd{margin:0;font-weight:600;font-variant-numeric:tabular-nums}
+.sec h4{font-size:16px;margin:0 0 8px}
+.sec p{margin:0;white-space:pre-line}
+.sec ul{margin:0;padding:0;list-style:none;display:grid;gap:6px}
+.sec li{display:flex;gap:10px;align-items:baseline}
+.sec li::before{content:"";flex:none;width:8px;height:8px;border-radius:50%;background:var(--lav-2);transform:translateY(-1px)}
+.colors{display:flex;flex-wrap:wrap;gap:12px 14px}
+.colors span{display:grid;justify-items:center;gap:4px;font-size:12.5px;color:var(--muted);min-width:52px}
+.colors i{width:38px;height:38px;border-radius:50%;box-shadow:inset 0 0 0 1px rgba(44,36,32,.12),0 0 0 3px var(--surface)}
+.pnote{display:grid;gap:2px;padding:10px 14px 11px;border-radius:14px;font-size:13.5px;line-height:1.55;color:var(--ink);background:linear-gradient(var(--surface),var(--surface)) padding-box,linear-gradient(90deg,#F06A6A,#F5B04A,#E9DB5A,#6CCB8A,#5AA9E6,#A57BE0) border-box;border:2px solid transparent}
+.pnote b{font-weight:600}
+.pnote span{color:var(--muted);white-space:pre-line}
+.note{background:var(--accent-soft);border-radius:var(--r-s);padding:12px 16px;font-size:13.5px}
+.links{display:flex;flex-wrap:wrap;gap:8px}
+.order-row{display:grid;gap:12px}
+.order-cta,.order-fab{width:100%;padding:12px 16px;font-size:16px;gap:8px}
+.fab-wrap{display:none}
+@media (max-width:760px){
+  .d-info .order-cta{display:none}
+  .fab-wrap{display:block;position:sticky;bottom:0;z-index:5;padding:10px 16px calc(10px + env(safe-area-inset-bottom,0px));background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-top:1.5px solid var(--line)}
+}
+.order-cta.inline{width:auto;margin:0;padding:9px 18px}
+.links span.btn{cursor:text;user-select:all}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:0;background:var(--surface);box-shadow:inset 0 0 0 1.5px var(--line);border-radius:999px;padding:8px 16px;font-weight:500;font-size:14px;cursor:pointer;text-decoration:none;color:var(--ink);white-space:nowrap}
+.btn:hover{box-shadow:inset 0 0 0 1.5px var(--lav-2)}
+.btn.primary{background:var(--accent);box-shadow:none;color:var(--accent-ink);font-weight:600}
+.btn.primary:hover{filter:brightness(1.08)}
+.btn.danger{color:var(--danger);box-shadow:inset 0 0 0 1.5px var(--danger)}
+.btn.ghost{box-shadow:none;background:transparent}
+.btn.ghost:hover{background:var(--lav)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.icon{width:38px;height:38px;padding:0}
+
+/* manage */
+.m-head{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;padding-block:28px 16px}
+.m-head h1{font-size:32px;margin:0;color:var(--accent)}
+.m-stats{display:flex;gap:16px;font-size:13px;color:var(--muted)}
+.m-stats b{color:var(--ink);font-weight:600}
+.list{display:grid;gap:10px;padding-bottom:28px}
+.item{display:grid;grid-template-columns:56px 1fr auto;gap:14px;align-items:center;background:var(--surface);border-radius:16px;padding:8px 12px 8px 8px;box-shadow:var(--shadow)}
+.item .t{width:56px;height:68px;border-radius:10px;overflow:hidden;background:var(--sunk)}
+.item .t img,.item .t svg{width:100%;height:100%;object-fit:cover;display:block}
+.item .n{min-width:0}
+.item .n b{display:block;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.item .n span{font-size:13px;color:var(--muted)}
+.pill{font-size:12px;font-weight:600;padding:2px 10px;border-radius:999px}
+.pill.live{background:color-mix(in srgb,var(--olive) 16%,var(--surface));color:var(--olive)}
+.pill.draft{background:var(--draft-soft);color:var(--draft)}
+.panel{background:var(--surface);border-radius:var(--r);padding:20px;margin-bottom:48px;box-shadow:var(--shadow)}
+.panel h2{font-size:19px;margin:0 0 14px}
+
+/* form */
+.form{display:grid;gap:16px}
+.f{display:grid;gap:5px;min-width:0}
+.f label,.f .lbl{font-size:13.5px;font-weight:600}
+.f small{color:var(--muted);font-size:12.5px}
+.f input[type=text],.f input[type=number],.f input[type=url],.f select,.f textarea{width:100%;border:0;box-shadow:inset 0 0 0 1.5px var(--line);background:var(--surface);border-radius:12px;padding:9px 12px;min-width:0}
+.f input:focus,.f select:focus,.f textarea:focus{outline:none;box-shadow:inset 0 0 0 2px var(--accent)}
+.f textarea{min-height:84px;resize:vertical}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.three{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+@media (max-width:520px){.two,.three{grid-template-columns:1fr}}
+.seg{display:flex;gap:2px;background:var(--lav);border-radius:999px;padding:3px;width:max-content;max-width:100%}
+.seg button{border:0;background:none;padding:6px 16px;border-radius:999px;cursor:pointer;font-size:13.5px}
+.seg button[aria-pressed="true"]{background:var(--surface);box-shadow:var(--shadow);font-weight:600;color:var(--accent-text)}
+.matpick{display:flex;flex-wrap:wrap;gap:6px}
+.matpick button{font-size:13px;border:0;box-shadow:inset 0 0 0 1.5px var(--line);background:var(--surface);border-radius:999px;padding:5px 12px;cursor:pointer}
+.matpick button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);box-shadow:none}
+.crow{display:grid;grid-template-columns:40px 1fr 34px;gap:8px;align-items:center}
+.crow input[type=color]{width:40px;height:38px;border:0;box-shadow:inset 0 0 0 1.5px var(--line);border-radius:10px;padding:3px;background:var(--surface)}
+.imgs{display:flex;flex-wrap:wrap;gap:8px}
+.imgs figure{margin:0;position:relative;width:88px;height:110px;border-radius:12px;overflow:hidden;background:var(--sunk)}
+.imgs img{width:100%;height:100%;object-fit:cover}
+.imgs figure button{position:absolute;top:4px;right:4px;width:22px;height:22px;border-radius:50%;border:0;background:rgba(44,36,32,.7);color:#fff;cursor:pointer;line-height:1;font-size:14px}
+.imgs figure .first{position:absolute;left:4px;right:4px;bottom:4px;font-size:10.5px;background:rgba(44,36,32,.7);color:#fff;padding:1px 6px;border-radius:999px;text-align:center}
+.upl{width:88px;height:110px;border:2px dashed var(--lav-2);border-radius:12px;display:grid;place-items:center;font-size:12.5px;color:var(--accent-text);cursor:pointer;background:var(--surface);text-align:center;line-height:1.3}
+.check{display:flex;align-items:center;gap:8px;font-size:14px}
+.foot{position:sticky;bottom:0;background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-top:1.5px solid var(--line);padding:12px 20px;display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;margin-top:auto}
+.confirm{background:var(--danger-soft);border-radius:12px;padding:10px 14px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:13.5px}
+.ro{background:var(--draft-soft);color:var(--draft);border-radius:12px;padding:10px 14px;font-size:13.5px;margin-bottom:12px}
+
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:999px;font-size:14px;z-index:60;max-width:calc(100% - 32px);box-shadow:var(--shadow)}
+.social{background:var(--surface);border-radius:var(--r);box-shadow:var(--shadow);padding:28px 20px;text-align:center;display:grid;gap:4px;justify-items:center;margin-bottom:8px}
+.social h2{font-size:26px;margin:0;color:var(--accent)}
+.social>p{margin:6px 0 18px;color:var(--muted);font-size:14px;max-width:46ch}
+.social .tag2{font-family:var(--f-display);font-style:italic;font-size:clamp(17px,2.6vw,20px);color:var(--ink);opacity:.85}
+.social-grid{display:flex;flex-wrap:wrap;justify-content:center;gap:16px}
+.soc{display:grid;justify-items:center;gap:2px;padding:14px 18px 12px;border-radius:16px;background:var(--bg);text-decoration:none;color:var(--ink);box-shadow:inset 0 0 0 1.5px var(--line);transition:box-shadow .15s}
+.soc:hover{box-shadow:inset 0 0 0 2px var(--accent)}
+.soc img{width:150px;height:150px;border-radius:10px;background:#fff;padding:6px;margin-bottom:8px}
+.soc b{font-weight:600}
+.soc-phone{margin:16px 0 0;font-size:15px;color:var(--muted)}
+.soc-phone b{color:var(--ink);font-weight:600;user-select:all;font-variant-numeric:tabular-nums}
+.soc span{font-size:13px;color:var(--muted)}
+.foot-note{padding-block:24px 40px;color:var(--muted);font-size:13.5px;display:grid;gap:4px;text-align:center;justify-items:center}
+.foot-note b{font-weight:400;font-size:20px}
+.foot-note .wm-tag{margin-bottom:8px}
+.foot-note i{font-family:var(--f-display);color:var(--ink)}
+
+/* product detail: fit one screen on desktop, no scrolling */
+@media (min-width:761px){
+  .sheet.wide{height:min(860px,calc(100dvh - 32px));overflow:hidden;position:relative}
+  .sheet.wide .sheet-h{position:absolute;top:10px;right:10px;left:auto;padding:0;background:none;backdrop-filter:none;-webkit-backdrop-filter:none;gap:6px}
+  .sheet.wide .sheet-h b{display:none}
+  .sheet.wide .sheet-b{height:100%;padding:20px;min-height:0}
+  .sheet.wide .d-grid{height:100%;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:28px;align-items:stretch;min-height:0}
+  .sheet.wide .gallery{position:static;min-height:0;display:flex;flex-direction:column;gap:8px}
+  .sheet.wide .gallery .main{flex:1;min-height:0;aspect-ratio:auto;display:grid;place-items:center}
+  .sheet.wide .gallery .main img{width:100%;height:100%;max-height:none;object-fit:contain}
+  .sheet.wide .strip button{width:44px;height:54px}
+  .sheet.wide .d-info{gap:12px;align-content:start;overflow-y:auto;min-height:0;padding:4px 4px 0 0}
+  .sheet.wide .d-title{padding-right:96px}
+  .sheet.wide .d-title h2{font-size:clamp(26px,3vw,34px);margin-top:6px}
+  .sheet.wide .tier{padding:7px 6px 9px}
+  .sheet.wide .tier span{margin-bottom:3px;font-size:12px;line-height:1.35;padding:2px 6px}
+  .sheet.wide .tier b{font-size:24px}
+  .sheet.wide .tier-note{margin-top:5px;font-size:12.5px}
+  .sheet.wide .spec div{padding:7px 14px}
+  .sheet.wide .sec h4{font-size:14.5px;margin-bottom:5px}
+  .sheet.wide .sec ul{grid-template-columns:1fr 1fr;gap:3px 16px;font-size:14px}
+  .sheet.wide .colors{gap:8px 10px}
+  .sheet.wide .colors span{font-size:11px;min-width:44px;gap:2px}
+  .sheet.wide .colors i{width:26px;height:26px;box-shadow:inset 0 0 0 1px rgba(44,36,32,.12)}
+  .sheet.wide .soc{padding:8px 10px 7px;grid-template-columns:auto auto;column-gap:10px;align-items:center;justify-items:start;text-align:left}
+  .sheet.wide .soc img{width:72px!important;height:72px!important;margin:0;padding:3px;grid-row:span 2}
+  .sheet.wide .soc-mini{font-size:13px;color:var(--muted);margin:0}
+  .sheet.wide .vars li{padding:2px 9px 2px 3px;font-size:12.5px}
+
+  /* balanced right column */
+  .sheet.wide .d-info{display:flex;flex-direction:column;justify-content:space-between;gap:12px;padding:6px 4px 2px 0}
+  .sheet.wide .d-info>*{flex:none}
+  .sheet.wide .d-info.over{justify-content:flex-start}
+  .sheet.wide .d-title{display:grid;gap:2px}
+  .sheet.wide .d-title .cat{justify-self:start}
+  .sheet.wide .d-title h2{margin-top:8px}
+  .sheet.wide .d-title .credit{margin-top:8px}
+  .sheet.wide .tiers{grid-auto-rows:1fr}
+  .sheet.wide .tier{display:flex;flex-direction:column;justify-content:space-between;align-items:center;gap:4px;padding:10px 8px}
+  .sheet.wide .tier span{background:none;padding:0;margin:0;color:var(--muted);font-size:12.5px;font-weight:500;line-height:1.3}
+  .sheet.wide .tier b{font-size:26px}
+  .sheet.wide .order-row{display:flex;flex-wrap:wrap;gap:10px;align-items:stretch}
+  .sheet.wide .order-row .social-grid{display:contents}
+  .sheet.wide .order-row .links{display:flex;align-items:center}
+  .sheet.wide .d-info.tight{gap:10px}
+  .sheet.wide .tight .d-title .credit{margin-top:4px}
+  .sheet.wide .tight .d-title h2{margin-top:4px}
+  .sheet.wide .order-cta{padding:9px 16px;font-size:15px}
+  .sheet.wide .tight .order-cta{padding:7px 14px}
+  .sheet.wide .tight .pnote{padding:7px 12px 8px;font-size:12.5px;line-height:1.45}
+  /* tight: applied by script when content still overflows */
+  .sheet.wide .d-info.tight{gap:8px;font-size:14px;line-height:1.5}
+  .sheet.wide .tight .d-title h2{font-size:26px;margin-top:2px}
+  .sheet.wide .tight .d-title .en{font-size:13.5px}
+  .sheet.wide .tight .tier b{font-size:21px}
+  .sheet.wide .tight .spec div{padding:5px 12px}
+  .sheet.wide .tight .sec h4{margin-bottom:3px}
+  .sheet.wide .tight .sec ul{font-size:13px}
+  .sheet.wide .tight .vars{gap:4px}
+  .sheet.wide .tight .vars li{font-size:12px}
+  .sheet.wide .tight .colors i{width:22px;height:22px}
+  .sheet.wide .tight .soc img{width:56px!important;height:56px!important}
+  .sheet.wide .tight .soc{padding:6px 10px}
+}
+/* detail gallery: fit the whole image inside the frame (never crop) */
+@media (min-width:761px){.sheet.wide .gallery .main{position:relative}.sheet.wide .gallery .main>img{position:absolute;inset:0;width:100%;height:100%;max-height:none;object-fit:contain}}
+@media (prefers-reduced-motion:reduce){.card,.thumb img{transition:none}.card:hover{transform:none}.card:hover .thumb img{transform:none}}
+</style>
+<header class="top"><div class="wrap">
+  <a class="brand" href="#catalog">
+    <span class="mark"><svg class="logo-icon" viewBox="0 0 40 58" aria-hidden="true"><rect x="15.5" y="0" width="9" height="4.5" rx="1.6" fill="#C4714A"/><rect x="18" y="4" width="4" height="3.5" fill="#A85E3B"/><path d="M20 7.5L36 16.5L20 25.5L4 16.5Z" fill="#C97A53"/><path d="M4 16.5L20 25.5V28.5L4 19.5Z" fill="#A85E3B"/><path d="M36 16.5L20 25.5V28.5L36 19.5Z" fill="#B66A43"/><path d="M4 24.0L20 33.0L36 24.0V28.2L20 37.2L4 28.2Z" fill="#B4663F"/><path d="M4 29.2L20 38.2L36 29.2V33.4L20 42.4L4 33.4Z" fill="#9A5737"/><path d="M4 34.4L20 43.4L36 34.4V38.6L20 47.6L4 38.6Z" fill="#7C4830"/><path d="M4 39.6L20 48.6L36 39.6V43.8L20 52.8L4 43.8Z" fill="#5E3A2A"/><path d="M4 44.8L20 53.8L36 44.8V49.0L20 58.0L4 49.0Z" fill="#432D24"/></svg></span>
+    <b id="shopName" class="wm">FIXTORY<em>.STUDIO</em></b>
+  </a>
+  <button class="lang" id="langBtn" type="button" aria-label="Switch language">EN</button>
+  <button class="thm" type="button" aria-label="สลับโหมดสว่าง/มืด"></button>
+  <nav class="tabs" id="tabs" hidden>
+    <a href="#catalog" id="tabCat">แคตตาล็อก</a>
+    <a href="#manage" id="tabMan">จัดการสินค้า</a>
+  </nav>
+</div></header>
+<main id="app"></main>
+<div id="layer"></div>
+<div id="toast" class="toast" role="status" hidden></div>
+
+<script type="application/json" id="data">{"shop":{"name":"fixtory.studio","tagline":"งานพิมพ์ 3 มิติที่ออกแบบเองในสตูดิโอเล็ก ๆ กรุงเทพฯ — ของใช้ ของแต่งบ้าน และชิ้นงานที่ฝังชิป NFC","contact":"สั่งซื้อ / สอบถาม: TikTok / Facebook: fixtory.studio · โทร. 090-985-0326, 081-336-8232","policy":"งานที่ใช้แบบของนักออกแบบรายอื่น ลูกค้าต้องซื้อสิทธิ์เชิงพาณิชย์ (commercial license) เองและส่งหลักฐานให้ร้านก่อนเริ่มพิมพ์","taglineEn":"3D prints designed in a small Bangkok studio — everyday goods, home decor and NFC-embedded pieces.","contactEn":"Order / enquiries: TikTok / Facebook: fixtory.studio · Tel. 090-985-0326, 081-336-8232","policyEn":"For third-party designs, customers must purchase the commercial license themselves and send proof before we start printing.","socials":[{"label":"TikTok","handle":"@fixtory.studio","url":"https://www.tiktok.com/@fixtory.studio","qr":"cat/qr-tiktok.png?v=1"},{"label":"Facebook","handle":"fixtory.studio","url":"https://www.facebook.com/share/1CoEGCMttn/","qr":"cat/qr-facebook.png?v=1"}],"phone":"090-985-0326, 081-336-8232","orderUrl":"https://fixtory-studio.pages.dev/shop-order.html"},"categories":["ของใช้ในบ้าน","พวงกุญแจ","โคมไฟ & ของแต่งบ้าน","ป้าย NFC","ของเล่นสัตว์เลี้ยง","รับพิมพ์งานตามสั่ง","ของใช้เด็ก"],"products":[{"id":"phapchoo","status":"live","name":"น้องพับชู่","nameEn":"Nong Phap Choo","category":"ของใช้ในบ้าน","price":399,"priceNote":"มากกว่า 10 ชิ้น โปรดติดต่อร้าน","summary":"ที่วางทิชชูม้วนหน้ายิ้ม นั่งห้อยขาริมชั้นวางเป็นเพื่อนคุณ ขาขยับได้","features":"ใส่ทิชชูม้วนมาตรฐาน จนถึงม้วนยาวพิเศษ 3 เท่า\nขาเป็นข้อต่อ ขยับท่าได้\nนั่งห้อยขาริมชั้นหรือโต๊ะได้\nสีพาสเทลเลือกได้ 6 สี","materials":["PLA"],"colors":[{"name":"ม่วงลาเวนเดอร์","hex":"#CDB8F0","nameEn":"Lavender"},{"name":"ชมพู","hex":"#F6C3D3","nameEn":"Pink"},{"name":"ฟ้า","hex":"#9EC3F0","nameEn":"Blue"},{"name":"เขียวมิ้นต์","hex":"#B8E3CF","nameEn":"Mint"},{"name":"เหลือง","hex":"#F7E3A1","nameEn":"Yellow"},{"name":"ครีม","hex":"#EFE9E1","nameEn":"Cream"}],"weight":"134.6","shipWeight":"","hours":"3.9","size":"","nfc":false,"license":"own","channels":"TikTok\nFacebook | https://www.facebook.com/share/1CoEGCMttn/\nโทร. 090-985-0326, 081-336-8232","images":["cat/phapchoo-th.jpg?v=1","cat/phapchoo-en.jpg?v=1"],"categoryEn":"Home & Living","summaryEn":"A smiling toilet-roll holder that sits on the edge of your shelf with its legs dangling — your little shelf-side companion.","featuresEn":"Fits standard up to triple-length rolls\nJointed legs you can pose\nSits on the edge of a shelf or desk\nChoose from 6 pastel colors","priceNoteEn":"For orders over 10 pieces, please contact us.","channelsEn":"TikTok\nFacebook | https://www.facebook.com/share/1CoEGCMttn/\nTel. 090-985-0326, 081-336-8232","enCover":1,"tiers":"1|399\n2|699\n3|999","leadDays":"1","videos":[],"tiersEn":"","variants":"","note":"","noteEn":"","noteTitle":"","noteTitleEn":"","variantsEn":"","designer":"","designerUrl":""},{"id":"sipbuddy","status":"live","name":"Sip Buddy ที่ใส่กล่องนม","nameEn":"Sip Buddy Box Holder","category":"ของใช้เด็ก","categoryEn":"For Kids","price":590,"priceNote":"มากกว่า 10 ชิ้น โปรดติดต่อร้าน","priceNoteEn":"More than 10 pieces? Please contact us.","tiers":"สีเดียว | 590\nหลายสี (Color Pop) | 690\nหลายสี + สลักชื่อด้านหลัง | 790","tiersEn":"Single Color | 590\nMulticolor (Color Pop) | 690\nMulticolor + Name | 790","summary":"ที่ใส่กล่องนมและน้ำผลไม้รูปสัตว์ มีหูจับสองข้าง ใช้กับกล่องทรงสูง 150–250 มล. (ไม่รองรับกล่องทรงแบนกว้าง)","summaryEn":"A cute animal holder with two handles for tall 150–250 ml cartons (wide, flat cartons won't fit).","features":"","featuresEn":"","variants":"ไดโนเสาร์\nจิ้งจอกยิ้ม\nน้องหมา\nน้องแมว\nก้อนเมฆ\nน้องไก่\nน้องหมี\nแมวยิ้ม\nเม่น\nแพนด้า\nบีเวอร์\nจิ้งจอกคลาสสิก\nนกฮูก","variantsEn":"Dinosaur\nHappy Fox\nPuppy\nKitty\nCloud\nChicken\nBear\nHappy Cat\nHedgehog\nPanda\nBeaver\nClassic Fox\nOwl","materials":["PLA"],"colors":[],"weight":"","shipWeight":"","hours":"","leadDays":"1","size":"","nfc":false,"license":"licensed","designer":"","designerUrl":"","channels":"TikTok\nFacebook | https://www.facebook.com/share/1CoEGCMttn/\nโทร. 090-985-0326, 081-336-8232","channelsEn":"TikTok\nFacebook | https://www.facebook.com/share/1CoEGCMttn/\nTel. 090-985-0326, 081-336-8232","images":["cat/sipbuddy-th.jpg?v=1","cat/sipbuddy-en.jpg?v=1"],"enCover":1,"noteTitle":"สีไม่ซ้ำกันทุกใบ","note":"พิมพ์ด้วยเส้นสีรุ้งที่ไล่สีเองระหว่างพิมพ์ ทุกใบจึงได้สีไม่ซ้ำกันและอาจต่างจากภาพตัวอย่าง แบบ Color Pop จะเพิ่มสีที่ใบหน้าตัวสัตว์\nสลักชื่อด้านหลังได้ทั้งภาษาไทยและอังกฤษ 4–6 ตัวอักษร","noteTitleEn":"Every piece is unique","noteEn":"Rainbow filament shifts colour as it prints, so every piece is unique and may differ from the photos. Color Pop adds colour to the face.\nNames on the back: Thai or English, 4–6 characters.","videos":[]},{"id":"keycap","status":"live","name":"Alphabet Clicker พวงกุญแจคีย์แคป","nameEn":"Alphabet Clicker Keychain","category":"พวงกุญแจ","categoryEn":"Keychains","price":35,"priceNote":"ราคารวมฐาน (เคส) และสายคล้องแล้ว · 3 ตัว 100 บาท ตัวต่อไปตัวละ 35 บาท · สูงสุด 8 ตัว","priceNoteEn":"Price includes the case and the strap · 3 keys for 100 THB, then 35 THB per extra key · up to 8 keys","tiers":"1 ตัว | 35\n3 ตัว | 100\n6 ตัว | 200","tiersEn":"1 key | 35\n3 keys | 100\n6 keys | 200","summary":"พวงกุญแจคีย์แคปกดคลิกได้ เรียงตัวอักษรเป็นชื่อหรือคำที่ชอบ เลือกสีคีย์ทีละตัว สีเคส และสายคล้องเองได้ ราคาคิดตามจำนวนตัวอักษร รวมฐาน (เคส) และสายคล้องแล้ว ไม่มีค่าใช้จ่ายเพิ่ม","summaryEn":"A clicky keycap keychain — spell a name or a word, then pick the colour of every key, the case and the strap. Priced by the number of keys, with the case and strap included at no extra cost.","features":"ตัวอักษร A–Z หน้ายิ้ม 7 แบบ และหัวใจ ผสมกันได้\nเลือกสีคีย์ได้ทีละตัว จาก 3 คอลเลกชัน\nสีเคส 5 สี สายคล้อง 8 แบบ\nเลือกแบบแนวตั้งหรือแนวนอน","featuresEn":"Letters A–Z, 7 smiley faces and a heart, mix freely\nPick each key colour from 3 collections\n5 case colours, 8 strap styles\nVertical or horizontal layout","variants":"Pastel — ตัวอักษรขาว ฐานพาสเทล\nDark mode — ตัวอักษรดำ ฐานสี\nPolar White — ฐานขาว ตัวอักษรสี","variantsEn":"Pastel — white letters on pastel keys\nDark mode — black letters on coloured keys\nPolar White — coloured letters on white keys","materials":["PLA"],"colors":[{"name":"ดำ","hex":"#2B2B2B","nameEn":"Black"},{"name":"ขาว","hex":"#F5F5F2","nameEn":"White"},{"name":"ม่วง","hex":"#B7A3E0","nameEn":"Purple"},{"name":"ชมพูอมแดง","hex":"#E85C7A","nameEn":"Rose"},{"name":"เขียวอมฟ้า","hex":"#3FB6B0","nameEn":"Teal"}],"weight":"","shipWeight":"","hours":"","leadDays":"1","size":"","nfc":false,"license":"own","designer":"","designerUrl":"","channels":"TikTok\nFacebook | https://www.facebook.com/share/1CoEGCMttn/\nโทร. 090-985-0326, 081-336-8232","channelsEn":"TikTok\nFacebook | https://www.facebook.com/share/1CoEGCMttn/\nTel. 090-985-0326, 081-336-8232","images":["cat/keycap-th.jpg?v=1","cat/keycap-en.jpg?v=1","cat/keycap-set.jpg?v=1","cat/keycap-tor.jpg?v=1","cat/keycap-kao.jpg?v=1","cat/keycap-tui.jpg?v=1","cat/keycap-pastel.jpg?v=1","cat/keycap-dark.jpg?v=1","cat/keycap-polar.jpg?v=1","cat/keycap-smiley.jpg?v=1","cat/keycap-cases.jpg?v=1"],"enCover":1,"videos":[],"noteTitle":"","note":"","noteTitleEn":"","noteEn":""}],"materialInfo":{"PLA":{"th":{"title":"PLA คืออะไร","lead":"พลาสติกที่ผลิตจากวัตถุดิบจากพืช เช่น แป้งข้าวโพดหรืออ้อย เป็นวัสดุหลักของงานพิมพ์ 3 มิติ","points":["ไม่มีกลิ่นฉุน ผิวเรียบ สีสด","แข็งแรง เหมาะกับของใช้ทั่วไปในบ้าน","ทนความร้อนได้ประมาณ 55–60°C"],"care":["ห้ามทิ้งไว้ในรถกลางแดด ห้ามใส่น้ำร้อนหรือเครื่องล้างจาน ชิ้นงานอาจบิดเสียรูป","ล้างด้วยน้ำเย็นกับสบู่อ่อน แล้วเช็ดให้แห้ง","เลี่ยงแดดจัดต่อเนื่องนาน ๆ สีอาจซีดลง"]},"en":{"title":"About PLA","lead":"A plastic made from plant-based materials such as corn starch or sugarcane, and the most common 3D printing material.","points":["No harsh smell, smooth finish, vivid colours","Sturdy enough for everyday home use","Withstands heat up to about 55–60°C"],"care":["Don't leave it in a hot car or use hot water or a dishwasher — it can warp","Wash with cool water and mild soap, then dry","Avoid long periods in strong sunlight, colours may fade"]}}}}</script>
+
+<script id="appjs">
+(function(){
+const $=s=>document.querySelector(s);
+const el=(t,a={},...k)=>{const e=document.createElement(t);for(const[x,v]of Object.entries(a)){if(v==null||v===false)continue;if(x==='class')e.className=v;else if(x==='html')e.innerHTML=v;else if(x.startsWith('on'))e.addEventListener(x.slice(2),v);else e.setAttribute(x,v===true?'':v)}for(const c of k.flat()){if(c==null||c===false)continue;e.append(c.nodeType?c:document.createTextNode(c))}return e};
+const CHROME=`<header class="top"><div class="wrap">
+  <a class="brand" href="#catalog">
+    <span class="mark"><svg class="logo-icon" viewBox="0 0 40 58" aria-hidden="true"><rect x="15.5" y="0" width="9" height="4.5" rx="1.6" fill="#C4714A"/><rect x="18" y="4" width="4" height="3.5" fill="#A85E3B"/><path d="M20 7.5L36 16.5L20 25.5L4 16.5Z" fill="#C97A53"/><path d="M4 16.5L20 25.5V28.5L4 19.5Z" fill="#A85E3B"/><path d="M36 16.5L20 25.5V28.5L36 19.5Z" fill="#B66A43"/><path d="M4 24.0L20 33.0L36 24.0V28.2L20 37.2L4 28.2Z" fill="#B4663F"/><path d="M4 29.2L20 38.2L36 29.2V33.4L20 42.4L4 33.4Z" fill="#9A5737"/><path d="M4 34.4L20 43.4L36 34.4V38.6L20 47.6L4 38.6Z" fill="#7C4830"/><path d="M4 39.6L20 48.6L36 39.6V43.8L20 52.8L4 43.8Z" fill="#5E3A2A"/><path d="M4 44.8L20 53.8L36 44.8V49.0L20 58.0L4 49.0Z" fill="#432D24"/></svg></span>
+    <b id="shopName" class="wm">FIXTORY<em>.STUDIO</em></b>
+  </a>
+  <button class="lang" id="langBtn" type="button" aria-label="Switch language">EN</button>
+  <button class="thm" type="button" aria-label="สลับโหมดสว่าง/มืด"></button>
+  <nav class="tabs" id="tabs" hidden>
+    <a href="#catalog" id="tabCat">แคตตาล็อก</a>
+    <a href="#manage" id="tabMan">จัดการสินค้า</a>
+  </nav>
+</div></header>
+<main id="app"></main>
+<div id="layer"></div>
+<div id="toast" class="toast" role="status" hidden></div>`;
+const MATS=['PLA','PETG','TPU','PVA','PLA Silk','PLA Wood','PLA Gradient','ABS/ASA'];
+let S;try{S=JSON.parse($('#data').textContent)}catch(e){S={shop:{},categories:[],products:[]}}
+let lang='th';try{lang=localStorage.getItem('fx-lang')||((navigator.language||'').startsWith('th')?'th':'en')}catch(e){lang=(navigator.language||'').startsWith('th')?'th':'en'}
+const ICON_SUN='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M4.6 4.6l1.6 1.6M17.8 17.8l1.6 1.6M2.5 12h2.2M19.3 12h2.2M4.6 19.4l1.6-1.6M17.8 6.2l1.6-1.6"/></svg>';
+const ICON_MOON='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M20.5 14.2A8.5 8.5 0 0 1 9.8 3.5a8.5 8.5 0 1 0 10.7 10.7Z"/></svg>';
+try{const st=localStorage.getItem('fx-theme');if(st==='light'||st==='dark')document.documentElement.setAttribute('data-theme',st)}catch(e){}
+function themeNow(){return document.documentElement.getAttribute('data-theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light')}
+function paintThm(){const d=themeNow()==='dark';document.querySelectorAll('.thm').forEach(b=>{b.innerHTML=d?ICON_SUN:ICON_MOON;b.title=d?'โหมดสว่าง':'โหมดมืด'})}
+document.addEventListener('click',e=>{if(e.target.closest('.thm')){const t=themeNow()==='dark'?'light':'dark';document.documentElement.setAttribute('data-theme',t);try{localStorage.setItem('fx-theme',t)}catch(x){}paintThm()}});
+const T={th:{all:'ทั้งหมด',search:'ค้นหาสินค้า',ask:'สอบถามราคา',draft:'ร่าง',noMatch:'ไม่พบสินค้าที่ตรงกับการค้นหา',noProd:'ยังไม่มีสินค้าในร้าน',soon:'กลับมาดูใหม่เร็ว ๆ นี้',policy:'นโยบาย: ',mat:'วัสดุ',size:'ขนาด',wt:'น้ำหนักชิ้นงาน',swt:'น้ำหนักพร้อมกล่อง',hrs:'เวลาพิมพ์',hr:' ชม.',lead:'ระยะเวลาผลิต',follow:'สั่งซื้อ / สอบถาม',orderNow:'สั่งซื้อออนไลน์',vars:'แบบให้เลือก',varsHint:'แจ้งหมายเลขแบบตอนสั่งซื้อ',call:'หรือโทร ',own:'ร้านออกแบบเอง',lic:'Licensed design',by:'ออกแบบโดย ',ownBy:'ออกแบบและผลิตโดย Fixtory Studio',licNote:'ผลิตและจำหน่ายภายใต้ commercial license จากผู้ออกแบบ',scan:'ทักแชทหาร้านทาง TikTok หรือ Facebook สแกน QR ด้านล่างได้เลย',days:n=>n+' วัน',nfcOn:'ฝังชิป NFC',feat:'จุดเด่น',cols:'สีที่มี',buy:'สั่งซื้อได้ที่',order:'สั่งซื้อ',close:'ปิด',img:'รูปที่ ',pc:' ชิ้น',cur:' บาท',from:'เริ่ม'},
+en:{all:'All',search:'Search products',ask:'Price on request',draft:'Draft',noMatch:'No products match your search',noProd:'No products yet',soon:'Check back soon',policy:'Policy: ',mat:'Material',size:'Size',wt:'Print weight',swt:'Packed weight',hrs:'Print time',hr:' h',lead:'Production time',follow:'Order & enquiries',orderNow:'Order online',vars:'Designs',varsHint:'Tell us the number when ordering',call:'Or call ',own:'Fixtory original',lic:'Licensed design',by:'Designed by ',ownBy:'Designed and made by Fixtory Studio',licNote:'Made under the designer’s commercial license',scan:'Message us on TikTok or Facebook — just scan a QR code below.',days:n=>n+(+n===1?' day':' days'),nfcOn:'NFC chip inside',feat:'Highlights',cols:'Colors',buy:'Order via',order:'How to order',close:'Close',img:'Image ',pc:' pcs',cur:' THB',from:'From'}};
+const t=k=>T[lang][k];
+const L=(o,k)=>lang==='en'&&o&&o[k+'En']?o[k+'En']:(o&&o[k])||'';
+const title=p=>lang==='en'&&p.nameEn?p.nameEn:p.name;
+const subtitle=p=>lang==='en'?(p.nameEn?p.name:''):p.nameEn;
+const imgOrder=p=>{const a=(p.images||[]).slice();const k=p.enCover;if(lang==='en'&&k>0&&k<a.length)a.unshift(a.splice(k,1)[0]);return a};
+let canEdit=false, readOnly=false, art=null, assets=null, catFilter='', q='';
+
+/* ---------- helpers ---------- */
+const fmt=n=>Number(n).toLocaleString('th-TH');
+const priceText=p=>p.price!=null&&p.price!==''?'฿'+fmt(p.price):t('ask');
+const visible=()=>S.products.filter(p=>canEdit||p.status==='live');
+function toast(m,ms=2600){const t=$('#toast');t.textContent=m;t.hidden=false;clearTimeout(toast._t);toast._t=setTimeout(()=>t.hidden=true,ms)}
+function placeholder(p){
+  const c=(p.colors&&p.colors[0]&&p.colors[0].hex)||'#8C95A6';
+  const letter=((p.nameEn||p.name||'?').trim()[0]||'?').toUpperCase();
+  let lines='';for(let y=8;y<300;y+=9)lines+=`<rect x="0" y="${y}" width="400" height="4" fill="${c}" opacity="${(0.08+((y/9)%3)*0.05).toFixed(2)}"/>`;
+  return `<svg viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect width="400" height="300" fill="var(--sunk)"/>${lines}<text x="200" y="190" text-anchor="middle" font-family="Anuphan,sans-serif" font-weight="700" font-size="150" fill="${c}" opacity=".85">${letter.replace(/[<&>]/g,'')}</text></svg>`;
+}
+function vidPlat(u){u=u||'';return /tiktok/i.test(u)?'TikTok':/youtu/i.test(u)?'YouTube':/facebook|fb\.watch/i.test(u)?'Facebook':/instagram/i.test(u)?'Instagram':(lang==='en'?'the web':'เว็บไซต์')}
+function gallery(p){return imgOrder(p).map(u=>({k:'img',u})).concat((p.videos||[]).filter(v=>v&&v.url).map(v=>({k:v.link?'link':'vid',u:v.url})))}
+function mediaItem(p,it){
+  if(it.k==='vid'){const v=el('video',{src:it.u,controls:true,playsinline:true,preload:'metadata','aria-label':(lang==='en'?'Product video':'วิดีโอสินค้า')});v.onerror=()=>v.replaceWith(el('div',{class:'vid-err'},lang==='en'?'This video could not be loaded':'เปิดวิดีโอนี้ไม่ได้'));return v}
+  if(it.k==='link'){const pl=vidPlat(it.u),cov=imgOrder(p)[0];return el('a',{class:'vid-link',href:it.u,target:'_blank',rel:'noopener'},cov?el('img',{src:cov,alt:''}):null,el('span',{class:'vid-play','aria-hidden':'true'}),el('b',{},(lang==='en'?'Watch on ':'ดูวิดีโอบน ')+pl))}
+  const im=el('img',{src:it.u,alt:p.name});im.onerror=()=>im.replaceWith(el('div',{html:placeholder(p),style:'height:100%'}));return im}
+function media(p,i=0){const u=imgOrder(p)[i];if(u){const im=el('img',{src:u,alt:p.name,loading:'lazy'});im.onerror=()=>{im.replaceWith(el('div',{html:placeholder(p),style:'height:100%'}))};return im}return el('div',{html:placeholder(p),style:'height:100%'})}
+function tiers(p){return L(p,'tiers').split('\n').map(l=>l.split('|').map(x=>x.trim())).filter(x=>x.length===2&&x[0]&&x[1]!==''&&!isNaN(+x[1])).map(([q,v])=>({q,v:+v}))}
+function wordmark(name){const n=(name||'fixtory.studio').toUpperCase();const i=n.indexOf('.');const f=document.createDocumentFragment();f.append(i>0?n.slice(0,i):n);if(i>0)f.append(el('em',{},n.slice(i)));return f}
+function channels(p){return L(p,'channels').split('\n').map(l=>l.trim()).filter(Boolean).map(l=>{const i=l.indexOf('|');return i>0?{label:l.slice(0,i).trim(),url:l.slice(i+1).trim()}:{label:l,url:l}})}
+
+/* ---------- routing ---------- */
+function route(){
+  const h=location.hash.slice(1);
+  const man=h==='manage'&&canEdit;
+  if(man){if(window._heroIO)window._heroIO.disconnect();document.querySelector('.top').classList.remove('hide-brand','overlay')}
+  $('#tabs').hidden=!canEdit;
+  $('#tabCat').removeAttribute('aria-current');if(!man)$('#tabCat').setAttribute('aria-current','page');
+  $('#tabMan').removeAttribute('aria-current');if(man)$('#tabMan').setAttribute('aria-current','page');
+  const lb=$('#langBtn');lb.textContent=lang==='th'?'EN':'TH';document.documentElement.lang=lang;
+  $('#shopName').replaceChildren(wordmark(S.shop.name));
+  man?renderManage():renderCatalog();
+  paintThm();
+  closeLayer();
+  if(h.startsWith('p-')){const p=S.products.find(x=>'p-'+x.id===h&&(canEdit||x.status==='live'));if(p)openDetail(p)}
+}
+addEventListener('hashchange',route);
+document.addEventListener('click',e=>{if(e.target.closest('.lang')){lang=lang==='th'?'en':'th';try{localStorage.setItem('fx-lang',lang)}catch(x){}catFilter='';route()}});
+
+/* ---------- catalog ---------- */
+function renderCatalog(){
+  const app=$('#app');app.replaceChildren();
+  const w=el('div',{class:'wrap'});
+  w.append(el('section',{class:'hero'},
+    el('div',{class:'lockup'},el('span',{class:'mark big',html:document.querySelector('.mark').innerHTML}),
+      el('div',{class:'lockup-t'},el('h1',{class:'wm'},wordmark(S.shop.name)),el('span',{class:'wm-tag'},'From Craft to Smart Design'))),
+    el('div',{class:'hero-ctrl'},el('button',{class:'lang',type:'button','aria-label':'Switch language'},lang==='th'?'EN':'TH'),el('button',{class:'thm',type:'button','aria-label':'สลับโหมดสว่าง/มืด'}),
+      canEdit?el('nav',{class:'tabs'},el('a',{href:'#catalog','aria-current':'page'},'แคตตาล็อก'),el('a',{href:'#manage'},'จัดการสินค้า')):null)
+    ));
+  const cats=[...new Set(visible().map(p=>L(p,'category')).filter(Boolean))];
+  const chips=el('div',{class:'chips',role:'group','aria-label':'หมวดสินค้า'},
+    el('button',{class:'chip','aria-pressed':String(!catFilter),onclick:()=>{catFilter='';renderCatalog()}},t('all')),
+    cats.map(c=>el('button',{class:'chip','aria-pressed':String(catFilter===c),onclick:()=>{catFilter=c;renderCatalog()}},c)));
+  const si=el('input',{type:'search',id:'q',placeholder:t('search'),'aria-label':t('search'),value:q});
+  si.addEventListener('input',()=>{q=si.value;drawGrid()});
+  w.append(el('div',{class:'bar'},el('label',{class:'search'},el('span',{html:'<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="7" cy="7" r="5"/><path d="m11 11 3.5 3.5"/></svg>','aria-hidden':'true',style:'color:var(--muted);display:flex'}),si),chips));
+  const grid=el('div',{class:'grid',id:'grid'});w.append(grid);
+  const soc=(S.shop.socials||[]).filter(x=>x.url||x.qr);
+  if(soc.length||S.shop.phone)w.append(el('section',{class:'social'},el('h2',{},t('follow')),el('p',{},t('scan')),
+    el('div',{class:'social-grid'},soc.map(x=>el(x.url?'a':'div',{class:'soc',href:x.url||null,target:x.url?'_blank':null,rel:x.url?'noopener':null},
+      x.qr?el('img',{src:x.qr,alt:'QR '+x.label,width:'160',height:'160',loading:'lazy'}):null,
+      el('b',{},x.label),el('span',{},x.handle||'')))),
+    S.shop.phone?el('p',{class:'soc-phone'},t('call'),el('b',{},S.shop.phone)):null));
+  w.append(el('footer',{class:'foot-note'},el('b',{class:'wm'},wordmark(S.shop.name)),el('span',{class:'wm-tag'},'From Craft to Smart Design')));
+  app.append(w);drawGrid();
+  const top=document.querySelector('.top'),hero=w.querySelector('.hero');
+  if(window._heroIO)window._heroIO.disconnect();
+  top.classList.toggle('overlay',!!hero);
+  if(hero&&'IntersectionObserver' in window){top.classList.add('hide-brand');window._heroIO=new IntersectionObserver(es=>{top.classList.toggle('hide-brand',es[0].isIntersecting)},{rootMargin:'-60px 0px 0px 0px'});window._heroIO.observe(hero.querySelector('.lockup')||hero)}
+  if(canEdit&&!renderCatalog.told&&S.products.some(p=>p.status==='draft')){renderCatalog.told=1;toast('สินค้าป้าย "ร่าง" ลูกค้ายังมองไม่เห็น',3200)}
+}
+function drawGrid(){
+  const g=$('#grid');if(!g)return;g.replaceChildren();
+  const ql=q.trim().toLowerCase();
+  const list=visible().filter(p=>(!catFilter||L(p,'category')===catFilter)&&(!ql||[p.name,p.nameEn,p.summary,p.summaryEn,p.category,p.categoryEn,(p.materials||[]).join(' ')].join(' ').toLowerCase().includes(ql)));
+  if(!list.length){g.append(el('div',{class:'empty',style:'grid-column:1/-1'},el('b',{},S.products.length?t('noMatch'):t('noProd')),canEdit&&lang==='th'?'เพิ่มสินค้าได้ที่แท็บ "จัดการสินค้า"':t('soon')));return}
+  for(const p of list){
+    g.append(el('button',{class:'card',onclick:()=>{location.hash='p-'+p.id}},
+      el('div',{class:'thumb'},media(p),p.status==='draft'?el('span',{class:'badge'},t('draft')):null,p.nfc?el('span',{class:'badge nfc'},'NFC'):null,(p.videos||[]).length?el('span',{class:'badge vid'},el('span',{class:'vt-play sm','aria-hidden':'true'}),lang==='en'?'Video':'วิดีโอ'):null),
+      el('div',{class:'card-b'},
+        el('span',{class:'cat'},L(p,'category')),
+        el('h3',{},title(p)),subtitle(p)?el('div',{class:'en'},subtitle(p)):null,
+        (p.materials||[]).length||p.leadDays||p.license?el('div',{class:'mats'},(p.materials||[]).map(m=>el('span',{class:'mat'},m)),p.license==='own'?el('span',{class:'mat own'},t('own')):p.license==='licensed'?el('span',{class:'mat licd'},t('lic')):null,p.leadDays?el('span',{class:'mat lead'},(lang==='en'?'Ready in ':'ผลิต ')+T[lang].days(p.leadDays)):null):null,
+        el('div',{class:'row'},el('span',{class:'price'+(p.price==null||p.price===''?' ask':'')},tiers(p).length>1&&p.price!=null&&p.price!==''?el('small',{},t('from')):null,priceText(p)),
+          (p.colors||[]).length?el('span',{class:'sw','aria-label':p.colors.length+' สี'},p.colors.slice(0,6).map(c=>el('i',{style:'background:'+c.hex,title:L(c,'name')}))):null))));
+  }
+}
+
+/* ---------- layer ---------- */
+function matPop(mt,btn){
+  closeMatPop();const info=(S.materialInfo[mt]||{})[lang]||(S.materialInfo[mt]||{}).th;if(!info)return;
+  const pop=el('div',{class:'matpop',role:'dialog','aria-label':info.title},
+    el('div',{class:'mp-h'},el('b',{},info.title),el('button',{type:'button',class:'mp-x','aria-label':t('close'),onclick:closeMatPop},'×')),
+    info.lead?el('p',{class:'mp-lead'},info.lead):null,
+    el('ul',{},info.points.map(x=>el('li',{},x))),
+    info.care&&info.care.length?el('div',{class:'mp-care'},el('b',{},lang==='en'?'Care':'การดูแล'),el('ul',{},info.care.map(x=>el('li',{},x)))):null);
+  document.body.append(pop);
+  const r=btn.getBoundingClientRect(),w=Math.min(360,innerWidth-24),h=pop.offsetHeight;
+  let x=Math.min(Math.max(12,r.left),innerWidth-w-12),y=r.bottom+8;if(y+h>innerHeight-12)y=Math.max(12,r.top-h-8);
+  pop.style.cssText='left:'+x+'px;top:'+y+'px;width:'+w+'px';
+  setTimeout(()=>{document.addEventListener('click',outsideMatPop);document.addEventListener('keydown',escMatPop)},0);
+  pop.querySelector('.mp-x').focus();
+}
+function outsideMatPop(e){if(!e.target.closest('.matpop'))closeMatPop()}
+function escMatPop(e){if(e.key==='Escape'){e.stopPropagation();closeMatPop()}}
+function closeMatPop(){document.querySelectorAll('.matpop').forEach(x=>x.remove());document.removeEventListener('click',outsideMatPop);document.removeEventListener('keydown',escMatPop)}
+function closeLayer(){closeMatPop();$('#layer').replaceChildren();document.body.style.overflow=''}
+function sheet(title,body,foot,onClose,cls){
+  const close=el('button',{class:'btn ghost icon','aria-label':t('close'),onclick:onClose,html:'<svg width="18" height="18" viewBox="0 0 18 18" stroke="currentColor" stroke-width="1.8" fill="none"><path d="M4 4l10 10M14 4 4 14"/></svg>'});
+  const s=el('div',{class:'sheet'+(cls?' '+cls:''),role:'dialog','aria-modal':'true','aria-label':title},el('div',{class:'sheet-h'},el('b',{},title),close),el('div',{class:'sheet-b'},body),foot||null);
+  const sc=el('div',{class:'scrim',onclick:e=>{if(e.target===sc)onClose()}},s);
+  $('#layer').replaceChildren(sc);document.body.style.overflow='hidden';setTimeout(()=>close.focus(),0);
+  sc.addEventListener('keydown',e=>{if(e.key==='Escape')onClose()});
+}
+function backToList(){history.replaceState(null,'',location.pathname+location.search+(canEdit&&lastView==='manage'?'#manage':'#catalog'));route()}
+let lastView='catalog';
+
+function openDetail(p){
+  let idx=0;
+  const gl=gallery(p);
+  const main=el('div',{class:'main'},gl.length?mediaItem(p,gl[0]):media(p,0));
+  const strip=gl.length>1?el('div',{class:'strip'},gl.map((it,i)=>{const lg=it.k!=='img'?null:(it.u===p.images[0]?'th':(p.enCover>0&&it.u===p.images[p.enCover]?'en':null));return el('button',{'aria-current':String(i===0),'aria-label':it.k==='img'?t('img')+(i+1):(lang==='en'?'Video':'วิดีโอ'),onclick:e=>{if(lg&&lg!==lang){lang=lg;try{localStorage.setItem('fx-lang',lang)}catch(x){}route();return}idx=i;main.querySelectorAll('video').forEach(v=>v.pause());main.replaceChildren(mediaItem(p,it));strip.querySelectorAll('button').forEach((b,j)=>b.setAttribute('aria-current',String(j===i)))}},
+    it.k==='img'?el('img',{src:it.u,alt:''}):it.k==='vid'?el('video',{src:it.u+'#t=0.5',muted:true,playsinline:true,preload:'metadata',tabindex:'-1'}):el('span',{class:'vt-link'},vidPlat(it.u)),
+    it.k!=='img'?el('span',{class:'vt-play','aria-hidden':'true'}):null,
+    lg&&p.enCover>0?el('i',{class:'lg'},lg.toUpperCase()):null)})):null;
+  const spec=[[t('mat'),(p.materials||[]).length?el('span',{class:'matlinks'},p.materials.map(mt=>(S.materialInfo||{})[mt]?el('button',{type:'button',class:'matinfo','aria-haspopup':'dialog',onclick:e=>{e.stopPropagation();matPop(mt,e.currentTarget)}},mt,el('i',{'aria-hidden':'true'},'i')):el('span',{},mt))):''],[t('size'),p.size],[t('lead'),p.leadDays?T[lang].days(p.leadDays):''],['NFC',p.nfc?t('nfcOn'):'']].filter(x=>x[1]);
+  const feats=L(p,'features').split('\n').map(s=>s.trim()).filter(Boolean);
+  const ch=channels(p);
+  const tr=tiers(p);
+  const info=[
+    el('div',{class:'d-title'},el('span',{class:'cat'},L(p,'category')),el('h2',{},title(p)),subtitle(p)?el('div',{class:'en'},subtitle(p)):null),
+    p.license==='own'?el('div',{class:'credit'},el('span',{class:'mat own'},t('own')),t('ownBy'))
+      :p.license==='licensed'?el('div',{class:'credit'},el('span',{class:'mat licd'},t('lic')),el('span',{},p.designer?[t('by'),p.designerUrl?el('a',{href:p.designerUrl,target:'_blank',rel:'noopener'},p.designer):el('b',{},p.designer),' · ']:null,t('licNote'))):null,
+    tr.length?el('div',{},el('div',{class:'tiers'},tr.map(x=>el('div',{class:'tier'},el('span',{},/^\d+$/.test(x.q)?x.q+(lang==='en'?(x.q==='1'?' piece':' pieces'):t('pc')):x.q),el('b',{},fmt(x.v),el('small',{},t('cur').trim()))))),p.priceNote?el('div',{class:'tier-note'},L(p,'priceNote')):null)
+      :el('div',{class:'d-price'},priceText(p),p.priceNote?el('small',{},L(p,'priceNote')):null),
+    S.shop.orderUrl&&p.orderable!==false?el('a',{class:'btn primary order-cta',href:S.shop.orderUrl+(S.shop.orderUrl.includes('?')?'&':'?')+'p='+encodeURIComponent(p.id),target:'_blank',rel:'noopener'},el('span',{'aria-hidden':'true',html:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.7 13.4a2 2 0 0 0 2 1.6h9.7a2 2 0 0 0 2-1.6L23 6H6"/></svg>',style:'display:flex'}),t('orderNow')):null,
+    L(p,'note')?el('div',{class:'pnote'},L(p,'noteTitle')?el('b',{},L(p,'noteTitle')):null,el('span',{},L(p,'note'))):null,
+    p.summary?el('div',{class:'sec'},el('p',{},L(p,'summary'))):null,
+    spec.length?el('dl',{class:'spec'},spec.map(([k,v])=>el('div',{},el('dt',{},k),el('dd',{},v)))):null,
+    (()=>{const v=L(p,'variants').split('\n').map(x=>x.trim()).filter(Boolean);return v.length?el('div',{class:'sec'},el('h4',{},t('vars'),el('small',{class:'h4-hint'},t('varsHint'))),el('ol',{class:'vars'},v.map((x,i)=>el('li',{},el('b',{},String(i+1).padStart(2,'0')),x)))):null})(),
+    feats.length?el('div',{class:'sec'},el('h4',{},t('feat')),el('ul',{},feats.map(f=>el('li',{},f)))):null,
+    (p.colors||[]).length?el('div',{class:'sec'},el('h4',{},t('cols')),el('div',{class:'colors'},p.colors.map(c=>el('span',{},el('i',{style:'background:'+c.hex}),L(c,'name')||c.hex)))):null,
+    p.license==='third'&&S.shop.policy?el('div',{class:'note'},L(S.shop,'policy')):null,
+    ch.length?el('div',{class:'sec order'},el('h4',{},t('buy')),(()=>{
+      const soc=S.shop.socials||[];
+      const qrFor=c=>soc.find(x=>x.qr&&(x.url===c.url||x.label.toLowerCase()===c.label.toLowerCase()));
+      const withQr=ch.filter(c=>qrFor(c)), rest=ch.filter(c=>!withQr.includes(c));
+      return el('div',{class:'order-row'},
+        withQr.length?el('div',{class:'social-grid',style:'justify-content:flex-start'},withQr.map(c=>{const x=qrFor(c);const u=/^https?:\/\//.test(c.url)?c.url:(x.url||null);return el(u?'a':'div',{class:'soc',href:u,target:u?'_blank':null,rel:u?'noopener':null},el('img',{src:x.qr,alt:'QR '+x.label,width:'120',height:'120',style:'width:120px;height:120px'}),el('b',{},x.label),el('span',{},x.handle||''))})):null,
+        rest.length?el('div',{class:'links'},rest.map(c=>/^https?:\/\//.test(c.url)?el('a',{class:'btn primary',href:c.url,target:'_blank',rel:'noopener'},c.label):el('span',{class:'btn'},c.label))):null);
+    })()):(S.shop.contact?el('div',{class:'sec'},el('h4',{},t('order')),el('p',{},L(S.shop,'contact'))):null)
+  ];
+  const body=el('div',{class:'d-grid'},el('div',{class:'gallery'},main,strip),el('div',{class:'d-info'},info));
+  sheet(title(p),body,null,backToList,'wide');
+  {const c=document.querySelector('.d-info .order-cta'),sh=document.querySelector('.sheet.wide');if(c&&sh){const fab=c.cloneNode(true);fab.classList.add('order-fab');fab.classList.remove('order-cta');sh.append(el('div',{class:'fab-wrap'},fab))}}
+  {const dt=document.querySelector('.d-info .d-title'),cr=document.querySelector('.d-info>.credit');if(dt&&cr)dt.append(cr)}
+
+  const fit=()=>{const di=document.querySelector('.sheet.wide .d-info');if(!di)return;di.classList.remove('tight','over');if(di.scrollHeight>di.clientHeight+2){di.classList.add('tight');if(di.scrollHeight>di.clientHeight+2)di.classList.add('over')}};
+  requestAnimationFrame(fit);try{document.fonts.ready.then(fit)}catch(e){}
+  if(!window._fitR){window._fitR=1;addEventListener('resize',()=>{clearTimeout(window._fitT);window._fitT=setTimeout(()=>{const di=document.querySelector('.sheet.wide .d-info');if(di){di.classList.remove('tight','over');if(di.scrollHeight>di.clientHeight+2){di.classList.add('tight');if(di.scrollHeight>di.clientHeight+2)di.classList.add('over')}}},150)})}
+  if(canEdit){const h=document.querySelector('.sheet-h');const c=h.lastElementChild;h.insertBefore(el('button',{class:'btn',onclick:()=>{lastView='manage';openEditor(p)}},'แก้ไข'),c)}
+}
+
+/* ---------- manage ---------- */
+function renderManage(){
+  lastView='manage';
+  const app=$('#app');app.replaceChildren();
+  const w=el('div',{class:'wrap'});
+  const live=S.products.filter(p=>p.status==='live').length;
+  w.append(el('div',{class:'m-head'},
+    el('div',{},el('h1',{},'จัดการสินค้า'),el('div',{class:'m-stats'},el('span',{},el('b',{},String(S.products.length)),' รายการ'),el('span',{},el('b',{},String(live)),' แสดงอยู่'),el('span',{},el('b',{},String(S.products.length-live)),' ร่าง'))),
+    el('button',{class:'btn primary',id:'addBtn',disabled:readOnly,onclick:()=>openEditor(null)},'+ เพิ่มสินค้า')));
+  if(readOnly)w.append(el('div',{class:'ro'},'คุณเปิดดูได้อย่างเดียว การแก้ไขต้องใช้สิทธิ์ Editor ของหน้านี้'));
+  const list=el('div',{class:'list'});
+  if(!S.products.length)list.append(el('div',{class:'empty'},el('b',{},'ยังไม่มีสินค้า'),'กด "+ เพิ่มสินค้า" เพื่อสร้างรายการแรก'));
+  S.products.forEach((p,i)=>{
+    list.append(el('div',{class:'item'},
+      el('div',{class:'t'},media(p)),
+      el('div',{class:'n'},el('b',{},p.name),el('span',{},[p.category,priceText(p)].filter(Boolean).join(' · '))),
+      el('div',{style:'display:flex;gap:6px;align-items:center'},
+        el('span',{class:'pill '+(p.status==='live'?'live':'draft')},p.status==='live'?'แสดง':'ร่าง'),
+        el('button',{class:'btn',disabled:readOnly,onclick:()=>openEditor(p)},'แก้ไข'))));
+  });
+  w.append(list);
+  w.append(shopPanel());
+  app.append(w);
+}
+function field(label,input,hint){return el('div',{class:'f'},el('label',{for:input.id},label),input,hint?el('small',{},hint):null)}
+function shopPanel(){
+  const n=el('input',{type:'text',id:'shop-name',value:S.shop.name||''});
+  const tg=el('textarea',{id:'shop-tag'},S.shop.tagline||'');
+  const c=el('textarea',{id:'shop-contact',style:'min-height:60px'},S.shop.contact||'');
+  const po=el('textarea',{id:'shop-policy',style:'min-height:60px'},S.shop.policy||'');
+  const tE=el('textarea',{id:'shop-tagEn',style:'min-height:60px'},S.shop.taglineEn||'');
+  const cE=el('textarea',{id:'shop-contactEn',style:'min-height:60px'},S.shop.contactEn||'');
+  const poE=el('textarea',{id:'shop-policyEn',style:'min-height:60px'},S.shop.policyEn||'');
+  const ph=el('input',{type:'text',id:'shop-phone',value:S.shop.phone||''});
+  const ou=el('input',{type:'url',id:'shop-orderurl',value:S.shop.orderUrl||'',placeholder:'https://fixtory-studio.pages.dev/order.html'});
+  const cats=el('textarea',{id:'shop-cats',style:'min-height:60px'},(S.categories||[]).join('\n'));
+  return el('section',{class:'panel'},el('h2',{},'ข้อมูลร้าน'),el('div',{class:'form'},
+    field('ชื่อร้าน',n),field('คำโปรยร้าน',tg),
+    field('ช่องทางติดต่อ',c,'แสดงท้ายแคตตาล็อก และในสินค้าที่ไม่ได้ใส่ลิงก์สั่งซื้อ'),
+    field('นโยบายงานลิขสิทธิ์',po,'แสดงในสินค้าที่ตั้งเป็น "แบบของนักออกแบบอื่น"'),
+    field('เบอร์โทร',ph,'แสดงในส่วน "สั่งซื้อ / สอบถาม"'),
+    field('ลิงก์หน้าสั่งซื้อออนไลน์',ou,'ใส่แล้วจะมีปุ่ม "สั่งซื้อออนไลน์" ในหน้าสินค้า เว้นว่าง = ซ่อนปุ่ม'),
+    field('หมวดสินค้า (บรรทัดละหมวด)',cats),
+    field('Tagline (EN)',tE),field('Contact (EN)',cE),field('Policy (EN)',poE),
+    el('div',{},el('button',{class:'btn primary',disabled:readOnly,onclick:()=>{
+      S.shop={name:n.value.trim(),tagline:tg.value.trim(),contact:c.value.trim(),policy:po.value.trim(),phone:ph.value.trim(),orderUrl:ou.value.trim(),socials:S.shop.socials||[],taglineEn:tE.value.trim(),contactEn:cE.value.trim(),policyEn:poE.value.trim()};
+      S.categories=cats.value.split('\n').map(s=>s.trim()).filter(Boolean);
+      save('บันทึกข้อมูลร้านแล้ว');
+    }},'บันทึกข้อมูลร้าน'))));
+}
+
+function openEditor(orig){
+  const p=orig?JSON.parse(JSON.stringify(orig)):{id:Math.random().toString(36).slice(2,8),status:'draft',name:'',nameEn:'',category:S.categories[0]||'',price:null,priceNote:'',summary:'',features:'',materials:[],colors:[],weight:'',hours:'',size:'',nfc:false,license:'own',channels:'',images:[]};
+  const inp=(id,v,type='text',extra={})=>el('input',Object.assign({type,id:'e-'+id,value:v==null?'':v},extra));
+  const name=inp('name',p.name,'text',{required:true}), nameEn=inp('nameEn',p.nameEn);
+  const catList=el('datalist',{id:'catlist'},(S.categories||[]).map(c=>el('option',{value:c})));
+  const cat=inp('cat',p.category,'text',{list:'catlist'});
+  const price=inp('price',p.price,'number',{min:'0',step:'1',inputmode:'numeric',placeholder:'เว้นว่าง = สอบถามราคา'});
+  const pnote=inp('pnote',p.priceNote,'text',{placeholder:'เช่น มากกว่า 10 ชิ้น โปรดติดต่อร้าน'});
+  const tiersEnIn=el('textarea',{id:'e-tiersEn',style:'min-height:60px'},p.tiersEn||'');
+  const noteIn=el('textarea',{id:'e-note',style:'min-height:60px'},p.note||''),noteEnIn=el('textarea',{id:'e-noteEn',style:'min-height:60px'},p.noteEn||'');
+  const noteTIn=inp('noteT',p.noteTitle),noteTEnIn=inp('noteTEn',p.noteTitleEn);
+  const varsIn=el('textarea',{id:'e-vars',placeholder:'ไดโนเสาร์\nจิ้งจอกยิ้ม\n…'},p.variants||'');
+  const varsEnIn=el('textarea',{id:'e-varsEn'},p.variantsEn||'');
+  const tiersIn=el('textarea',{id:'e-tiers',style:'min-height:60px',placeholder:'1 | 399\n2 | 699\n3 | 999'},p.tiers||'');
+  const summary=el('textarea',{id:'e-sum'},p.summary||'');
+  const summaryEn=el('textarea',{id:'e-sumEn'},p.summaryEn||'');
+  const featsEn=el('textarea',{id:'e-featEn',placeholder:'One per line'},p.featuresEn||'');
+  const catEn=inp('catEn',p.categoryEn);
+  const pnoteEn=inp('pnoteEn',p.priceNoteEn);
+  const chansEn=el('textarea',{id:'e-chEn',style:'min-height:60px'},p.channelsEn||'');
+  const feats=el('textarea',{id:'e-feat',placeholder:'บรรทัดละ 1 ข้อ'},p.features||'');
+  const shipW=inp('sw',p.shipWeight,'number',{min:'0',step:'1',placeholder:'รวมกล่อง+วัสดุกันกระแทก'});
+  const lead=inp('lead',p.leadDays,'number',{min:'0',step:'1',inputmode:'numeric'});
+  const weight=inp('w',p.weight,'number',{min:'0',step:'0.1'}), hours=inp('h',p.hours,'number',{min:'0',step:'0.1'}), size=inp('size',p.size,'text',{placeholder:'เช่น 45×30×12 mm'});
+  const chans=el('textarea',{id:'e-ch',style:'min-height:60px',placeholder:'MakerWorld | https://makerworld.com/...\nShopee | https://shopee.co.th/...'},p.channels||'');
+  const nfc=el('input',{type:'checkbox',id:'e-nfc'});nfc.checked=!!p.nfc;
+  const lic=el('select',{id:'e-lic'},el('option',{value:'own'},'ร้านออกแบบเอง (Fixtory original)'),el('option',{value:'licensed'},'แบบของดีไซเนอร์ — ร้านมี commercial license'),el('option',{value:'third'},'งานรับพิมพ์ — ลูกค้าต้องซื้อไลเซนส์เอง'));lic.value=p.license||'own';
+  const des=inp('des',p.designer,'text',{placeholder:'ชื่อดีไซเนอร์'}), desU=inp('desU',p.designerUrl,'url',{placeholder:'https://makerworld.com/...'});
+  const desBox=el('div',{class:'two'},field('ชื่อดีไซเนอร์',des),field('ลิงก์ผลงาน / โปรไฟล์',desU,'ใส่เครดิตตามเงื่อนไขไลเซนส์'));const syncDes=()=>desBox.hidden=lic.value!=='licensed';lic.onchange=syncDes;syncDes();
+
+  const statusSeg=el('div',{class:'seg',role:'group','aria-label':'สถานะ'});
+  const drawStatus=()=>{statusSeg.replaceChildren(...[['live','แสดงในแคตตาล็อก'],['draft','ร่าง']].map(([v,l])=>el('button',{type:'button','aria-pressed':String(p.status===v),onclick:()=>{p.status=v;drawStatus()}},l)))};drawStatus();
+
+  const matBox=el('div',{class:'matpick'});
+  const drawMats=()=>{const all=[...new Set([...MATS,...p.materials])];matBox.replaceChildren(...all.map(m=>el('button',{type:'button','aria-pressed':String(p.materials.includes(m)),onclick:()=>{p.materials=p.materials.includes(m)?p.materials.filter(x=>x!==m):[...p.materials,m];drawMats()}},m)))};drawMats();
+
+  const colBox=el('div',{style:'display:grid;gap:6px'});
+  const drawCols=()=>{colBox.replaceChildren(...p.colors.map((c,i)=>{
+    const ci=el('input',{type:'color',id:'e-c'+i,value:/^#[0-9a-f]{6}$/i.test(c.hex)?c.hex:'#888888','aria-label':'สี'});ci.oninput=()=>c.hex=ci.value;
+    const cn=el('input',{type:'text',id:'e-cn'+i,value:c.name||'',placeholder:'ชื่อสี','aria-label':'ชื่อสี'});cn.oninput=()=>c.name=cn.value;
+    const ce=el('input',{type:'text',id:'e-ce'+i,value:c.nameEn||'',placeholder:'Color name','aria-label':'ชื่อสีภาษาอังกฤษ'});ce.oninput=()=>c.nameEn=ce.value;
+    return el('div',{class:'f'},el('div',{class:'crow',style:'grid-template-columns:40px 1fr 1fr 34px'},ci,cn,ce,el('button',{type:'button',class:'btn ghost icon','aria-label':'ลบสีนี้',onclick:()=>{p.colors.splice(i,1);drawCols()}},'×')));
+  }),el('div',{},el('button',{type:'button',class:'btn',onclick:()=>{p.colors.push({name:'',hex:'#2447d6'});drawCols()}},'+ เพิ่มสี')))};drawCols();
+
+  const imgBox=el('div',{class:'imgs'});
+  const drawImgs=()=>{
+    const fi=el('input',{type:'file',id:'e-file',accept:'image/*',multiple:true,hidden:true});
+    fi.onchange=async()=>{
+      if(!assets){toast('อัปโหลดรูปไม่ได้ในมุมมองนี้');return}
+      for(const f of fi.files){
+        if(f.size>20*1024*1024){toast(f.name+' ใหญ่เกิน 20 MB');continue}
+        toast('กำลังอัปโหลด '+f.name+'…',60000);
+        try{const r=await assets.upload(await shrink(f));p.images.push(r.url);drawImgs();toast('อัปโหลดแล้ว')}
+        catch(e){toast('อัปโหลดไม่สำเร็จ ('+(e&&e.code||'error')+') ลองใหม่อีกครั้ง',4000)}
+      }
+    };
+    imgBox.replaceChildren(...p.images.map((u,i)=>el('figure',{},el('img',{src:u,alt:''}),i===0?el('span',{class:'first'},'รูปหลัก'):el('span',{class:'first',style:'cursor:pointer',title:'แตะเพื่อตั้งเป็นปกภาษาอังกฤษ',onclick:()=>{p.enCover=p.enCover===i?0:i;drawImgs()}},p.enCover===i?'ปก EN ✓':'ตั้งเป็นปก EN'),el('button',{type:'button','aria-label':'เอารูปออก',onclick:()=>{p.images.splice(i,1);if(p.enCover===i)p.enCover=0;else if(p.enCover>i)p.enCover--;drawImgs()}},'×'))),
+      assets?el('label',{class:'upl',for:'e-file'},'+ เพิ่มรูป',fi):el('span',{class:'upl'},'อัปโหลดได้เฉพาะผู้แก้ไข'));
+  };drawImgs();
+  p.videos=(p.videos||[]).slice();
+  const vidBox=el('div',{class:'imgs'});
+  const vLink=el('input',{type:'url',id:'e-vlink',placeholder:'วางลิงก์ TikTok / YouTube / Facebook'});
+  const drawVids=()=>{
+    const vf=el('input',{type:'file',id:'e-vfile',accept:'video/mp4,video/webm,video/quicktime',hidden:true});
+    vf.onchange=async()=>{
+      if(!assets){toast('อัปโหลดวิดีโอไม่ได้ในมุมมองนี้');return}
+      const f=vf.files[0];if(!f)return;
+      if(f.size>20*1024*1024){toast('วิดีโอใหญ่เกิน 20 MB ลองย่อไฟล์ หรือใช้ลิงก์ TikTok แทน',5000);return}
+      toast('กำลังอัปโหลดวิดีโอ…',120000);
+      try{const r=await assets.upload(f);p.videos.push({url:r.url});drawVids();toast('อัปโหลดวิดีโอแล้ว')}
+      catch(e){toast('อัปโหลดไม่สำเร็จ ('+(e&&e.code||'error')+') ลองใหม่อีกครั้ง',4000)}
+    };
+    vidBox.replaceChildren(...p.videos.map((v,i)=>el('figure',{},v.link?el('span',{class:'vt-link'},vidPlat(v.url)):el('video',{src:v.url+'#t=0.5',muted:true,preload:'metadata'}),el('span',{class:'vt-play','aria-hidden':'true'}),el('button',{type:'button','aria-label':'เอาวิดีโอออก',onclick:()=>{p.videos.splice(i,1);drawVids()}},'×'))),
+      assets?el('label',{class:'upl',for:'e-vfile'},'+ อัปโหลดวิดีโอ',vf):null);
+  };drawVids();
+  const addLink=el('button',{type:'button',class:'btn',onclick:()=>{const u=vLink.value.trim();if(!/^https?:\/\//.test(u)){toast('ลิงก์ต้องขึ้นต้นด้วย https://');return}p.videos.push({url:u,link:true});vLink.value='';drawVids()}},'เพิ่มลิงก์');
+
+  const confirmBox=el('div');
+  const body=el('form',{class:'form',onsubmit:e=>e.preventDefault()},
+    el('div',{class:'f'},el('span',{class:'lbl'},'สถานะ'),statusSeg),
+    el('div',{class:'two'},field('ชื่อสินค้า (ไทย) *',name),field('ชื่ออังกฤษ',nameEn)),
+    el('div',{class:'f'},el('label',{for:'e-cat'},'หมวด'),cat,catList),
+    el('div',{class:'two'},field('ราคา (บาท)',price),field('หมายเหตุราคา',pnote)),
+    field('ราคาตามจำนวน / ตัวเลือก (ไม่บังคับ)',tiersIn,'บรรทัดละขั้น รูปแบบ: จำนวนชิ้น | ราคารวม หรือ ตัวเลือก | ราคา เช่น สีเดียว | 590'),
+    el('div',{class:'f'},el('span',{class:'lbl'},'รูปสินค้า'),imgBox,el('small',{},'รูปแรกคือปกภาษาไทย แตะ "ตั้งเป็นปก EN" เพื่อเลือกปกตอนลูกค้าเปิดภาษาอังกฤษ')),
+    el('div',{class:'f'},el('span',{class:'lbl'},'วิดีโอ (ไม่บังคับ)'),vidBox,el('div',{class:'vrow'},vLink,addLink),el('small',{},'อัปโหลดไฟล์ MP4 ไม่เกิน 20 MB (ประมาณ 30–60 วินาที) หรือวางลิงก์คลิปจาก TikTok / YouTube / Facebook ลิงก์จะเปิดในแอปนั้น')),
+    field('คำอธิบายสั้น',summary),
+    field('จุดเด่น',feats,'บรรทัดละ 1 ข้อ'),
+    field('หมายเหตุสำคัญ (ไม่บังคับ)',noteIn,'แสดงเป็นกล่องเด่นใต้ราคา เช่น เรื่องสีที่แต่ละชิ้นไม่เหมือนกัน'),
+    field('หัวข้อหมายเหตุ',noteTIn),
+    field('แบบให้เลือก (ไม่บังคับ)',varsIn,'บรรทัดละแบบ ระบบใส่หมายเลข 01, 02… ให้อัตโนมัติ'),
+    el('div',{class:'f'},el('span',{class:'lbl'},'วัสดุ'),matBox),
+    el('div',{class:'f'},el('span',{class:'lbl'},'สีที่มี / colorway'),colBox),
+    el('div',{class:'two'},field('น้ำหนักชิ้นงาน (g)',weight,'ใช้ภายในร้าน ไม่แสดงให้ลูกค้า'),field('น้ำหนักพร้อมกล่อง (g)',shipW,'ใช้คำนวณค่าส่ง ไม่แสดงให้ลูกค้า')),
+    el('div',{class:'two'},field('ระยะเวลาผลิต (วัน)',lead,'แสดงให้ลูกค้าเห็น'),field('ขนาด',size)),
+    field('เวลาพิมพ์ (ชม.)',hours,'ใช้ภายในร้าน ไม่แสดงให้ลูกค้า'),
+    el('label',{class:'check'},nfc,'ฝังชิป NFC'),
+    field('ที่มาของแบบ',lic),
+    desBox,
+    field('ช่องทางสั่งซื้อ',chans,'บรรทัดละช่องทาง รูปแบบ: ชื่อ | ลิงก์'),
+    el('div',{class:'f',style:'padding-top:8px;border-top:1px solid var(--line)'},el('span',{class:'lbl',style:'font-family:var(--f-display);font-size:15px'},'ภาษาอังกฤษ (English)'),el('small',{},'ช่องไหนเว้นว่าง หน้าอังกฤษจะแสดงข้อความภาษาไทยแทน')),
+    el('div',{class:'two'},field('Category',catEn),field('Price note',pnoteEn)),
+    field('Summary',summaryEn),
+    field('Highlights',featsEn),
+    field('Price options',tiersEnIn,'Only for text options, e.g. Single Color | 590'),
+    field('Note title',noteTEnIn),field('Note',noteEnIn),
+    field('Designs',varsEnIn,'One per line, same order as Thai'),
+    field('Order channels',chansEn),
+    confirmBox);
+  const collect=()=>{Object.assign(p,{name:name.value.trim(),nameEn:nameEn.value.trim(),category:cat.value.trim(),price:price.value===''?null:Number(price.value),priceNote:pnote.value.trim(),tiers:tiersIn.value.trim(),tiersEn:tiersEnIn.value.trim(),variants:varsIn.value.trim(),note:noteIn.value.trim(),noteEn:noteEnIn.value.trim(),noteTitle:noteTIn.value.trim(),noteTitleEn:noteTEnIn.value.trim(),variantsEn:varsEnIn.value.trim(),summary:summary.value.trim(),features:feats.value.trim(),summaryEn:summaryEn.value.trim(),featuresEn:featsEn.value.trim(),categoryEn:catEn.value.trim(),priceNoteEn:pnoteEn.value.trim(),channelsEn:chansEn.value.trim(),weight:weight.value,shipWeight:shipW.value,hours:hours.value,leadDays:lead.value,size:size.value.trim(),nfc:nfc.checked,license:lic.value,designer:des.value.trim(),designerUrl:desU.value.trim(),channels:chans.value.trim()});p.colors=p.colors.filter(c=>c.hex)};
+  const foot=el('div',{class:'foot'},
+    orig?el('button',{type:'button',class:'btn danger',style:'margin-right:auto',onclick:()=>{
+      confirmBox.replaceChildren(el('div',{class:'confirm'},'ลบ "'+orig.name+'" ถาวร?',el('button',{type:'button',class:'btn danger',onclick:()=>{S.products=S.products.filter(x=>x.id!==orig.id);save('ลบสินค้าแล้ว','manage')}},'ยืนยันลบ'),el('button',{type:'button',class:'btn',onclick:()=>confirmBox.replaceChildren()},'ยกเลิก')));confirmBox.scrollIntoView({block:'center'});
+    }},'ลบ'):null,
+    el('button',{type:'button',class:'btn',onclick:backToList},'ยกเลิก'),
+    el('button',{type:'button',class:'btn primary',onclick:()=>{
+      collect();if(!p.name){toast('กรุณาใส่ชื่อสินค้า');name.focus();return}
+      if(p.category&&!S.categories.includes(p.category))S.categories.push(p.category);
+      const i=S.products.findIndex(x=>x.id===p.id);if(i>=0)S.products[i]=p;else S.products.unshift(p);
+      save(orig?'บันทึกการแก้ไขแล้ว':'เพิ่มสินค้าแล้ว','manage');
+    }},'บันทึก'));
+  sheet(orig?'แก้ไข: '+orig.name:'เพิ่มสินค้าใหม่',body,foot,backToList);
+}
+
+async function shrink(file){
+  try{
+    if(!/^image\/(jpeg|png|webp)$/.test(file.type))return file;
+    const bmp=await createImageBitmap(file);const max=1600;const k=Math.min(1,max/Math.max(bmp.width,bmp.height));
+    if(k===1&&file.size<1.5e6)return file;
+    const c=document.createElement('canvas');c.width=Math.round(bmp.width*k);c.height=Math.round(bmp.height*k);c.getContext('2d').drawImage(bmp,0,0,c.width,c.height);
+    return await new Promise(r=>c.toBlob(b=>r(b||file),'image/jpeg',.86));
+  }catch(e){return file}
+}
+
+/* ---------- save: regenerate whole page from state ---------- */
+function buildDoc(){
+  const SC='<'+'/script>';
+  const json=JSON.stringify(S).replace(/</g,'\\u003c');
+  const head='<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom)}body{margin:0;font:14px/1.4 system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style></head><body>';
+  return head+
+    '<title>Fixtory Product Profile</title>\n\n'+
+    '<link rel="preconnect" href="https://fonts.googleapis.com">\n<link rel="stylesheet" href="'+document.querySelector('link[rel=stylesheet]').getAttribute('href')+'">\n'+
+    '<style id="css">'+$('#css').textContent+'</style>\n'+
+    CHROME+'\n\n'+
+    '<script type="application/json" id="data">'+json+SC+'\n\n'+
+    '<script id="appjs">'+$('#appjs').textContent+SC+
+    '</body></html>';
+}
+async function save(msg,view){
+  if(!art||readOnly){toast('หน้านี้บันทึกไม่ได้ในมุมมองนี้');return}
+  toast('กำลังบันทึก…',30000);
+  try{try{sessionStorage.setItem('fx-msg',msg);sessionStorage.setItem('fx-view',view||'')}catch(e){}
+    await art.publish(buildDoc());
+  }catch(e){
+    const c=e&&e.code;
+    if(c==='conflict'){toast('มีคนบันทึกก่อนหน้า กำลังโหลดเวอร์ชันล่าสุด')}
+    else if(c==='not_writer'||c==='not_granted'){readOnly=true;toast('มุมมองนี้แก้ไขไม่ได้ (ดูอย่างเดียว)',4000);route()}
+    else if(c==='rate_limited'){toast('บันทึกถี่เกินไป รอสักครู่แล้วลองใหม่',4000)}
+    else toast('บันทึกไม่สำเร็จ ('+(c||'error')+') ลองอีกครั้ง',4000);
+  }
+}
+
+/* ---------- boot ---------- */
+function start(){
+  try{const m=sessionStorage.getItem('fx-msg'),v=sessionStorage.getItem('fx-view');if(m){sessionStorage.removeItem('fx-msg');sessionStorage.removeItem('fx-view');if(v&&!location.hash.startsWith('#p-'))history.replaceState(null,'','#'+v);setTimeout(()=>toast(m),300)}}catch(e){}
+  route();
+  if(!window.claude||!window.claude.use)return;
+  (async()=>{
+    try{
+      const user=await claude.use('user');
+      let ok=false;try{ok=!!(user&&(await user.canEdit()))}catch(e){}
+      if(!ok)return;
+      art=await claude.use('artifact');
+      assets=await claude.use('assets');
+      if(!art)return;
+      canEdit=true;route();
+    }catch(e){}
+  })();
+}
+start();
+})();
+</script>
+</body></html>
