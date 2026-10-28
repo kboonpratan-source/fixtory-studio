@@ -289,7 +289,7 @@ const PRODUCTS={
     options:[['สีเดียว',590,false],['หลายสี (Color Pop)',690,false],['หลายสี + สลักชื่อด้านหลัง',790,true]],
     designs:['ไดโนเสาร์','จิ้งจอกยิ้ม','น้องหมา','น้องแมว','ก้อนเมฆ','น้องไก่','น้องหมี','แมวยิ้ม','เม่น','แพนด้า','บีเวอร์','จิ้งจอกคลาสสิก','นกฮูก']},
   keycap:{name:'Alphabet Clicker',sub:'พวงกุญแจคีย์แคป',img:'kc/keycap-thumb.jpg'+IMG_V,big:'kc/keycap-poster23.jpg'+IMG_V,from:35,
-    info:{summary:'พวงกุญแจคีย์แคปกดคลิกได้ เรียงตัวอักษรเป็นชื่อหรือคำที่ชอบ เลือกสีคีย์ สีเคส และสายคล้องเองได้',points:['ตัวอักษร A–Z หน้ายิ้ม 7 แบบ และหัวใจ ผสมกันได้ รวมไม่เกิน 8 ช่อง','เลือกสีคีย์ทีละตัว จาก 3 คอลเลกชัน: Pastel, Dark mode, Polar White','สีเคส 5 สี สายคล้อง 8 แบบ','ราคา 3 ช่อง 100 บาท ช่องที่เหลือช่องละ 35 บาท'],spec:[['วัสดุ','PLA'],['ระยะเวลาผลิต','1 วัน'],['ที่มาของแบบ','ร้านออกแบบเอง']],
+    info:{summary:'พวงกุญแจคีย์แคปกดคลิกได้ เรียงตัวอักษรเป็นชื่อหรือคำที่ชอบ เลือกสีคีย์ สีเคส และสายคล้องเองได้ ราคารวมฐาน (เคส) และสายคล้องแล้ว',points:['ตัวอักษร A–Z หน้ายิ้ม 7 แบบ และหัวใจ ผสมกันได้ รวมไม่เกิน 8 ช่อง','เลือกสีคีย์ทีละตัว จาก 3 คอลเลกชัน: Pastel, Dark mode, Polar White','สีเคส 5 สี สายคล้อง 8 แบบ','ราคา 3 ตัว 100 บาท ตัวต่อไปตัวละ 35 บาท รวมฐาน (เคส) และสายคล้องแล้ว'],spec:[['วัสดุ','PLA'],['ระยะเวลาผลิต','1 วัน'],['ที่มาของแบบ','ร้านออกแบบเอง']],
       gallery:['kc/keycap-set.jpg','kc/keycap-tor.jpg','kc/keycap-kao.jpg','kc/keycap-tui.jpg','kc/col-1.jpg','kc/col-2.jpg','kc/col-4.jpg','kc/col-3.jpg','kc/col-5.jpg']}}
 };
 // ---------- Alphabet Clicker (ยกมาจากฟอร์ม keycap เดิม index.html — ชื่อสี/สายคล้อง/คอลเลกชันต้องตรงกับแท็บสต๊อกใน Sheet) ----------
@@ -477,7 +477,7 @@ function renderKC(box){
     el('div',{class:'straps'},KC_STRAPS.map((s,i)=>el('button',{type:'button',class:'strap','aria-pressed':String(kc.strap===i),onclick:()=>{kc.strap=i;renderConf()},
       html:`<svg viewBox="0 0 60 70" width="40" height="46" aria-hidden="true"><path d="M30,6 C16,12 16,32 30,38 C44,32 44,12 30,6" fill="none" stroke="${KC_HEX[s.loop]}" stroke-width="6" stroke-linecap="round"/><rect x="24" y="34" width="12" height="14" rx="3" fill="${KC_HEX[s.knot]}"/><circle cx="30" cy="56" r="8" fill="none" stroke="${KC_HEX[s.ring]}" stroke-width="3.5"/></svg><span>${s.label}</span>`}))),
     el('button',{type:'button',class:'linkbtn',onclick:()=>openGallery('สายคล้องจริงจากสต๊อก',['kc/strap-1.jpg','kc/strap-2.jpg','kc/strap-3.jpg','kc/strap-4.jpg','kc/strap-5.jpg'])},'ดูรูปสายคล้องจริง'),
-    el('div',{class:'kc-price'},el('span',{},'ราคาชิ้นนี้ ('+n+' ช่อง)',el('div',{class:'hint',style:'margin:0'},'3 ช่อง 100 บาท ช่องที่เหลือช่องละ 35')),el('b',{},fmt(kcPrice(n)))),
+    el('div',{class:'kc-price'},el('span',{},'ราคาชิ้นนี้ ('+n+' ช่อง)',el('div',{class:'hint',style:'margin:0'},'3 ตัว 100 บาท ตัวต่อไปตัวละ 35 · รวมเคสและสายคล้องแล้ว')),el('b',{},fmt(kcPrice(n)))),
     el('button',{type:'button',class:'btn primary full',onclick:addKC},'+ เพิ่มลงตะกร้า')].filter(Boolean));
   const sl=box.querySelector('.straps'),sa=sl&&sl.querySelector('[aria-pressed="true"]');if(sa)sl.scrollLeft=Math.max(0,sa.offsetLeft-sl.offsetLeft-sl.clientWidth/2+sa.offsetWidth/2); // ให้สายที่เลือกยังอยู่ในจอหลังวาดใหม่
 }
