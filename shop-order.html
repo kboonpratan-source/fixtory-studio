@@ -11,13 +11,15 @@
   --f-display:"DM Serif Display","Chonburi",Georgia,serif;--f-body:"DM Sans","Prompt",system-ui,-apple-system,"Segoe UI",sans-serif;color-scheme:light;--sel:#FFF9F4;--on-accent:#FFFFFF;--bar:rgba(255,255,255,.94);--pill:rgba(255,255,255,.92);--warn-bg:#FFF4E0;--warn-ink:#7A4B00;--hero:#F5E8DC}
 
 /* โหมดมืด — สีชุดเดียวกับแคตตาล็อก */
-@media (prefers-color-scheme:dark){:root{--bg:#1B1613;--surface:#26201C;--sunk:#322822;--soft:#5A4234;--ink:#F5E8DC;--muted:#BFAE9F;--line:#3A302A;--accent:#E08A60;--accent-text:#EFA07A;--danger:#FF8A7D;
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1B1613;--surface:#26201C;--sunk:#322822;--soft:#5A4234;--ink:#F5E8DC;--muted:#BFAE9F;--line:#3A302A;--accent:#E08A60;--accent-text:#EFA07A;--danger:#FF8A7D;
   --sel:#3A2D25;--on-accent:#1B1613;--bar:rgba(27,22,19,.94);--pill:rgba(38,32,28,.92);--warn-bg:#3A2A12;--warn-ink:#F2B45A;--hero:#3A2D25;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#1B1613;--surface:#26201C;--sunk:#322822;--soft:#5A4234;--ink:#F5E8DC;--muted:#BFAE9F;--line:#3A302A;--accent:#E08A60;--accent-text:#EFA07A;--danger:#FF8A7D;
+  --sel:#3A2D25;--on-accent:#1B1613;--bar:rgba(27,22,19,.94);--pill:rgba(38,32,28,.92);--warn-bg:#3A2A12;--warn-ink:#F2B45A;--hero:#3A2D25;color-scheme:dark}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.6;font-weight:400}
 .wrap{max-width:720px;margin:0 auto;padding:20px max(16px,env(safe-area-inset-left)) 120px max(16px,env(safe-area-inset-right))}
 /* หัวเว็บแบบเดียวกับแคตตาล็อก */
-.hero{position:relative;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px 20px;border-radius:24px;background:var(--hero);overflow:hidden;padding:clamp(16px,3vw,26px) clamp(18px,4vw,36px);margin-bottom:20px}
+.hero{position:relative;display:flex;align-items:center;justify-content:space-between;flex-wrap:nowrap;gap:12px 20px;border-radius:24px;background:var(--hero);overflow:hidden;padding:clamp(16px,3vw,26px) clamp(18px,4vw,36px);margin-bottom:20px}
 .hero::before,.hero::after{content:"";position:absolute;border-radius:50%;background:var(--soft);opacity:.55}
 .hero::before{width:200px;height:200px;right:-60px;top:-100px}
 .hero::after{width:110px;height:110px;right:110px;bottom:-70px;opacity:.35}
@@ -28,7 +30,10 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);fo
 .wm{font-family:var(--f-display);text-transform:uppercase;letter-spacing:.1em;font-size:clamp(22px,3.6vw,36px);line-height:1;white-space:nowrap;margin:0;font-weight:400}
 .wm em{font-style:normal;color:var(--accent)}
 .wm-tag{font-family:var(--f-body);text-transform:uppercase;letter-spacing:.3em;font-size:clamp(9px,1.1vw,11.5px);color:var(--muted)}
-@media (max-width:480px){.hero-link{display:none}}
+@media (max-width:480px){.hero-link{display:none}.hero{padding:14px 16px}.wm{font-size:20px}}
+.thm{border:0;background:var(--surface);box-shadow:inset 0 0 0 1.5px var(--line);border-radius:999px;width:34px;height:30px;padding:0;display:inline-grid;place-items:center;cursor:pointer;color:var(--accent-text);flex:none}
+.thm svg{width:16px;height:16px;display:block}
+.hero-ctrl{display:flex;gap:8px;align-items:center}
 .hero-link{border:0;background:var(--surface);box-shadow:inset 0 0 0 1.5px var(--line);border-radius:999px;padding:6px 14px;font-size:13px;font-weight:500;color:var(--accent-text);text-decoration:none;white-space:nowrap}
 h1{font-family:var(--f-display);font-weight:400;font-size:30px;margin:4px 0 2px;color:var(--accent)}
 .sub{color:var(--muted);margin:0 0 20px;font-size:14px}
@@ -201,7 +206,7 @@ textarea{min-height:76px;resize:vertical}
 <div class="wrap">
 <section class="hero">
 <a class="lockup" href="https://fixtory-studio.pages.dev/catalog"><svg class="mark" viewBox="0 0 40 58" aria-hidden="true"><rect x="15.5" y="0" width="9" height="4.5" rx="1.6" fill="#C4714A"/><rect x="18" y="4" width="4" height="3.5" fill="#A85E3B"/><path d="M20 7.5L36 16.5L20 25.5L4 16.5Z" fill="#C97A53"/><path d="M4 16.5L20 25.5V28.5L4 19.5Z" fill="#A85E3B"/><path d="M36 16.5L20 25.5V28.5L36 19.5Z" fill="#B66A43"/><path d="M4 24L20 33L36 24V28.2L20 37.2L4 28.2Z" fill="#B4663F"/><path d="M4 29.2L20 38.2L36 29.2V33.4L20 42.4L4 33.4Z" fill="#9A5737"/><path d="M4 34.4L20 43.4L36 34.4V38.6L20 47.6L4 38.6Z" fill="#7C4830"/><path d="M4 39.6L20 48.6L36 39.6V43.8L20 52.8L4 43.8Z" fill="#5E3A2A"/><path d="M4 44.8L20 53.8L36 44.8V49L20 58L4 49Z" fill="#432D24"/></svg><span class="lockup-t"><span class="wm">FIXTORY<em>.STUDIO</em></span><span class="wm-tag">From Craft to Smart Design</span></span></a>
-<a class="hero-link" href="https://fixtory-studio.pages.dev/catalog">ดูแคตตาล็อก</a>
+<span class="hero-ctrl"><a class="hero-link" href="https://fixtory-studio.pages.dev/catalog">ดูแคตตาล็อก</a><button class="thm" id="thmBtn" type="button" aria-label="สลับโหมดสว่าง/มืด"></button></span>
 </section>
 
 <section id="formView">
@@ -283,6 +288,15 @@ textarea{min-height:76px;resize:vertical}
 </div></div>
 
 <script>
+// สลับโหมดสว่าง/มืด (จำค่าไว้ในเครื่อง) — ค่าเริ่มต้นตามมือถือ
+(function(){const R=document.documentElement,K='fx-theme',SUN='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M4.6 4.6l1.6 1.6M17.8 17.8l1.6 1.6M2.5 12h2.2M19.3 12h2.2M4.6 19.4l1.6-1.6M17.8 6.2l1.6-1.6"/></svg>',MOON='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M20.5 14.2A8.5 8.5 0 0 1 9.8 3.5a8.5 8.5 0 1 0 10.7 10.7Z"/></svg>';
+  try{const t=localStorage.getItem(K);if(t==='light'||t==='dark')R.setAttribute('data-theme',t)}catch(e){}
+  const now=()=>R.getAttribute('data-theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');
+  const paint=()=>{const b=document.getElementById('thmBtn');if(!b)return;const d=now()==='dark';b.innerHTML=d?SUN:MOON;b.title=d?'โหมดสว่าง':'โหมดมืด'};
+  document.getElementById('thmBtn').addEventListener('click',()=>{const t=now()==='dark'?'light':'dark';R.setAttribute('data-theme',t);try{localStorage.setItem(K,t)}catch(e){}paint()});
+  paint();
+})();
+
 const GAS_URL="https://script.google.com/macros/s/AKfycbwfy2uHH4QJOM851_HBz3eoUCbwBvnZo1fGzf8DNChs5hS03Ml-335eATS3XTbifVYo9Q/exec";
 // หน้าสั่งซื้อรวม — รวม Alphabet Clicker ไว้ในตะกร้าเดียวกับสินค้าแคตตาล็อก
 // ฟอร์ม keycap เดิม (index.html) ยังใช้งานแยกได้ตามปกติ
