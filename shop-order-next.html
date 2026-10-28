@@ -278,7 +278,7 @@ const THAI_PROVINCES=["กรุงเทพมหานคร","กระบี
 
 // ข้อมูลสินค้า — ต้องตรงกับหน้าแคตตาล็อก ถ้าแก้ราคา/แบบที่แคตตาล็อก ให้แก้ที่นี่ด้วย
 const CATALOG_URL='https://claude.ai/artifact/464DJRbj5uyXQzqGRXmeTy';
-const IMG_V='?v=20261028f'; // เปลี่ยนเลขนี้เมื่อแก้รูป เพื่อให้เบราว์เซอร์โหลดรูปใหม่
+const IMG_V='?v=20261028g'; // เปลี่ยนเลขนี้เมื่อแก้รูป เพื่อให้เบราว์เซอร์โหลดรูปใหม่
 const PLA_CARE='PLA ทนร้อนได้ประมาณ 55–60°C ห้ามทิ้งไว้ในรถกลางแดด ห้ามใส่น้ำร้อนหรือเครื่องล้างจาน ล้างด้วยน้ำเย็นกับสบู่อ่อน';
 const PRODUCTS={
   phapchoo:{name:'น้องพับชู่',sub:'ที่วางทิชชูม้วน',img:'phapchoo.jpg?v=20261028b',from:399,
@@ -321,12 +321,21 @@ function kcFaceInner(em){
   return `<circle cx="50" cy="50" r="47" fill="#C9A80F"/><circle cx="50" cy="49" r="45" fill="#F2D21B"/><circle cx="50" cy="49" r="41" fill="none" stroke="#C9A80F" stroke-width="1.2" opacity=".7"/>`+f;
 }
 function kcResolve(col,v){const c=KC_COLS[col];return c.fixedSlot==='frame'?{body:v,frame:c.fixedColor}:{body:c.fixedColor,frame:v}}
+function kcShade(hex,k){ // k<0 เข้มขึ้น, k>0 สว่างขึ้น
+  const n=parseInt((hex||'#cccccc').slice(1),16);let r=n>>16,g=n>>8&255,b=n&255;
+  const f=v=>Math.round(k<0?v*(1+k):v+(255-v)*k);return '#'+[f(r),f(g),f(b)].map(v=>v.toString(16).padStart(2,'0')).join('');
+}
+// คีย์แคปแบบนูน: เงาใต้คีย์ + ขอบล่างเข้ม + หน้าคีย์สว่างด้านบน ให้ลอยเด่นจากเคสทุกสี
 function kcKey(x,y,s,body,frame,ch,ghost){
-  const op=ghost?' opacity=".35"':'';
-  let g=`<g${op}><rect x="${x}" y="${y}" width="${s}" height="${s}" rx="8" fill="${KC_HEX[body]||'#ccc'}"/><rect x="${x+4}" y="${y+4}" width="${s-8}" height="${s-8}" rx="5" fill="none" stroke="${KC_HEX[frame]||'#fff'}" stroke-width="3"/>`;
-  const face=kcFaceInner(ch);
-  if(face){const d=s*.58;g+=`<g transform="translate(${x+s/2-d/2},${y+s/2-d/2}) scale(${d/100})">${face}</g>`}
-  else{const t=ch==='❤'?'♥':ch;g+=`<text x="${x+s/2}" y="${y+s/2+7}" text-anchor="middle" font-size="${t==='♥'?20:18}" font-weight="700" fill="${KC_HEX[frame]||'#fff'}" font-family="Prompt, Segoe UI, sans-serif">${t}</text>`}
+  const op=ghost?' opacity=".6"':'',B=KC_HEX[body]||'#cccccc',F=KC_HEX[frame]||'#ffffff',lip=3,top=s-lip;
+  let g=`<g${op}><rect x="${x+.5}" y="${y+2.5}" width="${s-1}" height="${s}" rx="8" fill="#000" opacity=".38"/>`;
+  g+=`<rect x="${x}" y="${y}" width="${s}" height="${s}" rx="8" fill="${kcShade(B,-.28)}"/>`;
+  g+=`<rect x="${x}" y="${y}" width="${s}" height="${top}" rx="8" fill="${B}"/>`;
+  g+=`<rect x="${x+2}" y="${y+1.5}" width="${s-4}" height="${top*.42}" rx="6" fill="#fff" opacity=".22"/>`;
+  g+=`<rect x="${x+4}" y="${y+4}" width="${s-8}" height="${top-8}" rx="5" fill="none" stroke="${F}" stroke-width="3"/>`;
+  const face=kcFaceInner(ch),cy=y+top/2;
+  if(face){const d=s*.56;g+=`<g transform="translate(${x+s/2-d/2},${cy-d/2}) scale(${d/100})">${face}</g>`}
+  else{const t=ch==='❤'?'♥':ch;g+=`<text x="${x+s/2}" y="${cy+6.5}" text-anchor="middle" font-size="${t==='♥'?19:17}" font-weight="700" fill="${F}" font-family="Prompt, Segoe UI, sans-serif">${t}</text>`}
   return g+'</g>';
 }
 // วาดชิ้นงาน คืน {svg, w, h}
@@ -337,13 +346,13 @@ function kcSVG(it,orient){
   if(orient==='vertical'){
     const size=38,railW=size+16,railH=n*size+(n-1)*gap+16,H=66+railH+12;
     s+=`<circle cx="70" cy="12" r="9" fill="none" stroke="${KC_HEX[st.ring]}" stroke-width="3.5"/><path d="M70,17 C52,26 52,48 70,54 C88,48 88,26 70,17" fill="none" stroke="${KC_HEX[st.loop]}" stroke-width="6" stroke-linecap="round"/><rect x="63" y="50" width="14" height="16" rx="4" fill="${KC_HEX[st.knot]}"/>`;
-    const rx=70-railW/2;s+=`<rect x="${rx}" y="66" width="${railW}" height="${railH}" rx="14" fill="${KC_HEX[it.caseColor]}" stroke="rgba(0,0,0,.12)"/>`;
+    const rx=70-railW/2;s+=`<rect x="${rx}" y="66" width="${railW}" height="${railH}" rx="14" fill="${KC_HEX[it.caseColor]}" stroke="rgba(0,0,0,.12)"/>`;s+=`<rect x="${rx+4}" y="70" width="${railW-8}" height="${railH-8}" rx="11" fill="${kcShade(KC_HEX[it.caseColor],-.22)}"/>`;
     chars.forEach((ch,i)=>{const c=kcResolve(it.col,cols[i]||KC_COLS[it.col].vary[0]);s+=kcKey(rx+8,74+i*(size+gap),size,c.body,c.frame,ch,ghost)});
     return {svg:s,w:140,h:H};
   }
   const size=30,railH=size+16,railW=n*size+(n-1)*gap+16,W=56+railW+10,H=Math.max(railH+16,80),cy=H/2;
   s+=`<circle cx="14" cy="${cy}" r="9" fill="none" stroke="${KC_HEX[st.ring]}" stroke-width="3.5"/><path d="M19,${cy} C28,${cy-18} 50,${cy-18} 56,${cy} C50,${cy+18} 28,${cy+18} 19,${cy}" fill="none" stroke="${KC_HEX[st.loop]}" stroke-width="6" stroke-linecap="round"/><rect x="52" y="${cy-7}" width="16" height="14" rx="4" fill="${KC_HEX[st.knot]}"/>`;
-  s+=`<rect x="56" y="${cy-railH/2}" width="${railW}" height="${railH}" rx="14" fill="${KC_HEX[it.caseColor]}" stroke="rgba(0,0,0,.12)"/>`;
+  s+=`<rect x="56" y="${cy-railH/2}" width="${railW}" height="${railH}" rx="14" fill="${KC_HEX[it.caseColor]}" stroke="rgba(0,0,0,.12)"/>`;s+=`<rect x="60" y="${cy-railH/2+4}" width="${railW-8}" height="${railH-8}" rx="11" fill="${kcShade(KC_HEX[it.caseColor],-.22)}"/>`;
   chars.forEach((ch,i)=>{const c=kcResolve(it.col,cols[i]||KC_COLS[it.col].vary[0]);s+=kcKey(64+i*(size+gap),cy-railH/2+8,size,c.body,c.frame,ch,ghost)});
   return {svg:s,w:W,h:H};
 }
@@ -465,7 +474,7 @@ function renderKC(box){
       el('div',{},el('span',{class:'lbl'},'สีเคส',el('small',{},kc.caseColor)),el('div',{class:'dots'},KC_CASES.map(c=>el('button',{type:'button',class:'dot',style:'background:'+KC_HEX[c],'aria-label':'เคสสี'+c,'aria-pressed':String(kc.caseColor===c),onclick:()=>{kc.caseColor=c;renderConf()}}))))),
     el('span',{class:'lbl'},'ข้อความ',el('small',{},'ตัวอักษร หน้ายิ้ม หัวใจ ผสมกันได้ ไม่เกิน '+KC_MAX+' ช่อง')),
     el('div',{class:'word','aria-live':'polite'},n?kc.chars.map((ch,i)=>kcChip(ch,i,30)):el('span',{class:'ph'},'แตะแป้นด้านล่างเพื่อพิมพ์')),
-    el('div',{class:'kbrow'},seg([['letters','ABC'],['emoji','หน้ายิ้ม']],kc.mode,v=>{kc.mode=v;renderConf()}),el('span',{class:'cnt'},n+'/'+KC_MAX+' ช่อง')),
+    el('div',{class:'kbrow'},seg([['letters','ตัวอักษร'],['emoji','Emoji']],kc.mode,v=>{kc.mode=v;renderConf()}),el('span',{class:'cnt'},n+'/'+KC_MAX+' ช่อง')),
     el('div',{class:'kb'+(kc.mode==='emoji'?' emo':'')},keys.map(ch=>{const f=kcFaceInner(ch);
       return el('button',{type:'button',disabled:full,'aria-label':KC_FACE[ch]||(ch==='❤'?'หัวใจ':ch),onclick:()=>kcType(ch),html:f?`<svg viewBox="0 0 100 100" width="26" height="26" aria-hidden="true">${f}</svg>`:null},f?null:(ch==='❤'?'♥':ch))})),
     el('div',{class:'kbrow'},
