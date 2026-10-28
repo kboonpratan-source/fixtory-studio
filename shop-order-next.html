@@ -245,7 +245,7 @@ textarea{min-height:76px;resize:vertical}
     <div class="amt" id="dAmt">-</div>
     <img src="promptpay_qr.jpg" alt="QR PromptPay ของร้าน Fixtory Studio">
     <p class="hint">สแกนแล้วพิมพ์จำนวนเงินเองตอนโอน (QR ไม่ได้ผูกจำนวนเงิน)</p>
-    <div class="note" style="text-align:left">โอนแล้ว ส่งสลิปพร้อมเลขที่ออเดอร์ให้ร้านทาง TikTok / Facebook: fixtory.studio หรือโทร 081-336-8232, 090-985-0326 ร้านจะเริ่มผลิตหลังได้รับยอดโอน</div>
+    <div class="note" style="text-align:left">โอนแล้ว ส่งสลิปพร้อมเลขที่ออเดอร์ให้ร้านทาง TikTok / Facebook: fixtory.studio หรือโทร 090-985-0326, 081-336-8232 ร้านจะเริ่มผลิตหลังได้รับยอดโอน</div>
     <button class="btn ghost full" id="againBtn" type="button">สั่งซื้อเพิ่ม</button>
   </div>
 </section>
@@ -696,7 +696,7 @@ async function drawSummary(o){
   const kv=(k,v,big)=>{g.font=(big?'600 36px ':'28px ')+F;g.fillStyle=big?'#2C2420':'#76665C';g.fillText(k,P,y);g.textAlign='right';g.fillStyle=big?'#A9572F':'#2C2420';g.fillText(v,W-P,y);g.textAlign='left';y+=big?60:44};
   kv('ค่าสินค้า',fmt(o.st));kv('ค่าจัดส่ง',o.sf?fmt(o.sf):'ไม่มี (นัดรับ)');kv('ยอดที่ต้องโอน',fmt(o.gt),true);y+=20;
   g.fillStyle='#F5E8DC';g.fillRect(P,y,W-2*P,96);g.font='24px '+F;g.fillStyle='#2C2420';
-  g.fillText('โอนแล้ว ส่งสลิป + รูปนี้ ทาง TikTok / Facebook: fixtory.studio',P+24,y+40);g.fillText('หรือโทร 081-336-8232, 090-985-0326',P+24,y+76);
+  g.fillText('โอนแล้ว ส่งสลิป + รูปนี้ ทาง TikTok / Facebook: fixtory.studio',P+24,y+40);g.fillText('หรือโทร 090-985-0326, 081-336-8232',P+24,y+76);
   return c;
 }
 async function openSaveOverlay(){
