@@ -167,13 +167,17 @@ textarea{min-height:76px;resize:vertical}
   </div>
   <label class="check"><input type="checkbox" id="selfDeliver"> นัดรับเอง ไม่ผ่านขนส่ง (ไม่มีค่าส่ง)</label>
   <div id="shipBox">
+    <div class="ac"><label class="lbl" for="cFind">ค้นหาที่อยู่เร็ว <small>ไม่บังคับ · พิมพ์ชื่อแขวง/ตำบล หรือรหัสไปรษณีย์</small></label><input type="text" id="cFind" autocomplete="off" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="zipList" placeholder="เช่น คลองเตย หรือ 50200"><ul id="zipList" class="ac-list" role="listbox" hidden></ul></div>
     <div class="two">
-      <div class="ac"><label class="lbl" for="cZip">รหัสไปรษณีย์ <small>หรือพิมพ์ชื่อแขวง/ตำบล</small></label><input type="text" id="cZip" autocomplete="off" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="zipList" placeholder="เช่น 10110 หรือ คลองเตย"><ul id="zipList" class="ac-list" role="listbox" hidden></ul></div>
-      <div><label class="lbl" for="cSub">แขวง/ตำบล · เขต/อำเภอ</label><select id="cSub"><option value="">ใส่รหัสไปรษณีย์ก่อน</option></select></div>
+      <div><label class="lbl" for="cProv">จังหวัด</label><select id="cProv"><option value="">เลือกจังหวัด</option></select></div>
+      <div><label class="lbl" for="cAmp">เขต/อำเภอ</label><select id="cAmp" disabled><option value="">เลือกจังหวัดก่อน</option></select></div>
+    </div>
+    <div class="two">
+      <div><label class="lbl" for="cTam">แขวง/ตำบล</label><select id="cTam" disabled><option value="">เลือกอำเภอก่อน</option></select></div>
+      <div><label class="lbl" for="cZip">รหัสไปรษณีย์</label><input type="text" id="cZip" inputmode="numeric" maxlength="5" autocomplete="postal-code" placeholder="ขึ้นให้อัตโนมัติ"></div>
     </div>
     <p class="hint" id="zipMsg" hidden></p>
     <div id="manualSub" hidden><label class="lbl" for="cSubText">แขวง/ตำบล และ เขต/อำเภอ</label><input type="text" id="cSubText" placeholder="เช่น ต.ท่าศาลา อ.เมืองเชียงใหม่"></div>
-    <label class="lbl" for="cProv">จังหวัด</label><select id="cProv"><option value="">เลือกจังหวัด</option></select>
     <label class="lbl" for="cAddr">บ้านเลขที่ หมู่บ้าน/อาคาร ซอย ถนน</label><textarea id="cAddr" autocomplete="address-line1" placeholder="เช่น 99/1 หมู่บ้านสุขใจ ซอย 5 ถนนสุขุมวิท" style="min-height:64px"></textarea>
   </div>
   <div id="pickupBox" hidden><label class="lbl" for="cPickup">จุดนัดรับ / วันเวลาที่สะดวก</label><input type="text" id="cPickup"></div>
@@ -351,65 +355,79 @@ function showErr(m){const e=$('#err');e.textContent=m;e.hidden=false;
 function hideErr(){$('#err').hidden=true}
 
 THAI_PROVINCES.forEach(p=>$('#cProv').append(el('option',{value:p},p)));
-// ---------- ที่อยู่จากรหัสไปรษณีย์ (ข้อมูล: thai-address-database) ----------
-let PC=null,pcLoading=null;
-function loadPC(){if(PC)return Promise.resolve(PC);if(!pcLoading)pcLoading=fetch('th-postcodes.json').then(r=>r.json()).then(d=>PC=d).catch(()=>null);return pcLoading}
+// ---------- ที่อยู่: จังหวัด → อำเภอ → ตำบล → รหัสไปรษณีย์อัตโนมัติ (ข้อมูล: thai-address-database) ----------
+let PC=null,pcLoading=null,TREE=null;
+function loadPC(){if(PC)return Promise.resolve(PC);if(!pcLoading)pcLoading=fetch('th-postcodes.json'+IMG_V).then(r=>r.json()).then(d=>{PC=d;TREE={};for(const z in d.z)d.z[z].forEach(r=>{const pv=d.p[r[2]];((TREE[pv]=TREE[pv]||{})[r[1]]=TREE[pv][r[1]]||[]).push({t:r[0],z})});for(const pv in TREE)for(const a in TREE[pv])TREE[pv][a].sort((x,y)=>x.t.localeCompare(y.t,'th')||x.z.localeCompare(y.z));return d}).catch(()=>null);return pcLoading}
 const isBKK=pv=>pv==='กรุงเทพมหานคร';
-function subLabel(r){const pv=PC.p[r[2]];return (isBKK(pv)?'แขวง':'ต.')+r[0]+' · '+(isBKK(pv)?'เขต':'อ.')+r[1]}
-async function onZip(keep){
-  const raw=$('#cZip').value.trim(),z=/^\d{5}$/.test(raw)?raw:'';
-  const sel=$('#cSub'),msg=$('#zipMsg'),man=$('#manualSub');
-  if(!z){sel.disabled=false;sel.replaceChildren(el('option',{value:''},'ใส่รหัสไปรษณีย์ก่อน'));msg.hidden=true;man.hidden=true;return}
-  const d=await loadPC();
-  if(!d){man.hidden=false;sel.disabled=true;sel.replaceChildren(el('option',{value:''},'โหลดข้อมูลไม่ได้'));msg.textContent='พิมพ์ตำบลและอำเภอเองได้เลย';msg.hidden=false;return}
-  const rows=d.z[z]||[];
-  if(!rows.length){sel.disabled=true;sel.replaceChildren(el('option',{value:''},'ไม่พบรหัสนี้'));msg.textContent='ไม่พบรหัสไปรษณีย์ '+z+' กรุณาตรวจสอบอีกครั้ง หรือพิมพ์ตำบลและอำเภอเอง';msg.hidden=false;man.hidden=false;return}
-  msg.hidden=true;man.hidden=true;sel.disabled=false;
-  sel.replaceChildren(...(rows.length>1?[el('option',{value:''},'เลือกแขวง/ตำบล ('+rows.length+' รายการ)')]:[]),...rows.map((r,i)=>el('option',{value:String(i)},subLabel(r))),el('option',{value:'other'},'ไม่มีในรายการ (พิมพ์เอง)'));
-  if(keep!=null&&sel.querySelector('option[value="'+keep+'"]'))sel.value=keep;else if(rows.length===1)sel.value='0';
-  onSub();
+const ampWord=pv=>isBKK(pv)?'เขต':'อ.',tamWord=pv=>isBKK(pv)?'แขวง':'ต.';
+function opt(v,t){return el('option',{value:v},t)}
+function fillAmp(keep){
+  const pv=$('#cProv').value,a=$('#cAmp');
+  if(!pv||!TREE||!TREE[pv]){a.disabled=true;a.replaceChildren(opt('',pv?'กำลังโหลด…':'เลือกจังหวัดก่อน'));fillTam();return}
+  const list=Object.keys(TREE[pv]).sort((x,y)=>x.localeCompare(y,'th'));
+  a.disabled=false;a.replaceChildren(opt('',(isBKK(pv)?'เลือกเขต':'เลือกอำเภอ')+' ('+list.length+')'),...list.map(x=>opt(x,ampWord(pv)+x)));
+  if(keep&&TREE[pv][keep])a.value=keep;fillTam();
 }
-function onSub(){
-  const v=$('#cSub').value,z=$('#cZip').value;$('#manualSub').hidden=v!=='other';
-  if(v!==''&&v!=='other'&&PC&&PC.z[z]){const r=PC.z[z][+v];$('#cProv').value=PC.p[r[2]]}
+function fillTam(keep){
+  const pv=$('#cProv').value,am=$('#cAmp').value,t=$('#cTam');
+  if(!pv||!am||!TREE||!TREE[pv]||!TREE[pv][am]){t.disabled=true;t.replaceChildren(opt('','เลือกอำเภอก่อน'));$('#manualSub').hidden=true;return}
+  const rows=TREE[pv][am],dupe={};rows.forEach(r=>dupe[r.t]=(dupe[r.t]||0)+1);
+  t.disabled=false;t.replaceChildren(opt('',(isBKK(pv)?'เลือกแขวง':'เลือกตำบล')+' ('+rows.length+')'),...rows.map(r=>opt(r.t+'|'+r.z,tamWord(pv)+r.t+(dupe[r.t]>1?' ('+r.z+')':''))),opt('other','ไม่มีในรายการ (พิมพ์เอง)'));
+  if(keep&&t.querySelector('option[value="'+keep+'"]'))t.value=keep;else if(rows.length===1)t.value=rows[0].t+'|'+rows[0].z;
+  onTam();
+}
+function onTam(){
+  const v=$('#cTam').value;$('#manualSub').hidden=v!=='other';
+  if(v&&v!=='other'){$('#cZip').value=v.split('|')[1];$('#zipMsg').hidden=true}
 }
 function subText(){
-  const v=$('#cSub').value,z=$('#cZip').value;
-  if(v!==''&&v!=='other'&&PC&&PC.z[z]){const r=PC.z[z][+v],pv=PC.p[r[2]];return (isBKK(pv)?'แขวง':'ต.')+r[0]+' '+(isBKK(pv)?'เขต':'อ.')+r[1]}
+  const pv=$('#cProv').value,am=$('#cAmp').value,v=$('#cTam').value;
+  if(v&&v!=='other'&&am)return tamWord(pv)+v.split('|')[0]+' '+ampWord(pv)+am;
   return $('#manualSub').hidden?'':$('#cSubText').value.trim();
 }
-$('#cZip').addEventListener('input',()=>{onZip();acSearch()});
+function setAddress(pv,am,tm,z){ $('#cProv').value=pv;fillAmp(am);$('#cAmp').value=am;fillTam(tm+'|'+z) }
+$('#cProv').addEventListener('change',async()=>{await loadPC();fillAmp()});
+$('#cAmp').addEventListener('change',()=>fillTam());
+$('#cTam').addEventListener('change',onTam);
+// พิมพ์รหัสไปรษณีย์เอง: ถ้ามีตำบลเดียวในรหัสนั้น เลือกให้เลย
+$('#cZip').addEventListener('input',async()=>{
+  const z=$('#cZip').value.replace(/\D/g,'').slice(0,5);if($('#cZip').value!==z)$('#cZip').value=z;
+  if(z.length<5)return;const d=await loadPC();if(!d)return;const rows=d.z[z]||[];
+  const cur=$('#cTam').value;if(cur&&cur.endsWith('|'+z))return;
+  if(rows.length===1){const r=rows[0];setAddress(d.p[r[2]],r[1],r[0],z)}
+  else if(rows.length>1){const pv=d.p[rows[0][2]];if($('#cProv').value!==pv){$('#cProv').value=pv;fillAmp()}
+    const amps=[...new Set(rows.map(r=>r[1]))];if(amps.length===1){$('#cAmp').value=amps[0];fillTam()}
+    const m=$('#zipMsg');m.textContent='รหัส '+z+' มี '+rows.length+' แขวง/ตำบล กรุณาเลือกให้ตรง';m.hidden=false}
+  else{const m=$('#zipMsg');m.textContent='ไม่พบรหัสไปรษณีย์ '+z+' กรุณาตรวจสอบ';m.hidden=false}
+});
+// ค้นหาเร็ว
 let acItems=[],acIdx=-1;
 async function acSearch(){
-  const q=$('#cZip').value.trim(),ul=$('#zipList');
-  if(q.length<2||/^\d{5}$/.test(q)){acClose();return}
+  const q=$('#cFind').value.trim(),ul=$('#zipList');
+  if(q.length<2){acClose();return}
   const d=await loadPC();if(!d){acClose();return}
   const out=[],digits=/^\d+$/.test(q);
-  for(const z in d.z){if(digits&&!z.startsWith(q))continue;d.z[z].forEach((r,i)=>{if(out.length>=40)return;if(digits||r[0].includes(q)||r[1].includes(q)||d.p[r[2]].includes(q))out.push({z,i,r})})}
+  for(const z in d.z){if(digits&&!z.startsWith(q))continue;d.z[z].forEach(r=>{if(out.length>=40)return;if(digits||r[0].includes(q)||r[1].includes(q)||d.p[r[2]].includes(q))out.push({z,r})})}
   out.sort((a,b)=>a.z.localeCompare(b.z));acItems=out.slice(0,8);acIdx=-1;
-  if(!acItems.length){ul.replaceChildren(el('li',{class:'ac-none'},'ไม่พบ ลองพิมพ์รหัสไปรษณีย์ 5 หลัก'));ul.hidden=false;return}
-  ul.replaceChildren(...acItems.map((it,k)=>el('li',{role:'option',id:'ac'+k,'data-k':String(k),onmousedown:e=>{e.preventDefault();acPick(k)}},el('b',{},it.z),el('span',{},subLabel(it.r)+' · '+d.p[it.r[2]]))));
-  ul.hidden=false;$('#cZip').setAttribute('aria-expanded','true');
+  if(!acItems.length){ul.replaceChildren(el('li',{class:'ac-none'},'ไม่พบ ลองพิมพ์ชื่ออื่น หรือเลือกจากรายการด้านล่าง'));ul.hidden=false;return}
+  ul.replaceChildren(...acItems.map((it,k)=>{const pv=d.p[it.r[2]];return el('li',{role:'option',id:'ac'+k,onmousedown:e=>{e.preventDefault();acPick(k)}},el('b',{},it.z),el('span',{},tamWord(pv)+it.r[0]+' · '+ampWord(pv)+it.r[1]+' · '+pv))}));
+  ul.hidden=false;$('#cFind').setAttribute('aria-expanded','true');
 }
-function acPick(k){const it=acItems[k];if(!it)return;$('#cZip').value=it.z;acClose();onZip(String(it.i));$('#cAddr').focus()}
-function acClose(){$('#zipList').hidden=true;$('#cZip').setAttribute('aria-expanded','false');acIdx=-1}
-$('#cZip').addEventListener('keydown',e=>{
+function acPick(k){const it=acItems[k];if(!it)return;setAddress(PC.p[it.r[2]],it.r[1],it.r[0],it.z);$('#cFind').value='';acClose();$('#zipMsg').hidden=true;$('#cAddr').focus()}
+function acClose(){$('#zipList').hidden=true;$('#cFind').setAttribute('aria-expanded','false');acIdx=-1}
+$('#cFind').addEventListener('input',acSearch);
+$('#cFind').addEventListener('focus',loadPC,{once:true});
+$('#cFind').addEventListener('keydown',e=>{
   if($('#zipList').hidden||!acItems.length)return;
   if(e.key==='ArrowDown'||e.key==='ArrowUp'){e.preventDefault();acIdx=(acIdx+(e.key==='ArrowDown'?1:-1)+acItems.length)%acItems.length;
-    $('#zipList').querySelectorAll('li').forEach((li,k)=>li.setAttribute('aria-selected',String(k===acIdx)));$('#cZip').setAttribute('aria-activedescendant','ac'+acIdx)}
+    $('#zipList').querySelectorAll('li').forEach((li,k)=>li.setAttribute('aria-selected',String(k===acIdx)));$('#cFind').setAttribute('aria-activedescendant','ac'+acIdx)}
   else if(e.key==='Enter'&&acIdx>=0){e.preventDefault();acPick(acIdx)}
   else if(e.key==='Escape')acClose();
 });
-$('#cZip').addEventListener('blur',()=>setTimeout(acClose,150));
-$('#cZip').addEventListener('focus',loadPC,{once:true});
-$('#cSub').addEventListener('change',onSub);
-// ยังไม่มีรหัสไปรษณีย์: แตะ dropdown แล้วพาไปช่องรหัสไปรษณีย์แทน
-function needZip(e){if(/^\d{5}$/.test($('#cZip').value.trim()))return;e.preventDefault();const m=$('#zipMsg');m.textContent='พิมพ์รหัสไปรษณีย์ หรือชื่อแขวง/ตำบลในช่องด้านซ้ายก่อน แล้วเลือกจากรายการ';m.hidden=false;$('#cZip').focus()}
-$('#cSub').addEventListener('mousedown',needZip);
-$('#cSub').addEventListener('touchstart',needZip,{passive:false});
-$('#cSub').addEventListener('keydown',e=>{if(e.key!=='Tab')needZip(e)});
+$('#cFind').addEventListener('blur',()=>setTimeout(acClose,150));
+loadPC().then(()=>{if($('#cProv').value&&$('#cAmp').disabled)fillAmp()});
 $('#selfDeliver').addEventListener('change',()=>{const s=$('#selfDeliver').checked;$('#shipBox').hidden=s;$('#pickupBox').hidden=!s;renderCart()});
-try{const d=JSON.parse(localStorage.getItem('fxCustomer')||'{}');['cName','cPhone','cAddr','cProv','cZip','cSubText'].forEach(k=>{if(d[k])$('#'+k).value=d[k]});if(d.cZip&&d.cZip.length===5)onZip(d.cSub)}catch(e){}
+try{const d=JSON.parse(localStorage.getItem('fxCustomer')||'{}');['cName','cPhone','cAddr','cProv','cZip','cSubText'].forEach(k=>{if(d[k])$('#'+k).value=d[k]});if(d.cProv&&d.cAmp)loadPC().then(x=>{if(!x)return;$('#cProv').value=d.cProv;fillAmp(d.cAmp);if(d.cTam)fillTam(d.cTam);if(d.cZip)$('#cZip').value=d.cZip})}catch(e){}
 
 $('#submitBtn').addEventListener('click',async()=>{
   hideErr();
@@ -422,9 +440,9 @@ $('#submitBtn').addEventListener('click',async()=>{
   if(!phone){showErr('กรุณากรอกเบอร์โทรหรือ LINE ID');$('#cPhone').focus();return}
   if(self&&!addr){showErr('กรุณากรอกจุดนัดรับ');return}
   if(!self){
+    if(!prov){showErr('กรุณาเลือกจังหวัด');$('#cProv').focus();return}
+    if(!sub){showErr('กรุณาเลือกเขต/อำเภอ และแขวง/ตำบล');($('#cAmp').value?($('#manualSub').hidden?$('#cTam'):$('#cSubText')):$('#cAmp')).focus();return}
     if(!/^\d{5}$/.test(zip)){showErr('กรุณากรอกรหัสไปรษณีย์ 5 หลัก');$('#cZip').focus();return}
-    if(!sub){showErr('กรุณาเลือกแขวง/ตำบล');$('#manualSub').hidden?$('#cSub').focus():$('#cSubText').focus();return}
-    if(!prov){showErr('กรุณาเลือกจังหวัด');return}
     if(!house){showErr('กรุณากรอกบ้านเลขที่ ถนน');$('#cAddr').focus();return}
   }
   const st=subtotal(),sf=shipFee(),gt=st+sf;
@@ -447,7 +465,7 @@ $('#submitBtn').addEventListener('click',async()=>{
 let lastOrder=null;
 function finish(order,no){
   order.no=no;lastOrder=order;
-  try{localStorage.setItem('fxCustomer',JSON.stringify({cName:order.name,cPhone:order.phone,cAddr:order.self?'':$('#cAddr').value.trim(),cProv:order.prov,cZip:order.zip,cSub:$('#cSub').value,cSubText:$('#cSubText').value.trim()}))}catch(e){}
+  try{localStorage.setItem('fxCustomer',JSON.stringify({cName:order.name,cPhone:order.phone,cAddr:order.self?'':$('#cAddr').value.trim(),cProv:order.prov,cZip:order.zip,cAmp:$('#cAmp').value,cTam:$('#cTam').value,cSubText:$('#cSubText').value.trim()}))}catch(e){}
   $('#dNo').textContent=no||'รอร้านยืนยัน';$('#dChk').hidden=!!no;$('#dAmt').textContent=fmt(order.gt);
   $('#formView').hidden=true;$('#bar').hidden=true;$('#doneView').hidden=false;scrollTo({top:0});
 }
