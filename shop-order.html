@@ -78,13 +78,12 @@ textarea{min-height:76px;resize:vertical}
 .done img{max-width:240px;width:100%;border-radius:12px;margin:12px auto;display:block}
 .done .amt{font-size:22px;font-weight:600;color:var(--accent-text)}
 .inapp{background:#FFF4E0;color:#7A4B00;border-radius:12px;padding:10px 12px;font-size:13px;margin-bottom:14px}
-.detail-btn{display:flex;align-items:center;gap:12px;width:100%;text-align:left;border:0;background:var(--sunk);border-radius:14px;padding:8px 14px 8px 8px;font:inherit;color:inherit;cursor:pointer;margin-bottom:4px}
+.detail-btn{display:flex;align-items:center;gap:12px;width:100%;text-align:left;border:0;background:var(--sunk);border-radius:14px;padding:10px 14px 10px 16px;font:inherit;color:inherit;cursor:pointer;margin-bottom:4px}
 .detail-btn img{width:40px;height:54px;object-fit:cover;border-radius:8px;flex:none}
 .detail-btn span{flex:1;min-width:0;display:grid;line-height:1.35}
 .detail-btn b{font-weight:600;color:var(--accent-text)}
 .detail-btn small{font-size:12.5px;color:var(--muted)}
 .detail-btn i{font-style:normal;font-size:26px;color:var(--accent);line-height:1}
-.ptab img{cursor:zoom-in}
 .dm{position:fixed;inset:0;z-index:45;background:rgba(30,22,18,.6);display:flex;align-items:center;justify-content:center;padding:16px}
 .dm-card{background:var(--bg);border-radius:22px;width:min(760px,100%);max-height:100%;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 30px 80px -20px rgba(30,22,18,.5)}
 .dm-h{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 12px 12px 20px;border-bottom:1px solid var(--line)}
@@ -223,7 +222,7 @@ let sipSel={design:null,opt:0,name:''};
 
 function renderTabs(){
   $('#ptabs').replaceChildren(...Object.entries(PRODUCTS).map(([id,p])=>el('button',{type:'button',class:'ptab','aria-pressed':String(id===current),onclick:()=>{current=id;renderTabs();renderConf()}},
-    el('img',{src:p.img,alt:'ดูรูป '+p.name,onclick:e=>{e.stopPropagation();openDetail(id)}}),el('div',{},el('b',{},p.name),el('span',{},p.sub+' · เริ่ม '+fmt(p.from))))));
+    el('img',{src:p.img,alt:''}),el('div',{},el('b',{},p.name),el('span',{},p.sub+' · เริ่ม '+fmt(p.from))))));
 }
 function openDetail(id){
   const p=PRODUCTS[id],i=p.info||{};
@@ -247,7 +246,7 @@ function totalPieces(){return Object.values(phapQty).reduce((a,b)=>a+b,0)+sipCar
 
 function renderConf(){
   const box=$('#pconf');box.replaceChildren();
-  box.append(el('button',{type:'button',class:'detail-btn',onclick:()=>openDetail(current)},el('img',{src:PRODUCTS[current].img,alt:''}),el('span',{},el('b',{},'ดูรูปและรายละเอียด '+PRODUCTS[current].name),el('small',{},'แตะเพื่อดูรูปใหญ่ วัสดุ และการดูแล')),el('i',{'aria-hidden':'true'},'›')));
+  box.append(el('button',{type:'button',class:'detail-btn',onclick:()=>openDetail(current)},el('span',{},el('b',{},'ดูรูปและรายละเอียด '+PRODUCTS[current].name),el('small',{},'แตะเพื่อดูรูปใหญ่ วัสดุ และการดูแล')),el('i',{'aria-hidden':'true'},'›')));
   if(current==='phapchoo'){
     const p=PRODUCTS.phapchoo;
     box.append(el('span',{class:'lbl'},'เลือกสีและจำนวน',el('small',{},'1 ชิ้น 399 · 2 ชิ้น 699 · 3 ชิ้น 999')),
