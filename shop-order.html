@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>สั่งซื้อสินค้า · Fixtory Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Chonburi&family=Prompt:wght@300;400;500;600&display=swap">
+<style>
+:root{--bg:#FAF8F4;--surface:#FFFFFF;--sunk:#F5E8DC;--soft:#E8C4A8;--ink:#2C2420;--muted:#76665C;--line:#EDE2D6;--accent:#C4714A;--accent-text:#A9572F;--olive:#6B7A4A;--danger:#B42318;
+  --f-display:"DM Serif Display","Chonburi",Georgia,serif;--f-body:"Prompt",system-ui,-apple-system,"Segoe UI",sans-serif;color-scheme:light}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.6;font-weight:400}
+.wrap{max-width:720px;margin:0 auto;padding:20px max(16px,env(safe-area-inset-left)) 120px max(16px,env(safe-area-inset-right))}
+header{display:flex;align-items:center;gap:12px;padding:6px 0 18px}
+header svg{width:26px;height:38px;flex:none}
+.wm{font-family:var(--f-display);text-transform:uppercase;letter-spacing:.1em;font-size:20px;white-space:nowrap}
+.wm em{font-style:normal;color:var(--accent)}
+h1{font-family:var(--f-display);font-weight:400;font-size:30px;margin:4px 0 2px;color:var(--accent)}
+.sub{color:var(--muted);margin:0 0 20px;font-size:14px}
+.card{background:var(--surface);border-radius:20px;padding:18px;box-shadow:0 1px 2px rgba(44,36,32,.06),0 8px 24px -14px rgba(44,36,32,.25);margin-bottom:16px}
+.card h2{font-family:var(--f-display);font-weight:400;font-size:21px;margin:0 0 12px}
+.ptabs{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+.ptab{display:flex;gap:10px;align-items:center;text-align:left;border:0;background:var(--surface);border-radius:16px;padding:8px;cursor:pointer;box-shadow:inset 0 0 0 1.5px var(--line);font:inherit;color:inherit}
+.ptab img{width:54px;height:72px;object-fit:cover;border-radius:10px;flex:none;background:var(--sunk)}
+.ptab b{display:block;font-weight:600;line-height:1.3}
+.ptab span{font-size:13px;color:var(--muted)}
+.ptab[aria-pressed="true"]{box-shadow:inset 0 0 0 2.5px var(--accent);background:#FFF9F4}
+.lbl{display:block;font-size:13.5px;font-weight:600;margin:14px 0 6px}
+.lbl small{font-weight:400;color:var(--muted);margin-left:6px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border:0;background:var(--bg);box-shadow:inset 0 0 0 1.5px var(--line);border-radius:999px;padding:6px 12px;font:inherit;font-size:13.5px;cursor:pointer;color:inherit}
+.chip b{font-weight:600;color:var(--accent-text);margin-right:4px;font-variant-numeric:tabular-nums}
+.chip[aria-pressed="true"]{background:var(--accent);color:#fff;box-shadow:none}
+.chip[aria-pressed="true"] b{color:#fff}
+.opts{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.opt{border:0;background:var(--bg);box-shadow:inset 0 0 0 1.5px var(--line);border-radius:14px;padding:10px 6px;font:inherit;cursor:pointer;color:inherit;display:flex;flex-direction:column;align-items:center;gap:2px;text-align:center}
+.opt span{font-size:12.5px;color:var(--muted);line-height:1.3}
+.opt b{font-family:var(--f-display);font-weight:400;font-size:22px;color:var(--accent)}
+.opt[aria-pressed="true"]{box-shadow:inset 0 0 0 2.5px var(--accent);background:#FFF9F4}
+.colorrow{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px}
+.crow{display:flex;align-items:center;gap:8px;background:var(--bg);border-radius:12px;padding:6px 8px;box-shadow:inset 0 0 0 1.5px var(--line)}
+.crow i{width:24px;height:24px;border-radius:50%;flex:none;box-shadow:inset 0 0 0 1px rgba(44,36,32,.15)}
+.crow span{flex:1;min-width:0;font-size:13.5px}
+.step{display:flex;align-items:center;gap:4px}
+.step button{width:28px;height:28px;border-radius:50%;border:0;background:var(--surface);box-shadow:inset 0 0 0 1.5px var(--line);font:inherit;font-size:16px;line-height:1;cursor:pointer;color:var(--ink)}
+.step b{min-width:18px;text-align:center;font-variant-numeric:tabular-nums}
+input[type=text],input[type=tel],textarea,select{width:100%;border:0;box-shadow:inset 0 0 0 1.5px var(--line);background:var(--surface);border-radius:12px;padding:10px 12px;font:inherit;color:inherit}
+input:focus,textarea:focus,select:focus{outline:none;box-shadow:inset 0 0 0 2px var(--accent)}
+textarea{min-height:76px;resize:vertical}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media (max-width:480px){.two{grid-template-columns:1fr}.opts{grid-template-columns:1fr}.ptabs{grid-template-columns:1fr}}
+.hint{font-size:12.5px;color:var(--muted);margin:6px 0 0}
+.note{background:var(--sunk);border-radius:12px;padding:10px 12px;font-size:13px;color:var(--ink);margin-top:12px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:0;border-radius:999px;padding:11px 20px;font:inherit;font-weight:600;cursor:pointer}
+.btn.primary{background:var(--accent);color:#fff}
+.btn.ghost{background:var(--surface);box-shadow:inset 0 0 0 1.5px var(--line);color:var(--ink)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.full{width:100%;margin-top:14px}
+.cart-item{display:flex;justify-content:space-between;gap:10px;padding:9px 0;border-bottom:1px solid var(--line);font-size:14px}
+.cart-item:last-child{border-bottom:0}
+.cart-item b{font-weight:600}
+.cart-item .x{border:0;background:none;color:var(--danger);font:inherit;font-size:13px;cursor:pointer;padding:0 0 0 8px}
+.sum{display:grid;gap:4px;font-size:14px;margin-top:10px}
+.sum div{display:flex;justify-content:space-between}
+.sum .grand{font-size:17px;font-weight:600;border-top:1.5px solid var(--line);padding-top:8px;margin-top:4px}
+.sum .grand span:last-child{color:var(--accent-text);font-variant-numeric:tabular-nums}
+.empty{color:var(--muted);font-size:14px;text-align:center;padding:10px 0}
+.check{display:flex;align-items:center;gap:8px;font-size:14px;margin-top:12px}
+.err{color:var(--danger);font-size:13.5px;margin-top:10px}
+.bar{position:fixed;left:0;right:0;bottom:0;background:rgba(255,255,255,.94);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-top:1px solid var(--line);padding:10px max(16px,env(safe-area-inset-right)) calc(10px + env(safe-area-inset-bottom)) max(16px,env(safe-area-inset-left))}
+.bar .in{max-width:720px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.bar .t{font-size:13px;color:var(--muted)}
+.bar .t b{display:block;font-size:19px;color:var(--ink);font-variant-numeric:tabular-nums}
+.done{text-align:center}
+.done h2{color:var(--accent)}
+.done .ono{font-family:var(--f-display);font-size:34px;color:var(--ink);letter-spacing:.04em}
+.done img{max-width:240px;width:100%;border-radius:12px;margin:12px auto;display:block}
+.done .amt{font-size:22px;font-weight:600;color:var(--accent-text)}
+.inapp{background:#FFF4E0;color:#7A4B00;border-radius:12px;padding:10px 12px;font-size:13px;margin-bottom:14px}
+.ov{position:fixed;inset:0;background:rgba(30,22,18,.82);z-index:50;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:20px max(16px,env(safe-area-inset-right)) calc(20px + env(safe-area-inset-bottom)) max(16px,env(safe-area-inset-left))}
+.ov p{color:#fff;margin:0;text-align:center;font-size:14px}
+.ov p small{display:block;color:#ddd;font-size:12px}
+.ov img{max-width:min(420px,100%);max-height:66vh;border-radius:12px;background:#fff;-webkit-touch-callout:default;user-select:auto}
+.ov .row{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.chk{background:#FFF4E0;border-radius:12px;padding:10px 12px;font-size:13px;margin-top:10px;text-align:left}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+<svg viewBox="0 0 40 58" aria-hidden="true"><rect x="15.5" y="0" width="9" height="4.5" rx="1.6" fill="#C4714A"/><rect x="18" y="4" width="4" height="3.5" fill="#A85E3B"/><path d="M20 7.5L36 16.5L20 25.5L4 16.5Z" fill="#C97A53"/><path d="M4 16.5L20 25.5V28.5L4 19.5Z" fill="#A85E3B"/><path d="M36 16.5L20 25.5V28.5L36 19.5Z" fill="#B66A43"/><path d="M4 24L20 33L36 24V28.2L20 37.2L4 28.2Z" fill="#B4663F"/><path d="M4 29.2L20 38.2L36 29.2V33.4L20 42.4L4 33.4Z" fill="#9A5737"/><path d="M4 34.4L20 43.4L36 34.4V38.6L20 47.6L4 38.6Z" fill="#7C4830"/><path d="M4 39.6L20 48.6L36 39.6V43.8L20 52.8L4 43.8Z" fill="#5E3A2A"/><path d="M4 44.8L20 53.8L36 44.8V49L20 58L4 49Z" fill="#432D24"/></svg>
+<span class="wm">FIXTORY<em>.STUDIO</em></span>
+</header>
+
+<section id="formView">
+<div class="inapp" id="inapp" hidden>คุณกำลังเปิดหน้านี้ในแอป ถ้าบันทึกรูปสรุปออเดอร์ไม่ได้ ให้กดค้างที่รูปแล้วเลือก "บันทึกรูปภาพ" หรือเปิดหน้านี้ใน Chrome / Safari</div>
+<h1>สั่งซื้อสินค้า</h1>
+<p class="sub">เลือกสินค้า ใส่ตะกร้า แล้วกรอกที่อยู่จัดส่ง ร้านจะได้รับออเดอร์ทันที</p>
+
+<div class="card">
+  <h2>1. เลือกสินค้า</h2>
+  <div class="ptabs" id="ptabs"></div>
+  <div id="pconf"></div>
+</div>
+
+<div class="card">
+  <h2>2. ตะกร้า</h2>
+  <div id="cart"></div>
+  <div class="sum" id="sum"></div>
+</div>
+
+<div class="card">
+  <h2>3. ข้อมูลผู้สั่งและการจัดส่ง</h2>
+  <div class="two">
+    <div><label class="lbl" for="cName">ชื่อผู้รับ</label><input type="text" id="cName" autocomplete="name"></div>
+    <div><label class="lbl" for="cPhone">เบอร์โทร / LINE ID</label><input type="tel" id="cPhone" autocomplete="tel"></div>
+  </div>
+  <label class="check"><input type="checkbox" id="selfDeliver"> นัดรับเอง ไม่ผ่านขนส่ง (ไม่มีค่าส่ง)</label>
+  <div id="shipBox">
+    <label class="lbl" for="cAddr">ที่อยู่จัดส่ง</label><textarea id="cAddr" autocomplete="street-address" placeholder="บ้านเลขที่ ถนน แขวง/ตำบล เขต/อำเภอ"></textarea>
+    <div class="two">
+      <div><label class="lbl" for="cProv">จังหวัด</label><select id="cProv"><option value="">เลือกจังหวัด</option></select></div>
+      <div><label class="lbl" for="cZip">รหัสไปรษณีย์</label><input type="text" id="cZip" inputmode="numeric" maxlength="5" autocomplete="postal-code"></div>
+    </div>
+  </div>
+  <div id="pickupBox" hidden><label class="lbl" for="cPickup">จุดนัดรับ / วันเวลาที่สะดวก</label><input type="text" id="cPickup"></div>
+  <label class="lbl" for="cNote">หมายเหตุ <small>ไม่บังคับ</small></label><textarea id="cNote" placeholder="เช่น ต้องการใช้ของภายในวันที่…"></textarea>
+  <div class="err" id="err" role="alert" hidden></div>
+</div>
+</section>
+
+<section id="doneView" hidden>
+  <div class="card done">
+    <h2>ได้รับออเดอร์แล้ว ขอบคุณค่ะ</h2>
+    <p class="sub" style="margin:0">เลขที่ออเดอร์</p>
+    <div class="ono" id="dNo">-</div>
+    <div class="chk" id="dChk" hidden>ระบบอ่านเลขที่ออเดอร์อัตโนมัติไม่ได้ แต่ออเดอร์น่าจะถูกส่งถึงร้านแล้ว <b>กรุณาอย่ากดสั่งซ้ำ</b> ส่งรูปสรุปออเดอร์ให้ร้านเพื่อเช็คเลขที่ออเดอร์</div>
+    <button class="btn primary full" id="saveImgBtn" type="button">บันทึกรูปสรุปออเดอร์</button>
+    <p style="margin:14px 0 0">ยอดที่ต้องโอน</p>
+    <div class="amt" id="dAmt">-</div>
+    <img src="promptpay_qr.jpg" alt="QR PromptPay ของร้าน Fixtory Studio">
+    <p class="hint">สแกนแล้วพิมพ์จำนวนเงินเองตอนโอน (QR ไม่ได้ผูกจำนวนเงิน)</p>
+    <div class="note" style="text-align:left">โอนแล้ว ส่งสลิปพร้อมเลขที่ออเดอร์ให้ร้านทาง TikTok / Facebook: fixtory.studio หรือโทร 081-336-8232 ร้านจะเริ่มผลิตหลังได้รับยอดโอน</div>
+    <button class="btn ghost full" id="againBtn" type="button">สั่งซื้อเพิ่ม</button>
+  </div>
+</section>
+</div>
+
+<div class="ov" id="ov" hidden>
+  <p>กดค้างที่รูป แล้วเลือก "บันทึกรูปภาพ"<small>ร้านได้รับรูปนี้ทางอีเมลแล้ว ใช้รูปนี้แนบตอนส่งสลิป</small></p>
+  <img id="ovImg" alt="รูปสรุปออเดอร์">
+  <div class="row"><button class="btn primary" id="ovShare" type="button" hidden>แชร์ / บันทึก</button><a class="btn primary" id="ovDl" download="fixtory-order.png" hidden>ดาวน์โหลดรูป</a><button class="btn ghost" id="ovClose" type="button">ปิด</button></div>
+</div>
+
+<div class="bar" id="bar"><div class="in">
+  <div class="t">ยอดรวม<b id="barTotal">฿0</b></div>
+  <button class="btn primary" id="submitBtn" type="button">ยืนยันคำสั่งซื้อ</button>
+</div></div>
+
+<script>
+const GAS_URL="https://script.google.com/macros/s/AKfycbwfy2uHH4QJOM851_HBz3eoUCbwBvnZo1fGzf8DNChs5hS03Ml-335eATS3XTbifVYo9Q/exec";
+const SHIP_FEE_FLAT=35;   // ค่าส่งเท่ากับฟอร์ม Alphabet Clicker
+const MAX_PIECES=10;      // มากกว่านี้ให้ติดต่อร้าน
+const THAI_PROVINCES=["กรุงเทพมหานคร","กระบี่","กาญจนบุรี","กาฬสินธุ์","กำแพงเพชร","ขอนแก่น","จันทบุรี","ฉะเชิงเทรา","ชลบุรี","ชัยนาท","ชัยภูมิ","ชุมพร","เชียงราย","เชียงใหม่","ตรัง","ตราด","ตาก","นครนายก","นครปฐม","นครพนม","นครราชสีมา","นครศรีธรรมราช","นครสวรรค์","นนทบุรี","นราธิวาส","น่าน","บึงกาฬ","บุรีรัมย์","ปทุมธานี","ประจวบคีรีขันธ์","ปราจีนบุรี","ปัตตานี","พระนครศรีอยุธยา","พะเยา","พังงา","พัทลุง","พิจิตร","พิษณุโลก","เพชรบุรี","เพชรบูรณ์","แพร่","ภูเก็ต","มหาสารคาม","มุกดาหาร","แม่ฮ่องสอน","ยโสธร","ยะลา","ร้อยเอ็ด","ระนอง","ระยอง","ราชบุรี","ลพบุรี","ลำปาง","ลำพูน","เลย","ศรีสะเกษ","สกลนคร","สงขลา","สตูล","สมุทรปราการ","สมุทรสงคราม","สมุทรสาคร","สระแก้ว","สระบุรี","สิงห์บุรี","สุโขทัย","สุพรรณบุรี","สุราษฎร์ธานี","สุรินทร์","หนองคาย","หนองบัวลำภู","อ่างทอง","อำนาจเจริญ","อุดรธานี","อุตรดิตถ์","อุทัยธานี","อุบลราชธานี"];
+
+// ข้อมูลสินค้า — ต้องตรงกับหน้าแคตตาล็อก ถ้าแก้ราคา/แบบที่แคตตาล็อก ให้แก้ที่นี่ด้วย
+const PRODUCTS={
+  phapchoo:{name:'น้องพับชู่',sub:'ที่วางทิชชูม้วน',img:'phapchoo.jpg',from:399,
+    colors:[['ม่วงลาเวนเดอร์','#CDB8F0'],['ชมพู','#F6C3D3'],['ฟ้า','#9EC3F0'],['เขียวมิ้นต์','#B8E3CF'],['เหลือง','#F7E3A1'],['ครีม','#EFE9E1']]},
+  sipbuddy:{name:'Sip Buddy',sub:'ที่ใส่กล่องนม',img:'sipbuddy.jpg',from:590,
+    options:[['สีเดียว',590,false],['หลายสี (Color Pop)',690,false],['หลายสี + สลักชื่อด้านหลัง',790,true]],
+    designs:['ไดโนเสาร์','จิ้งจอกยิ้ม','น้องหมา','น้องแมว','ก้อนเมฆ','น้องไก่','น้องหมี','แมวยิ้ม','เม่น','แพนด้า','บีเวอร์','จิ้งจอกคลาสสิก','นกฮูก']}
+};
+// ราคาน้องพับชู่ตามจำนวนรวม: 1 = 399, 2 = 699, 3 = 999 (ชุดละ 3 ชิ้นซ้ำได้)
+function phapPrice(n){const t=[0,399,699];return Math.floor(n/3)*999+t[n%3]}
+
+const $=s=>document.querySelector(s);
+const el=(t,a={},...k)=>{const e=document.createElement(t);for(const[x,v]of Object.entries(a)){if(v==null||v===false)continue;if(x==='class')e.className=v;else if(x.startsWith('on'))e.addEventListener(x.slice(2),v);else e.setAttribute(x,v===true?'':v)}for(const c of k.flat()){if(c==null||c===false)continue;e.append(c.nodeType?c:document.createTextNode(c))}return e};
+const fmt=n=>'฿'+Number(n).toLocaleString('th-TH');
+
+const params=new URLSearchParams(location.search);
+try{if(params.get('sale'))sessionStorage.setItem('fixtorySaleRef',params.get('sale'))}catch(e){}
+let saleRef='';try{saleRef=sessionStorage.getItem('fixtorySaleRef')||''}catch(e){}
+
+let current=PRODUCTS[params.get('p')]?params.get('p'):'sipbuddy';
+let phapQty={};            // สี -> จำนวน
+let sipCart=[];            // [{design, opt, name}]
+let sipSel={design:null,opt:0,name:''};
+
+function renderTabs(){
+  $('#ptabs').replaceChildren(...Object.entries(PRODUCTS).map(([id,p])=>el('button',{type:'button',class:'ptab','aria-pressed':String(id===current),onclick:()=>{current=id;renderTabs();renderConf()}},
+    el('img',{src:p.img,alt:''}),el('div',{},el('b',{},p.name),el('span',{},p.sub+' · เริ่ม '+fmt(p.from))))));
+}
+function totalPieces(){return Object.values(phapQty).reduce((a,b)=>a+b,0)+sipCart.length}
+
+function renderConf(){
+  const box=$('#pconf');box.replaceChildren();
+  if(current==='phapchoo'){
+    const p=PRODUCTS.phapchoo;
+    box.append(el('span',{class:'lbl'},'เลือกสีและจำนวน',el('small',{},'1 ชิ้น 399 · 2 ชิ้น 699 · 3 ชิ้น 999')),
+      el('div',{class:'colorrow'},p.colors.map(([n,h])=>{const q=phapQty[n]||0;return el('div',{class:'crow'},el('i',{style:'background:'+h}),el('span',{},n),
+        el('div',{class:'step'},el('button',{type:'button','aria-label':'ลด '+n,onclick:()=>{if(q>0){phapQty[n]=q-1;if(!phapQty[n])delete phapQty[n];renderConf();renderCart()}}},'−'),el('b',{},String(q)),
+          el('button',{type:'button','aria-label':'เพิ่ม '+n,onclick:()=>{if(totalPieces()>=MAX_PIECES){showErr('สั่งมากกว่า '+MAX_PIECES+' ชิ้น โปรดติดต่อร้านโดยตรง');return}phapQty[n]=q+1;renderConf();renderCart()}},'+')))})),
+      el('p',{class:'hint'},'ราคาคิดจากจำนวนรวมทุกสี เช่น 3 ชิ้นคละสี = 999 บาท'));
+  }else{
+    const p=PRODUCTS.sipbuddy;
+    const nameIn=el('input',{type:'text',id:'sipName',maxlength:'6',placeholder:'4–6 ตัวอักษร ไทยหรืออังกฤษ',value:sipSel.name});
+    nameIn.addEventListener('input',()=>sipSel.name=nameIn.value);
+    const needName=p.options[sipSel.opt][2];
+    box.append(
+      el('span',{class:'lbl'},'1) เลือกแบบ',el('small',{},'แตะหมายเลขแบบที่ต้องการ')),
+      el('div',{class:'chips'},p.designs.map((d,i)=>el('button',{type:'button',class:'chip','aria-pressed':String(sipSel.design===i),onclick:()=>{sipSel.design=i;renderConf()}},el('b',{},String(i+1).padStart(2,'0')),d))),
+      el('span',{class:'lbl'},'2) เลือกแบบสี'),
+      el('div',{class:'opts'},p.options.map(([n,pr],i)=>el('button',{type:'button',class:'opt','aria-pressed':String(sipSel.opt===i),onclick:()=>{sipSel.opt=i;renderConf()}},el('span',{},n),el('b',{},pr)))),
+      needName?el('div',{},el('label',{class:'lbl',for:'sipName'},'3) ชื่อที่จะสลักด้านหลัง'),nameIn):null,
+      el('div',{class:'note'},'ทุกใบพิมพ์ด้วยเส้นสีรุ้ง สีจะไล่เองระหว่างพิมพ์ แต่ละใบจึงไม่เหมือนกันและอาจต่างจากภาพตัวอย่าง · ใช้กับกล่องนมทรงสูง 150–250 มล. เท่านั้น'),
+      el('button',{type:'button',class:'btn primary full',onclick:addSip},'+ เพิ่มลงตะกร้า'));
+  }
+}
+function addSip(){
+  const p=PRODUCTS.sipbuddy;
+  if(sipSel.design==null){showErr('กรุณาเลือกแบบ Sip Buddy ก่อน');return}
+  const needName=p.options[sipSel.opt][2];const nm=(sipSel.name||'').trim();
+  if(needName&&(nm.length<1)){showErr('กรุณาใส่ชื่อที่จะสลัก');$('#sipName').focus();return}
+  if(totalPieces()>=MAX_PIECES){showErr('สั่งมากกว่า '+MAX_PIECES+' ชิ้น โปรดติดต่อร้านโดยตรง');return}
+  sipCart.push({design:sipSel.design,opt:sipSel.opt,name:needName?nm:''});
+  sipSel={design:null,opt:sipSel.opt,name:''};hideErr();renderConf();renderCart();
+  $('#cart').scrollIntoView({behavior:'smooth',block:'center'});
+}
+
+function lines(){ // แต่ละชิ้น = 1 แถวใน Sheet (ตามระบบเดิม)
+  const out=[];
+  const phapPieces=[];Object.entries(phapQty).forEach(([c,q])=>{for(let i=0;i<q;i++)phapPieces.push(c)});
+  if(phapPieces.length){
+    const total=phapPrice(phapPieces.length);const base=Math.floor(total/phapPieces.length);let rem=total-base*phapPieces.length;
+    phapPieces.forEach(c=>{const v=base+(rem>0?1:0);if(rem>0)rem--;out.push({productName:'น้องพับชู่',detail:'สี '+c+(phapPieces.length>1?' (ราคาชุด '+phapPieces.length+' ชิ้น '+total+' บาท)':''),price:v+' บาท',priceValue:v})});
+  }
+  sipCart.forEach(s=>{const p=PRODUCTS.sipbuddy;const [on,pr]=p.options[s.opt];
+    out.push({productName:'Sip Buddy',detail:'แบบ '+String(s.design+1).padStart(2,'0')+' '+p.designs[s.design]+' · '+on+(s.name?' · ชื่อ: '+s.name:''),price:pr+' บาท',priceValue:pr})});
+  return out;
+}
+function subtotal(){return lines().reduce((a,b)=>a+b.priceValue,0)}
+function shipFee(){return $('#selfDeliver').checked||!lines().length?0:SHIP_FEE_FLAT}
+
+function renderCart(){
+  const c=$('#cart');c.replaceChildren();
+  const phapN=Object.values(phapQty).reduce((a,b)=>a+b,0);
+  if(!phapN&&!sipCart.length){c.append(el('p',{class:'empty'},'ยังไม่มีสินค้าในตะกร้า'))}
+  if(phapN)c.append(el('div',{class:'cart-item'},el('div',{},el('b',{},'น้องพับชู่ × '+phapN),el('div',{class:'hint',style:'margin:0'},Object.entries(phapQty).map(([k,v])=>k+' '+v).join(', '))),
+    el('div',{style:'white-space:nowrap'},fmt(phapPrice(phapN)),el('button',{type:'button',class:'x',onclick:()=>{phapQty={};renderConf();renderCart()}},'ลบ'))));
+  sipCart.forEach((s,i)=>{const p=PRODUCTS.sipbuddy;c.append(el('div',{class:'cart-item'},el('div',{},el('b',{},'Sip Buddy · '+String(s.design+1).padStart(2,'0')+' '+p.designs[s.design]),el('div',{class:'hint',style:'margin:0'},p.options[s.opt][0]+(s.name?' · ชื่อ "'+s.name+'"':''))),
+    el('div',{style:'white-space:nowrap'},fmt(p.options[s.opt][1]),el('button',{type:'button',class:'x',onclick:()=>{sipCart.splice(i,1);renderCart()}},'ลบ'))))});
+  const st=subtotal(),sf=shipFee();
+  $('#sum').replaceChildren(...(st?[el('div',{},el('span',{},'ค่าสินค้า'),el('span',{},fmt(st))),el('div',{},el('span',{},'ค่าจัดส่ง'),el('span',{},sf?fmt(sf):'ไม่มี')),el('div',{class:'grand'},el('span',{},'ยอดรวม'),el('span',{},fmt(st+sf)))]:[]));
+  $('#barTotal').textContent=fmt(st+sf);
+}
+
+function showErr(m){const e=$('#err');e.textContent=m;e.hidden=false;
+  // แสดงข้อความใกล้ปุ่มด้วย ถ้า error ไม่ได้อยู่ในจอ
+  const r=e.getBoundingClientRect();if(r.top<0||r.bottom>innerHeight)e.scrollIntoView({behavior:'smooth',block:'center'})}
+function hideErr(){$('#err').hidden=true}
+
+THAI_PROVINCES.forEach(p=>$('#cProv').append(el('option',{value:p},p)));
+$('#selfDeliver').addEventListener('change',()=>{const s=$('#selfDeliver').checked;$('#shipBox').hidden=s;$('#pickupBox').hidden=!s;renderCart()});
+try{const d=JSON.parse(localStorage.getItem('fxCustomer')||'{}');['cName','cPhone','cAddr','cProv','cZip'].forEach(k=>{if(d[k])$('#'+k).value=d[k]})}catch(e){}
+
+$('#submitBtn').addEventListener('click',async()=>{
+  hideErr();
+  const items=lines();
+  if(!items.length){showErr('กรุณาเลือกสินค้าใส่ตะกร้าก่อน');return}
+  const name=$('#cName').value.trim(),phone=$('#cPhone').value.trim(),self=$('#selfDeliver').checked;
+  const addr=self?$('#cPickup').value.trim():$('#cAddr').value.trim(),prov=$('#cProv').value,zip=$('#cZip').value.trim();
+  if(!name){showErr('กรุณากรอกชื่อผู้รับ');$('#cName').focus();return}
+  if(!phone){showErr('กรุณากรอกเบอร์โทรหรือ LINE ID');$('#cPhone').focus();return}
+  if(!addr){showErr(self?'กรุณากรอกจุดนัดรับ':'กรุณากรอกที่อยู่จัดส่ง');return}
+  if(!self&&(!prov||!/^\d{5}$/.test(zip))){showErr('กรุณาเลือกจังหวัดและกรอกรหัสไปรษณีย์ 5 หลัก');return}
+  const st=subtotal(),sf=shipFee(),gt=st+sf;
+  const payload={customerName:name,customerPhone:phone,customerNote:$('#cNote').value.trim(),
+    shippingAddress:addr,shippingProvince:self?'':prov,shippingPostcode:self?'':zip,selfDeliver:self,
+    items:items,price:st+' บาท',shippingFeeValue:sf,shippingFeeText:sf?sf+' บาท':'ไม่มี (นัดรับ)',grandTotalValue:gt,grandTotalText:gt+' บาท',
+    saleRef:saleRef,source:'catalog'};
+  const btn=$('#submitBtn');btn.disabled=true;btn.textContent='กำลังส่ง…';
+  const order={no:undefined,date:new Date(),name,phone,addr,prov,zip,self,items,st,sf,gt};
+  try{const c=await drawSummary(order);payload.orderImageBase64=c.toDataURL('image/png').split(',')[1]}catch(e){}
+  let res=null,data=null;
+  try{res=await fetch(GAS_URL,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify(payload)})}
+  catch(e){ // Apps Script มักบล็อกการอ่านผลลัพธ์ (CORS) ทั้งที่บันทึกออเดอร์แล้ว จึงไม่ให้ส่งซ้ำ เหมือนฟอร์ม keycap
+    finish(order,null);btn.disabled=false;btn.textContent='ยืนยันคำสั่งซื้อ';return}
+  try{data=await res.json()}catch(e){finish(order,null);btn.disabled=false;btn.textContent='ยืนยันคำสั่งซื้อ';return}
+  btn.disabled=false;btn.textContent='ยืนยันคำสั่งซื้อ';
+  if(!data||data.result!=='success'){showErr('ส่งออเดอร์ไม่สำเร็จ: '+((data&&data.message)||'ลองใหม่อีกครั้ง')+' หรือทักร้านทาง TikTok / Facebook');return}
+  finish(order,data.orderNumber||null);
+});
+let lastOrder=null;
+function finish(order,no){
+  order.no=no;lastOrder=order;
+  try{localStorage.setItem('fxCustomer',JSON.stringify({cName:order.name,cPhone:order.phone,cAddr:order.self?'':order.addr,cProv:order.prov,cZip:order.zip}))}catch(e){}
+  $('#dNo').textContent=no||'รอร้านยืนยัน';$('#dChk').hidden=!!no;$('#dAmt').textContent=fmt(order.gt);
+  $('#formView').hidden=true;$('#bar').hidden=true;$('#doneView').hidden=false;scrollTo({top:0});
+}
+
+// ---------- รูปสรุปออเดอร์ (แบบเดียวกับฟอร์ม keycap) ----------
+async function drawSummary(o){
+  try{await document.fonts.ready}catch(e){}
+  const W=1080,P=72,F='"Prompt",sans-serif',D='"DM Serif Display","Chonburi",serif';
+  const meas=document.createElement('canvas').getContext('2d');
+  const wrap=(t,font,w)=>{meas.font=font;const out=[];let line='';for(const ch of Array.from(t)){const test=line+ch;if(meas.measureText(test).width>w&&line){out.push(line);line=ch}else line=test}if(line)out.push(line);return out};
+  const ph=o.items.filter(it=>it.productName==='น้องพับชู่'),other=o.items.filter(it=>it.productName!=='น้องพับชู่');
+  const cnt={};ph.forEach(it=>{const c=it.detail.replace(/^สี /,'').replace(/ \(.*$/,'');cnt[c]=(cnt[c]||0)+1});
+  const rows=(ph.length?[{title:'น้องพับชู่ × '+ph.length,lines:wrap('สี '+Object.entries(cnt).map(([k,v])=>k+' '+v).join(', '),'28px '+F,W-2*P-200),price:ph.reduce((a,b)=>a+b.priceValue,0)}]:[])
+    .concat(other.map(it=>({title:it.productName,lines:wrap(it.detail,'28px '+F,W-2*P-200),price:it.priceValue})));
+  const addr=o.self?'นัดรับ: '+o.addr:o.addr+(o.prov?' จ.'+o.prov:'')+(o.zip?' '+o.zip:'');
+  const addrL=wrap(addr,'28px '+F,W-2*P);
+  let H=420+addrL.length*40+rows.reduce((a,r)=>a+62+r.lines.length*38,0)+400;
+  const c=document.createElement('canvas');c.width=W;c.height=H;const g=c.getContext('2d');
+  g.fillStyle='#FAF8F4';g.fillRect(0,0,W,H);
+  g.fillStyle='#2C2420';g.fillRect(0,0,W,170);
+  g.font='44px '+D;g.fillStyle='#FAF8F4';g.textBaseline='middle';const wm1='FIXTORY';g.fillText(wm1,P,86);const w1=g.measureText(wm1).width;g.fillStyle='#E08A60';g.fillText('.STUDIO',P+w1,86);
+  g.font='24px '+F;g.fillStyle='#BFAE9F';g.textAlign='right';g.fillText('สรุปออเดอร์',W-P,72);g.fillText(o.date.toLocaleString('th-TH',{dateStyle:'medium',timeStyle:'short'}),W-P,106);g.textAlign='left';
+  let y=240;g.textBaseline='alphabetic';
+  g.font='26px '+F;g.fillStyle='#76665C';g.fillText('เลขที่ออเดอร์',P,y);
+  g.font='56px '+D;g.fillStyle='#C4714A';g.fillText(o.no===undefined?'–':(o.no||'รอร้านยืนยัน'),P,y+62);y+=120;
+  g.font='600 30px '+F;g.fillStyle='#2C2420';g.fillText(o.name+'  ·  '+o.phone,P,y);y+=44;
+  g.font='28px '+F;g.fillStyle='#76665C';addrL.forEach(l=>{g.fillText(l,P,y);y+=40});y+=16;
+  g.strokeStyle='#EDE2D6';g.lineWidth=3;g.beginPath();g.moveTo(P,y);g.lineTo(W-P,y);g.stroke();y+=56;
+  rows.forEach(r=>{g.font='600 30px '+F;g.fillStyle='#2C2420';g.fillText(r.title,P,y);g.textAlign='right';g.fillText(fmt(r.price),W-P,y);g.textAlign='left';y+=40;
+    g.font='28px '+F;g.fillStyle='#76665C';r.lines.forEach(l=>{g.fillText(l,P,y);y+=38});y+=22});
+  g.beginPath();g.moveTo(P,y-10);g.lineTo(W-P,y-10);g.stroke();y+=40;
+  const kv=(k,v,big)=>{g.font=(big?'600 36px ':'28px ')+F;g.fillStyle=big?'#2C2420':'#76665C';g.fillText(k,P,y);g.textAlign='right';g.fillStyle=big?'#A9572F':'#2C2420';g.fillText(v,W-P,y);g.textAlign='left';y+=big?60:44};
+  kv('ค่าสินค้า',fmt(o.st));kv('ค่าจัดส่ง',o.sf?fmt(o.sf):'ไม่มี (นัดรับ)');kv('ยอดที่ต้องโอน',fmt(o.gt),true);y+=20;
+  g.fillStyle='#F5E8DC';g.fillRect(P,y,W-2*P,96);g.font='24px '+F;g.fillStyle='#2C2420';
+  g.fillText('โอนแล้ว ส่งสลิป + รูปนี้ ทาง TikTok / Facebook: fixtory.studio',P+24,y+40);g.fillText('หรือโทร 081-336-8232',P+24,y+76);
+  return c;
+}
+async function openSaveOverlay(){
+  if(!lastOrder)return;const b=$('#saveImgBtn');b.disabled=true;b.textContent='กำลังสร้างรูป…';
+  const c=await drawSummary(lastOrder);b.disabled=false;b.textContent='บันทึกรูปสรุปออเดอร์';
+  c.toBlob(blob=>{ // ใช้ blob: URL เพราะเบราว์เซอร์ในแอป LINE บางรุ่นไม่ให้บันทึกรูปจาก data: URI
+    const url=URL.createObjectURL(blob);$('#ovImg').src=url;$('#ovDl').href=url;
+    const mobile=matchMedia('(pointer:coarse)').matches;$('#ovDl').hidden=mobile;
+    const sh=$('#ovShare');const file=new File([blob],'fixtory-order.png',{type:'image/png'});
+    sh.hidden=!(navigator.share&&navigator.canShare&&navigator.canShare({files:[file]}));
+    sh.onclick=async()=>{try{await navigator.share({files:[file],title:'สรุปออเดอร์ Fixtory Studio'})}catch(e){}};
+    $('#ov').hidden=false;
+  },'image/png');
+}
+$('#saveImgBtn').addEventListener('click',openSaveOverlay);
+$('#ovClose').addEventListener('click',()=>$('#ov').hidden=true);
+if(/Line\/|FBAN|FBAV|Instagram|musical_ly|BytedanceWebview|TikTok/i.test(navigator.userAgent))$('#inapp').hidden=false;
+$('#againBtn').addEventListener('click',()=>{phapQty={};sipCart=[];sipSel={design:null,opt:0,name:''};$('#doneView').hidden=true;$('#formView').hidden=false;$('#bar').hidden=false;renderConf();renderCart();scrollTo({top:0})});
+
+renderTabs();renderConf();renderCart();
+</script>
+</body>
+</html>
