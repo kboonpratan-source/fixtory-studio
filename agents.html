@@ -36,6 +36,8 @@ td button{padding:4px 10px;font-size:12.5px}
 .st{display:inline-block;border-radius:99px;padding:0 7px;font-size:11.5px;font-weight:600;margin-left:4px}.st.on{background:#e3f3e8;color:#23683d}.st.off{background:#fbe4e2;color:#b3261e}
 @media (prefers-color-scheme:dark){.st.on{background:#1f3527;color:#8fd3a5}.st.off{background:#3d2020;color:#ff8a80}}
 button.warn{background:var(--bad);color:#fff;border-color:var(--bad)}.ok.bad{color:var(--bad)}
+#agMsg:empty{display:none}
+.offbox{margin-top:14px;border-top:1px solid var(--line);padding-top:10px}.offbox summary{cursor:pointer;font-size:13.5px;font-weight:600;color:var(--muted);padding:4px 0}
 .alert{background:#fbe4e2;color:#b3261e;border-radius:12px;padding:10px 12px;font-size:13.5px;margin-top:12px}
 @media (prefers-color-scheme:dark){.alert{background:#3d2020;color:#ff8a80}}
 [hidden]{display:none!important}
@@ -105,14 +107,20 @@ async function loadAgents(){
   renderAgents();render();
 }
 let ASK=null;
+let SHOWOFF=false;
 function renderAgents(){
-  const E=Object.values(AG).sort((a,b)=>(a.status==='เลิกแล้ว')-(b.status==='เลิกแล้ว')||b.sum-a.sum);
-  $('#agents').innerHTML=E.length?'<table><thead><tr><th>ตัวแทน</th><th class="num">ออเดอร์</th><th class="num">ยอดขาย</th><th></th></tr></thead><tbody>'+E.map(a=>{const off=a.status==='เลิกแล้ว',k=esc(a.name);
-    return `<tr${off?' style="opacity:.6"':''}><td>${k} <span class="st ${off?'off':'on'}">${off?'เลิกแล้ว':'ใช้งาน'}</span></td><td class="num">${a.o.size}</td><td class="num">${baht(a.sum)}</td><td style="text-align:right;white-space:nowrap">`+
-      (ASK===a.name.toLowerCase()?`<button type="button" class="${off?'pri':'warn'}" data-do="${k}" data-st="${off?'ใช้งาน':'เลิกแล้ว'}">${off?'ยืนยันเปิด':'ยืนยันปิด'}</button> <button type="button" data-no>ไม่</button>`
-        :`${off?'':`<button type="button" data-n="${k}">ดูลิงก์</button> `}<button type="button" data-ask="${k}">${off?'เปิดใช้':'ปิดใช้'}</button>`)+`</td></tr>`}).join('')+'</tbody></table>'+
-    (ASK&&AG[ASK]&&AG[ASK].status!=='เลิกแล้ว'?`<p class="hint" style="margin-top:10px">ปิดใช้แล้ว: ลูกค้าที่สั่งผ่านลิงก์ของ ${esc(AG[ASK].name)} ยังสั่งได้ แต่จะนับเป็นสั่งตรง (ไม่เข้าค่าคอม) และ ${esc(AG[ASK].name)} จะแก้สถานะออเดอร์ไม่ได้ ยอดเก่ายังอยู่ครบ</p>`:'')
-    :'<p class="empty">ยังไม่มีตัวแทน</p>';
+  const all=Object.values(AG).sort((a,b)=>b.sum-a.sum||a.name.localeCompare(b.name));
+  const on=all.filter(a=>a.status!=='เลิกแล้ว'),off=all.filter(a=>a.status==='เลิกแล้ว');
+  const row=a=>{const isOff=a.status==='เลิกแล้ว',k=esc(a.name);
+    return `<tr${isOff?' style="opacity:.75"':''}><td>${k} <span class="st ${isOff?'off':'on'}">${isOff?'เลิกแล้ว':'ใช้งาน'}</span></td><td class="num">${a.o.size}</td><td class="num">${baht(a.sum)}</td><td style="text-align:right;white-space:nowrap">`+
+      (ASK===a.name.toLowerCase()?`<button type="button" class="${isOff?'pri':'warn'}" data-do="${k}" data-st="${isOff?'ใช้งาน':'เลิกแล้ว'}">${isOff?'ยืนยันเปิด':'ยืนยันปิด'}</button> <button type="button" data-no>ไม่</button>`
+        :`${isOff?'':`<button type="button" data-n="${k}">ดูลิงก์</button> `}<button type="button" data-ask="${k}">${isOff?'เปิดใช้':'ปิดใช้'}</button>`)+`</td></tr>`};
+  const table=list=>'<table><thead><tr><th>ตัวแทน</th><th class="num">ออเดอร์</th><th class="num">ยอดขาย</th><th></th></tr></thead><tbody>'+list.map(row).join('')+'</tbody></table>';
+  if(ASK&&off.some(a=>a.name.toLowerCase()===ASK))SHOWOFF=true;
+  $('#agents').innerHTML=(on.length?table(on):'<p class="empty">ยังไม่มีตัวแทนที่ใช้งานอยู่</p>')+
+    (ASK&&AG[ASK]&&AG[ASK].status!=='เลิกแล้ว'?`<p class="hint" style="margin-top:10px">ปิดใช้แล้ว: ลูกค้าที่สั่งผ่านลิงก์ของ ${esc(AG[ASK].name)} ยังสั่งได้ แต่จะนับเป็นสั่งตรง (ไม่เข้าค่าคอม) และ ${esc(AG[ASK].name)} จะแก้สถานะออเดอร์ไม่ได้ ยอดเก่ายังอยู่ครบ</p>`:'')+
+    (off.length?`<details class="offbox"${SHOWOFF?' open':''}><summary>ตัวแทนที่เลิกแล้ว (${off.length})</summary>${table(off)}<p class="hint">ชื่อยังเก็บไว้เพื่อประวัติยอดขายและค่าคอม ลิงก์ของคนเหล่านี้ไม่นับยอดแล้ว</p></details>`:'');
+  const d=$('#agents details.offbox');if(d)d.addEventListener('toggle',()=>{SHOWOFF=d.open});
   $('#agents').querySelectorAll('button[data-n]').forEach(b=>b.onclick=()=>{$('#nm').value=b.dataset.n;render();scrollTo({top:0,behavior:'smooth'})});
   $('#agents').querySelectorAll('button[data-ask]').forEach(b=>b.onclick=()=>{ASK=b.dataset.ask.toLowerCase();renderAgents()});
   $('#agents').querySelectorAll('button[data-no]').forEach(b=>b.onclick=()=>{ASK=null;renderAgents()});
