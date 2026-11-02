@@ -18,6 +18,7 @@
     edit: '<path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/>',
     grid: '<rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>',
     cart: '<path d="M3 4h2l2.4 11.2a2 2 0 0 0 2 1.6h7.7a2 2 0 0 0 2-1.5L21 8H6"/><circle cx="10" cy="20.5" r="1"/><circle cx="17" cy="20.5" r="1"/>',
+    bell: '<path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>',
     link: '<path d="M10 14a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"/><path d="M14 10a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"/>'
   };
   function ic(k) { return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + P[k] + '</svg>'; }
@@ -58,7 +59,12 @@
     '.fxsheet a:active,.fxsheet a:hover{background:var(--sunk,color-mix(in srgb,var(--ink,#2C2420) 6%,transparent))}' +
     '.fxsheet a i{width:38px;height:38px;border-radius:11px;background:var(--accent-soft,color-mix(in srgb,var(--accent,#C4704B) 18%,transparent));color:var(--accent,#C4704B);display:grid;place-items:center;flex:none}' +
     '.fxsheet a i svg{width:20px;height:20px}' +
-    '.fxsheet a span{flex:1}.fxsheet a small{font-size:12px;color:var(--faint,#A89D94);font-weight:400}';
+    '.fxsheet a span{flex:1}.fxsheet a small{font-size:12px;color:var(--faint,#A89D94);font-weight:400}' +
+    '.fxpushbn{display:flex;align-items:center;gap:12px;background:var(--surface,#fff);border:1.5px solid var(--accent,#C4704B);border-radius:16px;padding:12px 12px 12px 14px;margin:0 0 14px}' +
+    '.fxpushbn>span{width:38px;height:38px;border-radius:11px;background:var(--accent,#C4704B);color:var(--on-accent,#fff);display:grid;place-items:center;flex:none}.fxpushbn>span svg{width:20px;height:20px}' +
+    '.fxpushbn div{flex:1;min-width:0}.fxpushbn b{display:block;font-size:14.5px}.fxpushbn small{display:block;font-size:12.5px;color:var(--muted,#7A6E66)}' +
+    '.fxpushbn button{font:inherit;font-weight:700;border:0;border-radius:99px;padding:8px 16px;background:var(--accent,#C4704B);color:var(--on-accent,#fff);cursor:pointer;flex:none}' +
+    '.fxpushbn button.x{background:none;color:var(--faint,#A89D94);padding:4px 6px;font-size:20px;line-height:1}';
   document.head.appendChild(css);
 
   var bar = document.createElement('nav');
@@ -101,6 +107,73 @@
   else { var top = document.querySelector('.top'); if (top) top.appendChild(tb); else { tb.classList.add('fixed'); document.body.appendChild(tb); } }
   paintThm();
   try { matchMedia('(prefers-color-scheme: dark)').addEventListener('change', paintThm); } catch (e) {}
+
+  // ---------- แจ้งเตือนออเดอร์ใหม่ (Web Push) ----------
+  var VAPID_PUBLIC = 'BHc_nltCn0Hv7zJiKHxbijLJNagh71a5yQaVi4uaaKC9LDhMr1jsxBuzxiK6OYWYczOx_E3FdufHXGLUwn66UD0';
+  var pushOK = 'serviceWorker' in navigator && 'PushManager' in window && 'Notification' in window;
+  var swReg = pushOK ? navigator.serviceWorker.register('/sw.js').catch(function () { return null; }) : Promise.resolve(null);
+  function u8(b64) { b64 = b64.replace(/-/g, '+').replace(/_/g, '/'); while (b64.length % 4) b64 += '='; var r = atob(b64), a = new Uint8Array(r.length); for (var i = 0; i < r.length; i++) a[i] = r.charCodeAt(i); return a; }
+  function postGas(body) { return fetch(GAS_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify(body) }).then(function (r) { return r.json(); }); }
+  function pushState() {
+    if (!pushOK) return Promise.resolve('unsupported');
+    if (Notification.permission === 'denied') return Promise.resolve('blocked');
+    return swReg.then(function (reg) { return reg ? reg.pushManager.getSubscription() : null; }).then(function (s) { return s ? 'on' : 'off'; });
+  }
+  function devName() { var u = navigator.userAgent; return (/iPhone|iPad/.test(u) ? 'iPhone' : /Android/.test(u) ? 'Android' : /Mac/.test(u) ? 'Mac' : /Windows/.test(u) ? 'Windows' : 'อุปกรณ์') + (standaloneNow ? ' (แอป)' : ' (เบราว์เซอร์)'); }
+  function pushOn() {
+    if (!key) return Promise.reject(new Error('เข้าสู่ระบบด้วยรหัสร้านก่อน'));
+    return Notification.requestPermission().then(function (p) {
+      if (p !== 'granted') throw new Error('ไม่ได้อนุญาตการแจ้งเตือน');
+      return swReg.then(function (reg) { if (!reg) throw new Error('เปิดบริการแจ้งเตือนไม่ได้'); return navigator.serviceWorker.ready; });
+    }).then(function (reg) {
+      return reg.pushManager.getSubscription().then(function (s) { return s || reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: u8(VAPID_PUBLIC) }); });
+    }).then(function (sub) {
+      return postGas({ action: 'pushSub', key: key, sub: sub.toJSON(), device: devName() });
+    }).then(function (r) { if (!r || r.result !== 'success') throw new Error((r && r.message) || 'บันทึกไม่สำเร็จ'); return r; });
+  }
+  function pushOff() {
+    return swReg.then(function (reg) { return reg && reg.pushManager.getSubscription(); }).then(function (s) {
+      if (!s) return;
+      var ep = s.endpoint;
+      return s.unsubscribe().then(function () { return postGas({ action: 'pushUnsub', key: key, endpoint: ep }).catch(function () {}); });
+    });
+  }
+  // แถวในเมนู "เพิ่มเติม"
+  var pr = document.createElement('a'); pr.href = '#push'; pr.id = 'fxPushRow';
+  pr.innerHTML = '<i>' + ic('bell') + '</i><span>แจ้งเตือนออเดอร์ใหม่</span><small id="fxPushSt"></small>';
+  sheet.querySelector('.pn h3').insertAdjacentElement('beforebegin', pr);
+  function paintPush() {
+    return pushState().then(function (st) {
+      var t = { on: 'เปิดอยู่ ✓', off: 'ปิดอยู่ — แตะเพื่อเปิด', blocked: 'ถูกบล็อกในการตั้งค่า', unsupported: standaloneNow ? 'เครื่องนี้ไม่รองรับ' : 'ติดตั้งแอปก่อน' }[st];
+      document.getElementById('fxPushSt').textContent = t;
+      var bn = document.getElementById('fxPushBanner'); if (bn) bn.hidden = st !== 'off';
+      return st;
+    });
+  }
+  pr.addEventListener('click', function (e) {
+    e.preventDefault(); var stEl = document.getElementById('fxPushSt');
+    pushState().then(function (st) {
+      if (st === 'on') { stEl.textContent = 'กำลังปิด…'; return pushOff().then(paintPush); }
+      if (st === 'off') { stEl.textContent = 'กำลังเปิด…'; return pushOn().then(paintPush); }
+      if (st === 'blocked') alertMsg('การแจ้งเตือนถูกบล็อกไว้ เปิดได้ที่ การตั้งค่าเครื่อง → แอป → Fixtory Admin → การแจ้งเตือน');
+      if (st === 'unsupported') alertMsg(/iPhone|iPad/.test(navigator.userAgent) ? 'บน iPhone ต้องเพิ่มแอปไปยังหน้าจอโฮมก่อน แล้วเปิดจากไอคอน' : 'เบราว์เซอร์นี้ไม่รองรับการแจ้งเตือน');
+    }).catch(function (err) { stEl.textContent = err.message; });
+  });
+  function alertMsg(t) { var s = document.getElementById('fxPushSt'); if (s) s.textContent = t; }
+  // แบนเนอร์ชวนเปิดในหน้าแรก (เฉพาะเครื่องที่ยังไม่เปิด)
+  if ((page === 'admin' || page === '') && pushOK) {
+    var bn = document.createElement('div'); bn.id = 'fxPushBanner'; bn.hidden = true;
+    bn.className = 'fxpushbn';
+    bn.innerHTML = '<span>' + ic('bell') + '</span><div><b>รับแจ้งเตือนเมื่อมีออเดอร์ใหม่</b><small>เด้งเข้ามือถือทันทีที่ลูกค้าสั่งหรือแนบสลิป</small></div><button type="button">เปิด</button><button type="button" class="x" aria-label="ปิด">×</button>';
+    var host = document.querySelector('.hello') || document.querySelector('main') || document.body.firstChild;
+    host.parentNode.insertBefore(bn, host.nextSibling);
+    var dismissed = false; try { dismissed = localStorage.getItem('fxPushDismiss') === '1'; } catch (e) {}
+    var bOn = bn.querySelectorAll('button')[0], bX = bn.querySelectorAll('button')[1];
+    bOn.onclick = function () { bOn.textContent = 'กำลังเปิด…'; pushOn().then(paintPush).catch(function (err) { bOn.textContent = 'เปิด'; bn.querySelector('small').textContent = err.message; }); };
+    bX.onclick = function () { bn.hidden = true; try { localStorage.setItem('fxPushDismiss', '1'); } catch (e) {} };
+    if (dismissed) bn.remove();
+  }
+  paintPush();
   // ---------- ปุ่มย้อนกลับ (back) แบบแอป ----------
   var standalone = false; try { standalone = matchMedia('(display-mode: standalone)').matches || navigator.standalone === true; } catch (e) {}
   var isHome = page === 'admin' || page === '';
