@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<title>หลังร้าน · Fixtory Studio</title>
+<link rel="manifest" href="admin.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-180.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="หลังร้าน">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#F6F1EB" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#1d1916" media="(prefers-color-scheme: dark)">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700;800&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F6F1EB;--surface:#fff;--sunk:#F3ECE4;--ink:#2C2420;--muted:#7A6E66;--line:#E6DDD3;--accent:#C4704B;--on-accent:#fff;--bad:#b3261e;
+  --ok:#23683d;--ok-bg:#e3f3e8;--warn:#8a5a12;--warn-bg:#fdf0dc;--info:#1c5cab;--info-bg:#e3eefb}
+@media (prefers-color-scheme:dark){:root{--bg:#1d1916;--surface:#2a2420;--sunk:#231e1b;--ink:#f3ebe3;--muted:#b5a89c;--line:#433932;--accent:#e08a62;--on-accent:#1d1916;--bad:#ff8a80;
+  --ok:#8fd3a5;--ok-bg:#1f3527;--warn:#f0c27a;--warn-bg:#3a2d17;--info:#86b6ef;--info-bg:#1b2a3d}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Sarabun,system-ui,sans-serif;font-size:15px;-webkit-text-size-adjust:100%}
+.wrap{max-width:720px;margin:0 auto;padding:calc(16px + env(safe-area-inset-top)) 16px calc(32px + env(safe-area-inset-bottom))}
+.hd{display:flex;align-items:center;gap:12px;margin:4px 0 16px}
+.hd svg{width:30px;height:44px;flex:none}
+.wm{font-family:"DM Serif Display",serif;font-size:21px;letter-spacing:.06em;line-height:1}.wm em{font-style:normal;color:var(--accent)}
+.hd .t{font-size:13px;color:var(--muted);margin-top:4px}
+.card{background:var(--surface);border-radius:16px;padding:14px 16px;border:1px solid var(--line);margin-bottom:12px}
+input[type=password]{width:100%;font:inherit;padding:11px 12px;border-radius:10px;border:1.5px solid var(--line);background:var(--bg);color:var(--ink)}
+button{font:inherit;font-weight:600;border:0;border-radius:999px;padding:10px 18px;cursor:pointer;background:var(--bg);color:var(--ink);box-shadow:inset 0 0 0 1.5px var(--line)}
+button.pri{background:var(--accent);color:var(--on-accent);box-shadow:none}
+.row{display:flex;gap:8px;align-items:center}.grow{flex:1}
+.msg{font-size:14px;margin-top:8px;color:var(--bad)}
+.stat{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:12px}
+.stat a{border-radius:14px;padding:12px;text-decoration:none;display:block}
+.stat b{display:block;font-size:26px;line-height:1.15;font-variant-numeric:tabular-nums}.stat span{font-size:12.5px}
+.s-wait{background:var(--warn-bg);color:var(--warn)}.s-make{background:var(--info-bg);color:var(--info)}.s-new{background:var(--ok-bg);color:var(--ok)}
+h2{font-size:13px;color:var(--muted);font-weight:600;margin:18px 4px 8px;letter-spacing:.02em}
+.tools{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.tool{display:flex;gap:12px;align-items:flex-start;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:14px;text-decoration:none;color:var(--ink);min-width:0}
+.tool:active{transform:scale(.99)}
+.tool .ic{width:40px;height:40px;border-radius:12px;background:var(--sunk);display:grid;place-items:center;flex:none;color:var(--accent)}
+.tool .ic svg{width:22px;height:22px}
+.tool b{display:block;font-size:15px}.tool span{display:block;font-size:12.5px;color:var(--muted);margin-top:2px;line-height:1.4}
+.tool.off{opacity:.5;pointer-events:none}
+details{margin-top:6px}summary{cursor:pointer;color:var(--muted);font-size:13.5px;padding:6px 4px}
+.help{font-size:13.5px;line-height:1.7;color:var(--muted);padding:4px 4px 0}.help b{color:var(--ink)}
+.foot{display:flex;justify-content:space-between;align-items:center;margin-top:18px;font-size:12.5px;color:var(--muted)}
+.foot button{font-size:12.5px;padding:6px 12px}
+[hidden]{display:none!important}
+@media (max-width:420px){.tools{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hd">
+    <svg viewBox="0 0 40 58" aria-hidden="true"><rect x="15.5" y="0" width="9" height="4.5" rx="1.6" fill="#C4714A"/><rect x="18" y="4" width="4" height="3.5" fill="#A85E3B"/><path d="M20 7.5L36 16.5L20 25.5L4 16.5Z" fill="#C97A53"/><path d="M4 16.5L20 25.5V28.5L4 19.5Z" fill="#A85E3B"/><path d="M36 16.5L20 25.5V28.5L36 19.5Z" fill="#B66A43"/><path d="M4 24L20 33L36 24V28.2L20 37.2L4 28.2Z" fill="#B4663F"/><path d="M4 29.2L20 38.2L36 29.2V33.4L20 42.4L4 33.4Z" fill="#9A5737"/><path d="M4 34.4L20 43.4L36 34.4V38.6L20 47.6L4 38.6Z" fill="#7C4830"/><path d="M4 39.6L20 48.6L36 39.6V43.8L20 52.8L4 43.8Z" fill="#5E3A2A"/><path d="M4 44.8L20 53.8L36 44.8V49L20 58L4 49Z" fill="#432D24"/></svg>
+    <div><div class="wm">FIXTORY<em>.STUDIO</em></div><div class="t">หลังร้าน</div></div>
+  </div>
+
+  <section id="login" class="card" hidden>
+    <label for="key" style="font-weight:600">รหัสร้าน</label>
+    <p class="help" style="padding:2px 0 8px">ใส่ครั้งเดียว เครื่องนี้จะจำไว้ ใช้ได้กับทุกหน้าหลังร้าน</p>
+    <div class="row"><input id="key" type="password" autocomplete="current-password" class="grow"><button class="pri" id="go">เข้า</button></div>
+    <div class="msg" id="loginMsg"></div>
+  </section>
+
+  <main id="main" hidden>
+    <div class="stat" id="stat">
+      <a class="s-wait" href="insights.html"><span>รอโอน</span><b id="nWait">–</b><span id="aWait">&nbsp;</span></a>
+      <a class="s-make" href="labels.html"><span>จ่ายแล้ว รอส่ง</span><b id="nMake">–</b><span>พิมพ์ใบปะหน้า →</span></a>
+      <a class="s-new" href="insights.html"><span>ออเดอร์วันนี้</span><b id="nToday">–</b><span id="aToday">&nbsp;</span></a>
+    </div>
+
+    <h2>ทุกวัน</h2>
+    <div class="tools">
+      <a class="tool" href="insights.html"><i class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></i><div><b>ยอดขาย</b><span>ภาพรวม · แยกรายสินค้า · เซลล์</span></div></a>
+      <a class="tool" href="labels.html"><i class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V3h12v6"/><rect x="3" y="9" width="18" height="8" rx="2"/><path d="M6 14h12v7H6z"/></svg></i><div><b>พิมพ์ใบปะหน้า</b><span>เลือกออเดอร์ · แชร์เข้าแอปเครื่องพิมพ์</span></div></a>
+      <a class="tool" id="sheetLink" href="#" target="_blank" rel="noopener"><i class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M4 9h16M4 15h16M10 3v18"/></svg></i><div><b>ชีตออเดอร์</b><span id="sheetSub">Google Sheet "Fixtory Orders"</span></div></a>
+      <a class="tool" href="dashboard.html"><i class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M3 7l9-4 9 4-9 4-9-4z"/><path d="M3 12l9 4 9-4M3 17l9 4 9-4"/></svg></i><div><b>สต๊อก &amp; ต้นทุน</b><span>Dashboard สต๊อกเดิม (รหัสแยก)</span></div></a>
+      <a class="tool" id="commLink" href="#" target="_blank" rel="noopener"><i class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M15 9.5c-.5-1-1.6-1.5-3-1.5-1.7 0-3 .8-3 2s1.3 1.7 3 2 3 .8 3 2-1.3 2-3 2c-1.4 0-2.5-.5-3-1.5M12 6v2M12 16v2"/></svg></i><div><b>สรุปค่าคอมเซลล์</b><span>ยอดที่ต้องโอนให้เซลล์รอบนี้</span></div></a>
+    </div>
+
+    <h2>หน้าของลูกค้า</h2>
+    <div class="tools">
+      <a class="tool" href="catalog" target="_blank"><i class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></i><div><b>แคตตาล็อก</b><span>ลิงก์ที่ส่งให้ลูกค้า</span></div></a>
+      <a class="tool" href="shop-order.html" target="_blank"><i class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h2l2.4 11.2a2 2 0 0 0 2 1.6h7.7a2 2 0 0 0 2-1.5L21 8H6"/><circle cx="10" cy="20.5" r="1"/><circle cx="17" cy="20.5" r="1"/></svg></i><div><b>หน้าสั่งซื้อ</b><span>ลองสั่งหรือส่งลิงก์ให้ลูกค้า</span></div></a>
+      <a class="tool" href="https://claude.ai/artifact/464DJRbj5uyXQzqGRXmeTy" target="_blank" rel="noopener"><i class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></i><div><b>แก้ข้อมูลสินค้า</b><span>แคตตาล็อกต้นฉบับบน claude.ai</span></div></a>
+      <a class="tool" href="#" id="copyCat"><i class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 14a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"/><path d="M14 10a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"/></svg></i><div><b>คัดลอกลิงก์แคตตาล็อก</b><span id="copyMsg">ไว้วางในแชตลูกค้า</span></div></a>
+    </div>
+
+    <details class="card" style="margin-top:16px"><summary>เพิ่มหน้านี้ไว้ที่หน้าจอหลักมือถือ</summary>
+      <div class="help">
+        <p><b>iPhone (Safari):</b> กดปุ่มแชร์ (สี่เหลี่ยมมีลูกศรขึ้น) → <b>เพิ่มไปยังหน้าจอโฮม</b> → เพิ่ม</p>
+        <p><b>Android (Chrome):</b> กดเมนู ⋮ มุมขวาบน → <b>เพิ่มไปยังหน้าจอหลัก</b> หรือ <b>ติดตั้งแอป</b></p>
+        <p>จะได้ไอคอนโลโก้ร้านชื่อ "หลังร้าน" กดแล้วเปิดหน้านี้ได้ทันที</p>
+      </div>
+    </details>
+
+    <div class="foot"><span id="asof">&nbsp;</span><button id="logout">ออกจากระบบ</button></div>
+  </main>
+</div>
+
+<script>
+const GAS_URL="https://script.google.com/macros/s/AKfycbwfy2uHH4QJOM851_HBz3eoUCbwBvnZo1fGzf8DNChs5hS03Ml-335eATS3XTbifVYo9Q/exec";
+const SHEET_URL="https://docs.google.com/spreadsheets/d/16uKGJIaiGbsmQmMO5gJtaC5GXyJ1CNR_v7U55-4geVM/edit"; // ชีต Fixtory Orders
+const CATALOG_URL="https://fixtory-studio.pages.dev/catalog";
+const $=s=>document.querySelector(s);
+const store={get(k){try{return localStorage.getItem(k)||''}catch(e){return''}},set(k,v){try{v?localStorage.setItem(k,v):localStorage.removeItem(k)}catch(e){}}};
+const baht=n=>'฿'+Math.round(n).toLocaleString('th-TH');
+let KEY='';
+function show(v){$('#login').hidden=v!=='login';$('#main').hidden=v!=='main'}
+async function load(){
+  let r;
+  try{r=await (await fetch(GAS_URL+'?dash=1&key='+encodeURIComponent(KEY)+'&t='+Date.now())).json()}
+  catch(e){show('main');$('#asof').textContent='ดึงตัวเลขไม่ได้ (ตรวจว่า Deploy Apps Script แล้ว)';links();return}
+  if(!r||r.result!=='success'){store.set('fxLabelKey','');show('login');$('#loginMsg').textContent=(r&&r.message)||'รหัสไม่ถูกต้อง';return}
+  store.set('fxLabelKey',KEY);show('main');links();
+  const O={};r.rows.filter(x=>x.status!=='ยกเลิก'&&x.pay!=='ยกเลิก').forEach(x=>{(O[x.no]=O[x.no]||{pay:x.pay,status:x.status,d:new Date(x.d),sum:0}).sum+=x.price});
+  const A=Object.values(O),t0=new Date();t0.setHours(0,0,0,0);
+  const wait=A.filter(o=>o.pay!=='จ่ายแล้ว'&&o.status!=='จัดส่งแล้ว'),make=A.filter(o=>o.pay==='จ่ายแล้ว'&&o.status!=='จัดส่งแล้ว'),today=A.filter(o=>o.d>=t0);
+  $('#nWait').textContent=wait.length;$('#aWait').textContent=baht(wait.reduce((a,o)=>a+o.sum,0));
+  $('#nMake').textContent=make.length;
+  $('#nToday').textContent=today.length;$('#aToday').textContent=baht(today.reduce((a,o)=>a+o.sum,0));
+  $('#asof').textContent='อัปเดต '+new Date(r.at).toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'});
+}
+function links(){
+  $('#commLink').href=GAS_URL+'?report=commission&key='+encodeURIComponent(KEY);
+  $('#sheetLink').href=SHEET_URL||'https://docs.google.com/spreadsheets/';
+  if(!SHEET_URL)$('#sheetSub').textContent='เปิด Google Sheets แล้วเลือกไฟล์ Fixtory Orders';
+}
+$('#go').onclick=()=>{KEY=$('#key').value.trim();if(KEY){$('#loginMsg').textContent='';load()}};
+$('#key').addEventListener('keydown',e=>{if(e.key==='Enter')$('#go').click()});
+$('#logout').onclick=()=>{store.set('fxLabelKey','');KEY='';$('#key').value='';show('login')};
+$('#copyCat').onclick=async e=>{e.preventDefault();try{await navigator.clipboard.writeText(CATALOG_URL);$('#copyMsg').textContent='คัดลอกแล้ว ✓'}catch(err){$('#copyMsg').textContent=CATALOG_URL}setTimeout(()=>$('#copyMsg').textContent='ไว้วางในแชตลูกค้า',2500)};
+addEventListener('visibilitychange',()=>{if(!document.hidden&&KEY&&!$('#main').hidden)load()});
+KEY=store.get('fxLabelKey');if(KEY)load();else show('login');
+</script>
+</body>
+</html>
