@@ -39,6 +39,9 @@
   var css = document.createElement('style');
   css.textContent =
     '.fxbar{display:none}' +
+    '.fxthm{width:38px;height:38px;border-radius:12px;border:1px solid var(--line,#E6DDD3);background:var(--surface,#fff);color:var(--muted,#7A6E66);display:inline-grid;place-items:center;cursor:pointer;padding:0;flex:none;margin-left:auto}' +
+    '.fxthm svg{width:18px;height:18px}' +
+    '.fxthm.fixed{position:fixed;top:calc(12px + env(safe-area-inset-top));right:12px;z-index:40}' +
     '@media (max-width:900px){' +
     'body{padding-bottom:calc(70px + env(safe-area-inset-bottom))!important}' +
     '.fxbar{display:grid;grid-template-columns:repeat(4,1fr);position:fixed;left:0;right:0;bottom:0;z-index:50;background:var(--surface,#fff);border-top:1px solid var(--line,#E6DDD3);padding:6px 6px calc(6px + env(safe-area-inset-bottom));box-shadow:0 -4px 16px rgba(0,0,0,.06)}' +
@@ -74,6 +77,30 @@
     return '<a href="' + m[2] + '"' + ext + (m[2] === '#copy' ? ' id="fxCopy"' : '') + '><i>' + ic(m[0]) + '</i><span>' + m[1] + '</span>' + (m[3] ? '<small>↗</small>' : '') + '</a>';
   }).join('') + '</div>';
   document.body.appendChild(sheet);
+
+  // ---------- ปุ่มสลับโหมดมืด/สว่าง (ใช้ค่าเดียวกับหน้าสั่งซื้อ: localStorage 'fx-theme') ----------
+  var R = document.documentElement;
+  var SUN = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M4.6 4.6l1.6 1.6M17.8 17.8l1.6 1.6M2.5 12h2.2M19.3 12h2.2M4.6 19.4l1.6-1.6M17.8 6.2l1.6-1.6"/></svg>';
+  var MOON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M20.5 14.2A8.5 8.5 0 0 1 9.8 3.5a8.5 8.5 0 1 0 10.7 10.7Z"/></svg>';
+  function themeNow() { return R.getAttribute('data-theme') || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'); }
+  var tb = document.createElement('button');
+  tb.type = 'button'; tb.className = 'fxthm';
+  function paintThm() {
+    var d = themeNow() === 'dark';
+    tb.innerHTML = d ? SUN : MOON; tb.title = d ? 'โหมดสว่าง' : 'โหมดมืด'; tb.setAttribute('aria-label', tb.title);
+    var bg = getComputedStyle(document.body).backgroundColor;
+    document.querySelectorAll('meta[name="theme-color"]').forEach(function (m) { m.setAttribute('content', bg); });
+  }
+  tb.onclick = function () {
+    var t = themeNow() === 'dark' ? 'light' : 'dark';
+    R.setAttribute('data-theme', t); try { localStorage.setItem('fx-theme', t); } catch (e) {}
+    paintThm();
+  };
+  var slot = document.getElementById('reload');
+  if (slot && slot.parentNode) slot.parentNode.insertBefore(tb, slot);
+  else { var top = document.querySelector('.top'); if (top) top.appendChild(tb); else { tb.classList.add('fixed'); document.body.appendChild(tb); } }
+  paintThm();
+  try { matchMedia('(prefers-color-scheme: dark)').addEventListener('change', paintThm); } catch (e) {}
   // ---------- ปุ่มย้อนกลับ (back) แบบแอป ----------
   var standalone = false; try { standalone = matchMedia('(display-mode: standalone)').matches || navigator.standalone === true; } catch (e) {}
   var isHome = page === 'admin' || page === '';
