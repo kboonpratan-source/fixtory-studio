@@ -21,6 +21,7 @@
     link: '<path d="M10 14a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"/><path d="M14 10a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"/>'
   };
   function ic(k) { return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + P[k] + '</svg>'; }
+  var standaloneNow = false; try { standaloneNow = matchMedia('(display-mode: standalone)').matches || navigator.standalone === true; } catch (e) {}
   var TABS = [['admin', 'home', 'หน้าแรก', 'admin.html'], ['orders', 'list', 'ออเดอร์', 'orders.html'], ['insights', 'chart', 'ยอดขาย', 'insights.html']];
   var MORE = [
     ['เครื่องมือร้าน'],
@@ -68,7 +69,8 @@
   sheet.className = 'fxsheet'; sheet.hidden = true; sheet.setAttribute('role', 'dialog'); sheet.setAttribute('aria-label', 'เมนูเพิ่มเติม');
   sheet.innerHTML = '<div class="pn"><div class="gr"></div>' + MORE.map(function (m) {
     if (m.length === 1) return '<h3>' + m[0] + '</h3>';
-    var ext = m[3] ? ' target="_blank" rel="noopener"' : '';
+    var inApp = standaloneNow && !/^https?:/.test(m[2]);
+    var ext = m[3] && !inApp ? ' target="_blank" rel="noopener"' : '';
     return '<a href="' + m[2] + '"' + ext + (m[2] === '#copy' ? ' id="fxCopy"' : '') + '><i>' + ic(m[0]) + '</i><span>' + m[1] + '</span>' + (m[3] ? '<small>↗</small>' : '') + '</a>';
   }).join('') + '</div>';
   document.body.appendChild(sheet);
@@ -85,7 +87,8 @@
     var a = e.currentTarget, h = a.getAttribute('href');
     if (!h || a.target === '_blank' || h.charAt(0) === '#') return;
     e.preventDefault();
-    if (isHome || h === 'admin.html') { location.href = h; } else { location.replace(h); }
+    var adminPage = /^(admin|orders|insights|labels|agents)\.html/.test(h);
+    if (isHome || h === 'admin.html' || !adminPage) { location.href = h; } else { location.replace(h); }
   }
   bar.querySelectorAll('a').forEach(function (a) { a.addEventListener('click', go); });
   sheet.querySelectorAll('a').forEach(function (a) { a.addEventListener('click', go); });
