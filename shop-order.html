@@ -428,10 +428,10 @@ let phapQty={};            // สี -> จำนวน
 let sipCart=[];            // [{design, opt, name}]
 let clipCart=[];           // [{text,body,ink}] 1 รายการ = 1 เซ็ต
 let clipSel={qty:1,text:'',col:'polar',color:'น้ำเงิน'};
-// คอลเลกชันสีคลิป (แบบเดียวกับ Alphabet Clicker) — คัดคู่สีที่อ่านป้ายออกชัด
-const CLIP_COLS={polar:{name:'Polar White',desc:'คลิปขาว ตัวหนังสือสี',fixed:'body',fixedColor:'ขาว',vary:['น้ำเงิน','ดำ','แดง','ชมพูอมแดง']},
-  dark:{name:'Dark mode',desc:'คลิปสีพาสเทล ตัวหนังสือดำ',fixed:'ink',fixedColor:'ดำ',vary:['ฟ้า','ชมพู','ม่วง','เหลือง','มิ้นท์']},
-  midnight:{name:'Midnight',desc:'คลิปดำ ตัวหนังสือสี',fixed:'body',fixedColor:'ดำ',vary:['ขาว','เหลือง','เขียวอมฟ้า','ชมพูอมแดง']}};
+// คอลเลกชันสีคลิป — ชื่อ/ชุดสีเดียวกับ Alphabet Clicker (ฐาน = ตัวคลิป)
+const CLIP_COLS={pastel:{name:'Pastel',desc:'ตัวอักษรขาว ฐานพาสเทล',fixed:'ink',fixedColor:'ขาว',vary:["ฟ้า","ชมพู","เหลือง","ม่วง"]},
+  dark:{name:'Dark mode',desc:'ตัวอักษรดำ ฐานสี',fixed:'ink',fixedColor:'ดำ',vary:["ฟ้า","ชมพู","เหลือง","ม่วง","น้ำตาล"]},
+  polar:{name:'Polar White',desc:'ฐานขาว ตัวอักษรสี',fixed:'body',fixedColor:'ขาว',vary:["น้ำเงิน","ฟ้า","ชมพู","ม่วง"]}};
 function clipPair(col,color){const c=CLIP_COLS[col];return c.fixed==='body'?{body:c.fixedColor,ink:color}:{body:color,ink:c.fixedColor}}
 let sipSel={design:null,opt:0,name:''};
 let pcView=0; // สีที่แสดงในรูปตัวอย่างน้องพับชู่
@@ -493,8 +493,8 @@ function renderConf(){
             el('button',{type:'button','aria-label':'เพิ่มจำนวนเซ็ต',onclick:()=>{if(totalPieces()+clipSel.qty>=MAX_PIECES){showErr('สั่งมากกว่า '+MAX_PIECES+' ชิ้น โปรดติดต่อร้านโดยตรง');return}clipSel.qty++;renderConf()}},'+')),
           el('span',{class:'lbl'},'คอลเลกชันสี'),
           el('div',{class:'colopts'},Object.entries(CLIP_COLS).map(([k,c])=>el('button',{type:'button',class:'colopt','aria-pressed':String(clipSel.col===k),onclick:()=>{if(clipSel.col!==k){clipSel.col=k;clipSel.color=c.vary[0]}renderConf()}},
-            el('span',{html:clipMini(k)}).firstChild,el('span',{},el('b',{style:'font-weight:600'},c.name),el('small',{},c.desc))))),
-          el('span',{class:'lbl'},CLIP_COLS[clipSel.col].fixed==='body'?'สีตัวหนังสือ':'สีตัวคลิป',el('small',{},'สี'+clipSel.color)),
+            el('span',{html:clipMini(k)}).firstChild,el('span',{},el('b',{style:'font-weight:600'},String(Object.keys(CLIP_COLS).indexOf(k)+1).padStart(2,'0')+' '+c.name),el('small',{},c.desc))))),
+          el('span',{class:'lbl'},CLIP_COLS[clipSel.col].fixed==='body'?'สีตัวอักษร':'สีฐาน (ตัวคลิป)',el('small',{},'สี'+clipSel.color)),
           el('div',{class:'sw swrap',role:'group'},CLIP_COLS[clipSel.col].vary.map(n=>el('button',{type:'button',title:n,'aria-label':n,'aria-pressed':String(clipSel.color===n),style:'background:'+KC_HEX[n],onclick:()=>{clipSel.color=n;renderConf()}}))),
           clipPreview(),
           el('label',{class:'lbl',for:'clipText'},'ข้อความสลักด้านหลัง',el('small',{},'ฟรี · ไม่บังคับ')),txt,
@@ -586,7 +586,7 @@ function clipPreview(){
   const pair=clipPair(clipSel.col,clipSel.color),sh=kcShade(KC_HEX[pair.body],-0.2);
   const svg='<svg viewBox="0 0 300 64" role="img" aria-label="ตัวอย่างสีคลิป"><g fill="none" stroke="'+sh+'" stroke-width="6" stroke-linecap="round"><path d="M128 14H22a12 12 0 0 0 0 24h96"/><path d="M128 26H34"/></g>'+
     clipTag(112,6,182,52,pair,'โปรดลงนาม',24)+'</svg>';
-  const f=el('figure',{class:'clipprev'});f.innerHTML=svg;f.append(el('figcaption',{},CLIP_COLS[clipSel.col].name+' · คลิป'+pair.body+' · ตัวหนังสือ'+pair.ink));return f;
+  const f=el('figure',{class:'clipprev'});f.innerHTML=svg;f.append(el('figcaption',{},CLIP_COLS[clipSel.col].name+' · ฐาน'+pair.body+' · ตัวอักษร'+pair.ink));return f;
 }
 function addClips(){
   if(totalPieces()+clipSel.qty>MAX_PIECES){showErr('สั่งมากกว่า '+MAX_PIECES+' ชิ้น โปรดติดต่อร้านโดยตรง');return}
