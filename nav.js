@@ -18,6 +18,7 @@
     edit: '<path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/>',
     grid: '<rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>',
     cart: '<path d="M3 4h2l2.4 11.2a2 2 0 0 0 2 1.6h7.7a2 2 0 0 0 2-1.5L21 8H6"/><circle cx="10" cy="20.5" r="1"/><circle cx="17" cy="20.5" r="1"/>',
+    belloff: '<path d="M6 8a6 6 0 0 1 9.3-5"/><path d="M18 8c0 7 3 9 3 9H9"/><path d="M6 8c0 2.3-.3 4.1-.8 5.4"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/><path d="M3 3l18 18"/>',
     bell: '<path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>',
     link: '<path d="M10 14a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"/><path d="M14 10a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"/>'
   };
@@ -42,6 +43,8 @@
     '.fxbar{display:none}' +
     '.fxthm{width:38px;height:38px;border-radius:12px;border:1px solid var(--line,#E6DDD3);background:var(--surface,#fff);color:var(--muted,#7A6E66);display:inline-grid;place-items:center;cursor:pointer;padding:0;flex:none;margin-left:auto}' +
     '.fxthm svg{width:18px;height:18px}' +
+    '.fxbell{position:relative}.fxbell.on{color:var(--accent,#C4704B);border-color:var(--accent,#C4704B)}' +
+    '.fxbell .dot{position:absolute;top:6px;right:6px;width:8px;height:8px;border-radius:50%;background:var(--accent,#C4704B);box-shadow:0 0 0 2px var(--surface,#fff)}' +
     '.fxthm.fixed{position:fixed;top:calc(12px + env(safe-area-inset-top));right:12px;z-index:40}' +
     '@media (max-width:900px){' +
     'body{padding-bottom:calc(70px + env(safe-area-inset-bottom))!important}' +
@@ -102,7 +105,7 @@
     R.setAttribute('data-theme', t); try { localStorage.setItem('fx-theme', t); } catch (e) {}
     paintThm();
   };
-  var slot = document.getElementById('reload');
+  var slot = document.querySelector('.bar #reload, .top #reload');
   if (slot && slot.parentNode) slot.parentNode.insertBefore(tb, slot);
   else { var top = document.querySelector('.top'); if (top) top.appendChild(tb); else { tb.classList.add('fixed'); document.body.appendChild(tb); } }
   paintThm();
@@ -173,6 +176,29 @@
     bX.onclick = function () { bn.hidden = true; try { localStorage.setItem('fxPushDismiss', '1'); } catch (e) {} };
     if (dismissed) bn.remove();
   }
+  // ปุ่มกระดิ่งบนหัว (ข้างปุ่มสลับโหมด)
+  var bellBtn = document.createElement('button');
+  bellBtn.type = 'button'; bellBtn.className = 'fxthm fxbell';
+  tb.parentNode.insertBefore(bellBtn, tb);
+  if (tb.classList.contains('fixed')) { bellBtn.classList.add('fixed'); bellBtn.style.right = '58px'; }
+  function paintBell(st) {
+    var on = st === 'on';
+    bellBtn.innerHTML = ic(on ? 'bell' : 'belloff') + (st === 'off' ? '<i class="dot"></i>' : '');
+    bellBtn.classList.toggle('on', on);
+    bellBtn.title = on ? 'แจ้งเตือนเปิดอยู่' : 'เปิดแจ้งเตือนออเดอร์ใหม่';
+    bellBtn.setAttribute('aria-label', bellBtn.title);
+  }
+  bellBtn.onclick = function () {
+    pushState().then(function (st) {
+      if (st === 'off') { showToast('กำลังเปิดแจ้งเตือน…'); return pushOn().then(paintPush).then(function () { showToast('เปิดแจ้งเตือนแล้ว ✓ มีออเดอร์ใหม่จะเด้งทันที'); hideToastSoon(); }); }
+      if (st === 'on') { showToast('แจ้งเตือนเปิดอยู่ ✓ (ปิดได้ที่ เพิ่มเติม → แจ้งเตือนออเดอร์ใหม่)'); hideToastSoon(); return; }
+      if (st === 'blocked') { showToast('แจ้งเตือนถูกบล็อก — เปิดที่ การตั้งค่าเครื่อง → แอป → Fixtory Admin → การแจ้งเตือน'); hideToastSoon(5000); return; }
+      showToast(/iPhone|iPad/.test(navigator.userAgent) ? 'ต้องเพิ่มแอปไปหน้าจอโฮม แล้วเปิดจากไอคอนก่อน' : 'เครื่องนี้ยังเปิดแจ้งเตือนไม่ได้'); hideToastSoon(4000);
+    }).catch(function (err) { showToast(err.message); hideToastSoon(4000); });
+  };
+  function hideToastSoon(ms) { setTimeout(function () { if (toast) toast.hidden = true; }, ms || 3000); }
+  var _pp = paintPush;
+  paintPush = function () { return _pp().then(function (st) { paintBell(st); return st; }); };
   paintPush();
   // ---------- ปุ่มย้อนกลับ (back) แบบแอป ----------
   var standalone = false; try { standalone = matchMedia('(display-mode: standalone)').matches || navigator.standalone === true; } catch (e) {}
