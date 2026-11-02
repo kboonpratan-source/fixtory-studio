@@ -191,12 +191,19 @@
   bellBtn.onclick = function () {
     pushState().then(function (st) {
       if (st === 'off') { showToast('กำลังเปิดแจ้งเตือน…'); return pushOn().then(paintPush).then(function () { showToast('เปิดแจ้งเตือนแล้ว ✓ มีออเดอร์ใหม่จะเด้งทันที'); hideToastSoon(); }); }
-      if (st === 'on') { showToast('แจ้งเตือนเปิดอยู่ ✓ (ปิดได้ที่ เพิ่มเติม → แจ้งเตือนออเดอร์ใหม่)'); hideToastSoon(); return; }
+      if (st === 'on') {
+        showToast('แจ้งเตือนเปิดอยู่ในเครื่องนี้ ✓');
+        var ob = document.createElement('button'); ob.type = 'button'; ob.textContent = 'ปิดแจ้งเตือน';
+        ob.style.cssText = 'margin-left:10px;font:inherit;font-weight:700;border:0;border-radius:99px;padding:4px 12px;background:var(--accent,#C4704B);color:var(--on-accent,#fff);cursor:pointer';
+        ob.onclick = function () { ob.disabled = true; ob.textContent = 'กำลังปิด…'; pushOff().then(paintPush).then(function () { showToast('ปิดแจ้งเตือนเครื่องนี้แล้ว'); hideToastSoon(2500); }); };
+        toast.appendChild(ob); hideToastSoon(6000); return;
+      }
       if (st === 'blocked') { showToast('แจ้งเตือนถูกบล็อก — เปิดที่ การตั้งค่าเครื่อง → แอป → Fixtory Admin → การแจ้งเตือน'); hideToastSoon(5000); return; }
       showToast(/iPhone|iPad/.test(navigator.userAgent) ? 'ต้องเพิ่มแอปไปหน้าจอโฮม แล้วเปิดจากไอคอนก่อน' : 'เครื่องนี้ยังเปิดแจ้งเตือนไม่ได้'); hideToastSoon(4000);
     }).catch(function (err) { showToast(err.message); hideToastSoon(4000); });
   };
-  function hideToastSoon(ms) { setTimeout(function () { if (toast) toast.hidden = true; }, ms || 3000); }
+  var toastT = null;
+  function hideToastSoon(ms) { clearTimeout(toastT); toastT = setTimeout(function () { if (toast) toast.hidden = true; }, ms || 3000); }
   var _pp = paintPush;
   paintPush = function () { return _pp().then(function (st) { paintBell(st); return st; }); };
   paintPush();
@@ -228,7 +235,7 @@
   // หน้าแรก: กด back ครั้งแรกขึ้นเตือน ครั้งที่สองภายใน 2 วินาทีจึงออกจากแอป
   var toast = null, guardTimer = null;
   function showToast(t) {
-    if (!toast) { toast = document.createElement('div'); toast.style.cssText = 'position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom));transform:translateX(-50%);background:var(--ink,#2C2420);color:var(--bg,#fff);padding:10px 16px;border-radius:99px;font-size:14px;z-index:70;box-shadow:0 4px 16px rgba(0,0,0,.2);white-space:nowrap'; document.body.appendChild(toast); }
+    if (!toast) { toast = document.createElement('div'); toast.style.cssText = 'position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom));transform:translateX(-50%);background:var(--ink,#2C2420);color:var(--bg,#fff);padding:10px 16px;border-radius:99px;font-size:14px;z-index:70;box-shadow:0 4px 16px rgba(0,0,0,.2);max-width:calc(100vw - 32px);display:flex;align-items:center;flex-wrap:wrap;justify-content:center;gap:6px'; document.body.appendChild(toast); }
     toast.textContent = t; toast.hidden = false;
   }
   if (standalone && isHome && !(history.state && history.state.fxGuard)) history.pushState({ fxGuard: 1 }, '');
