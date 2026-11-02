@@ -72,9 +72,46 @@
     return '<a href="' + m[2] + '"' + ext + (m[2] === '#copy' ? ' id="fxCopy"' : '') + '><i>' + ic(m[0]) + '</i><span>' + m[1] + '</span>' + (m[3] ? '<small>↗</small>' : '') + '</a>';
   }).join('') + '</div>';
   document.body.appendChild(sheet);
-  document.getElementById('fxMoreBtn').onclick = function () { sheet.hidden = false; };
-  sheet.addEventListener('click', function (e) { if (e.target === sheet) sheet.hidden = true; });
-  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') sheet.hidden = true; });
+  // ---------- ปุ่มย้อนกลับ (back) แบบแอป ----------
+  var standalone = false; try { standalone = matchMedia('(display-mode: standalone)').matches || navigator.standalone === true; } catch (e) {}
+  var isHome = page === 'admin' || page === '';
+  function openSheet() { sheet.hidden = false; history.pushState({ fxSheet: 1 }, ''); }
+  function closeSheet(viaBack) { if (sheet.hidden) return; sheet.hidden = true; if (!viaBack && history.state && history.state.fxSheet) history.back(); }
+  document.getElementById('fxMoreBtn').onclick = openSheet;
+  sheet.addEventListener('click', function (e) { if (e.target === sheet) closeSheet(); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeSheet(); });
+  // สลับหน้าจากแถบล่าง/เมนู: จากหน้าย่อยให้แทนที่หน้าเดิม เพื่อให้ back กลับหน้าแรกเสมอ
+  function go(e) {
+    var a = e.currentTarget, h = a.getAttribute('href');
+    if (!h || a.target === '_blank' || h.charAt(0) === '#') return;
+    e.preventDefault();
+    if (isHome || h === 'admin.html') { location.href = h; } else { location.replace(h); }
+  }
+  bar.querySelectorAll('a').forEach(function (a) { a.addEventListener('click', go); });
+  sheet.querySelectorAll('a').forEach(function (a) { a.addEventListener('click', go); });
+  // เปิดหน้าย่อยตรง ๆ (ไม่มีหน้าแรกอยู่ข้างหลัง) → ใส่หน้าแรกไว้ใต้ เพื่อให้ back กลับหน้าแรก
+  var first = false; try { first = !sessionStorage.getItem('fxNavStarted'); sessionStorage.setItem('fxNavStarted', '1'); } catch (e) {}
+  if (standalone && !isHome && (first || history.length <= 1)) {
+    var here = location.href;
+    history.replaceState({ fxHome: 1 }, '', 'admin.html');
+    history.pushState(null, '', here);
+  }
+  // หน้าแรก: กด back ครั้งแรกขึ้นเตือน ครั้งที่สองภายใน 2 วินาทีจึงออกจากแอป
+  var toast = null, guardTimer = null;
+  function showToast(t) {
+    if (!toast) { toast = document.createElement('div'); toast.style.cssText = 'position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom));transform:translateX(-50%);background:var(--ink,#2C2420);color:var(--bg,#fff);padding:10px 16px;border-radius:99px;font-size:14px;z-index:70;box-shadow:0 4px 16px rgba(0,0,0,.2);white-space:nowrap'; document.body.appendChild(toast); }
+    toast.textContent = t; toast.hidden = false;
+  }
+  if (standalone && isHome && !(history.state && history.state.fxGuard)) history.pushState({ fxGuard: 1 }, '');
+  window.addEventListener('popstate', function (e) {
+    if (!sheet.hidden) { closeSheet(true); return; }
+    if (e.state && e.state.fxHome && !isHome) { location.replace('admin.html'); return; }
+    if (standalone && isHome && !(e.state && e.state.fxGuard)) {
+      showToast('กดย้อนกลับอีกครั้งเพื่อออกจากแอป');
+      clearTimeout(guardTimer);
+      guardTimer = setTimeout(function () { if (toast) toast.hidden = true; history.pushState({ fxGuard: 1 }, ''); }, 2000);
+    }
+  });
   var cp = document.getElementById('fxCopy');
   cp.onclick = function (e) {
     e.preventDefault();
