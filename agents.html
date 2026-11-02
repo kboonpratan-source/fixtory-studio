@@ -68,9 +68,8 @@ const baht=n=>'฿'+Math.round(n).toLocaleString('th-TH');
 const KEY=(()=>{try{return localStorage.getItem('fxLabelKey')||''}catch(e){return''}})();
 const clean=s=>s.toLowerCase().replace(/[^a-z0-9_-]/g,'');
 function urls(n){const q='?sale='+encodeURIComponent(n);return[
-  {k:'cat',t:'แคตตาล็อก',who:'ตัวแทนส่งให้ลูกค้า (แนะนำ)',u:SITE+'/catalog'+q},
-  {k:'ord',t:'หน้าสั่งซื้อโดยตรง',who:'ตัวแทนส่งให้ลูกค้าที่รู้แล้วว่าจะสั่งอะไร',u:SITE+'/shop-order.html'+q},
-  {k:'me',t:'หน้ายอดขายของตัวแทน',who:'ให้ตัวแทนเก็บไว้ดูยอดขาย ค่าคอม และอัปเดตสถานะออเดอร์ของตัวเอง — ห้ามส่งให้ลูกค้า',u:GAS_URL+q}]}
+  {k:'cat',t:'ลิงก์สำหรับลูกค้า',who:'ตัวแทนส่งลิงก์นี้ลิงก์เดียวให้ลูกค้า — ดูสินค้าครบทุกตัวแล้วกดสั่งได้เลย ยอดนับเป็นของตัวแทนอัตโนมัติ',u:SITE+'/catalog'+q},
+  {k:'me',t:'ลิงก์สำหรับตัวแทนเอง',who:'ให้ตัวแทนเก็บไว้ดูยอดขาย ค่าคอม และอัปเดตสถานะออเดอร์ของตัวเอง — ห้ามส่งให้ลูกค้า',u:GAS_URL+q}]}
 async function copy(t,el){try{await navigator.clipboard.writeText(t);if(el){el.textContent='คัดลอกแล้ว ✓';setTimeout(()=>el.textContent='',2000)}}catch(e){prompt('คัดลอกลิงก์นี้',t)}}
 function render(){
   const n=clean($('#nm').value);if($('#nm').value!==n)$('#nm').value=n;
@@ -79,7 +78,7 @@ function render(){
   $('#links').innerHTML=U.map(x=>`<div class="ln"><b>${x.t}</b><span class="who">${x.who}</span><code>${esc(x.u)}</code><div class="row"><button type="button" data-u="${esc(x.u)}" class="${x.k==='cat'?'pri':''}">คัดลอก</button><a href="${esc(x.u)}" target="_blank" rel="noopener"><button type="button">เปิดดู</button></a><span class="ok"></span></div></div>`).join('');
   $('#links').hidden=false;
   $('#links').querySelectorAll('button[data-u]').forEach(b=>b.onclick=()=>copy(b.dataset.u,b.parentNode.querySelector('.ok')));
-  const m=`สวัสดีค่ะ ลิงก์ตัวแทนขาย Fixtory Studio ของ ${n}\n\n🛍 ส่งให้ลูกค้า (แคตตาล็อก + สั่งซื้อ):\n${U[0].u}\n\n📊 ไว้ดูยอดขาย/ค่าคอมของตัวเอง (ห้ามส่งให้ลูกค้า):\n${U[2].u}\n\nออเดอร์ที่ลูกค้าสั่งผ่านลิงก์แรก จะนับเป็นยอดของ ${n} อัตโนมัติ ค่าคอม 10% จ่ายทุกวันที่ 1 ของเดือนถัดไป (นับเฉพาะออเดอร์ที่จ่ายเงินและจัดส่งแล้ว)`;
+  const m=`สวัสดีค่ะ ลิงก์ตัวแทนขาย Fixtory Studio ของ ${n}\n\n🛍 ส่งให้ลูกค้า (แคตตาล็อก + สั่งซื้อ):\n${U[0].u}\n\n📊 ไว้ดูยอดขาย/ค่าคอมของตัวเอง (ห้ามส่งให้ลูกค้า):\n${U[1].u}\n\nออเดอร์ที่ลูกค้าสั่งผ่านลิงก์แรก จะนับเป็นยอดของ ${n} อัตโนมัติ ค่าคอม 10% จ่ายทุกวันที่ 1 ของเดือนถัดไป (นับเฉพาะออเดอร์ที่จ่ายเงินและจัดส่งแล้ว)`;
   $('#msg').textContent=m;$('#msgCard').hidden=false;
   $('#copyMsg').onclick=()=>copy(m,$('#msgOk'));
   $('#shareMsg').hidden=!navigator.share;$('#shareMsg').onclick=()=>navigator.share({text:m}).catch(()=>{});
