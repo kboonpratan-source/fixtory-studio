@@ -63,6 +63,7 @@ a{color:inherit}
 .orders{display:grid}
 .od{display:grid;grid-template-columns:72px minmax(0,1fr) auto;gap:4px 12px;align-items:center;padding:10px 2px;border-top:1px solid var(--line)}
 .od:first-child{border-top:0;padding-top:2px}
+a.od{text-decoration:none;color:inherit}a.od:hover .no{color:var(--accent)}
 .od .no{font-weight:700;font-variant-numeric:tabular-nums}.od .dt{grid-column:1;font-size:12px;color:var(--faint)}
 .od .it{grid-row:1/3;grid-column:2;font-size:13.5px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
 .od .rt{grid-row:1/3;grid-column:3;text-align:right}.od .rt b{display:block;font-variant-numeric:tabular-nums}
@@ -100,11 +101,11 @@ button.pri{font:inherit;font-weight:600;border:0;border-radius:999px;padding:10p
   .hello h1{font-size:21px}
   .status{gap:8px}.st{padding:12px;min-height:96px;border-radius:16px}.st b{font-size:26px}.st .lb{font-size:12.5px}.st .am{font-size:12px}.st .go{display:none}
   .side .card.o2{padding:10px 6px}
-  .side .tools.main{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
-  .side .tools.main .tool{flex-direction:column;gap:7px;padding:10px 4px;text-align:center}
-  .side .tools.main .tool .ic{width:48px;height:48px;border-radius:15px}
+  .side .tools.main{grid-template-columns:repeat(4,minmax(0,1fr));gap:4px}
+  .side .tools.main .tool{flex-direction:column;gap:6px;padding:8px 2px;text-align:center}
+  .side .tools.main .tool .ic{width:46px;height:46px;border-radius:14px}
   .side .tools.main .tool .ic svg{width:24px;height:24px}
-  .side .tools.main .tool b{font-size:13px;line-height:1.3}
+  .side .tools.main .tool b{font-size:12.5px;line-height:1.3}
   .side .tools.main .tool .tx>span,.side .tools.main .tool .ar{display:none}
   .week{height:130px;gap:4px}.wk .v{font-size:10.5px}
 }
@@ -132,9 +133,9 @@ button.pri{font:inherit;font-weight:600;border:0;border-radius:999px;padding:10p
     <div class="layout">
       <div class="col">
         <div class="status o1">
-          <a class="st s-wait" href="insights.html"><span class="lb">รอโอน</span><b id="nWait">–</b><span class="am" id="aWait">&nbsp;</span><span class="go">→</span></a>
-          <a class="st s-make" href="labels.html"><span class="lb">จ่ายแล้ว รอส่ง</span><b id="nMake">–</b><span class="am">พิมพ์ใบปะหน้า</span><span class="go">→</span></a>
-          <a class="st s-new" href="insights.html"><span class="lb">ออเดอร์วันนี้</span><b id="nToday">–</b><span class="am" id="aToday">&nbsp;</span><span class="go">→</span></a>
+          <a class="st s-wait" href="orders.html#f=wait"><span class="lb">รอโอน</span><b id="nWait">–</b><span class="am" id="aWait">&nbsp;</span><span class="go">→</span></a>
+          <a class="st s-make" href="orders.html#f=make"><span class="lb">จ่ายแล้ว รอส่ง</span><b id="nMake">–</b><span class="am">ต้องผลิต / แพ็ก</span><span class="go">→</span></a>
+          <a class="st s-new" href="orders.html#f=all"><span class="lb">ออเดอร์วันนี้</span><b id="nToday">–</b><span class="am" id="aToday">&nbsp;</span><span class="go">→</span></a>
         </div>
         <section class="card o3">
           <h2>ยอดขาย 7 วันล่าสุด <a href="insights.html">ดูทั้งหมด →</a></h2>
@@ -142,7 +143,7 @@ button.pri{font:inherit;font-weight:600;border:0;border-radius:999px;padding:10p
           <div class="week" id="week" role="img" aria-label="ยอดขายรายวัน 7 วันล่าสุด"></div>
         </section>
         <section class="card o4">
-          <h2>ออเดอร์ล่าสุด <a id="sheetLink2" href="#" target="_blank" rel="noopener">เปิดชีต →</a></h2>
+          <h2>ออเดอร์ล่าสุด <a href="orders.html">จัดการออเดอร์ →</a></h2>
           <div class="orders" id="orders"></div>
         </section>
       </div>
@@ -180,6 +181,8 @@ const I={
   edit:'<path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/>',
   grid:'<rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>',
   cart:'<path d="M3 4h2l2.4 11.2a2 2 0 0 0 2 1.6h7.7a2 2 0 0 0 2-1.5L21 8H6"/><circle cx="10" cy="20.5" r="1"/><circle cx="17" cy="20.5" r="1"/>',
+  list:'<path d="M8 6h13M8 12h13M8 18h13"/><circle cx="3.5" cy="6" r="1"/><circle cx="3.5" cy="12" r="1"/><circle cx="3.5" cy="18" r="1"/>',
+  users:'<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16 4.5a3.5 3.5 0 0 1 0 7M18 14.5a6.5 6.5 0 0 1 3.5 5.5"/>',
   link:'<path d="M10 14a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"/><path d="M14 10a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"/>'
 };
 const svg=k=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${I[k]}</svg>`;
@@ -188,10 +191,12 @@ function tool(t){const tag=t.btn?'button':'a',attr=t.btn?`type="button" id="${t.
   return `<${tag} class="tool" ${attr}><i class="ic">${svg(t.ic)}</i><span class="tx"><b>${t.t}</b><span${t.subId?` id="${t.subId}"`:''}>${t.s}</span></span><span class="ar">›</span></${tag}>`}
 function renderTools(){
   $('#toolsMain').innerHTML=[
+    {ic:'list',t:'ออเดอร์',s:'อัปเดตจ่ายแล้ว / ส่งแล้ว / ยกเลิก',href:'orders.html'},
     {ic:'chart',t:'ยอดขาย',s:'ภาพรวม · รายสินค้า · เซลล์',href:'insights.html'},
     {ic:'print',t:'ใบปะหน้า',s:'พิมพ์ใบปะหน้าพัสดุ',href:'labels.html'},
     {ic:'sheet',t:'ชีตออเดอร์',s:'Google Sheet Fixtory Orders',href:SHEET_URL,ext:1},
     {ic:'stock',t:'สต๊อก',s:'สต๊อก & ต้นทุน (รหัสแยก)',href:'dashboard.html'},
+    {ic:'users',t:'ตัวแทน',s:'สร้างลิงก์ให้ตัวแทนขาย',href:'agents.html'},
     {ic:'coin',t:'ค่าคอม',s:'ยอดที่ต้องโอนให้เซลล์',href:GAS_URL+'?report=commission&key='+encodeURIComponent(KEY),ext:1},
     {ic:'edit',t:'แก้สินค้า',s:'แคตตาล็อกต้นฉบับบน claude.ai',href:'https://claude.ai/artifact/464DJRbj5uyXQzqGRXmeTy',ext:1}
   ].map(tool).join('');
@@ -200,7 +205,6 @@ function renderTools(){
     {ic:'cart',t:'หน้าสั่งซื้อ',s:'ลองสั่งหรือส่งลิงก์ให้ลูกค้า',href:'shop-order.html',ext:1},
     {ic:'link',t:'คัดลอกลิงก์แคตตาล็อก',s:'ไว้วางในแชตลูกค้า',btn:1,id:'copyCat',subId:'copyMsg'}
   ].map(tool).join('');
-  $('#sheetLink2').href=SHEET_URL;
   $('#copyCat').onclick=async()=>{try{await navigator.clipboard.writeText(CATALOG_URL);$('#copyMsg').textContent='คัดลอกแล้ว ✓'}catch(err){$('#copyMsg').textContent=CATALOG_URL}setTimeout(()=>$('#copyMsg').textContent='ไว้วางในแชตลูกค้า',2500)};
 }
 function show(v){$('#login').hidden=v!=='login';$('#main').hidden=v!=='main';$('#reload').hidden=v!=='main'}
@@ -230,7 +234,7 @@ async function load(){
   // ออเดอร์ล่าสุด 6 รายการ
   const rec=A.sort((a,b)=>b.d-a.d||b.no.localeCompare(a.no)).slice(0,6);
   $('#orders').innerHTML=rec.length?rec.map(o=>{const st=o.status==='จัดส่งแล้ว'?['p-done','ส่งแล้ว']:o.pay==='จ่ายแล้ว'?['p-make','รอส่ง']:['p-wait','รอโอน'];
-    return `<div class="od"><span class="no">${esc(o.no)}</span><span class="dt">${o.d.toLocaleDateString('th-TH',{day:'numeric',month:'short'})}</span><span class="it">${Object.entries(o.items).map(([k,v])=>esc(k)+(v>1?' × '+v:'')).join(' · ')}</span><span class="rt"><b>${baht(o.sum+o.ship)}</b><span class="pill ${st[0]}">${st[1]}</span></span></div>`}).join(''):'<p class="empty">ยังไม่มีออเดอร์</p>';
+    return `<a class="od" href="orders.html#${encodeURIComponent(o.no)}"><span class="no">${esc(o.no)}</span><span class="dt">${o.d.toLocaleDateString('th-TH',{day:'numeric',month:'short'})}</span><span class="it">${Object.entries(o.items).map(([k,v])=>esc(k)+(v>1?' × '+v:'')).join(' · ')}</span><span class="rt"><b>${baht(o.sum+o.ship)}</b><span class="pill ${st[0]}">${st[1]}</span></span></a>`}).join(''):'<p class="empty">ยังไม่มีออเดอร์</p>';
   $('#asof').textContent='อัปเดต '+new Date(r.at).toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'});
 }
 $('#go').onclick=()=>{KEY=$('#key').value.trim();if(KEY){$('#loginMsg').textContent='';load()}};
