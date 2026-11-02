@@ -427,8 +427,12 @@ let current=PRODUCTS[params.get('p')]?params.get('p'):'sipbuddy';
 let phapQty={};            // สี -> จำนวน
 let sipCart=[];            // [{design, opt, name}]
 let clipCart=[];           // [{text,body,ink}] 1 รายการ = 1 เซ็ต
-let clipSel={qty:1,text:'',body:'ขาว',ink:'น้ำเงิน'};
-const CLIP_COLORS=Object.keys(KC_HEX);
+let clipSel={qty:1,text:'',col:'polar',color:'น้ำเงิน'};
+// คอลเลกชันสีคลิป (แบบเดียวกับ Alphabet Clicker) — คัดคู่สีที่อ่านป้ายออกชัด
+const CLIP_COLS={polar:{name:'Polar White',desc:'คลิปขาว ตัวหนังสือสี',fixed:'body',fixedColor:'ขาว',vary:['น้ำเงิน','ดำ','แดง','ชมพูอมแดง']},
+  dark:{name:'Dark mode',desc:'คลิปสีพาสเทล ตัวหนังสือดำ',fixed:'ink',fixedColor:'ดำ',vary:['ฟ้า','ชมพู','ม่วง','เหลือง','มิ้นท์']},
+  midnight:{name:'Midnight',desc:'คลิปดำ ตัวหนังสือสี',fixed:'body',fixedColor:'ดำ',vary:['ขาว','เหลือง','เขียวอมฟ้า','ชมพูอมแดง']}};
+function clipPair(col,color){const c=CLIP_COLS[col];return c.fixed==='body'?{body:c.fixedColor,ink:color}:{body:color,ink:c.fixedColor}}
 let sipSel={design:null,opt:0,name:''};
 let pcView=0; // สีที่แสดงในรูปตัวอย่างน้องพับชู่
 let kcCart=[];             // ชิ้น Alphabet Clicker ในตะกร้า
@@ -487,8 +491,12 @@ function renderConf(){
           el('span',{class:'lbl',style:'margin-top:0'},'จำนวนเซ็ต',el('small',{},'เซ็ตละ 99 บาท ได้ 20 อัน')),
           el('div',{class:'step'},el('button',{type:'button','aria-label':'ลดจำนวนเซ็ต',onclick:()=>{if(clipSel.qty>1){clipSel.qty--;renderConf()}}},'−'),el('b',{},String(clipSel.qty)),
             el('button',{type:'button','aria-label':'เพิ่มจำนวนเซ็ต',onclick:()=>{if(totalPieces()+clipSel.qty>=MAX_PIECES){showErr('สั่งมากกว่า '+MAX_PIECES+' ชิ้น โปรดติดต่อร้านโดยตรง');return}clipSel.qty++;renderConf()}},'+')),
-          clipSwatch('สีตัวคลิป','body'),clipSwatch('สีตัวหนังสือ','ink'),clipPreview(),
-          clipSel.body===clipSel.ink?el('p',{class:'hint',style:'color:var(--warn-ink)'},'สีตัวคลิปกับตัวหนังสือเป็นสีเดียวกัน จะอ่านป้ายไม่ออก เลือกสีให้ต่างกันนะคะ'):null,
+          el('span',{class:'lbl'},'คอลเลกชันสี'),
+          el('div',{class:'colopts'},Object.entries(CLIP_COLS).map(([k,c])=>el('button',{type:'button',class:'colopt','aria-pressed':String(clipSel.col===k),onclick:()=>{if(clipSel.col!==k){clipSel.col=k;clipSel.color=c.vary[0]}renderConf()}},
+            el('span',{html:clipMini(k)}).firstChild,el('span',{},el('b',{style:'font-weight:600'},c.name),el('small',{},c.desc))))),
+          el('span',{class:'lbl'},CLIP_COLS[clipSel.col].fixed==='body'?'สีตัวหนังสือ':'สีตัวคลิป',el('small',{},'สี'+clipSel.color)),
+          el('div',{class:'sw swrap',role:'group'},CLIP_COLS[clipSel.col].vary.map(n=>el('button',{type:'button',title:n,'aria-label':n,'aria-pressed':String(clipSel.color===n),style:'background:'+KC_HEX[n],onclick:()=>{clipSel.color=n;renderConf()}}))),
+          clipPreview(),
           el('label',{class:'lbl',for:'clipText'},'ข้อความสลักด้านหลัง',el('small',{},'ฟรี · ไม่บังคับ')),txt,
           el('p',{class:'hint'},'1 เซ็ต: "โปรดลงนาม" 11 อัน + "เอกสารแนบ 1–9" อย่างละ 1 อัน พร้อมกล่องเก็บ'))),
       el('button',{type:'button',class:'btn primary full',onclick:addClips},'+ เพิ่มลงตะกร้า'));
@@ -566,21 +574,24 @@ function addKC(){
   kc.chars=[];kc.colors=[];kc.mode='letters';hideErr();renderConf();renderCart(); // สี/เคส/สาย คงไว้ เผื่อสั่งชิ้นถัดไปแบบเดียวกัน
   $('#cart').scrollIntoView({behavior:'smooth',block:'center'});
 }
-function clipSwatch(label,key){
-  return el('div',{class:'clipsw'},el('span',{class:'lbl'},label,el('small',{},'สี'+clipSel[key])),
-    el('div',{class:'sw swrap',role:'group','aria-label':label},CLIP_COLORS.map(n=>el('button',{type:'button',title:n,'aria-label':label+' '+n,'aria-pressed':String(clipSel[key]===n),style:'background:'+KC_HEX[n],onclick:()=>{clipSel[key]=n;renderConf()}}))));
+function clipTag(x,y,w,h,pair,label,fs){
+  const b=KC_HEX[pair.body],k=KC_HEX[pair.ink],sh=kcShade(b,-0.2);
+  return '<rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" rx="'+(h*.24)+'" fill="'+b+'" stroke="'+sh+'" stroke-width="2"/>'+
+    '<text x="'+(x+w/2)+'" y="'+(y+h*.68)+'" text-anchor="middle" font-family="Prompt,sans-serif" font-weight="600" font-size="'+fs+'" fill="'+k+'">'+label+'</text>';
+}
+function clipMini(col){
+  return '<svg viewBox="0 0 84 30" width="64" height="23" aria-hidden="true">'+CLIP_COLS[col].vary.slice(0,3).map((v,i)=>clipTag(1+i*28,4+(i%2)*3,26,20,clipPair(col,v),'ก',13)).join('')+'</svg>';
 }
 function clipPreview(){
-  const b=KC_HEX[clipSel.body],k=KC_HEX[clipSel.ink],sh=kcShade?kcShade(b,-0.18):b;
+  const pair=clipPair(clipSel.col,clipSel.color),sh=kcShade(KC_HEX[pair.body],-0.2);
   const svg='<svg viewBox="0 0 300 64" role="img" aria-label="ตัวอย่างสีคลิป"><g fill="none" stroke="'+sh+'" stroke-width="6" stroke-linecap="round"><path d="M128 14H22a12 12 0 0 0 0 24h96"/><path d="M128 26H34"/></g>'+
-    '<rect x="112" y="6" width="182" height="52" rx="12" fill="'+b+'" stroke="'+sh+'" stroke-width="2"/><text x="203" y="41" text-anchor="middle" font-family="Prompt,sans-serif" font-weight="600" font-size="24" fill="'+k+'">โปรดลงนาม</text></svg>';
-  const f=el('figure',{class:'clipprev'});f.innerHTML=svg;f.append(el('figcaption',{},'ตัวอย่างสี: คลิป'+clipSel.body+' · ตัวหนังสือ'+clipSel.ink));return f;
+    clipTag(112,6,182,52,pair,'โปรดลงนาม',24)+'</svg>';
+  const f=el('figure',{class:'clipprev'});f.innerHTML=svg;f.append(el('figcaption',{},CLIP_COLS[clipSel.col].name+' · คลิป'+pair.body+' · ตัวหนังสือ'+pair.ink));return f;
 }
 function addClips(){
   if(totalPieces()+clipSel.qty>MAX_PIECES){showErr('สั่งมากกว่า '+MAX_PIECES+' ชิ้น โปรดติดต่อร้านโดยตรง');return}
-  if(clipSel.body===clipSel.ink){showErr('สีตัวคลิปกับสีตัวหนังสือต้องไม่ใช่สีเดียวกัน');return}
-  const t=(clipSel.text||'').trim();for(let i=0;i<clipSel.qty;i++)clipCart.push({text:t,body:clipSel.body,ink:clipSel.ink});
-  clipSel={qty:1,text:'',body:clipSel.body,ink:clipSel.ink};hideErr();renderConf();renderCart();
+  const t=(clipSel.text||'').trim(),pr=clipPair(clipSel.col,clipSel.color),cn=CLIP_COLS[clipSel.col].name;for(let i=0;i<clipSel.qty;i++)clipCart.push({text:t,col:cn,body:pr.body,ink:pr.ink});
+  clipSel={qty:1,text:'',col:clipSel.col,color:clipSel.color};hideErr();renderConf();renderCart();
   $('#cart').scrollIntoView({behavior:'smooth',block:'center'});
 }
 function addSip(){
@@ -603,7 +614,7 @@ function lines(){ // แต่ละชิ้น = 1 แถวใน Sheet (ต�
   }
   sipCart.forEach(s=>{const p=PRODUCTS.sipbuddy;const [on,pr]=p.options[s.opt];
     out.push({productName:'Sip Buddy',detail:'แบบ '+String(s.design+1).padStart(2,'0')+' '+p.designs[s.design]+' · '+on+(s.name?' · ชื่อ: '+s.name:''),price:pr+' บาท',priceValue:pr})});
-  clipCart.forEach(c=>out.push({productName:'คลิปหนีบเอกสาร',detail:'1 เซ็ต (20 อัน) · คลิปสี'+c.body+' ตัวหนังสือสี'+c.ink+(c.text?' · สลักด้านหลัง: '+c.text:' · ไม่สลัก'),price:'99 บาท',priceValue:99}));
+  clipCart.forEach(c=>out.push({productName:'คลิปหนีบเอกสาร',detail:'1 เซ็ต (20 อัน) · '+c.col+' · คลิปสี'+c.body+' ตัวหนังสือสี'+c.ink+(c.text?' · สลักด้านหลัง: '+c.text:' · ไม่สลัก'),price:'99 บาท',priceValue:99}));
   kcCart.forEach(k=>{const v=kcPrice(k.chars.length);
     // ช่อง orientation/caseColor/strapLabel/collection/letterN/letterColorN ใช้ชื่อเดียวกับฟอร์ม keycap เดิม
     // เพื่อให้ Apps Script ลงคอลัมน์เดิม หักสต๊อก keycap/สายคล้อง และหน้า sale อ่านได้เหมือนเดิม
@@ -625,7 +636,7 @@ function renderCart(){
     el('div',{style:'white-space:nowrap'},fmt(phapPrice(phapN)),el('button',{type:'button',class:'x',onclick:()=>{phapQty={};renderConf();renderCart()}},'ลบ'))));
   sipCart.forEach((s,i)=>{const p=PRODUCTS.sipbuddy;c.append(el('div',{class:'cart-item'},el('div',{},el('b',{},'Sip Buddy · '+String(s.design+1).padStart(2,'0')+' '+p.designs[s.design]),el('div',{class:'hint',style:'margin:0'},p.options[s.opt][0]+(s.name?' · ชื่อ "'+s.name+'"':''))),
     el('div',{style:'white-space:nowrap'},fmt(p.options[s.opt][1]),el('button',{type:'button',class:'x',onclick:()=>{sipCart.splice(i,1);renderCart()}},'ลบ'))))});
-  clipCart.forEach((cl,i)=>{c.append(el('div',{class:'cart-item'},el('div',{},el('b',{},'คลิปหนีบเอกสาร · 1 เซ็ต'),el('div',{class:'hint',style:'margin:0'},'คลิปสี'+cl.body+' · ตัวหนังสือสี'+cl.ink+' · '+(cl.text?'สลักด้านหลัง: "'+cl.text+'"':'ไม่สลักข้อความ'))),
+  clipCart.forEach((cl,i)=>{c.append(el('div',{class:'cart-item'},el('div',{},el('b',{},'คลิปหนีบเอกสาร · 1 เซ็ต'),el('div',{class:'hint',style:'margin:0'},cl.col+' · คลิปสี'+cl.body+' · ตัวหนังสือสี'+cl.ink+' · '+(cl.text?'สลักด้านหลัง: "'+cl.text+'"':'ไม่สลักข้อความ'))),
     el('div',{style:'white-space:nowrap'},fmt(99),el('button',{type:'button',class:'x',onclick:()=>{clipCart.splice(i,1);renderCart()}},'ลบ'))))});
   kcCart.forEach((k,i)=>{const th=kcSvgEl(k,'horizontal',260,56);th.classList.add('thumb');
     c.append(el('div',{class:'cart-item'},el('div',{style:'min-width:0'},el('b',{},'Alphabet Clicker · '+k.chars.map(x=>KC_FACE[x]?'☺':x==='❤'?'♥':x).join('')),
