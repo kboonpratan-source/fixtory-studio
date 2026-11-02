@@ -431,7 +431,8 @@ let clipSel={qty:1,text:'',col:'polar',color:'น้ำเงิน'};
 // คอลเลกชันสีคลิป — ชื่อ/ชุดสีเดียวกับ Alphabet Clicker (ฐาน = ตัวคลิป)
 const CLIP_COLS={pastel:{name:'Pastel',desc:'ตัวอักษรขาว ฐานพาสเทล',fixed:'ink',fixedColor:'ขาว',vary:["ฟ้า","ชมพู","เหลือง","ม่วง"]},
   dark:{name:'Dark mode',desc:'ตัวอักษรดำ ฐานสี',fixed:'ink',fixedColor:'ดำ',vary:["ฟ้า","ชมพู","เหลือง","ม่วง","น้ำตาล"]},
-  polar:{name:'Polar White',desc:'ฐานขาว ตัวอักษรสี',fixed:'body',fixedColor:'ขาว',vary:["น้ำเงิน","ฟ้า","ชมพู","ม่วง"]}};
+  polar:{name:'Polar White',desc:'ฐานขาว ตัวอักษรสี',fixed:'body',fixedColor:'ขาว',vary:["น้ำเงิน","ฟ้า","ชมพู","ม่วง"]},
+  midnight:{name:'Midnight',desc:'ฐานดำ ตัวอักษรสี',fixed:'body',fixedColor:'ดำ',vary:["ขาว","เหลือง","เขียวอมฟ้า","ชมพูอมแดง"]}};
 function clipPair(col,color){const c=CLIP_COLS[col];return c.fixed==='body'?{body:c.fixedColor,ink:color}:{body:color,ink:c.fixedColor}}
 let sipSel={design:null,opt:0,name:''};
 let pcView=0; // สีที่แสดงในรูปตัวอย่างน้องพับชู่
