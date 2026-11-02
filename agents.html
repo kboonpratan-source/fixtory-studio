@@ -33,6 +33,11 @@ table{width:100%;border-collapse:collapse;font-size:14px}th,td{text-align:left;p
 td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
 td button{padding:4px 10px;font-size:12.5px}
 .empty{color:var(--muted);font-size:14px;padding:8px 0}
+.st{display:inline-block;border-radius:99px;padding:0 7px;font-size:11.5px;font-weight:600;margin-left:4px}.st.on{background:#e3f3e8;color:#23683d}.st.off{background:#fbe4e2;color:#b3261e}
+@media (prefers-color-scheme:dark){.st.on{background:#1f3527;color:#8fd3a5}.st.off{background:#3d2020;color:#ff8a80}}
+button.warn{background:var(--bad);color:#fff;border-color:var(--bad)}.ok.bad{color:var(--bad)}
+.alert{background:#fbe4e2;color:#b3261e;border-radius:12px;padding:10px 12px;font-size:13.5px;margin-top:12px}
+@media (prefers-color-scheme:dark){.alert{background:#3d2020;color:#ff8a80}}
 [hidden]{display:none!important}
 </style>
 </head>
@@ -44,7 +49,9 @@ td button{padding:4px 10px;font-size:12.5px}
     <label for="nm">ชื่อตัวแทน</label>
     <p class="hint">ภาษาอังกฤษตัวเล็กหรือตัวเลข ไม่เว้นวรรค เช่น ploy, nan, jum — ชื่อนี้จะขึ้นในคอลัมน์ "Sale/ตัวแทนขาย" ของทุกออเดอร์ที่มาจากลิงก์ของเขา</p>
     <input id="nm" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="เช่น ploy">
+    <div class="alert" id="offWarn" hidden></div>
     <div class="links" id="links" hidden></div>
+    <div class="row" id="regRow" style="margin-top:12px" hidden><button type="button" id="reg">บันทึกชื่อนี้ในรายชื่อตัวแทน</button></div>
   </section>
 
   <section class="card" id="msgCard" hidden>
@@ -54,7 +61,7 @@ td button{padding:4px 10px;font-size:12.5px}
   </section>
 
   <section class="card">
-    <h2>ตัวแทนที่มีออเดอร์แล้ว</h2>
+    <h2>รายชื่อตัวแทน</h2><p class="ok" id="agMsg"></p>
     <div id="agents"><p class="empty">กำลังโหลด…</p></div>
   </section>
 </div>
@@ -73,7 +80,10 @@ function urls(n){const q='?sale='+encodeURIComponent(n);return[
 async function copy(t,el){try{await navigator.clipboard.writeText(t);if(el){el.textContent='คัดลอกแล้ว ✓';setTimeout(()=>el.textContent='',2000)}}catch(e){prompt('คัดลอกลิงก์นี้',t)}}
 function render(){
   const n=clean($('#nm').value);if($('#nm').value!==n)$('#nm').value=n;
-  if(!n){$('#links').hidden=true;$('#msgCard').hidden=true;return}
+  if(!n){$('#links').hidden=true;$('#msgCard').hidden=true;$('#offWarn').hidden=true;$('#regRow').hidden=true;return}
+  const ag=AG[n],off=ag&&ag.status==='เลิกแล้ว';
+  $('#offWarn').hidden=!off;if(off)$('#offWarn').textContent=n+' ถูกปิดใช้งานอยู่ ออเดอร์จากลิงก์นี้จะไม่นับเป็นยอดของตัวแทน — เปิดใช้ได้ที่รายชื่อตัวแทนด้านล่าง';
+  $('#regRow').hidden=!KEY||!!(ag&&ag.listed);$('#reg').onclick=()=>setAgent(n,'ใช้งาน',$('#reg'));
   const U=urls(n);
   $('#links').innerHTML=U.map(x=>`<div class="ln"><b>${x.t}</b><span class="who">${x.who}</span><code>${esc(x.u)}</code><div class="row"><button type="button" data-u="${esc(x.u)}" class="${x.k==='cat'?'pri':''}">คัดลอก</button><a href="${esc(x.u)}" target="_blank" rel="noopener"><button type="button">เปิดดู</button></a><span class="ok"></span></div></div>`).join('');
   $('#links').hidden=false;
@@ -84,14 +94,35 @@ function render(){
   $('#shareMsg').hidden=!navigator.share;$('#shareMsg').onclick=()=>navigator.share({text:m}).catch(()=>{});
 }
 $('#nm').addEventListener('input',render);
+let AG={};// key -> {name,status,o,sum}
 async function loadAgents(){
   if(!KEY){$('#agents').innerHTML='<p class="empty">เข้าสู่ระบบที่หน้า <a href="admin.html" style="color:var(--accent)">หลังร้าน</a> ก่อน เพื่อดูรายชื่อตัวแทน</p>';return}
   let r;try{r=await (await fetch(GAS_URL+'?dash=1&key='+encodeURIComponent(KEY)+'&t='+Date.now())).json()}catch(e){}
   if(!r||r.result!=='success'){$('#agents').innerHTML='<p class="empty">ดึงข้อมูลไม่ได้</p>';return}
-  const m={};r.rows.filter(x=>x.sale&&x.status!=='ยกเลิก'&&x.pay!=='ยกเลิก').forEach(x=>{const a=m[x.sale]=m[x.sale]||{o:new Set(),sum:0,ok:0};a.o.add(x.no);a.sum+=x.price;if(x.pay==='จ่ายแล้ว'&&x.status==='จัดส่งแล้ว')a.ok+=x.price});
-  const E=Object.entries(m).sort((a,b)=>b[1].sum-a[1].sum);
-  $('#agents').innerHTML=E.length?'<table><thead><tr><th>ตัวแทน</th><th class="num">ออเดอร์</th><th class="num">ยอดขาย</th><th></th></tr></thead><tbody>'+E.map(([k,v])=>`<tr><td>${esc(k)}</td><td class="num">${v.o.size}</td><td class="num">${baht(v.sum)}</td><td style="text-align:right"><button type="button" data-n="${esc(k)}">ดูลิงก์</button></td></tr>`).join('')+'</tbody></table>':'<p class="empty">ยังไม่มีออเดอร์ที่มาจากตัวแทน</p>';
+  AG={};const get=n=>{const k=n.toLowerCase();return AG[k]=AG[k]||{name:n,status:'ใช้งาน',o:new Set(),sum:0,listed:false}};
+  (r.agents||[]).forEach(a=>{const g=get(a.name);g.status=a.status||'ใช้งาน';g.listed=true});
+  r.rows.filter(x=>x.sale&&x.status!=='ยกเลิก'&&x.pay!=='ยกเลิก').forEach(x=>{const g=get(x.sale);g.o.add(x.no);g.sum+=x.price});
+  renderAgents();render();
+}
+let ASK=null;
+function renderAgents(){
+  const E=Object.values(AG).sort((a,b)=>(a.status==='เลิกแล้ว')-(b.status==='เลิกแล้ว')||b.sum-a.sum);
+  $('#agents').innerHTML=E.length?'<table><thead><tr><th>ตัวแทน</th><th class="num">ออเดอร์</th><th class="num">ยอดขาย</th><th></th></tr></thead><tbody>'+E.map(a=>{const off=a.status==='เลิกแล้ว',k=esc(a.name);
+    return `<tr${off?' style="opacity:.6"':''}><td>${k} <span class="st ${off?'off':'on'}">${off?'เลิกแล้ว':'ใช้งาน'}</span></td><td class="num">${a.o.size}</td><td class="num">${baht(a.sum)}</td><td style="text-align:right;white-space:nowrap">`+
+      (ASK===a.name.toLowerCase()?`<button type="button" class="${off?'pri':'warn'}" data-do="${k}" data-st="${off?'ใช้งาน':'เลิกแล้ว'}">${off?'ยืนยันเปิด':'ยืนยันปิด'}</button> <button type="button" data-no>ไม่</button>`
+        :`${off?'':`<button type="button" data-n="${k}">ดูลิงก์</button> `}<button type="button" data-ask="${k}">${off?'เปิดใช้':'ปิดใช้'}</button>`)+`</td></tr>`}).join('')+'</tbody></table>'+
+    (ASK&&AG[ASK]&&AG[ASK].status!=='เลิกแล้ว'?`<p class="hint" style="margin-top:10px">ปิดใช้แล้ว: ลูกค้าที่สั่งผ่านลิงก์ของ ${esc(AG[ASK].name)} ยังสั่งได้ แต่จะนับเป็นสั่งตรง (ไม่เข้าค่าคอม) และ ${esc(AG[ASK].name)} จะแก้สถานะออเดอร์ไม่ได้ ยอดเก่ายังอยู่ครบ</p>`:'')
+    :'<p class="empty">ยังไม่มีตัวแทน</p>';
   $('#agents').querySelectorAll('button[data-n]').forEach(b=>b.onclick=()=>{$('#nm').value=b.dataset.n;render();scrollTo({top:0,behavior:'smooth'})});
+  $('#agents').querySelectorAll('button[data-ask]').forEach(b=>b.onclick=()=>{ASK=b.dataset.ask.toLowerCase();renderAgents()});
+  $('#agents').querySelectorAll('button[data-no]').forEach(b=>b.onclick=()=>{ASK=null;renderAgents()});
+  $('#agents').querySelectorAll('button[data-do]').forEach(b=>b.onclick=()=>setAgent(b.dataset.do,b.dataset.st,b));
+}
+async function setAgent(name,status,btn){
+  if(btn){btn.disabled=true;btn.textContent='กำลังบันทึก…'}
+  let r=null;try{r=await (await fetch(GAS_URL,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({action:'setAgent',key:KEY,name,status})})).json()}catch(e){}
+  if(r&&r.result==='success'){const k=name.toLowerCase();AG[k]=AG[k]||{name,o:new Set(),sum:0};AG[k].status=r.status;AG[k].listed=true;ASK=null;renderAgents();render();$('#agMsg').className='ok';$('#agMsg').textContent=`${name}: ${r.status==='เลิกแล้ว'?'ปิดใช้งานแล้ว':'เปิดใช้งานแล้ว'} ✓`}
+  else{ASK=null;renderAgents();$('#agMsg').className='ok bad';$('#agMsg').textContent='บันทึกไม่สำเร็จ'+(r&&r.message?': '+r.message:' — ตรวจว่าติดตั้ง Agents.gs และ Deploy แล้ว')}
 }
 loadAgents();
 </script>
