@@ -133,17 +133,17 @@ button.pri{font:inherit;font-weight:600;border:0;border-radius:999px;padding:10p
     <div class="layout">
       <div class="col">
         <div class="status o1">
-          <a class="st s-wait" href="orders.html#f=wait"><span class="lb">รอโอน</span><b id="nWait">–</b><span class="am" id="aWait">&nbsp;</span><span class="go">→</span></a>
-          <a class="st s-make" href="orders.html#f=make"><span class="lb">จ่ายแล้ว รอส่ง</span><b id="nMake">–</b><span class="am">ต้องผลิต / แพ็ก</span><span class="go">→</span></a>
-          <a class="st s-new" href="orders.html#f=all"><span class="lb">ออเดอร์วันนี้</span><b id="nToday">–</b><span class="am" id="aToday">&nbsp;</span><span class="go">→</span></a>
+          <a class="st s-wait" href="orders.html#f=wait" target="_blank" rel="noopener"><span class="lb">รอโอน</span><b id="nWait">–</b><span class="am" id="aWait">&nbsp;</span><span class="go">→</span></a>
+          <a class="st s-make" href="orders.html#f=make" target="_blank" rel="noopener"><span class="lb">จ่ายแล้ว รอส่ง</span><b id="nMake">–</b><span class="am">ต้องผลิต / แพ็ก</span><span class="go">→</span></a>
+          <a class="st s-new" href="orders.html#f=all" target="_blank" rel="noopener"><span class="lb">ออเดอร์วันนี้</span><b id="nToday">–</b><span class="am" id="aToday">&nbsp;</span><span class="go">→</span></a>
         </div>
         <section class="card o3">
-          <h2>ยอดขาย 7 วันล่าสุด <a href="insights.html">ดูทั้งหมด →</a></h2>
+          <h2>ยอดขาย 7 วันล่าสุด <a href="insights.html" target="_blank" rel="noopener">ดูทั้งหมด →</a></h2>
           <div class="wsum" id="wsum"></div>
           <div class="week" id="week" role="img" aria-label="ยอดขายรายวัน 7 วันล่าสุด"></div>
         </section>
         <section class="card o4">
-          <h2>ออเดอร์ล่าสุด <a href="orders.html">จัดการออเดอร์ →</a></h2>
+          <h2>ออเดอร์ล่าสุด <a href="orders.html" target="_blank" rel="noopener">จัดการออเดอร์ →</a></h2>
           <div class="orders" id="orders"></div>
         </section>
       </div>
@@ -187,7 +187,7 @@ const I={
 };
 const svg=k=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${I[k]}</svg>`;
 let KEY='';
-function tool(t){const tag=t.btn?'button':'a',attr=t.btn?`type="button" id="${t.id}"`:`href="${t.href}"${t.ext?' target="_blank" rel="noopener"':''}${t.id?` id="${t.id}"`:''}`;
+function tool(t){const tag=t.btn?'button':'a',attr=t.btn?`type="button" id="${t.id}"`:`href="${t.href}" target="_blank" rel="noopener"${t.id?` id="${t.id}"`:''}`;
   return `<${tag} class="tool" ${attr}><i class="ic">${svg(t.ic)}</i><span class="tx"><b>${t.t}</b><span${t.subId?` id="${t.subId}"`:''}>${t.s}</span></span><span class="ar">›</span></${tag}>`}
 function renderTools(){
   $('#toolsMain').innerHTML=[
@@ -234,7 +234,7 @@ async function load(){
   // ออเดอร์ล่าสุด 6 รายการ
   const rec=A.sort((a,b)=>b.d-a.d||b.no.localeCompare(a.no)).slice(0,6);
   $('#orders').innerHTML=rec.length?rec.map(o=>{const st=o.status==='จัดส่งแล้ว'?['p-done','ส่งแล้ว']:o.pay==='จ่ายแล้ว'?['p-make','รอส่ง']:['p-wait','รอโอน'];
-    return `<a class="od" href="orders.html#${encodeURIComponent(o.no)}"><span class="no">${esc(o.no)}</span><span class="dt">${o.d.toLocaleDateString('th-TH',{day:'numeric',month:'short'})}</span><span class="it">${Object.entries(o.items).map(([k,v])=>esc(k)+(v>1?' × '+v:'')).join(' · ')}</span><span class="rt"><b>${baht(o.sum+o.ship)}</b><span class="pill ${st[0]}">${st[1]}</span></span></a>`}).join(''):'<p class="empty">ยังไม่มีออเดอร์</p>';
+    return `<a class="od" href="orders.html#${encodeURIComponent(o.no)}" target="_blank" rel="noopener"><span class="no">${esc(o.no)}</span><span class="dt">${o.d.toLocaleDateString('th-TH',{day:'numeric',month:'short'})}</span><span class="it">${Object.entries(o.items).map(([k,v])=>esc(k)+(v>1?' × '+v:'')).join(' · ')}</span><span class="rt"><b>${baht(o.sum+o.ship)}</b><span class="pill ${st[0]}">${st[1]}</span></span></a>`}).join(''):'<p class="empty">ยังไม่มีออเดอร์</p>';
   $('#asof').textContent='อัปเดต '+new Date(r.at).toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'});
 }
 $('#go').onclick=()=>{KEY=$('#key').value.trim();if(KEY){$('#loginMsg').textContent='';load()}};
