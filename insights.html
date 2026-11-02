@@ -1,0 +1,275 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<title>ยอดขาย · Fixtory Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F6F1EB;--surface:#fff;--sunk:#F3ECE4;--ink:#2C2420;--muted:#7A6E66;--faint:#A89D94;--line:#E6DDD3;--grid:#EFE8E0;--accent:#C4704B;--on-accent:#fff;--bad:#b3261e;
+  --s1:#2a78d6;--s2:#eb6834;--s3:#1baf7a;--s4:#eda100;--bar:#C4704B;
+  --ok:#23683d;--ok-bg:#e3f3e8;--warn:#8a5a12;--warn-bg:#fdf0dc;--info:#1c5cab;--info-bg:#e3eefb}
+@media (prefers-color-scheme:dark){:root{--bg:#1d1916;--surface:#2a2420;--sunk:#231e1b;--ink:#f3ebe3;--muted:#b5a89c;--faint:#8a7e74;--line:#433932;--grid:#3a312b;--accent:#e08a62;--on-accent:#1d1916;--bad:#ff8a80;
+  --s1:#3987e5;--s2:#d95926;--s3:#199e70;--s4:#c98500;--bar:#e08a62;
+  --ok:#8fd3a5;--ok-bg:#1f3527;--warn:#f0c27a;--warn-bg:#3a2d17;--info:#86b6ef;--info-bg:#1b2a3d}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Sarabun,system-ui,sans-serif;font-size:15px;-webkit-text-size-adjust:100%}
+.wrap{max-width:980px;margin:0 auto;padding:16px 16px 48px}
+h1{font-size:21px;margin:4px 0 2px}.sub{color:var(--muted);font-size:13px;margin:0}
+h2{font-size:16px;margin:0 0 10px}
+.card{background:var(--surface);border-radius:16px;padding:14px 16px;border:1px solid var(--line);margin-bottom:12px;min-width:0}
+input[type=password]{width:100%;font:inherit;padding:11px 12px;border-radius:10px;border:1.5px solid var(--line);background:var(--bg);color:var(--ink)}
+button{font:inherit;font-weight:600;border:0;border-radius:999px;padding:10px 18px;cursor:pointer;background:var(--bg);color:var(--ink);box-shadow:inset 0 0 0 1.5px var(--line)}
+button.pri{background:var(--accent);color:var(--on-accent);box-shadow:none}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.grow{flex:1}
+.top{display:flex;gap:10px;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;margin-bottom:12px}
+.seg{display:inline-flex;background:var(--sunk);border-radius:999px;padding:3px;gap:2px;flex-wrap:wrap}
+.seg button{box-shadow:none;background:transparent;padding:6px 12px;font-size:13.5px;font-weight:600;color:var(--muted)}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.08)}
+.filters{position:sticky;top:0;z-index:5;background:var(--bg);padding:8px 0;display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:6px}
+.tiles{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:12px}
+.tile{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px 14px;min-width:0}
+.tile .k{font-size:12.5px;color:var(--muted)}.tile .v{font-size:24px;font-weight:800;line-height:1.2;margin-top:2px;font-variant-numeric:tabular-nums}
+.tile .s{font-size:12px;color:var(--muted);margin-top:2px}
+.grid2{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:12px}
+.pipe{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.pipe div{border-radius:12px;padding:10px 12px}.pipe b{display:block;font-size:22px;font-variant-numeric:tabular-nums}.pipe span{font-size:12.5px}
+.p-wait{background:var(--warn-bg);color:var(--warn)}.p-make{background:var(--info-bg);color:var(--info)}.p-done{background:var(--ok-bg);color:var(--ok)}
+.legend{display:flex;gap:12px;flex-wrap:wrap;font-size:12.5px;color:var(--muted);margin:2px 0 8px}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+.chart{position:relative}.chart svg{display:block;width:100%;height:auto;overflow:visible}
+.chart .axis text{fill:var(--faint);font-size:11px;font-family:Sarabun,sans-serif}
+.tip{position:absolute;pointer-events:none;background:var(--ink);color:var(--surface);border-radius:10px;padding:8px 10px;font-size:12.5px;line-height:1.5;white-space:nowrap;transform:translate(-50%,-100%);margin-top:-8px;z-index:3}
+.tip i{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:5px}
+.hb{display:grid;gap:9px}
+.hb .r{display:grid;grid-template-columns:130px minmax(0,1fr) 126px;gap:10px;align-items:center;font-size:13.5px}
+.hb .l{display:flex;align-items:center;gap:6px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.hb .sw{width:12px;height:12px;border-radius:50%;flex:none;box-shadow:inset 0 0 0 1px rgba(0,0,0,.15)}
+.hb .t{height:12px;background:var(--grid);border-radius:4px;overflow:hidden}
+.hb .f{height:100%;border-radius:0 4px 4px 0}
+.hb .n{font-variant-numeric:tabular-nums;color:var(--muted);font-size:12.5px;text-align:right;white-space:nowrap}
+.hb .n b{color:var(--ink);font-weight:700}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th,td{text-align:left;padding:8px 6px;border-bottom:1px solid var(--line)}th{color:var(--muted);font-weight:600;font-size:12.5px}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+.ptabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.ptabs button{display:flex;align-items:center;gap:6px;padding:8px 14px;font-size:14px}
+.ptabs button i{width:10px;height:10px;border-radius:3px}
+.ptabs button[aria-pressed="true"]{box-shadow:inset 0 0 0 2px var(--accent)}
+.split{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.mini{display:flex;gap:18px;flex-wrap:wrap;margin-bottom:12px}.mini div{font-size:12.5px;color:var(--muted)}.mini b{display:block;font-size:20px;color:var(--ink);font-variant-numeric:tabular-nums}
+.empty{color:var(--muted);text-align:center;padding:20px 8px;font-size:14px}
+.msg{font-size:14px;margin-top:8px}.msg.bad{color:var(--bad)}
+.link{background:none;box-shadow:none;padding:0;color:var(--accent);font-weight:600;font-size:13.5px}
+details summary{cursor:pointer;color:var(--muted);font-size:13px;margin-top:10px}
+[hidden]{display:none!important}
+@media (prefers-color-scheme:dark){.hb .sw{box-shadow:inset 0 0 0 1px rgba(255,255,255,.35)}}
+@media (max-width:760px){.hb .r{grid-template-columns:96px minmax(0,1fr) 112px;gap:8px}.tiles{grid-template-columns:repeat(2,minmax(0,1fr))}.grid2,.split{grid-template-columns:1fr}.tile .v{font-size:21px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <div><h1>ยอดขาย Fixtory Studio</h1><p class="sub" id="asof">ข้อมูลสดจากชีต Fixtory Orders</p></div>
+    <div class="row" id="topBtns" hidden><button id="reload" style="padding:7px 14px;font-size:13.5px">รีเฟรช</button><a href="labels.html" style="color:var(--accent);font-weight:600;font-size:13.5px;text-decoration:none">พิมพ์ใบปะหน้า →</a></div>
+  </div>
+
+  <section id="login" class="card" hidden>
+    <label for="key" style="font-weight:600">รหัสร้าน</label>
+    <p class="sub" style="margin:2px 0 8px">รหัสเดียวกับหน้าใบปะหน้าและหน้าสรุปค่าคอม (ADMIN_KEY) ใส่ครั้งเดียว เครื่องนี้จะจำไว้</p>
+    <div class="row"><input id="key" type="password" autocomplete="current-password" class="grow"><button class="pri" id="go">เข้า</button></div>
+    <div class="msg" id="loginMsg"></div>
+  </section>
+
+  <div id="loading" class="empty" hidden>กำลังโหลดข้อมูล…</div>
+
+  <main id="main" hidden>
+    <div class="filters">
+      <div class="seg" id="range" role="group" aria-label="ช่วงเวลา"></div>
+    </div>
+
+    <div class="tiles" id="tiles"></div>
+
+    <div class="grid2">
+      <section class="card"><h2 id="trendTitle">ยอดขายรายวัน</h2><div class="legend" id="trendLegend"></div><div class="chart" id="trend"></div>
+        <details><summary>ดูเป็นตาราง</summary><div id="trendTable"></div></details></section>
+      <div>
+        <section class="card"><h2>งานที่ต้องตามต่อ</h2><div class="pipe" id="pipe"></div></section>
+        <section class="card"><h2>ยอดขายแยกสินค้า</h2><div class="hb" id="byProduct"></div></section>
+      </div>
+    </div>
+
+    <section class="card">
+      <h2>เจาะรายสินค้า</h2>
+      <div class="ptabs" id="ptabs"></div>
+      <div id="pdetail"></div>
+    </section>
+
+    <section class="card" id="saleCard"><h2>ยอดขายแยกตามเซลล์</h2><div id="bySale"></div></section>
+    <p class="sub">นับเฉพาะออเดอร์ที่ไม่ได้ยกเลิก · ยอดขาย = ค่าสินค้า ไม่รวมค่าส่ง · ออเดอร์จากฟอร์ม keycap เดิมนับเป็น Alphabet Clicker</p>
+  </main>
+</div>
+
+<script>
+const GAS_URL="https://script.google.com/macros/s/AKfycbwfy2uHH4QJOM851_HBz3eoUCbwBvnZo1fGzf8DNChs5hS03Ml-335eATS3XTbifVYo9Q/exec";
+const $=s=>document.querySelector(s);
+const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const baht=n=>'฿'+Math.round(n).toLocaleString('th-TH');
+const store={get(k){try{return localStorage.getItem(k)||''}catch(e){return''}},set(k,v){try{v?localStorage.setItem(k,v):localStorage.removeItem(k)}catch(e){}}};
+// สินค้า 4 ตัว = สีประจำตัวคงที่ (ลำดับ slot 1–4 ไม่สลับตามอันดับ)
+const PRODUCTS=[{id:'phapchoo',name:'น้องพับชู่',v:'--s1'},{id:'sip',name:'Sip Buddy',v:'--s2'},{id:'keycap',name:'Alphabet Clicker',v:'--s3'},{id:'clips',name:'คลิปหนีบเอกสาร',v:'--s4'}];
+const PBY=Object.fromEntries(PRODUCTS.map(p=>[p.id,p]));
+const css=v=>getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+const SW={"ม่วงลาเวนเดอร์":"#CDB8F0","ชมพู":"#F6C3D3","ฟ้า":"#9EC3F0","เขียวมิ้นต์":"#B8E3CF","เหลือง":"#F7E3A1","ครีม":"#EFE9E1"};
+const KC_HEX={"ฟ้า":"#7FC4E0","ชมพู":"#EFA9C6","ม่วง":"#B7A3E0","เหลือง":"#F2D34D","เนื้อ":"#E6C09C","ขาว":"#F5F5F2","ดำ":"#2B2B2B","ส้ม":"#F0954A","แดง":"#E0435A","เขียว":"#7FC97F","มิ้นท์":"#8FDDC6","ทราย":"#D8C6A8","น้ำเงิน":"#3F63C7","น้ำตาล":"#9A6B44","ชมพูอมแดง":"#E85C7A","เขียวอมฟ้า":"#3FB6B0"};
+
+let KEY='',RAW=null,RANGE=store.get('fxDashRange')||'30',PTAB='phapchoo';
+const RANGES=[['month','เดือนนี้'],['30','30 วัน'],['90','90 วัน'],['all','ทั้งหมด']];
+
+function productOf(r){const p=r.product;
+  if(/พับชู่/.test(p))return'phapchoo';if(/sip/i.test(p))return'sip';if(/คลิป/.test(p))return'clips';return'keycap'}
+function show(v){$('#login').hidden=v!=='login';$('#main').hidden=v!=='main';$('#loading').hidden=v!=='loading';$('#topBtns').hidden=v!=='main'}
+
+async function load(){
+  show('loading');let r;
+  try{r=await (await fetch(GAS_URL+'?dash=1&key='+encodeURIComponent(KEY)+'&t='+Date.now())).json()}
+  catch(e){show('login');msg('เชื่อมต่อระบบไม่ได้ ถ้าเพิ่งติดตั้ง ตรวจว่าเพิ่มบรรทัดใน doGet และ Deploy เป็น New version แล้ว');return}
+  if(!r||r.result!=='success'){store.set('fxLabelKey','');show('login');msg((r&&r.message)||'โหลดไม่สำเร็จ');return}
+  store.set('fxLabelKey',KEY);
+  RAW=r.rows.map(x=>Object.assign(x,{date:new Date(x.d),pid:productOf(x)})).filter(x=>!isNaN(x.date));
+  $('#asof').textContent='ข้อมูลสดจากชีต Fixtory Orders · อัปเดต '+new Date(r.at).toLocaleString('th-TH',{dateStyle:'medium',timeStyle:'short'});
+  show('main');render();
+}
+function msg(t){$('#loginMsg').className='msg bad';$('#loginMsg').textContent=t}
+
+function inRange(rows){
+  if(RANGE==='all')return rows;const now=new Date();let from;
+  if(RANGE==='month')from=new Date(now.getFullYear(),now.getMonth(),1);else{from=new Date(now);from.setHours(0,0,0,0);from.setDate(from.getDate()-(+RANGE-1))}
+  return rows.filter(r=>r.date>=from);
+}
+const live=r=>r.status!=='ยกเลิก'&&r.pay!=='ยกเลิก';
+
+function render(){
+  $('#range').innerHTML=RANGES.map(([k,l])=>`<button type="button" data-k="${k}" aria-pressed="${RANGE===k}">${l}</button>`).join('');
+  $('#range').querySelectorAll('button').forEach(b=>b.onclick=()=>{RANGE=b.dataset.k;store.set('fxDashRange',RANGE);render()});
+  const rows=inRange(RAW).filter(live);
+  const orders={};rows.forEach(r=>{(orders[r.no]=orders[r.no]||{no:r.no,date:r.date,rows:[],pay:r.pay,status:r.status,sale:r.sale}).rows.push(r)});
+  const O=Object.values(orders);
+  const sales=rows.reduce((a,r)=>a+r.price,0),paid=rows.filter(r=>r.pay==='จ่ายแล้ว').reduce((a,r)=>a+r.price,0);
+  const ship=rows.reduce((a,r)=>a+r.ship,0);
+  // ---- tiles
+  $('#tiles').innerHTML=[
+    ['ยอดขาย',baht(sales),'จ่ายแล้ว '+baht(paid)+' · รอโอน '+baht(sales-paid)],
+    ['ออเดอร์',O.length.toLocaleString('th-TH'),'ค่าส่งที่เก็บได้ '+baht(ship)],
+    ['จำนวนชิ้น',rows.length.toLocaleString('th-TH'),O.length?('เฉลี่ย '+(rows.length/O.length).toFixed(1)+' ชิ้น/ออเดอร์'):'—'],
+    ['ยอดเฉลี่ยต่อออเดอร์',O.length?baht(sales/O.length):'—','ค่าสินค้า ไม่รวมค่าส่ง']
+  ].map(([k,v,s])=>`<div class="tile"><div class="k">${k}</div><div class="v">${v}</div><div class="s">${s}</div></div>`).join('');
+  // ---- pipeline (ทั้งหมด ไม่ขึ้นกับช่วงเวลา เพราะเป็นงานค้าง)
+  const all={};RAW.filter(live).forEach(r=>{(all[r.no]=all[r.no]||{pay:r.pay,status:r.status,sum:0}).sum+=r.price});
+  const A=Object.values(all),wait=A.filter(o=>o.pay!=='จ่ายแล้ว'&&o.status!=='จัดส่งแล้ว'),make=A.filter(o=>o.pay==='จ่ายแล้ว'&&o.status!=='จัดส่งแล้ว'),done=O.filter(o=>o.status==='จัดส่งแล้ว');
+  $('#pipe').innerHTML=`<div class="p-wait"><span>รอโอน</span><b>${wait.length}</b><span>${baht(wait.reduce((a,o)=>a+o.sum,0))}</span></div>`+
+    `<div class="p-make"><span>จ่ายแล้ว รอส่ง</span><b>${make.length}</b><span>ต้องผลิต/แพ็ก</span></div>`+
+    `<div class="p-done"><span>ส่งแล้ว</span><b>${done.length}</b><span>ในช่วงที่เลือก</span></div>`;
+  // ---- by product
+  const per=PRODUCTS.map(p=>{const rr=rows.filter(r=>r.pid===p.id);return{p,sum:rr.reduce((a,r)=>a+r.price,0),n:rr.length}});
+  const maxP=Math.max(1,...per.map(x=>x.sum));
+  $('#byProduct').innerHTML=per.map(x=>`<div class="r"><span class="l"><i class="sw" style="background:var(${x.p.v});border-radius:3px"></i>${x.p.name}</span><div class="t"><div class="f" style="width:${x.sum/maxP*100}%;background:var(${x.p.v})"></div></div><span class="n"><b>${baht(x.sum)}</b> · ${x.n} ชิ้น</span></div>`).join('');
+  renderTrend(rows);renderProduct(rows);renderSales(rows);
+}
+
+// ---------- กราฟแท่งซ้อนรายวัน/รายเดือน (แยกสีตามสินค้า) ----------
+function renderTrend(rows){
+  const now=new Date();let monthly=RANGE==='all';let start,end=new Date(now);end.setHours(0,0,0,0);
+  if(RANGE==='month')start=new Date(now.getFullYear(),now.getMonth(),1);else if(RANGE!=='all'){start=new Date(end);start.setDate(start.getDate()-(+RANGE-1))}
+  else{const min=RAW.length?new Date(Math.min(...RAW.map(r=>r.date))):now;start=new Date(min.getFullYear(),min.getMonth(),1);}
+  const keyOf=d=>monthly?d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0'):d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+  const buckets=[];const cur=new Date(start);
+  while(cur<=end||(monthly&&keyOf(cur)<=keyOf(end))){buckets.push({k:keyOf(cur),d:new Date(cur),v:{}});if(monthly)cur.setMonth(cur.getMonth()+1);else cur.setDate(cur.getDate()+1);if(buckets.length>400)break}
+  const B=Object.fromEntries(buckets.map(b=>[b.k,b]));
+  rows.forEach(r=>{const b=B[keyOf(r.date)];if(b)b.v[r.pid]=(b.v[r.pid]||0)+r.price});
+  $('#trendTitle').textContent=monthly?'ยอดขายรายเดือน':'ยอดขายรายวัน';
+  $('#trendLegend').innerHTML=PRODUCTS.map(p=>`<span><i style="background:var(${p.v})"></i>${p.name}</span>`).join('');
+  const W=Math.max(300,Math.round($('#trend').clientWidth||640)),H=W<480?220:240,pl=40,pr=6,pt=10,pb=26,iw=W-pl-pr,ih=H-pt-pb;
+  const tot=b=>PRODUCTS.reduce((a,p)=>a+(b.v[p.id]||0),0);
+  const max=Math.max(...buckets.map(tot),0);
+  if(!max){$('#trend').innerHTML='<p class="empty">ยังไม่มียอดขายในช่วงนี้</p>';$('#trendTable').innerHTML='';return}
+  const step=niceStep(max/4),top=Math.ceil(max/step)*step,y=v=>pt+ih-(v/top)*ih;
+  const n=buckets.length,slot=iw/n,bw=Math.max(2,Math.min(28,slot*.62));
+  const fmtB=b=>monthly?b.d.toLocaleDateString('th-TH',{month:'short',year:'2-digit'}):b.d.toLocaleDateString('th-TH',{day:'numeric',month:'short'});
+  let s=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${$('#trendTitle').textContent}"><g class="axis">`;
+  for(let v=0;v<=top+1e-9;v+=step){s+=`<line x1="${pl}" x2="${W-pr}" y1="${y(v)}" y2="${y(v)}" stroke="var(--grid)" stroke-width="1"/><text x="${pl-6}" y="${y(v)+4}" text-anchor="end">${v>=1000?(v/1000)+'k':v}</text>`}
+  const every=Math.ceil(n/(W/70));
+  buckets.forEach((b,i)=>{if(i%every===0||i===n-1&&n<=12)s+=`<text x="${pl+slot*i+slot/2}" y="${H-8}" text-anchor="middle">${fmtB(b)}</text>`});
+  s+='</g>';
+  buckets.forEach((b,i)=>{const x=pl+slot*i+(slot-bw)/2;let acc=0;const segs=PRODUCTS.filter(p=>b.v[p.id]);
+    segs.forEach((p,j)=>{const v=b.v[p.id],y1=y(acc+v),y0=y(acc),h=Math.max(0,y0-y1-(j>0?2:0));const last=j===segs.length-1,r=Math.min(4,bw/2,h);
+      s+= last?`<path d="M${x} ${y0-(j>0?2:0)}V${y1+r}Q${x} ${y1} ${x+r} ${y1}H${x+bw-r}Q${x+bw} ${y1} ${x+bw} ${y1+r}V${y0-(j>0?2:0)}Z" fill="var(${p.v})"/>`:`<rect x="${x}" y="${y1}" width="${bw}" height="${h}" fill="var(${p.v})"/>`;acc+=v});
+    s+=`<rect class="hit" data-i="${i}" x="${pl+slot*i}" y="${pt}" width="${slot}" height="${ih}" fill="transparent"/>`});
+  s+=`<line x1="${pl}" x2="${W-pr}" y1="${y(0)}" y2="${y(0)}" stroke="var(--line)" stroke-width="1.5"/></svg><div class="tip" hidden></div>`;
+  $('#trend').innerHTML=s;
+  const tip=$('#trend .tip'),svg=$('#trend svg');
+  svg.querySelectorAll('.hit').forEach(h=>{const show=()=>{const b=buckets[+h.dataset.i],t=tot(b);
+      tip.innerHTML=`<b>${fmtB(b)}</b> · ${baht(t)}`+PRODUCTS.filter(p=>b.v[p.id]).map(p=>`<div><i style="background:var(${p.v})"></i>${p.name} ${baht(b.v[p.id])}</div>`).join('');
+      const bb=svg.getBoundingClientRect(),sc=bb.width/W,cx=(+h.getAttribute('x')+slot/2)*sc;
+      tip.style.left=Math.min(Math.max(cx,80),bb.width-80)+'px';tip.style.top=(y(t)*sc)+'px';tip.hidden=!t};
+    h.addEventListener('mouseenter',show);h.addEventListener('click',show);h.addEventListener('mouseleave',()=>tip.hidden=true)});
+  $('#trendTable').innerHTML='<table><thead><tr><th>ช่วง</th>'+PRODUCTS.map(p=>`<th class="num">${p.name}</th>`).join('')+'<th class="num">รวม</th></tr></thead><tbody>'+
+    buckets.filter(b=>tot(b)).map(b=>`<tr><td>${fmtB(b)}</td>${PRODUCTS.map(p=>`<td class="num">${b.v[p.id]?baht(b.v[p.id]):'–'}</td>`).join('')}<td class="num"><b>${baht(tot(b))}</b></td></tr>`).join('')+'</tbody></table>';
+}
+function niceStep(x){const p=Math.pow(10,Math.floor(Math.log10(x||1))),f=x/p;return(f<=1?1:f<=2?2:f<=5?5:10)*p}
+
+// ---------- เจาะรายสินค้า ----------
+function count(list){const m={};list.forEach(k=>{if(k)m[k]=(m[k]||0)+1});return Object.entries(m).sort((a,b)=>b[1]-a[1])}
+function bars(title,entries,opt={}){
+  if(!entries.length)return`<div><h3 style="font-size:14px;margin:0 0 8px">${title}</h3><p class="empty" style="padding:8px">ยังไม่มีข้อมูล</p></div>`;
+  const max=Math.max(...entries.map(e=>e[1])),tot=entries.reduce((a,e)=>a+e[1],0),list=entries.slice(0,opt.top||8),rest=entries.slice(opt.top||8);
+  if(rest.length)list.push(['อื่น ๆ ('+rest.length+')',rest.reduce((a,e)=>a+e[1],0)]);
+  return`<div><h3 style="font-size:14px;margin:0 0 8px">${title}</h3><div class="hb">`+list.map(([k,v])=>{const sw=opt.sw&&opt.sw[k];
+    return`<div class="r"><span class="l">${sw?`<i class="sw" style="background:${sw}"></i>`:''}${esc(k)}</span><div class="t"><div class="f" style="width:${v/max*100}%;background:var(--bar)"></div></div><span class="n"><b>${v}</b> ${opt.unit||'ชิ้น'} · ${Math.round(v/tot*100)}%</span></div>`}).join('')+'</div></div>';
+}
+function renderProduct(rows){
+  $('#ptabs').innerHTML=PRODUCTS.map(p=>`<button type="button" data-id="${p.id}" aria-pressed="${PTAB===p.id}"><i style="background:var(${p.v})"></i>${p.name}</button>`).join('');
+  $('#ptabs').querySelectorAll('button').forEach(b=>b.onclick=()=>{PTAB=b.dataset.id;renderProduct(rows)});
+  const rr=rows.filter(r=>r.pid===PTAB),ord=new Set(rr.map(r=>r.no)).size,sum=rr.reduce((a,r)=>a+r.price,0);
+  let h=`<div class="mini"><div>ยอดขาย<b>${baht(sum)}</b></div><div>ชิ้น<b>${rr.length}</b></div><div>ออเดอร์<b>${ord}</b></div><div>เฉลี่ยต่อชิ้น<b>${rr.length?baht(sum/rr.length):'—'}</b></div></div>`;
+  if(!rr.length){$('#pdetail').innerHTML=h+'<p class="empty">ยังไม่มีออเดอร์ของสินค้านี้ในช่วงที่เลือก</p>';return}
+  let blocks=[];
+  if(PTAB==='phapchoo'){
+    blocks.push(bars('สีที่ขายดี',count(rr.map(r=>(r.detail.match(/^สี\s*([^()]+?)(\s*\(|$)/)||[])[1]||'ไม่ระบุ')),{sw:SW}));
+    const perOrder=Object.values(rr.reduce((m,r)=>{m[r.no]=(m[r.no]||0)+1;return m},{}));
+    blocks.push(bars('จำนวนต่อออเดอร์',count(perOrder.map(n=>n>=3?'3 ชิ้นขึ้นไป':n+' ชิ้น')),{unit:'ออเดอร์'}));
+  }else if(PTAB==='sip'){
+    blocks.push(bars('แบบที่ขายดี',count(rr.map(r=>{const m=r.detail.match(/แบบ\s*(\d+)\s*([^·]+)/);return m?m[1]+' '+m[2].trim():'ไม่ระบุ'})),{top:13}));
+    blocks.push(bars('ตัวเลือก',count(rr.map(r=>/สลักชื่อ/.test(r.detail)?'หลายสี + สลักชื่อ (790)':/หลายสี/.test(r.detail)?'หลายสี Color Pop (690)':/สีเดียว/.test(r.detail)?'สีเดียว (590)':'ไม่ระบุ'))));
+  }else if(PTAB==='keycap'){
+    blocks.push(bars('คอลเลกชัน',count(rr.map(r=>r.col||(r.detail.match(/Pastel|Dark mode|Polar White/)||[])[0]||'ไม่ระบุ'))));
+    blocks.push(bars('สีเคส',count(rr.map(r=>r.kcCase)),{sw:KC_HEX}));
+    blocks.push(bars('สายคล้อง',count(rr.map(r=>r.strap))));
+    const L=[];rr.forEach(r=>r.letters.forEach(([l])=>L.push(l)));
+    blocks.push(bars('ตัวอักษรที่สั่งบ่อย',count(L),{unit:'ตัว',top:10}));
+    const nk=rr.map(r=>r.letters.length).filter(Boolean);
+    h=h.replace('</div></div>',`</div><div>ตัวอักษรเฉลี่ยต่อชิ้น<b>${nk.length?(nk.reduce((a,b)=>a+b,0)/nk.length).toFixed(1):'—'}</b></div></div>`);
+  }else{
+    blocks.push(bars('คอลเลกชัน',count(rr.map(r=>(r.detail.match(/Pastel|Dark mode|Polar White|Midnight/)||[])[0]||'ไม่ระบุ'))));
+    blocks.push(bars('สีฐาน (ตัวคลิป)',count(rr.map(r=>(r.detail.match(/คลิปสี(\S+)/)||[])[1]||'ไม่ระบุ')),{sw:KC_HEX}));
+    blocks.push(bars('สลักข้อความด้านหลัง',count(rr.map(r=>/สลักด้านหลัง:/.test(r.detail)?'สลัก':'ไม่สลัก')),{unit:'เซ็ต'}));
+  }
+  $('#pdetail').innerHTML=h+'<div class="split">'+blocks.join('')+'</div>';
+}
+function renderSales(rows){
+  const m={};rows.forEach(r=>{const k=r.sale||'สั่งตรง (ไม่ผ่านเซลล์)';(m[k]=m[k]||{n:0,sum:0,o:new Set(),paid:0}).n++;m[k].sum+=r.price;m[k].o.add(r.no);if(r.pay==='จ่ายแล้ว')m[k].paid+=r.price});
+  const E=Object.entries(m).sort((a,b)=>b[1].sum-a[1].sum);
+  $('#bySale').innerHTML=E.length?'<table><thead><tr><th>เซลล์</th><th class="num">ออเดอร์</th><th class="num">ชิ้น</th><th class="num">ยอดขาย</th><th class="num">จ่ายแล้ว</th></tr></thead><tbody>'+
+    E.map(([k,v])=>`<tr><td>${esc(k)}</td><td class="num">${v.o.size}</td><td class="num">${v.n}</td><td class="num"><b>${baht(v.sum)}</b></td><td class="num">${baht(v.paid)}</td></tr>`).join('')+'</tbody></table>':'<p class="empty">ยังไม่มีข้อมูล</p>';
+}
+
+$('#go').onclick=()=>{KEY=$('#key').value.trim();if(KEY){$('#loginMsg').textContent='';load()}};
+$('#key').addEventListener('keydown',e=>{if(e.key==='Enter')$('#go').click()});
+$('#reload').onclick=load;
+let rz;addEventListener('resize',()=>{clearTimeout(rz);rz=setTimeout(()=>{if(RAW&&!$('#main').hidden)renderTrend(inRange(RAW).filter(live))},200)});
+KEY=store.get('fxLabelKey');if(KEY)load();else show('login');
+</script>
+</body>
+</html>
