@@ -575,22 +575,33 @@ function addKC(){
   kc.chars=[];kc.colors=[];kc.mode='letters';hideErr();renderConf();renderCart(); // สี/เคส/สาย คงไว้ เผื่อสั่งชิ้นถัดไปแบบเดียวกัน
   $('#cart').scrollIntoView({behavior:'smooth',block:'center'});
 }
+function clipEdge(hex){ // ขอบชิ้นงาน: สีเข้มลงสำหรับฐานสีอ่อน, สว่างขึ้นสำหรับฐานสีเข้ม (ให้เห็นทั้งโหมดสว่าง/มืด)
+  const n=parseInt(hex.slice(1),16),l=(.299*(n>>16)+.587*(n>>8&255)+.114*(n&255))/255;return l<.35?kcShade(hex,.35):kcShade(hex,-.2);
+}
 function clipTag(x,y,w,h,pair,label,fs){
-  const b=KC_HEX[pair.body],k=KC_HEX[pair.ink],sh=kcShade(b,-0.2);
+  const b=KC_HEX[pair.body],k=KC_HEX[pair.ink],sh=clipEdge(b);
   return '<rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" rx="'+(h*.24)+'" fill="'+b+'" stroke="'+sh+'" stroke-width="2"/>'+
     '<text x="'+(x+w/2)+'" y="'+(y+h*.68)+'" text-anchor="middle" font-family="Prompt,sans-serif" font-weight="600" font-size="'+fs+'" fill="'+k+'">'+label+'</text>';
+}
+let clipArtN=0;
+function clipArt(pair){ // คลิปแผ่นทึบ ปลายโค้ง สูงเท่าป้าย เจาะร่องรูปคลิปหนีบกระดาษ (มองทะลุ) + ป้ายข้อความ — ตามรูปสินค้าจริง (viewBox 300×64)
+  const b=KC_HEX[pair.body],sh=clipEdge(b),id='cm'+(++clipArtN);
+  const plate='M124 6H32a26 26 0 0 0 0 52H124Z';
+  const slots='<path d="M118 17.25H30.5a14.75 14.75 0 0 0 0 29.5H118"/><path d="M30 32H118"/>';
+  return '<defs><mask id="'+id+'" maskUnits="userSpaceOnUse" x="0" y="0" width="300" height="64"><rect width="300" height="64" fill="#fff"/><g fill="none" stroke="#000" stroke-width="5.2" stroke-linecap="round">'+slots+'</g></mask></defs>'+
+    '<g mask="url(#'+id+')"><path d="'+plate+'" fill="'+b+'" stroke="'+sh+'" stroke-width="2"/>'+
+    '<g fill="none" stroke="'+sh+'" stroke-width="7.2" stroke-linecap="round">'+slots+'</g></g>'+
+    clipTag(112,6,184,52,pair,'โปรดลงนาม',24);
 }
 function clipMini(col){
   return '<svg viewBox="0 0 84 30" width="64" height="23" aria-hidden="true">'+CLIP_COLS[col].vary.slice(0,3).map((v,i)=>clipTag(1+i*28,4+(i%2)*3,26,20,clipPair(col,v),'ก',13)).join('')+'</svg>';
 }
-function clipSVG(pair){ // ภาพป้ายคลิปแบบไฟล์ SVG เต็ม (ใช้ในรูปสรุปออเดอร์)
-  const sh=kcShade(KC_HEX[pair.body],-0.2);
-  return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 64" width="900" height="192"><g fill="none" stroke="'+sh+'" stroke-width="6" stroke-linecap="round"><path d="M128 14H22a12 12 0 0 0 0 24h96"/><path d="M128 26H34"/></g>'+clipTag(112,6,182,52,pair,'โปรดลงนาม',24)+'</svg>';
+function clipSVG(pair){ // ภาพคลิปแบบไฟล์ SVG เต็ม (ใช้ในรูปสรุปออเดอร์)
+  return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 64" width="900" height="192">'+clipArt(pair)+'</svg>';
 }
 function clipPreview(){
-  const pair=clipPair(clipSel.col,clipSel.color),sh=kcShade(KC_HEX[pair.body],-0.2);
-  const svg='<svg viewBox="0 0 300 64" role="img" aria-label="ตัวอย่างสีคลิป"><g fill="none" stroke="'+sh+'" stroke-width="6" stroke-linecap="round"><path d="M128 14H22a12 12 0 0 0 0 24h96"/><path d="M128 26H34"/></g>'+
-    clipTag(112,6,182,52,pair,'โปรดลงนาม',24)+'</svg>';
+  const pair=clipPair(clipSel.col,clipSel.color);
+  const svg='<svg viewBox="0 0 300 64" role="img" aria-label="ตัวอย่างสีคลิป">'+clipArt(pair)+'</svg>';
   const f=el('figure',{class:'clipprev'});f.innerHTML=svg;f.append(el('figcaption',{},CLIP_COLS[clipSel.col].name+' · ฐาน'+pair.body+' · ตัวอักษร'+pair.ink));return f;
 }
 function addClips(){
