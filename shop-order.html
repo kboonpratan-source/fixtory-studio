@@ -582,6 +582,10 @@ function clipTag(x,y,w,h,pair,label,fs){
 function clipMini(col){
   return '<svg viewBox="0 0 84 30" width="64" height="23" aria-hidden="true">'+CLIP_COLS[col].vary.slice(0,3).map((v,i)=>clipTag(1+i*28,4+(i%2)*3,26,20,clipPair(col,v),'ก',13)).join('')+'</svg>';
 }
+function clipSVG(pair){ // ภาพป้ายคลิปแบบไฟล์ SVG เต็ม (ใช้ในรูปสรุปออเดอร์)
+  const sh=kcShade(KC_HEX[pair.body],-0.2);
+  return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 64" width="900" height="192"><g fill="none" stroke="'+sh+'" stroke-width="6" stroke-linecap="round"><path d="M128 14H22a12 12 0 0 0 0 24h96"/><path d="M128 26H34"/></g>'+clipTag(112,6,182,52,pair,'โปรดลงนาม',24)+'</svg>';
+}
 function clipPreview(){
   const pair=clipPair(clipSel.col,clipSel.color),sh=kcShade(KC_HEX[pair.body],-0.2);
   const svg='<svg viewBox="0 0 300 64" role="img" aria-label="ตัวอย่างสีคลิป"><g fill="none" stroke="'+sh+'" stroke-width="6" stroke-linecap="round"><path d="M128 14H22a12 12 0 0 0 0 24h96"/><path d="M128 26H34"/></g>'+
@@ -613,8 +617,10 @@ function lines(){ // แต่ละชิ้น = 1 แถวใน Sheet (ต�
     phapPieces.forEach(c=>{const v=base+(rem>0?1:0);if(rem>0)rem--;out.push({productName:'น้องพับชู่',detail:'สี '+c+(phapPieces.length>1?' (ราคาชุด '+phapPieces.length+' ชิ้น '+total+' บาท)':''),price:v+' บาท',priceValue:v})});
   }
   sipCart.forEach(s=>{const p=PRODUCTS.sipbuddy;const [on,pr]=p.options[s.opt];
-    out.push({productName:'Sip Buddy',detail:'แบบ '+String(s.design+1).padStart(2,'0')+' '+p.designs[s.design]+' · '+on+(s.name?' · ชื่อ: '+s.name:''),price:pr+' บาท',priceValue:pr})});
-  clipCart.forEach(c=>out.push({productName:'คลิปหนีบเอกสาร',detail:'1 เซ็ต (20 อัน) · '+c.col+' · คลิปสี'+c.body+' ตัวหนังสือสี'+c.ink+(c.text?' · สลักด้านหลัง: '+c.text:' · ไม่สลัก'),price:'99 บาท',priceValue:99}));
+    const it={productName:'Sip Buddy',detail:'แบบ '+String(s.design+1).padStart(2,'0')+' '+p.designs[s.design]+' · '+on+(s.name?' · ชื่อ: '+s.name:''),price:pr+' บาท',priceValue:pr};
+    Object.defineProperty(it,'_pic',{value:{src:'sip/sip-'+String(s.design+1).padStart(2,'0')+'.jpg'+IMG_V,h:150},enumerable:false});out.push(it)});
+  clipCart.forEach(c=>{const it={productName:'คลิปหนีบเอกสาร',detail:'1 เซ็ต (20 อัน) · '+c.col+' · คลิปสี'+c.body+' ตัวหนังสือสี'+c.ink+(c.text?' · สลักด้านหลัง: '+c.text:' · ไม่สลัก'),price:'99 บาท',priceValue:99};
+    Object.defineProperty(it,'_pic',{value:{svg:clipSVG({body:c.body,ink:c.ink}),h:96},enumerable:false});out.push(it)});
   kcCart.forEach(k=>{const v=kcPrice(k.chars.length);
     // ช่อง orientation/caseColor/strapLabel/collection/letterN/letterColorN ใช้ชื่อเดียวกับฟอร์ม keycap เดิม
     // เพื่อให้ Apps Script ลงคอลัมน์เดิม หักสต๊อก keycap/สายคล้อง และหน้า sale อ่านได้เหมือนเดิม
@@ -777,14 +783,20 @@ async function drawSummary(o){
   const ph=o.items.filter(it=>it.productName==='น้องพับชู่'),other=o.items.filter(it=>it.productName!=='น้องพับชู่');
   const cnt={};ph.forEach(it=>{const c=it.detail.replace(/^สี /,'').replace(/ \(.*$/,'');cnt[c]=(cnt[c]||0)+1});
   const rows=(ph.length?[{title:'น้องพับชู่ × '+ph.length,lines:wrap('สี '+Object.entries(cnt).map(([k,v])=>k+' '+v).join(', '),'28px '+F,W-2*P-200),price:ph.reduce((a,b)=>a+b.priceValue,0)}]:[])
-    .concat(other.map(it=>({title:it.productName,lines:wrap(it._kc?it.detail.split(' · สี: ')[0]:it.detail,'28px '+F,W-2*P-200),price:it.priceValue,kc:it._kc})));
+    .concat(other.map(it=>({title:it.productName,lines:wrap(it._kc?it.detail.split(' · สี: ')[0]:it.detail,'28px '+F,W-2*P-200),price:it.priceValue,kc:it._kc,pics:it._pic?[Object.assign({cap:''},it._pic)]:[]})));
+  // รูปสินค้าในรูปสรุป ให้ลูกค้าเก็บเป็นหลักฐานว่าสั่งอะไร: น้องพับชู่ตามสี, Sip Buddy ตามแบบ, ป้ายคลิปตามสี
+  if(ph.length){const pc=PRODUCTS.phapchoo.colors;rows[0].pics=Object.entries(cnt).map(([k,v])=>{const m=pc.find(x=>x[0]===k);return m?{src:'pc/pc-'+m[2]+'.jpg'+IMG_V,h:190,cap:k+' × '+v}:null}).filter(Boolean)}
+  const loadPic=q=>new Promise(ok=>{const im=new Image();im.onload=()=>ok(im);im.onerror=()=>ok(null);im.src=q.svg?'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(q.svg):q.src});
+  for(const r of rows){r.pics=r.pics||[];for(const q of r.pics){q.img=await loadPic(q);if(q.img){q.w=q.h*q.img.naturalWidth/q.img.naturalHeight}}r.pics=r.pics.filter(q=>q.img);
+    // จัดเป็นแถว ไม่ให้ล้นความกว้าง
+    let x=0,line=0,lh=0;r.picH=0;r.pics.forEach(q=>{const ch=q.h+(q.cap?40:0);if(x&&x+q.w>W-2*P){r.picH+=lh+14;x=0;lh=0}q.x=x;q.ly=r.picH;x+=q.w+14;lh=Math.max(lh,ch)});if(r.pics.length)r.picH+=lh+18}
   // รูปชิ้น Alphabet Clicker (แนวนอน) ในรูปสรุป ให้ร้านเห็นสีครบทุกตัวตอนผลิต
   for(const r of rows){if(!r.kc)continue;const v=kcSVG(r.kc,'horizontal');
     const img=new Image();await new Promise(ok=>{img.onload=ok;img.onerror=ok;img.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${v.w} ${v.h}" width="${v.w*4}" height="${v.h*4}">${v.svg}</svg>`)});
     const dw=Math.min(W-2*P,v.w*3.2);r.img=img;r.iw=dw;r.ih=dw*v.h/v.w}
   const addr=o.self?'นัดรับ: '+o.addr:o.addr+(o.prov?' จ.'+o.prov:'')+(o.zip?' '+o.zip:'');
   const addrL=wrap(addr,'28px '+F,W-2*P);
-  let H=420+addrL.length*40+rows.reduce((a,r)=>a+62+r.lines.length*38+(r.img?r.ih+16:0),0)+400;
+  let H=420+addrL.length*40+rows.reduce((a,r)=>a+62+r.lines.length*38+(r.img?r.ih+16:0)+(r.picH||0),0)+400;
   const c=document.createElement('canvas');c.width=W;c.height=H;const g=c.getContext('2d');
   g.fillStyle='#FAF8F4';g.fillRect(0,0,W,H);
   g.fillStyle='#2C2420';g.fillRect(0,0,W,170);
@@ -799,6 +811,11 @@ async function drawSummary(o){
   rows.forEach(r=>{g.font='600 30px '+F;g.fillStyle='#2C2420';g.fillText(r.title,P,y);g.textAlign='right';g.fillText(fmt(r.price),W-P,y);g.textAlign='left';y+=40;
     g.font='28px '+F;g.fillStyle='#76665C';r.lines.forEach(l=>{g.fillText(l,P,y);y+=38});
     if(r.img){try{g.drawImage(r.img,P,y-10,r.iw,r.ih)}catch(e){}y+=r.ih+16}
+    if(r.pics&&r.pics.length){const y0=y-6;r.pics.forEach(q=>{const px=P+q.x,py=y0+q.ly;
+      try{g.save();g.beginPath();if(g.roundRect)g.roundRect(px,py,q.w,q.h,14);else g.rect(px,py,q.w,q.h);g.clip();if(!q.svg){g.fillStyle='#fff';g.fillRect(px,py,q.w,q.h)}g.drawImage(q.img,px,py,q.w,q.h);g.restore();
+        if(!q.svg){g.strokeStyle='#EDE2D6';g.lineWidth=2;g.beginPath();if(g.roundRect)g.roundRect(px,py,q.w,q.h,14);else g.rect(px,py,q.w,q.h);g.stroke()}}catch(e){g.restore()}
+      if(q.cap){g.font='24px '+F;g.fillStyle='#76665C';g.textAlign='center';g.fillText(q.cap,px+q.w/2,py+q.h+30);g.textAlign='left'}});
+      y+=r.picH}
     y+=22});
   g.beginPath();g.moveTo(P,y-10);g.lineTo(W-P,y-10);g.stroke();y+=40;
   const kv=(k,v,big)=>{g.font=(big?'600 36px ':'28px ')+F;g.fillStyle=big?'#2C2420':'#76665C';g.fillText(k,P,y);g.textAlign='right';g.fillStyle=big?'#A9572F':'#2C2420';g.fillText(v,W-P,y);g.textAlign='left';y+=big?60:44};
