@@ -176,7 +176,7 @@ async function act(id,body,apply){
   const x=RV.find(y=>y.id===id);if(!x)return;BUSY=id;render();
   let r=null;try{r=await api(Object.assign({id},body))}catch(e){}
   BUSY=null;
-  if(r&&r.result==='success'){apply(x);render()}
+  if(r&&r.result==='success'){apply(x);render();if(body.reply!==undefined){const s=document.getElementById('sv-'+id);if(s){s.className='saved';s.textContent=r.notified?'บันทึกแล้ว ✓ · เด้งแจ้งลูกค้าแล้ว':'บันทึกแล้ว ✓ · ลูกค้าไม่ได้เปิดแจ้งเตือนไว้ ส่งข้อความในแชตแทนได้'}}}
   else{render();const s=document.getElementById('sv-'+id);if(s){s.className='saved err';s.textContent='บันทึกไม่สำเร็จ'+(r&&r.message?': '+r.message:'')}}
 }
 $('#reload').onclick=load;
