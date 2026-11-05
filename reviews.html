@@ -86,7 +86,9 @@ button.pri{font:inherit;font-weight:600;border:0;border-radius:999px;padding:10p
 .acts button.del{border:0;background:none;color:var(--bad);margin-left:auto}
 .acts button:disabled{opacity:.5}
 .sum{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}.sum::-webkit-scrollbar{display:none}
-.sum div{flex:none;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:8px 12px;font-size:13px;color:var(--muted)}.sum b{display:block;color:var(--ink);font-size:14px}
+.sum button{flex:none;font:inherit;text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:8px 12px;font-size:13px;color:var(--muted);cursor:pointer}.sum b{display:block;color:var(--ink);font-size:14px}
+.sum button[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft)}.sum button[aria-pressed="true"] b{color:var(--accent)}
+.pf{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:13.5px;color:var(--muted)}.pf a,.pf button{font:inherit;font-weight:600;color:var(--accent);text-decoration:none;background:none;border:0;padding:0;cursor:pointer}
 .how{font-size:13.5px;color:var(--muted);line-height:1.6}
 </style>
 </head>
@@ -105,6 +107,7 @@ button.pri{font:inherit;font-weight:600;border:0;border-radius:999px;padding:10p
     <div class="tools">
       <div class="seg" id="seg" role="group" aria-label="กรองรีวิว"></div>
       <div class="sum" id="sum"></div>
+      <div class="pf" id="pf" hidden></div>
     </div>
     <div class="list" id="list"></div>
   </div>
@@ -117,7 +120,7 @@ const store={get(k){try{return localStorage.getItem(k)||''}catch(e){return''}},s
 const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const PN={phapchoo:'น้องพับชู่',sipbuddy:'Sip Buddy',keycap:'Alphabet Clicker',clips:'คลิปหนีบเอกสาร',bloombox:'Bloom Box',petmedbox:'กล่องจัดเก็บยาสัตว์'};
 const FILTERS=[['รออนุมัติ','รออนุมัติ'],['แสดง','แสดงอยู่'],['ซ่อน','ซ่อน'],['all','ทั้งหมด']];
-let KEY='',RV=[],F='รออนุมัติ',BUSY=null,ASK=null,REPLY=null;
+let KEY='',RV=[],F='รออนุมัติ',P='',BUSY=null,ASK=null,REPLY=null;
 const stars=n=>'<span class="st" aria-label="'+n+' ดาว">'+'★'.repeat(n)+'<i>'+'★'.repeat(5-n)+'</i></span>';
 async function api(body){return (await fetch(GAS_URL,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify(Object.assign({key:KEY},body))})).json()}
 function show(v){$('#login').hidden=v!=='login';$('#main').hidden=v!=='main'}
@@ -132,12 +135,18 @@ async function load(){
   store.set('fxLabelKey',KEY);RV=r.reviews;show('main');render();
 }
 function render(){
-  const cnt=k=>k==='all'?RV.length:RV.filter(x=>x.status===k).length;
+  const PV=P?RV.filter(x=>x.pid===P):RV;
+  const cnt=k=>k==='all'?PV.length:PV.filter(x=>x.status===k).length;
   $('#seg').innerHTML=FILTERS.map(([k,l])=>`<button type="button" data-f="${k}" aria-pressed="${F===k}">${l}<i>${cnt(k)}</i></button>`).join('');
   $('#seg').querySelectorAll('button').forEach(b=>b.onclick=()=>{F=b.dataset.f;ASK=null;REPLY=null;render()});
-  const by={};RV.filter(x=>x.status==='แสดง').forEach(x=>{(by[x.pid]=by[x.pid]||[]).push(x.stars)});
-  $('#sum').innerHTML=Object.keys(by).map(p=>{const a=by[p],avg=a.reduce((s,n)=>s+n,0)/a.length;return`<div><b>${esc(PN[p]||p)}</b>★ ${avg.toFixed(1)} · ${a.length} รีวิว</div>`}).join('');
-  const L=RV.filter(x=>F==='all'||x.status===F);
+  const by={},pids=[];RV.forEach(x=>{if(!pids.includes(x.pid))pids.push(x.pid);if(x.status==='แสดง')(by[x.pid]=by[x.pid]||[]).push(x.stars)});
+  $('#sum').innerHTML=pids.map(p=>{const a=by[p]||[],avg=a.length?a.reduce((s,n)=>s+n,0)/a.length:0,pend=RV.filter(x=>x.pid===p&&x.status==='รออนุมัติ').length;
+    return`<button type="button" data-p="${esc(p)}" aria-pressed="${P===p}"><b>${esc(PN[p]||p)}</b>${a.length?`★ ${avg.toFixed(1)} · ${a.length} รีวิว`:'ยังไม่มีรีวิวที่แสดง'}${pend?` · รอ ${pend}`:''}</button>`}).join('');
+  $('#sum').querySelectorAll('button').forEach(b=>b.onclick=()=>{P=P===b.dataset.p?'':b.dataset.p;if(P)F='all';ASK=null;REPLY=null;render()});
+  $('#pf').hidden=!P;
+  if(P)$('#pf').innerHTML=`<span>เฉพาะ <b style="color:var(--ink)">${esc(PN[P]||P)}</b></span><a href="catalog#p-${encodeURIComponent(P)}" target="_blank" rel="noopener">ดูหน้าสินค้าในแคตตาล็อก ↗</a><button type="button" id="pfx">แสดงทุกสินค้า</button>`;
+  if(P)$('#pfx').onclick=()=>{P='';render()};
+  const L=PV.filter(x=>F==='all'||x.status===F);
   $('#list').innerHTML=L.length?L.map(card).join(''):`<p class="empty">${F==='รออนุมัติ'?'ไม่มีรีวิวรออนุมัติ 🎉<br><span style="font-size:13.5px">ส่งลิงก์รีวิวให้ลูกค้าได้จากหน้าออเดอร์ หรือใส่ QR บนใบปะหน้า</span>':'ไม่มีรีวิวในกลุ่มนี้'}</p>`;
   bind();
 }
