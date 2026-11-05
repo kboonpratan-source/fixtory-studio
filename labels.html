@@ -220,6 +220,6 @@ KEY=store.get('fxLabelKey');if(KEY)load();else show('login');
 document.querySelectorAll('input[type=password]').forEach(function(i){var w=document.createElement('span');w.className='pw';i.parentNode.insertBefore(w,i);w.appendChild(i);var b=document.createElement('button');b.type='button';b.className='eye';b.setAttribute('aria-label','แสดงรหัส');b.innerHTML=O;w.appendChild(b);
 b.onclick=function(){var s=i.type==='password';i.type=s?'text':'password';b.innerHTML=s?C:O;b.setAttribute('aria-label',s?'ซ่อนรหัส':'แสดงรหัส');i.focus()}})})();</script>
 <script src="qrcode.js"></script>
-<script src="nav.js?v=8"></script>
+<script src="nav.js?v=9"></script>
 </body>
 </html>

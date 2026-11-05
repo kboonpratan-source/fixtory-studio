@@ -69,7 +69,17 @@
     '.fxpushbn>span{width:38px;height:38px;border-radius:11px;background:var(--accent,#C4704B);color:var(--on-accent,#fff);display:grid;place-items:center;flex:none}.fxpushbn>span svg{width:20px;height:20px}' +
     '.fxpushbn div{flex:1;min-width:0}.fxpushbn b{display:block;font-size:14.5px}.fxpushbn small{display:block;font-size:12.5px;color:var(--muted,#7A6E66)}' +
     '.fxpushbn button{font:inherit;font-weight:700;border:0;border-radius:99px;padding:8px 16px;background:var(--accent,#C4704B);color:var(--on-accent,#fff);cursor:pointer;flex:none}' +
-    '.fxpushbn button.x{background:none;color:var(--faint,#A89D94);padding:4px 6px;font-size:20px;line-height:1}';
+    '.fxpushbn button.x{background:none;color:var(--faint,#A89D94);padding:4px 6px;font-size:20px;line-height:1}' +
+    '.fxbell .cnt{position:absolute;top:-6px;right:-6px;min-width:19px;height:19px;padding:0 5px;border-radius:99px;background:var(--bad,#b3261e);color:#fff;font-size:11px;font-weight:700;line-height:19px;text-align:center;font-style:normal;box-shadow:0 0 0 2px var(--bg,#F6F1EB)}' +
+    '.fxinbox .pn{padding-bottom:calc(10px + env(safe-area-inset-bottom))}' +
+    '.fxinbox .ih{display:flex;align-items:baseline;gap:8px;margin:6px 12px 2px}.fxinbox .ih b{font-size:17px;flex:1}.fxinbox .ih small{color:var(--faint,#A89D94);font-size:12px}' +
+    '.fxinbox .ih button{font:inherit;font-size:13px;font-weight:600;border:0;background:none;color:var(--accent,#C4704B);cursor:pointer;padding:2px 4px}' +
+    '.fxinbox h3 span{float:right;font-weight:600}' +
+    '.fxinbox a.it{padding:9px 12px;gap:10px}.fxinbox a.it i{width:34px;height:34px;font-style:normal;font-size:16px}' +
+    '.fxinbox a.it span{display:grid;gap:1px;font-size:14.5px;min-width:0}.fxinbox a.it span em{font-style:normal;font-weight:400;font-size:12.5px;color:var(--muted,#7A6E66);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}' +
+    '.fxinbox .none{text-align:center;color:var(--muted,#7A6E66);padding:22px 12px;font-size:14.5px}' +
+    '.fxinbox .pushrow{border-top:1px solid var(--line,#E6DDD3);margin-top:8px;padding-top:6px}' +
+    '@media (min-width:901px){.fxinbox{align-items:flex-start;justify-content:flex-end;padding:64px 24px 24px}.fxinbox .pn{max-width:400px;border-radius:18px;max-height:calc(100vh - 100px);box-shadow:0 20px 50px rgba(0,0,0,.25)}.fxinbox .gr{display:none}}';
   document.head.appendChild(css);
 
   var bar = document.createElement('nav');
@@ -183,27 +193,94 @@
   bellBtn.type = 'button'; bellBtn.className = 'fxthm fxbell';
   tb.parentNode.insertBefore(bellBtn, tb);
   if (tb.classList.contains('fixed')) { bellBtn.classList.add('fixed'); bellBtn.style.right = '58px'; }
+  var bellSt = 'off', bellCnt = 0;
   function paintBell(st) {
-    var on = st === 'on';
-    bellBtn.innerHTML = ic(on ? 'bell' : 'belloff') + (st === 'off' ? '<i class="dot"></i>' : '');
+    if (st) bellSt = st;
+    var on = bellSt === 'on';
+    bellBtn.innerHTML = ic(on ? 'bell' : 'belloff') + (bellCnt ? '<i class="cnt">' + (bellCnt > 99 ? '99+' : bellCnt) + '</i>' : '');
     bellBtn.classList.toggle('on', on);
-    bellBtn.title = on ? 'แจ้งเตือนเปิดอยู่' : 'เปิดแจ้งเตือนออเดอร์ใหม่';
+    bellBtn.title = bellCnt ? 'เรื่องที่ต้องจัดการ ' + bellCnt + ' เรื่อง' : 'เรื่องที่ต้องจัดการ';
     bellBtn.setAttribute('aria-label', bellBtn.title);
   }
-  bellBtn.onclick = function () {
-    pushState().then(function (st) {
-      if (st === 'off') { showToast('กำลังเปิดแจ้งเตือน…'); return pushOn().then(paintPush).then(function () { showToast('เปิดแจ้งเตือนแล้ว ✓ มีออเดอร์ใหม่จะเด้งทันที'); hideToastSoon(); }); }
-      if (st === 'on') {
-        showToast('แจ้งเตือนเปิดอยู่ในเครื่องนี้ ✓');
-        var ob = document.createElement('button'); ob.type = 'button'; ob.textContent = 'ปิดแจ้งเตือน';
-        ob.style.cssText = 'margin-left:10px;font:inherit;font-weight:700;border:0;border-radius:99px;padding:4px 12px;background:var(--accent,#C4704B);color:var(--on-accent,#fff);cursor:pointer';
-        ob.onclick = function () { ob.disabled = true; ob.textContent = 'กำลังปิด…'; pushOff().then(paintPush).then(function () { showToast('ปิดแจ้งเตือนเครื่องนี้แล้ว'); hideToastSoon(2500); }); };
-        toast.appendChild(ob); hideToastSoon(6000); return;
-      }
-      if (st === 'blocked') { showToast('แจ้งเตือนถูกบล็อก — เปิดที่ การตั้งค่าเครื่อง → แอป → Fixtory Admin → การแจ้งเตือน'); hideToastSoon(5000); return; }
-      showToast(/iPhone|iPad/.test(navigator.userAgent) ? 'ต้องเพิ่มแอปไปหน้าจอโฮม แล้วเปิดจากไอคอนก่อน' : 'เครื่องนี้ยังเปิดแจ้งเตือนไม่ได้'); hideToastSoon(4000);
-    }).catch(function (err) { showToast(err.message); hideToastSoon(4000); });
-  };
+  // ---------- กล่อง "เรื่องที่ต้องจัดการ" (ดึงจากชีตจริง) ----------
+  var inbox = document.createElement('div');
+  inbox.className = 'fxsheet fxinbox'; inbox.hidden = true; inbox.setAttribute('role', 'dialog'); inbox.setAttribute('aria-label', 'เรื่องที่ต้องจัดการ');
+  document.body.appendChild(inbox);
+  var IB = null, ibAt = 0, ibBusy = null;
+  try { var c0 = JSON.parse(sessionStorage.getItem('fxInbox') || 'null'); if (c0 && Date.now() - c0.at < 120000) { IB = c0.d; ibAt = c0.at; } } catch (e) {}
+  function baht(n) { return '฿' + Math.round(n).toLocaleString('th-TH'); }
+  function ago(d) { var h = (Date.now() - d) / 36e5; return 'สั่งเมื่อ' + (h < 1 ? 'สักครู่' : h < 24 ? ' ' + Math.floor(h) + ' ชม.ที่แล้ว' : ' ' + Math.floor(h / 24) + ' วันที่แล้ว'); }
+  function loadInbox(force) {
+    if (!key) return Promise.resolve(null);
+    if (!force && IB && Date.now() - ibAt < 60000) return Promise.resolve(IB);
+    if (ibBusy) return ibBusy;
+    var dash = fetch(GAS_URL + '?dash=1&key=' + encodeURIComponent(key) + '&t=' + Date.now()).then(function (r) { return r.json(); });
+    var rv = postGas({ action: 'rvAdmin', key: key }).catch(function () { return null; });
+    ibBusy = Promise.all([dash, rv]).then(function (res) {
+      var r = res[0], v = res[1];
+      if (!r || r.result !== 'success') throw new Error((r && r.message) || 'โหลดไม่สำเร็จ');
+      var m = {};
+      r.rows.forEach(function (x) {
+        var o = m[x.no] = m[x.no] || { no: x.no, d: new Date(x.d).getTime() || 0, name: x.name, pay: x.pay, status: x.status, sum: 0, slip: false };
+        o.sum += (x.price || 0) + (x.ship || 0);
+        if (/^https?:/.test(String(x.slip || '').trim())) o.slip = true;
+      });
+      var L = Object.keys(m).map(function (k) { return m[k]; }).filter(function (o) { return o.status !== 'ยกเลิก' && o.pay !== 'ยกเลิก'; });
+      var d = {
+        slip: L.filter(function (o) { return o.slip && o.pay !== 'จ่ายแล้ว'; }).sort(function (a, b) { return a.d - b.d; }),
+        ship: L.filter(function (o) { return o.pay === 'จ่ายแล้ว' && o.status !== 'จัดส่งแล้ว'; }).sort(function (a, b) { return a.d - b.d; }),
+        wait: L.filter(function (o) { return !o.slip && o.pay !== 'จ่ายแล้ว' && o.status !== 'จัดส่งแล้ว'; }).sort(function (a, b) { return b.d - a.d; }),
+        rv: v && v.result === 'success' ? v.reviews.filter(function (x) { return x.status === 'รออนุมัติ'; }) : []
+      };
+      IB = d; ibAt = Date.now(); ibBusy = null;
+      try { sessionStorage.setItem('fxInbox', JSON.stringify({ at: ibAt, d: d })); } catch (e) {}
+      return d;
+    }).catch(function (e) { ibBusy = null; throw e; });
+    return ibBusy;
+  }
+  function countOf(d) { return d ? d.slip.length + d.ship.length + d.rv.length : 0; }
+  function refreshBadge(force) { return loadInbox(force).then(function (d) { bellCnt = countOf(d); paintBell(); return d; }).catch(function () { return null; }); }
+  function item(href, emoji, title, sub) { return '<a class="it" href="' + href + '"><i>' + emoji + '</i><span>' + title + '<em>' + sub + '</em></span><small>›</small></a>'; }
+  var PN = { phapchoo: 'น้องพับชู่', sipbuddy: 'Sip Buddy', keycap: 'Alphabet Clicker', clips: 'คลิปหนีบเอกสาร', bloombox: 'Bloom Box' };
+  function esc(t) { return String(t == null ? '' : t).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  function renderInbox(d, err) {
+    var h = '<div class="pn"><div class="gr"></div><div class="ih"><b>เรื่องที่ต้องจัดการ</b><small>' + (ibAt ? 'อัปเดต ' + new Date(ibAt).toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' }) : '') + '</small><button type="button" id="fxIbRe">รีเฟรช</button></div>';
+    if (err) h += '<div class="none">' + esc(err) + '</div>';
+    else if (!d) h += '<div class="none">กำลังโหลด…</div>';
+    else {
+      var MAX = 6;
+      function sec(title, list, fn, more) { if (!list.length) return ''; return '<h3>' + title + '<span>' + list.length + '</span></h3>' + list.slice(0, MAX).map(fn).join('') + (list.length > MAX ? '<a class="it" href="' + more + '"><i>…</i><span>ดูทั้งหมด ' + list.length + ' รายการ</span><small>›</small></a>' : ''); }
+      h += sec('💸 สลิปรอตรวจยอด', d.slip, function (o) { return item('orders.html#' + o.no, '💸', esc(o.no) + ' · ' + baht(o.sum), esc(o.name || '–') + ' · แนบสลิปแล้ว ตรวจยอดแล้วกด "จ่ายแล้ว"'); }, 'orders.html#f=wait');
+      h += sec('📦 จ่ายแล้ว รอผลิต/ส่ง', d.ship, function (o) { return item('orders.html#' + o.no, o.status === 'กำลังทำ' ? '🛠️' : '📦', esc(o.no) + ' · ' + esc(o.status === 'กำลังทำ' ? 'กำลังทำ' : 'ยังไม่เริ่ม'), esc(o.name || '–') + ' · ' + ago(o.d)); }, 'orders.html#f=make');
+      h += sec('⭐ รีวิวรออนุมัติ', d.rv, function (x) { return item('reviews.html', '⭐', esc(PN[x.pid] || x.product) + ' · ' + '★'.repeat(x.stars), esc(x.nick) + (x.text ? ' · ' + esc(x.text) : '')); }, 'reviews.html');
+      if (!countOf(d)) h += '<div class="none">ไม่มีเรื่องค้าง 🎉</div>';
+      if (d.wait.length) h += '<h3>รอลูกค้าโอน<span>' + d.wait.length + '</span></h3>' + item('orders.html#f=wait', '🛒', 'ออเดอร์ที่ยังไม่แนบสลิป ' + d.wait.length + ' รายการ', 'ล่าสุด ' + esc(d.wait[0].no) + ' · ' + esc(d.wait[0].name || '–') + ' · ' + ago(d.wait[0].d));
+    }
+    h += '<div class="pushrow"><a href="#push" id="fxIbPush"><i>' + ic(bellSt === 'on' ? 'bell' : 'belloff') + '</i><span>แจ้งเตือนเด้งเข้าเครื่องนี้</span><small id="fxIbPushSt">' + ({ on: 'เปิดอยู่ ✓', off: 'ปิด — แตะเพื่อเปิด', blocked: 'ถูกบล็อก', unsupported: 'ไม่รองรับ' }[bellSt] || '') + '</small></a></div></div>';
+    inbox.innerHTML = h;
+    var re = document.getElementById('fxIbRe'); if (re) re.onclick = function () { renderInbox(null); refreshBadge(true).then(function (d2) { renderInbox(d2, d2 ? '' : 'โหลดไม่สำเร็จ ลองใหม่อีกครั้ง'); }); };
+    inbox.querySelectorAll('a.it').forEach(function (a) { a.addEventListener('click', function (e) { var hr = a.getAttribute('href'); var same = hr.split('#')[0] === (location.pathname.split('/').pop() || 'admin.html'); inbox.hidden = true; e.preventDefault(); if (same) { location.replace(hr); location.reload(); } else if (isHome) location.href = hr; else location.replace(hr); }); });
+    var pb = document.getElementById('fxIbPush');
+    pb.onclick = function (e) {
+      e.preventDefault(); var st = document.getElementById('fxIbPushSt');
+      pushState().then(function (s0) {
+        if (s0 === 'on') { st.textContent = 'กำลังปิด…'; return pushOff().then(paintPush).then(function () { renderInbox(IB); }); }
+        if (s0 === 'off') { st.textContent = 'กำลังเปิด…'; return pushOn().then(paintPush).then(function () { renderInbox(IB); }); }
+        st.textContent = s0 === 'blocked' ? 'ถูกบล็อก — เปิดที่การตั้งค่าเครื่อง → แอป → Fixtory Admin' : (/iPhone|iPad/.test(navigator.userAgent) ? 'เพิ่มแอปไปหน้าจอโฮมก่อน' : 'เครื่องนี้ไม่รองรับ');
+      }).catch(function (err) { st.textContent = err.message; });
+    };
+  }
+  function openInbox() {
+    if (!key) { showToast('เข้าสู่ระบบด้วยรหัสร้านก่อน'); hideToastSoon(); return; }
+    renderInbox(IB); inbox.hidden = false; history.pushState({ fxSheet: 1 }, '');
+    refreshBadge(!IB || Date.now() - ibAt > 30000).then(function (d) { if (!inbox.hidden) renderInbox(d, d ? '' : 'โหลดไม่สำเร็จ ลองกดรีเฟรช'); });
+  }
+  function closeInbox(viaBack) { if (inbox.hidden) return; inbox.hidden = true; if (!viaBack && history.state && history.state.fxSheet) history.back(); }
+  inbox.addEventListener('click', function (e) { if (e.target === inbox) closeInbox(); });
+  bellBtn.onclick = openInbox;
+  if (key) { if (IB) { bellCnt = countOf(IB); } setTimeout(function () { refreshBadge(false); }, 400); }
+  setInterval(function () { if (document.visibilityState === 'visible') refreshBadge(true); }, 180000);
+  document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'visible' && Date.now() - ibAt > 60000) refreshBadge(true); });
   var toastT = null;
   function hideToastSoon(ms) { clearTimeout(toastT); toastT = setTimeout(function () { if (toast) toast.hidden = true; }, ms || 3000); }
   var _pp = paintPush;
@@ -216,13 +293,13 @@
   function closeSheet(viaBack) { if (sheet.hidden) return; sheet.hidden = true; if (!viaBack && history.state && history.state.fxSheet) history.back(); }
   document.getElementById('fxMoreBtn').onclick = openSheet;
   sheet.addEventListener('click', function (e) { if (e.target === sheet) closeSheet(); });
-  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeSheet(); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { closeSheet(); closeInbox(); } });
   // สลับหน้าจากแถบล่าง/เมนู: จากหน้าย่อยให้แทนที่หน้าเดิม เพื่อให้ back กลับหน้าแรกเสมอ
   function go(e) {
     var a = e.currentTarget, h = a.getAttribute('href');
     if (!h || a.target === '_blank' || h.charAt(0) === '#') return;
     e.preventDefault();
-    var adminPage = /^(admin|orders|insights|labels|agents)\.html/.test(h);
+    var adminPage = /^(admin|orders|insights|labels|agents|reviews)\.html/.test(h);
     if (isHome || h === 'admin.html' || !adminPage) { location.href = h; } else { location.replace(h); }
   }
   bar.querySelectorAll('a').forEach(function (a) { a.addEventListener('click', go); });
@@ -243,6 +320,7 @@
   if (standalone && isHome && !(history.state && history.state.fxGuard)) history.pushState({ fxGuard: 1 }, '');
   window.addEventListener('popstate', function (e) {
     if (!sheet.hidden) { closeSheet(true); return; }
+    if (!inbox.hidden) { closeInbox(true); return; }
     if (e.state && e.state.fxHome && !isHome) { location.replace('admin.html'); return; }
     if (standalone && isHome && !(e.state && e.state.fxGuard)) {
       showToast('กดย้อนกลับอีกครั้งเพื่อออกจากแอป');
