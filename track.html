@@ -108,12 +108,34 @@ const fmt=d=>{const x=new Date(d);return isNaN(x)?'':x.toLocaleString('th-TH',{d
 const baht=n=>'฿'+Math.round(n).toLocaleString('th-TH');
 let D=null;
 async function api(body){const r=await fetch(GAS_URL,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify(body)});return r.json()}
-function fail(t,m){$('#app').innerHTML='<div class="card state"><b>'+esc(t)+'</b>'+esc(m)+'</div>'}
+const MYK='fxMyOrders';
+function myGet(){try{return JSON.parse(localStorage.getItem(MYK)||'[]')}catch(e){return[]}}
+function mySave(no,u){try{const L=myGet().filter(x=>x.no!==no);L.unshift({no,u,d:Date.now()});localStorage.setItem(MYK,JSON.stringify(L.slice(0,10)))}catch(e){}}
+function fail(t,m){$('#app').innerHTML='<div class="card state"><b>'+esc(t)+'</b>'+esc(m)+'</div>';lookup(true)}
+function lookup(append){
+  const L=myGet();
+  const h=(append?'':'<h1>ติดตามออเดอร์</h1><p class="sub">ดูสถานะออเดอร์ เลขพัสดุ และเปิดรับแจ้งเตือน</p>')+
+    (L.length?'<div class="card"><h2>ออเดอร์ของคุณบนเครื่องนี้</h2><div class="items">'+L.map(x=>'<a href="'+esc(x.u)+'" style="display:flex;justify-content:space-between;text-decoration:none;color:inherit;padding:6px 0"><b style="font-weight:600">'+esc(x.no)+'</b><span style="color:var(--accent-text)">ดูสถานะ ›</span></a>').join('')+'</div></div>':'')+
+    '<div class="card"><h2>ค้นหาออเดอร์</h2><p class="muted" style="margin:0 0 4px">ใช้เลขที่ออเดอร์ (อยู่ในรูปสรุปออเดอร์ เช่น FX0123) และเบอร์โทรหรือ LINE ID ที่กรอกตอนสั่ง</p>'+
+    '<label class="l" for="lkNo">เลขที่ออเดอร์</label><input type="text" id="lkNo" placeholder="FX0123" autocapitalize="characters" autocomplete="off">'+
+    '<label class="l" for="lkPh">เบอร์โทร / LINE ID ที่ใช้ตอนสั่ง</label><input type="text" id="lkPh" inputmode="tel" autocomplete="tel">'+
+    '<div class="row"><button class="btn primary" type="button" id="lkGo">ดูสถานะ</button><span class="err" id="lkErr" role="alert"></span></div></div>'+
+    '<p class="note">หาเลขที่ออเดอร์ไม่เจอ ทักร้านทาง TikTok / Facebook: fixtory.studio ได้เลยค่ะ</p>';
+  if(append)$('#app').insertAdjacentHTML('beforeend',h);else $('#app').innerHTML=h;
+  const go=$('#lkGo');
+  go.onclick=async()=>{let no=$('#lkNo').value.trim().toUpperCase().replace(/\s+/g,'');if(/^\d+$/.test(no))no='FX'+no.padStart(4,'0');const ph=$('#lkPh').value.trim(),er=$('#lkErr');
+    if(!/^FX\d+$/.test(no)){er.textContent='ใส่เลขที่ออเดอร์ เช่น FX0123';return}if(!ph){er.textContent='ใส่เบอร์โทรหรือ LINE ID';return}
+    go.disabled=true;go.textContent='กำลังค้นหา…';er.textContent='';let r=null;try{r=await api({action:'trLink',o:no,phone:ph})}catch(e){}
+    if(r&&r.result==='success'&&r.url){const u=new URL(r.url);location.href=u.pathname+u.search;return}
+    go.disabled=false;go.textContent='ดูสถานะ';er.textContent=r?'ไม่พบออเดอร์ที่ตรงกับเลขและเบอร์นี้':'เชื่อมต่อไม่ได้ ลองใหม่อีกครั้ง'};
+  $('#lkPh').addEventListener('keydown',e=>{if(e.key==='Enter')go.click()});
+}
 async function load(){
-  if(!/^FX\d+$/.test(NO)||!TK)return fail('ลิงก์ไม่ครบ','เปิดลิงก์ติดตามจากหน้าสั่งซื้อหรือจากแชตร้านอีกครั้ง');
+  if(!NO&&!TK)return lookup(false);
+  if(!/^FX\d+$/.test(NO)||!TK)return fail('ลิงก์ไม่ครบ','ลองค้นหาออเดอร์ด้วยเลขที่ออเดอร์และเบอร์โทรด้านล่าง');
   let r;try{r=await api({action:'trOrder',o:NO,t:TK})}catch(e){return fail('เชื่อมต่อไม่ได้','ตรวจอินเทอร์เน็ตแล้วลองใหม่อีกครั้ง')}
   if(!r||r.result!=='success')return fail('เปิดไม่ได้',(r&&r.message)||'ลองใหม่อีกครั้ง');
-  D=r;render();
+  D=r;mySave(D.no,location.pathname+location.search);render();
 }
 function render(){
   const s=D.stage,x=s==='x',cur=x?-1:s,P=!!D.pickup,ST=P?['รับออเดอร์แล้ว','ชำระเงินแล้ว','กำลังผลิต','พร้อมให้รับ']:STEPS;
@@ -132,7 +154,7 @@ function render(){
   }
   if(!x&&s!==3)h+='<div class="card" id="nt"></div>';
   h+='<div class="card"><h2>รายการสินค้า</h2><div class="items">'+D.items.map(it=>'<div><b style="font-weight:500">'+esc(it.name)+'</b>'+(it.detail?'<span>'+esc(it.detail)+'</span>':'')+'</div>').join('')+'<div class="tot"><span>ยอดรวม</span><span>'+baht(D.sum)+'</span></div></div></div>';
-  h+='<p class="note">บันทึกหน้านี้ไว้เพื่อเช็กสถานะได้ตลอด · มีคำถามทักร้านทาง TikTok / Facebook: fixtory.studio</p>';
+  h+='<p class="note">บันทึกหน้านี้ไว้เพื่อเช็กสถานะได้ตลอด · มีคำถามทักร้านทาง TikTok / Facebook: fixtory.studio<br><a href="track.html" style="color:var(--accent-text)">ดูออเดอร์อื่น / ค้นหาออเดอร์</a></p>';
   $('#app').innerHTML=h;
   const cp=$('#cp');if(cp)cp.onclick=()=>copy(D.tracking,cp);
   const go=$('#go');if(go)go.onclick=()=>{copy(D.tracking,cp);window.open(CARRIER_URL[D.carrier],'_blank','noopener')};

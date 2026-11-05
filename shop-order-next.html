@@ -223,7 +223,7 @@ textarea{min-height:76px;resize:vertical}
 <section id="formView">
 <div class="inapp" id="inapp" hidden>คุณกำลังเปิดหน้านี้ในแอป ถ้าบันทึกรูปสรุปออเดอร์ไม่ได้ ให้กดค้างที่รูปแล้วเลือก "บันทึกรูปภาพ" หรือเปิดหน้านี้ใน Chrome / Safari</div>
 <h1>สั่งซื้อสินค้า</h1>
-<p class="sub">เลือกสินค้า ใส่ตะกร้า แล้วกรอกที่อยู่จัดส่ง ร้านจะได้รับออเดอร์ทันที</p>
+<p class="sub">เลือกสินค้า ใส่ตะกร้า แล้วกรอกที่อยู่จัดส่ง ร้านจะได้รับออเดอร์ทันที · สั่งไปแล้ว? <a href="track.html" style="color:var(--accent-text);font-weight:600">ติดตามออเดอร์</a></p>
 
 <div class="card">
   <h2>1. เลือกสินค้า</h2>
@@ -787,7 +787,7 @@ function finish(order,no){
   $('#dNo').textContent=no||'รอร้านยืนยัน';$('#dChk').hidden=!!no;slipReset();$('#slipBox').hidden=!no;$('#payNote').textContent=no?'โอนแล้ว แนบสลิปด้านบนได้เลย หรือส่งสลิปพร้อมเลขที่ออเดอร์ทาง TikTok / Facebook: fixtory.studio หรือโทร 090-985-0326, 081-336-8232 ร้านจะเริ่มผลิตหลังได้รับยอดโอน':'โอนแล้ว ส่งสลิปพร้อมรูปสรุปออเดอร์ให้ร้านทาง TikTok / Facebook: fixtory.studio หรือโทร 090-985-0326, 081-336-8232 ร้านจะเริ่มผลิตหลังได้รับยอดโอน';$('#dAmt').textContent=fmt(order.gt);
   $('#formView').hidden=true;$('#bar').hidden=true;$('#doneView').hidden=false;scrollTo({top:0});
   $('#trkBox').hidden=true;
-  if(no)fetch(GAS_URL,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({action:'trLink',o:no,phone:order.phone})}).then(r=>r.json()).then(r=>{if(r&&r.result==='success'&&r.url&&lastOrder===order){$('#trkBtn').href=r.url;$('#trkBox').hidden=false}}).catch(()=>{});
+  if(no)fetch(GAS_URL,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({action:'trLink',o:no,phone:order.phone})}).then(r=>r.json()).then(r=>{if(r&&r.result==='success'&&r.url&&lastOrder===order){$('#trkBtn').href=r.url;$('#trkBox').hidden=false;try{const K='fxMyOrders',u=new URL(r.url),L=JSON.parse(localStorage.getItem(K)||'[]').filter(x=>x.no!==no);L.unshift({no,u:u.pathname+u.search,d:Date.now()});localStorage.setItem(K,JSON.stringify(L.slice(0,10)))}catch(e){}}}).catch(()=>{});
 }
 
 // ---------- รูปสรุปออเดอร์ (แบบเดียวกับฟอร์ม keycap) ----------

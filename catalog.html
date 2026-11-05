@@ -552,7 +552,8 @@ function renderCatalog(){
     el('div',{class:'social-grid'},soc.map(x=>el(x.url?'a':'div',{class:'soc',href:x.url||null,target:x.url?'_blank':null,rel:x.url?'noopener':null},
       x.qr?el('img',{src:x.qr,alt:'QR '+x.label,width:'160',height:'160',loading:'lazy'}):null,
       el('b',{},x.label),el('span',{},x.handle||'')))),
-    S.shop.phone?el('p',{class:'soc-phone'},t('call'),el('b',{},S.shop.phone)):null));
+    S.shop.phone?el('p',{class:'soc-phone'},t('call'),el('b',{},S.shop.phone)):null,
+    el('p',{class:'soc-phone',style:'margin-top:6px'},lang==='en'?'Already ordered? ':'สั่งซื้อแล้ว? ',el('a',{href:'https://fixtory-studio.pages.dev/track.html',target:'_blank',rel:'noopener',style:'color:var(--accent-text);font-weight:600'},lang==='en'?'Track your order':'ติดตามออเดอร์'))));
   w.append(el('footer',{class:'foot-note'},el('b',{class:'wm'},wordmark(S.shop.name)),el('span',{class:'wm-tag'},'From Craft to Smart Design')));
   app.append(w);drawGrid();loadReviews();
   const top=document.querySelector('.top'),hero=w.querySelector('.hero');
