@@ -59,6 +59,7 @@ button:disabled{opacity:.45;cursor:default}
     <div class="card">
       <div class="row"><b class="grow">เลือกออเดอร์</b><button id="reload" style="padding:7px 14px;font-size:13.5px">รีเฟรช</button></div>
       <label class="tg"><input type="checkbox" id="showAll"> แสดงออเดอร์ที่ยังไม่จ่าย/ส่งแล้วด้วย</label>
+      <label class="tg"><input type="checkbox" id="rvQr"> ใส่ QR รีวิวสินค้าบนใบปะหน้า</label>
       <div id="list"></div>
     </div>
     <p class="help">ติ๊กไว้ให้แล้ว: ออเดอร์ที่ "จ่ายแล้ว" และยังไม่ "จัดส่งแล้ว" ออเดอร์นัดรับและที่ยกเลิกไม่แสดง</p>
@@ -152,7 +153,8 @@ function drawLabel(o,S){
   // ท้าย: หมายเหตุ + บรรทัดล่าง (คำนวณก่อน เพื่อกันที่ให้รายการสินค้า)
   const footY=H-M-8;
   g.font=F(400,27);const noteL=o.note?wrap(g,'หมายเหตุ: '+o.note,W-2*M-32,3):[];
-  const noteH=noteL.length?noteL.length*34+24:0,noteTop=footY-40-noteH-(noteL.length?14:0);
+  const QS=o.rv?qrSize(o.rv):0,bandH=QS?QS+12:0,bandTop=footY-40-bandH;
+  const noteH=noteL.length?noteL.length*34+24:0,noteTop=bandTop-(bandH?14:0)-noteH-(noteL.length?14:0);
   // รายการสินค้า
   g.setLineDash([12,8]);g.lineWidth=3;g.beginPath();g.moveTo(M,y-8);g.lineTo(W-M,y-8);g.stroke();g.setLineDash([]);
   y+=30;g.font=F(700,30);g.fillText('รายการสินค้า ('+o.items.length+' ชิ้น)',M,y);y+=40;
@@ -163,19 +165,27 @@ function drawLabel(o,S){
     ls.forEach(l=>{g.fillText(l,M+12,y);y+=34});shown++;
   }
   if(noteL.length){g.lineWidth=3;rrect(g,M,noteTop,W-2*M,noteH,12);g.stroke();let ny=noteTop+12+27;noteL.forEach(l=>{g.fillText(l,M+16,ny);ny+=34})}
+  if(QS){drawQR(g,o.rv,W-M-QS,bandTop+4);let ty=bandTop+44;g.font=F(800,32);g.fillText('รีวิวสินค้า สแกนเลย ★',M,ty);ty+=40;g.font=F(400,25);
+    ['ได้รับของแล้ว ให้ดาวและเล่าให้ฟังหน่อย','แนบรูปสินค้าจริงได้ · ใช้เวลาไม่ถึง 1 นาที','ทุกรีวิวช่วยร้านเล็ก ๆ ได้มาก ♥'].forEach(l=>{g.fillText(l,M,ty);ty+=33})}
   g.fillRect(M,footY-34,W-2*M,3);g.font=F(400,25);g.fillText('ตรวจของครบ ☐',M,footY);g.textAlign='right';g.fillText('ขอบคุณที่อุดหนุนค่ะ ♥',W-M,footY);g.textAlign='left';
   return c;
 }
+function qrOf(url){const q=qrcode(0,'M');q.addData(url);q.make();return q}
+function qrSize(url){const n=qrOf(url).getModuleCount()+8;return n*Math.max(4,Math.floor(180/n))}
+function drawQR(g,url,x,y){const q=qrOf(url),n=q.getModuleCount(),c=Math.max(4,Math.floor(180/(n+8))),pad=4*c;g.fillStyle='#fff';g.fillRect(x,y,(n+8)*c,(n+8)*c);g.fillStyle='#000';
+  for(let r=0;r<n;r++)for(let k=0;k<n;k++)if(q.isDark(r,k))g.fillRect(x+pad+k*c,y+pad+r*c,c,c)}
+async function rvLinks(nos){try{const r=await (await fetch(GAS_URL,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({action:'rvLinks',key:KEY,orders:nos})})).json();return r&&r.result==='success'?r.links:null}catch(e){return null}}
 const toBlob=c=>new Promise(r=>c.toBlob(r,'image/png'));
 
 async function make(){
   const btn=$('#make');btn.disabled=true;btn.textContent='กำลังสร้าง…';
   try{await Promise.all([document.fonts.load(F(400,30)),document.fonts.load(F(700,30)),document.fonts.load(F(800,30))])}catch(e){}
-  made=[];
-  for(const o of D.orders.filter(o=>sel[o.no])){const c=drawLabel(o,D.sender||{name:'Fixtory Studio',phone:''});made.push({o,url:c.toDataURL('image/png'),blob:await toBlob(c)})}
+  made=[];const pick=D.orders.filter(o=>sel[o.no]);let links=null;
+  if($('#rvQr').checked&&typeof qrcode==='function'){links=await rvLinks(pick.map(o=>o.no));if(!links)msg('ยังสร้าง QR รีวิวไม่ได้ (ติดตั้ง Reviews.gs แล้ว Deploy ก่อน) — สร้างใบปะหน้าแบบไม่มี QR ให้แทน','bad')}
+  for(const o of pick){const c=drawLabel(Object.assign({},o,{rv:links&&links[o.no]||''}),D.sender||{name:'Fixtory Studio',phone:''});made.push({o,url:c.toDataURL('image/png'),blob:await toBlob(c)})}
   $('#prev').innerHTML=made.map((m,i)=>`<figure><img src="${m.url}" alt="ใบปะหน้า ${esc(m.o.no)}"><figcaption><span>${esc(m.o.no)} · ${esc(m.o.name)}</span><button data-i="${i}" class="one">แชร์</button></figcaption></figure>`).join('');
   document.querySelectorAll('.one').forEach(b=>b.onclick=()=>share([made[+b.dataset.i]]));
-  $('#outMsg').textContent='';$('#ship').disabled=false;$('#ship').textContent='เปลี่ยนสถานะเป็นจัดส่งแล้ว';
+  if(!$('#rvQr').checked||links)$('#outMsg').textContent='';$('#ship').disabled=false;$('#ship').textContent='เปลี่ยนสถานะเป็นจัดส่งแล้ว';
   btn.innerHTML='สร้างใบปะหน้า (<span id="cnt">'+made.length+'</span>)';btn.disabled=false;show('out');
 }
 const fileOf=m=>new File([m.blob],'label-'+m.o.no+'.png',{type:'image/png'});
@@ -190,6 +200,7 @@ function msg(t,c){$('#outMsg').textContent=t;$('#outMsg').className='msg '+(c||'
 $('#go').onclick=()=>{KEY=$('#key').value.trim();if(KEY){$('#loginMsg').textContent='';load()}};
 $('#key').addEventListener('keydown',e=>{if(e.key==='Enter')$('#go').click()});
 $('#reload').onclick=load;$('#showAll').onchange=renderList;
+$('#rvQr').checked=store.get('fxLabelQr')!=='0';$('#rvQr').onchange=()=>store.set('fxLabelQr',$('#rvQr').checked?'1':'0');
 $('#logout').onclick=()=>{store.set('fxLabelKey','');KEY='';$('#key').value='';show('login')};
 $('#make').onclick=make;$('#back').onclick=()=>{show('pick');renderList()};
 $('#shareAll').onclick=()=>share(made);$('#saveAll').onclick=()=>save(made);
@@ -208,6 +219,7 @@ KEY=store.get('fxLabelKey');if(KEY)load();else show('login');
 <script>(function(){const O='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>',C='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3l18 18"/><path d="M10.6 5.1A10.9 10.9 0 0 1 12 5c6.5 0 10 7 10 7a17 17 0 0 1-3.2 4.1M6.6 6.6A17.4 17.4 0 0 0 2 12s3.5 7 10 7a10 10 0 0 0 5.4-1.6"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg>';
 document.querySelectorAll('input[type=password]').forEach(function(i){var w=document.createElement('span');w.className='pw';i.parentNode.insertBefore(w,i);w.appendChild(i);var b=document.createElement('button');b.type='button';b.className='eye';b.setAttribute('aria-label','แสดงรหัส');b.innerHTML=O;w.appendChild(b);
 b.onclick=function(){var s=i.type==='password';i.type=s?'text':'password';b.innerHTML=s?C:O;b.setAttribute('aria-label',s?'ซ่อนรหัส':'แสดงรหัส');i.focus()}})})();</script>
-<script src="nav.js?v=7"></script>
+<script src="qrcode.js"></script>
+<script src="nav.js?v=8"></script>
 </body>
 </html>

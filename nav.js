@@ -20,6 +20,7 @@
     cart: '<path d="M3 4h2l2.4 11.2a2 2 0 0 0 2 1.6h7.7a2 2 0 0 0 2-1.5L21 8H6"/><circle cx="10" cy="20.5" r="1"/><circle cx="17" cy="20.5" r="1"/>',
     belloff: '<path d="M6 8a6 6 0 0 1 9.3-5"/><path d="M18 8c0 7 3 9 3 9H9"/><path d="M6 8c0 2.3-.3 4.1-.8 5.4"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/><path d="M3 3l18 18"/>',
     bell: '<path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>',
+    star: '<path d="M12 3.2l2.7 5.5 6 .9-4.35 4.25 1 6L12 17l-5.35 2.85 1-6L3.3 9.6l6-.9z"/>',
     link: '<path d="M10 14a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"/><path d="M14 10a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"/>'
   };
   function ic(k) { return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + P[k] + '</svg>'; }
@@ -28,6 +29,7 @@
   var MORE = [
     ['เครื่องมือร้าน'],
     ['print', 'พิมพ์ใบปะหน้า', 'labels.html'],
+    ['star', 'รีวิวลูกค้า', 'reviews.html'],
     ['users', 'ตัวแทน', 'agents.html'],
     ['stock', 'สต๊อก & ต้นทุน', 'dashboard.html'],
     ['coin', 'สรุปค่าคอมเซลล์', GAS_URL + '?report=commission&key=' + encodeURIComponent(key), 1],
@@ -74,7 +76,7 @@
   bar.className = 'fxbar'; bar.setAttribute('aria-label', 'เมนูหลังร้าน');
   bar.innerHTML = TABS.map(function (t) {
     return '<a href="' + t[3] + '"' + (page === t[0] ? ' class="on" aria-current="page"' : '') + '>' + ic(t[1]) + t[2] + '</a>';
-  }).join('') + '<button type="button" id="fxMoreBtn"' + (['labels', 'agents'].indexOf(page) > -1 ? ' class="on"' : '') + '>' + ic('more') + 'เพิ่มเติม</button>';
+  }).join('') + '<button type="button" id="fxMoreBtn"' + (['labels', 'agents', 'reviews'].indexOf(page) > -1 ? ' class="on"' : '') + '>' + ic('more') + 'เพิ่มเติม</button>';
   document.body.appendChild(bar);
 
   var sheet = document.createElement('div');

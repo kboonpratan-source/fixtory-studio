@@ -62,6 +62,7 @@ input[type=search],input[type=password]{width:100%;font:inherit;padding:10px 12p
 .confirm .yes{background:var(--bad);color:#fff}.confirm .no{background:var(--surface);color:var(--ink)}
 .saved{font-size:13px;color:var(--ok);min-height:1em}.saved.err{color:var(--bad)}
 .empty{color:var(--muted);text-align:center;padding:30px 8px}
+.rvl{display:flex;gap:6px;flex-wrap:wrap}.chip{font:inherit;font-size:13.5px;font-weight:600;color:var(--accent);text-decoration:none;border:1px solid var(--line);background:var(--surface);border-radius:99px;padding:6px 12px;cursor:pointer}
 .card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:16px}
 button.pri{font:inherit;font-weight:600;border:0;border-radius:999px;padding:10px 20px;cursor:pointer;background:var(--accent);color:var(--on-accent)}
 .more{display:block;margin:12px auto 0;font:inherit;font-weight:600;border:1px solid var(--line);background:var(--surface);color:var(--muted);border-radius:99px;padding:8px 18px;cursor:pointer}
@@ -97,7 +98,7 @@ const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;',
 const baht=n=>'฿'+Math.round(n).toLocaleString('th-TH');
 const PNAME=p=>/พับชู่/.test(p)?'น้องพับชู่':/sip/i.test(p)?'Sip Buddy':/คลิป/.test(p)?'คลิปหนีบเอกสาร':'Alphabet Clicker';
 const FILTERS=[['todo','ต้องทำ'],['wait','รอโอน'],['make','รอส่ง'],['done','ส่งแล้ว'],['x','ยกเลิก'],['all','ทั้งหมด']];
-let KEY='',ORD=[],F='todo',OPEN=null,LIMIT=40,CONFIRM=null;
+let KEY='',ORD=[],F='todo',OPEN=null,LIMIT=40,CONFIRM=null;const RVL={};
 
 const stage=o=>o.status==='ยกเลิก'||o.pay==='ยกเลิก'?'x':o.status==='จัดส่งแล้ว'?'done':o.pay==='จ่ายแล้ว'?'make':'wait';
 const match=(o,f)=>f==='all'||(f==='todo'?['wait','make'].includes(stage(o)):stage(o)===f);
@@ -160,6 +161,7 @@ function card(o){
       h+=`<div class="act"><span class="lb">การชำระเงิน</span><div class="opts">${['รอโอน','จ่ายแล้ว'].map(v=>`<button type="button" data-set="pay" data-v="${v}" aria-pressed="${o.pay===v}">${v==='จ่ายแล้ว'?'✓ ':''}${v}</button>`).join('')}</div>
         <span class="lb">สถานะงาน</span><div class="opts">${['ใหม่','กำลังทำ','จัดส่งแล้ว'].map(v=>`<button type="button" data-set="status" data-v="${v}" aria-pressed="${o.status===v}">${v}</button>`).join('')}</div>
         <div class="saved" id="sv"></div>
+        <span class="lb">ลิงก์รีวิวสินค้า</span><div class="rvl">${RVL[o.no]===0?'<span style="color:var(--faint);font-size:13.5px">ยังสร้างลิงก์ไม่ได้ — ติดตั้ง Reviews.gs แล้ว Deploy ก่อน</span>':RVL[o.no]?`<button type="button" class="chip" data-copy="msg">คัดลอกข้อความชวนรีวิว</button><button type="button" class="chip" data-copy="link">คัดลอกลิงก์</button><a class="chip" href="${esc(RVL[o.no])}" target="_blank" rel="noopener">เปิดดู</a>`:'<span style="color:var(--faint);font-size:13.5px">กำลังสร้างลิงก์…</span>'}</div>
         ${CONFIRM===o.no?`<div class="confirm">ยกเลิกออเดอร์ ${esc(o.no)}? ${o.items.some(i=>i.name==='Alphabet Clicker')?'ระบบจะคืนสต๊อก keycap และสายคล้องให้อัตโนมัติ':''}<div class="row"><button class="yes" type="button" data-cancel="${esc(o.no)}">ยืนยันยกเลิก</button><button class="no" type="button" data-nocancel>ไม่ใช่</button></div></div>`
           :`<button class="danger" type="button" data-askcancel="${esc(o.no)}">ยกเลิกออเดอร์…</button>`}</div>`;
     }
@@ -167,7 +169,15 @@ function card(o){
   }
   return h+'</article>';
 }
+function rvMsg(o){return 'ขอบคุณที่อุดหนุน Fixtory Studio นะคะ ได้รับของแล้วชอบไหมคะ ฝากรีวิวสินค้าสั้น ๆ ได้ที่ลิงก์นี้เลยค่ะ (แนบรูปได้ด้วย) 🙏\n'+RVL[o.no]}
+async function rvFetch(no){if(RVL[no]!==undefined)return;RVL[no]='';let r=null;
+  try{r=await (await fetch(GAS_URL,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({action:'rvLinks',key:KEY,orders:[no]})})).json()}catch(e){}
+  RVL[no]=r&&r.result==='success'&&r.links[no]?r.links[no]:0;if(OPEN===no)render()}
+async function copyTxt(t,b){try{await navigator.clipboard.writeText(t)}catch(e){const a=document.createElement('textarea');a.value=t;document.body.appendChild(a);a.select();try{document.execCommand('copy')}catch(x){}a.remove()}
+  const old=b.textContent;b.textContent='คัดลอกแล้ว ✓';setTimeout(()=>{b.textContent=old},1600)}
 function bind(){
+  if(OPEN){const o=ORD.find(x=>x.no===OPEN);if(o&&stage(o)!=='x')rvFetch(OPEN)}
+  document.querySelectorAll('[data-copy]').forEach(b=>b.onclick=()=>{const o=ORD.find(x=>x.no===OPEN);if(o)copyTxt(b.dataset.copy==='msg'?rvMsg(o):RVL[o.no],b)});
   document.querySelectorAll('.hd').forEach(b=>b.onclick=()=>{OPEN=OPEN===b.dataset.no?null:b.dataset.no;CONFIRM=null;history.replaceState(null,'',OPEN?'#'+OPEN:location.pathname);render()});
   document.querySelectorAll('[data-set]').forEach(b=>b.onclick=()=>save(OPEN,{[b.dataset.set]:b.dataset.v},b));
   document.querySelectorAll('[data-askcancel]').forEach(b=>b.onclick=()=>{CONFIRM=b.dataset.askcancel;render()});
@@ -195,6 +205,6 @@ KEY=store.get('fxLabelKey');if(KEY)load();else show('login');
 <script>(function(){const O='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>',C='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3l18 18"/><path d="M10.6 5.1A10.9 10.9 0 0 1 12 5c6.5 0 10 7 10 7a17 17 0 0 1-3.2 4.1M6.6 6.6A17.4 17.4 0 0 0 2 12s3.5 7 10 7a10 10 0 0 0 5.4-1.6"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg>';
 document.querySelectorAll('input[type=password]').forEach(function(i){var w=document.createElement('span');w.className='pw';i.parentNode.insertBefore(w,i);w.appendChild(i);var b=document.createElement('button');b.type='button';b.className='eye';b.setAttribute('aria-label','แสดงรหัส');b.innerHTML=O;w.appendChild(b);
 b.onclick=function(){var s=i.type==='password';i.type=s?'text':'password';b.innerHTML=s?C:O;b.setAttribute('aria-label',s?'ซ่อนรหัส':'แสดงรหัส');i.focus()}})})();</script>
-<script src="nav.js?v=7"></script>
+<script src="nav.js?v=8"></script>
 </body>
 </html>
