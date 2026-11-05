@@ -98,7 +98,7 @@ const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;',
 const baht=n=>'฿'+Math.round(n).toLocaleString('th-TH');
 const PNAME=p=>/พับชู่/.test(p)?'น้องพับชู่':/sip/i.test(p)?'Sip Buddy':/คลิป/.test(p)?'คลิปหนีบเอกสาร':'Alphabet Clicker';
 const FILTERS=[['todo','ต้องทำ'],['wait','รอโอน'],['make','รอส่ง'],['done','ส่งแล้ว'],['x','ยกเลิก'],['all','ทั้งหมด']];
-let KEY='',ORD=[],F='todo',OPEN=null,LIMIT=40,CONFIRM=null;const RVL={};
+let KEY='',ORD=[],F='todo',OPEN=null,LIMIT=40,CONFIRM=null;const RVL={},INFO={},SHIP={};const CARRIERS=['J&T Express','ไปรษณีย์ไทย','Flash Express','KEX (Kerry)','ส่งเอง / นัดรับ'];
 
 const stage=o=>o.status==='ยกเลิก'||o.pay==='ยกเลิก'?'x':o.status==='จัดส่งแล้ว'?'done':o.pay==='จ่ายแล้ว'?'make':'wait';
 const match=(o,f)=>f==='all'||(f==='todo'?['wait','make'].includes(stage(o)):stage(o)===f);
@@ -161,7 +161,7 @@ function card(o){
       h+=`<div class="act"><span class="lb">การชำระเงิน</span><div class="opts">${['รอโอน','จ่ายแล้ว'].map(v=>`<button type="button" data-set="pay" data-v="${v}" aria-pressed="${o.pay===v}">${v==='จ่ายแล้ว'?'✓ ':''}${v}</button>`).join('')}</div>
         <span class="lb">สถานะงาน</span><div class="opts">${['ใหม่','กำลังทำ','จัดส่งแล้ว'].map(v=>`<button type="button" data-set="status" data-v="${v}" aria-pressed="${o.status===v}">${v}</button>`).join('')}</div>
         <div class="saved" id="sv"></div>
-        <span class="lb">ลิงก์รีวิวสินค้า</span><div class="rvl">${RVL[o.no]===0?'<span style="color:var(--faint);font-size:13.5px">ยังสร้างลิงก์ไม่ได้ — ติดตั้ง Reviews.gs แล้ว Deploy ก่อน</span>':RVL[o.no]?`<button type="button" class="chip" data-copy="msg">คัดลอกข้อความชวนรีวิว</button><button type="button" class="chip" data-copy="link">คัดลอกลิงก์</button><a class="chip" href="${esc(RVL[o.no])}" target="_blank" rel="noopener">เปิดดู</a>`:'<span style="color:var(--faint);font-size:13.5px">กำลังสร้างลิงก์…</span>'}</div>
+        ${shipBlock(o)}
         ${CONFIRM===o.no?`<div class="confirm">ยกเลิกออเดอร์ ${esc(o.no)}? ${o.items.some(i=>i.name==='Alphabet Clicker')?'ระบบจะคืนสต๊อก keycap และสายคล้องให้อัตโนมัติ':''}<div class="row"><button class="yes" type="button" data-cancel="${esc(o.no)}">ยืนยันยกเลิก</button><button class="no" type="button" data-nocancel>ไม่ใช่</button></div></div>`
           :`<button class="danger" type="button" data-askcancel="${esc(o.no)}">ยกเลิกออเดอร์…</button>`}</div>`;
     }
@@ -169,15 +169,45 @@ function card(o){
   }
   return h+'</article>';
 }
-function rvMsg(o){return 'ขอบคุณที่อุดหนุน Fixtory Studio นะคะ ได้รับของแล้วชอบไหมคะ ฝากรีวิวสินค้าสั้น ๆ ได้ที่ลิงก์นี้เลยค่ะ (แนบรูปได้ด้วย) 🙏\n'+RVL[o.no]}
+function rvMsg(o){return 'ขอบคุณที่อุดหนุน Fixtory Studio นะคะ ได้รับของแล้วชอบไหมคะ ฝากรีวิวสินค้าสั้น ๆ ได้ที่ลิงก์นี้เลยค่ะ (แนบรูปได้ด้วย) 🙏\n'+(INFO[o.no]?INFO[o.no].review:RVL[o.no])}
+function shipMsg(o){const I=INFO[o.no];return 'ส่งของแล้วนะคะ 📦 ออเดอร์ '+o.no+'\n'+(I.tracking?I.carrier+' เลขพัสดุ '+I.tracking+'\n':(I.carrier?I.carrier+'\n':''))+'ติดตามสถานะได้ที่ '+I.track+'\nขอบคุณที่อุดหนุน Fixtory Studio ค่ะ'}
+function trackMsg(o){return 'ติดตามสถานะออเดอร์ '+o.no+' ได้ที่ลิงก์นี้เลยค่ะ กด "เปิดแจ้งเตือน" ไว้ พอร้านส่งของจะเด้งบอกพร้อมเลขพัสดุ\n'+INFO[o.no].track}
 async function rvFetch(no){if(RVL[no]!==undefined)return;RVL[no]='';let r=null;
   try{r=await (await fetch(GAS_URL,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({action:'rvLinks',key:KEY,orders:[no]})})).json()}catch(e){}
   RVL[no]=r&&r.result==='success'&&r.links[no]?r.links[no]:0;if(OPEN===no)render()}
+async function infoFetch(no,force){if(INFO[no]!==undefined&&!force)return;if(!force)INFO[no]='';let r=null;
+  try{r=await (await fetch(GAS_URL,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({action:'trAdmin',key:KEY,no})})).json()}catch(e){}
+  if(r&&r.result==='success'){INFO[no]=r;SHIP[no]=SHIP[no]||{carrier:r.carrier||'J&T Express',tracking:r.tracking||''}}else{INFO[no]=0;rvFetch(no)}
+  if(OPEN===no)render()}
+function shipBlock(o){
+  const I=INFO[o.no];
+  if(I===0)return `<span class="lb">ลิงก์รีวิวสินค้า</span><div class="rvl">${RVL[o.no]===0?'<span style="color:var(--faint);font-size:13.5px">ยังสร้างลิงก์ไม่ได้ — ติดตั้ง Reviews.gs แล้ว Deploy ก่อน</span>':RVL[o.no]?`<button type="button" class="chip" data-copy="msg">คัดลอกข้อความชวนรีวิว</button><button type="button" class="chip" data-copy="review">คัดลอกลิงก์รีวิว</button>`:'<span style="color:var(--faint);font-size:13.5px">กำลังโหลด…</span>'}</div>
+    <span style="color:var(--faint);font-size:12.5px">ติดตั้ง Track.gs เพื่อใส่เลขพัสดุและส่งลิงก์ติดตามให้ลูกค้า</span>`;
+  if(!I)return '<span class="lb">การจัดส่ง</span><span style="color:var(--faint);font-size:13.5px">กำลังโหลด…</span>';
+  const S=SHIP[o.no],shipped=o.status==='จัดส่งแล้ว';
+  return `<span class="lb">การจัดส่ง ${I.subs?`<span style="font-weight:400;color:var(--ok)">· ลูกค้าเปิดแจ้งเตือนไว้ ${I.subs} เครื่อง</span>`:''}</span>
+    <div class="opts">${CARRIERS.map(c=>`<button type="button" data-car="${esc(c)}" aria-pressed="${S.carrier===c}">${esc(c)}</button>`).join('')}</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap"><input type="search" id="trk" inputmode="text" autocapitalize="characters" placeholder="เลขพัสดุ เช่น 820112345678" value="${esc(S.tracking)}" style="flex:1;min-width:180px" aria-label="เลขพัสดุ">
+      <button type="button" class="pri" id="shipSave">${shipped?'บันทึกเลขพัสดุ':'บันทึก + จัดส่งแล้ว'}</button></div>
+    <div class="saved" id="ssv"></div>
+    <span class="lb">ส่งให้ลูกค้าในแชต</span><div class="rvl">${shipped?'<button type="button" class="chip" data-copy="ship">คัดลอกข้อความแจ้งส่งของ</button>':'<button type="button" class="chip" data-copy="trackmsg">คัดลอกข้อความลิงก์ติดตาม</button>'}<button type="button" class="chip" data-copy="track">คัดลอกลิงก์ติดตาม</button>${shipped?'<button type="button" class="chip" data-copy="msg">ข้อความชวนรีวิว</button>':''}<a class="chip" href="${esc(I.track)}" target="_blank" rel="noopener">เปิดหน้าติดตาม</a></div>`;
+}
+async function shipSave(o,btn){
+  const S=SHIP[o.no];S.tracking=$('#trk').value.trim();
+  btn.disabled=true;const sv=$('#ssv');sv.className='saved';sv.textContent='กำลังบันทึก…';
+  let r=null;try{r=await (await fetch(GAS_URL,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({action:'trSetShip',key:KEY,no:o.no,carrier:S.carrier,tracking:S.tracking})})).json()}catch(e){}
+  if(r&&r.result==='success'){o.status='จัดส่งแล้ว';Object.assign(INFO[o.no],{carrier:S.carrier,tracking:S.tracking.replace(/\s+/g,'').toUpperCase()});S.tracking=INFO[o.no].tracking;render();
+    const s2=$('#ssv');if(s2)s2.textContent='บันทึกแล้ว ✓'+(r.notified?' · แจ้งเตือนเข้ามือถือลูกค้าแล้ว':' · กด "คัดลอกข้อความแจ้งส่งของ" ไปส่งในแชตได้เลย')}
+  else{btn.disabled=false;sv.className='saved err';sv.textContent='บันทึกไม่สำเร็จ'+(r&&r.message?': '+r.message:'')}
+}
 async function copyTxt(t,b){try{await navigator.clipboard.writeText(t)}catch(e){const a=document.createElement('textarea');a.value=t;document.body.appendChild(a);a.select();try{document.execCommand('copy')}catch(x){}a.remove()}
   const old=b.textContent;b.textContent='คัดลอกแล้ว ✓';setTimeout(()=>{b.textContent=old},1600)}
 function bind(){
-  if(OPEN){const o=ORD.find(x=>x.no===OPEN);if(o&&stage(o)!=='x')rvFetch(OPEN)}
-  document.querySelectorAll('[data-copy]').forEach(b=>b.onclick=()=>{const o=ORD.find(x=>x.no===OPEN);if(o)copyTxt(b.dataset.copy==='msg'?rvMsg(o):RVL[o.no],b)});
+  if(OPEN){const o=ORD.find(x=>x.no===OPEN);if(o&&stage(o)!=='x')infoFetch(OPEN)}
+  document.querySelectorAll('[data-copy]').forEach(b=>b.onclick=()=>{const o=ORD.find(x=>x.no===OPEN);if(!o)return;const k=b.dataset.copy,I=INFO[o.no];
+    copyTxt(k==='msg'?rvMsg(o):k==='review'?(I?I.review:RVL[o.no]):k==='ship'?shipMsg(o):k==='trackmsg'?trackMsg(o):I.track,b)});
+  document.querySelectorAll('[data-car]').forEach(b=>b.onclick=()=>{const S=SHIP[OPEN];if(!S)return;S.tracking=$('#trk')?$('#trk').value:S.tracking;S.carrier=b.dataset.car;render()});
+  {const sb=$('#shipSave');if(sb)sb.onclick=()=>{const o=ORD.find(x=>x.no===OPEN);if(o)shipSave(o,sb)};const ti=$('#trk');if(ti)ti.addEventListener('keydown',e=>{if(e.key==='Enter')sb.click()})}
   document.querySelectorAll('.hd').forEach(b=>b.onclick=()=>{OPEN=OPEN===b.dataset.no?null:b.dataset.no;CONFIRM=null;history.replaceState(null,'',OPEN?'#'+OPEN:location.pathname);render()});
   document.querySelectorAll('[data-set]').forEach(b=>b.onclick=()=>save(OPEN,{[b.dataset.set]:b.dataset.v},b));
   document.querySelectorAll('[data-askcancel]').forEach(b=>b.onclick=()=>{CONFIRM=b.dataset.askcancel;render()});

@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>ติดตามออเดอร์ · Fixtory Studio</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&family=Chonburi&family=Prompt:wght@300;400;500;600&display=swap">
+<script>try{var t=localStorage.getItem('fx-theme');if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t)}catch(e){}</script>
+<style>
+:root{--bg:#FAF8F4;--surface:#FFFFFF;--sunk:#F5E8DC;--soft:#E8C4A8;--ink:#2C2420;--muted:#76665C;--line:#EDE2D6;--accent:#C4714A;--accent-text:#A9572F;--olive:#6B7A4A;--danger:#B42318;--star:#E9A23B;--on-accent:#FFFFFF;--hero:#F5E8DC;--ok-bg:#EEF2E4;
+  --f-display:"DM Serif Display","Chonburi",Georgia,serif;--f-body:"DM Sans","Prompt",system-ui,-apple-system,"Segoe UI",sans-serif;color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1B1613;--surface:#26201C;--sunk:#322822;--soft:#5A4234;--ink:#F5E8DC;--muted:#BFAE9F;--line:#3A302A;--accent:#E08A60;--accent-text:#EFA07A;--olive:#A7B57E;--danger:#FF8A7D;--star:#F2B45A;--on-accent:#1B1613;--hero:#3A2D25;--ok-bg:#2B3020;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#1B1613;--surface:#26201C;--sunk:#322822;--soft:#5A4234;--ink:#F5E8DC;--muted:#BFAE9F;--line:#3A302A;--accent:#E08A60;--accent-text:#EFA07A;--olive:#A7B57E;--danger:#FF8A7D;--star:#F2B45A;--on-accent:#1B1613;--hero:#3A2D25;--ok-bg:#2B3020;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.6}
+.wrap{max-width:640px;margin:0 auto;padding:20px max(16px,env(safe-area-inset-left)) 60px max(16px,env(safe-area-inset-right))}
+.hero{position:relative;display:flex;align-items:center;justify-content:space-between;gap:12px 20px;border-radius:24px;background:var(--hero);overflow:hidden;padding:clamp(16px,3vw,26px) clamp(18px,4vw,36px);margin-bottom:20px}
+.hero::before,.hero::after{content:"";position:absolute;border-radius:50%;background:var(--soft);opacity:.55}
+.hero::before{width:200px;height:200px;right:-60px;top:-100px}
+.hero::after{width:110px;height:110px;right:110px;bottom:-70px;opacity:.35}
+.hero>*{position:relative}
+.lockup{display:flex;align-items:center;gap:clamp(12px,2vw,18px);text-decoration:none;color:var(--ink);min-width:0}
+.lockup svg{width:clamp(32px,4.4vw,44px);height:clamp(46px,6.4vw,64px);flex:none}
+.lockup-t{display:grid;gap:clamp(4px,1vw,10px);min-width:0}
+.wm{font-family:var(--f-display);text-transform:uppercase;letter-spacing:.1em;font-size:clamp(22px,3.6vw,36px);line-height:1;white-space:nowrap;margin:0;font-weight:400}
+.wm em{font-style:normal;color:var(--accent)}
+.wm-tag{font-family:var(--f-body);text-transform:uppercase;letter-spacing:.3em;font-size:clamp(9px,1.1vw,11.5px);color:var(--muted)}
+@media (max-width:480px){.hero-link{display:none}.hero{padding:14px 16px}.wm{font-size:20px}}
+.thm{border:0;background:var(--surface);box-shadow:inset 0 0 0 1.5px var(--line);border-radius:999px;width:34px;height:30px;padding:0;display:inline-grid;place-items:center;cursor:pointer;color:var(--accent-text);flex:none}
+.thm svg{width:16px;height:16px;display:block}
+.hero-ctrl{display:flex;gap:8px;align-items:center}
+.hero-link{border:0;background:var(--surface);box-shadow:inset 0 0 0 1.5px var(--line);border-radius:999px;padding:6px 14px;font-size:13px;font-weight:500;color:var(--accent-text);text-decoration:none;white-space:nowrap}
+h1{font-family:var(--f-display);font-weight:400;font-size:30px;margin:4px 0 2px;color:var(--accent)}
+.sub{color:var(--muted);margin:0 0 18px;font-size:14px}
+.card{background:var(--surface);border-radius:20px;padding:18px;box-shadow:0 1px 2px rgba(44,36,32,.06),0 8px 24px -14px rgba(44,36,32,.25);margin-bottom:16px}
+label.l{display:block;font-size:13.5px;font-weight:600;margin:14px 0 6px}
+input[type=text],textarea{width:100%;border:0;box-shadow:inset 0 0 0 1.5px var(--line);background:var(--surface);border-radius:12px;padding:10px 12px;font:inherit;color:inherit}
+input:focus,textarea:focus{outline:none;box-shadow:inset 0 0 0 2px var(--accent)}
+textarea{min-height:96px;resize:vertical}
+.hint{font-size:12.5px;color:var(--muted);margin-top:4px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:0;border-radius:999px;padding:11px 20px;font:inherit;font-weight:600;cursor:pointer;text-decoration:none}
+.btn.primary{background:var(--accent);color:var(--on-accent)}
+.btn.ghost{background:var(--surface);box-shadow:inset 0 0 0 1.5px var(--line);color:var(--ink)}
+.btn:disabled{opacity:.55;cursor:not-allowed}
+.tl{list-style:none;margin:0;padding:0;display:grid}
+.tl li{display:grid;grid-template-columns:28px 1fr;gap:12px;position:relative;padding-bottom:18px}
+.tl li:last-child{padding-bottom:0}
+.tl li::before{content:"";position:absolute;left:13px;top:26px;bottom:-2px;width:2px;background:var(--line)}
+.tl li:last-child::before{display:none}
+.tl li.done::before{background:var(--accent)}
+.tl i{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:var(--sunk);color:var(--muted);font-style:normal;font-size:13px;font-weight:600;position:relative;z-index:1}
+.tl li.done i{background:var(--accent);color:var(--on-accent)}
+.tl li.now i{box-shadow:0 0 0 5px color-mix(in srgb,var(--accent) 22%,transparent)}
+.tl b{display:block;font-weight:600;line-height:1.35;padding-top:3px}
+.tl li:not(.done) b{color:var(--muted);font-weight:500}
+.tl span{font-size:12.5px;color:var(--muted)}
+.big{font-family:var(--f-display);font-size:22px;color:var(--accent-text);margin:0 0 2px;font-weight:400}
+.trk{display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:var(--sunk);border-radius:14px;padding:12px 14px;margin:10px 0}
+.trk b{font-size:20px;letter-spacing:.04em;font-variant-numeric:tabular-nums;flex:1;min-width:0;word-break:break-all}
+.trk small{display:block;font-size:12px;color:var(--muted);letter-spacing:0;font-weight:400}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:12px}
+.items{display:grid;gap:8px;font-size:14px}
+.items div{display:grid;gap:0}.items span{font-size:12.5px;color:var(--muted)}
+.items .tot{display:flex;justify-content:space-between;border-top:1px dashed var(--line);padding-top:8px;margin-top:4px;font-weight:600}
+.x{background:color-mix(in srgb,var(--danger) 12%,var(--surface));color:var(--danger);border-radius:14px;padding:12px 14px;font-weight:600}
+.ok{color:var(--olive);font-weight:600}
+.muted{color:var(--muted);font-size:13.5px}
+h2{font-size:16px;margin:0 0 10px;font-weight:600}
+.state{text-align:center;padding:40px 20px;color:var(--muted)}
+.state b{display:block;font-family:var(--f-display);font-weight:400;font-size:22px;color:var(--ink);margin-bottom:6px}
+.spin{width:28px;height:28px;border-radius:50%;border:3px solid var(--line);border-top-color:var(--accent);animation:sp 1s linear infinite;margin:0 auto 12px}
+@keyframes sp{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.spin{animation:none}}
+.err{color:var(--danger);font-size:13.5px}
+.note{font-size:12.5px;color:var(--muted);text-align:center;margin-top:8px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<section class="hero">
+<a class="lockup" href="https://fixtory-studio.pages.dev/catalog"><svg class="mark" viewBox="0 0 40 58" aria-hidden="true"><rect x="15.5" y="0" width="9" height="4.5" rx="1.6" fill="#C4714A"/><rect x="18" y="4" width="4" height="3.5" fill="#A85E3B"/><path d="M20 7.5L36 16.5L20 25.5L4 16.5Z" fill="#C97A53"/><path d="M4 16.5L20 25.5V28.5L4 19.5Z" fill="#A85E3B"/><path d="M36 16.5L20 25.5V28.5L36 19.5Z" fill="#B66A43"/><path d="M4 24L20 33L36 24V28.2L20 37.2L4 28.2Z" fill="#B4663F"/><path d="M4 29.2L20 38.2L36 29.2V33.4L20 42.4L4 33.4Z" fill="#9A5737"/><path d="M4 34.4L20 43.4L36 34.4V38.6L20 47.6L4 38.6Z" fill="#7C4830"/><path d="M4 39.6L20 48.6L36 39.6V43.8L20 52.8L4 43.8Z" fill="#5E3A2A"/><path d="M4 44.8L20 53.8L36 44.8V49L20 58L4 49Z" fill="#432D24"/></svg><span class="lockup-t"><span class="wm">FIXTORY<em>.STUDIO</em></span><span class="wm-tag">From Craft to Smart Design</span></span></a>
+<span class="hero-ctrl"><a class="hero-link" href="https://fixtory-studio.pages.dev/catalog">ดูแคตตาล็อก</a><button class="thm" id="thmBtn" type="button" aria-label="สลับโหมดสว่าง/มืด"></button></span>
+</section>
+<main id="app"><div class="state"><div class="spin"></div>กำลังโหลดออเดอร์…</div></main>
+</div>
+<script>
+// สลับโหมดสว่าง/มืด (จำค่าไว้ในเครื่อง) — ค่าเริ่มต้นตามมือถือ
+(function(){const R=document.documentElement,K='fx-theme',SUN='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M4.6 4.6l1.6 1.6M17.8 17.8l1.6 1.6M2.5 12h2.2M19.3 12h2.2M4.6 19.4l1.6-1.6M17.8 6.2l1.6-1.6"/></svg>',MOON='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M20.5 14.2A8.5 8.5 0 0 1 9.8 3.5a8.5 8.5 0 1 0 10.7 10.7Z"/></svg>';
+  try{const t=localStorage.getItem(K);if(t==='light'||t==='dark')R.setAttribute('data-theme',t)}catch(e){}
+  const now=()=>R.getAttribute('data-theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');
+  const paint=()=>{const b=document.getElementById('thmBtn');if(!b)return;const d=now()==='dark';b.innerHTML=d?SUN:MOON;b.title=d?'โหมดสว่าง':'โหมดมืด'};
+  document.getElementById('thmBtn').addEventListener('click',()=>{const t=now()==='dark'?'light':'dark';R.setAttribute('data-theme',t);try{localStorage.setItem(K,t)}catch(e){}paint()});
+  paint();
+})();
+</script>
+<script>
+const GAS_URL="https://script.google.com/macros/s/AKfycbwfy2uHH4QJOM851_HBz3eoUCbwBvnZo1fGzf8DNChs5hS03Ml-335eATS3XTbifVYo9Q/exec";
+const VAPID='BHc_nltCn0Hv7zJiKHxbijLJNagh71a5yQaVi4uaaKC9LDhMr1jsxBuzxiK6OYWYczOx_E3FdufHXGLUwn66UD0';
+// เว็บติดตามพัสดุที่ตรวจแล้ว (ลูกค้าวางเลขพัสดุเอง)
+const CARRIER_URL={'J&T Express':'https://www.jtexpress.co.th/service/track'};
+const STEPS=['รับออเดอร์แล้ว','ชำระเงินแล้ว','กำลังผลิต','จัดส่งแล้ว'];
+const $=s=>document.querySelector(s);
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const q=new URLSearchParams(location.search),NO=(q.get('o')||'').toUpperCase(),TK=q.get('t')||'';
+const fmt=d=>{const x=new Date(d);return isNaN(x)?'':x.toLocaleString('th-TH',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'})};
+const baht=n=>'฿'+Math.round(n).toLocaleString('th-TH');
+let D=null;
+async function api(body){const r=await fetch(GAS_URL,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify(body)});return r.json()}
+function fail(t,m){$('#app').innerHTML='<div class="card state"><b>'+esc(t)+'</b>'+esc(m)+'</div>'}
+async function load(){
+  if(!/^FX\d+$/.test(NO)||!TK)return fail('ลิงก์ไม่ครบ','เปิดลิงก์ติดตามจากหน้าสั่งซื้อหรือจากแชตร้านอีกครั้ง');
+  let r;try{r=await api({action:'trOrder',o:NO,t:TK})}catch(e){return fail('เชื่อมต่อไม่ได้','ตรวจอินเทอร์เน็ตแล้วลองใหม่อีกครั้ง')}
+  if(!r||r.result!=='success')return fail('เปิดไม่ได้',(r&&r.message)||'ลองใหม่อีกครั้ง');
+  D=r;render();
+}
+function render(){
+  const s=D.stage,x=s==='x',cur=x?-1:s;
+  let h='<h1>ติดตามออเดอร์</h1><p class="sub">ออเดอร์ '+esc(D.no)+(D.d?' · สั่งเมื่อ '+esc(fmt(D.d)):'')+'</p>';
+  h+='<div class="card">'+(x?'<div class="x">ออเดอร์นี้ถูกยกเลิกแล้ว'+(D.times.x?' · '+esc(fmt(D.times.x)):'')+'</div><p class="muted" style="margin:10px 0 0">ถ้ามีคำถาม ทักร้านทาง TikTok หรือ Facebook ได้เลยค่ะ</p>'
+    :'<p class="big">'+esc(STEPS[cur])+'</p><p class="muted" style="margin:0 0 16px">'+['ร้านได้รับออเดอร์แล้ว รอตรวจยอดโอนค่ะ','ร้านได้รับยอดแล้ว กำลังเตรียมผลิตให้ค่ะ','ร้านกำลังพิมพ์สินค้าของคุณอยู่ค่ะ','ส่งของแล้ว ติดตามพัสดุได้ด้านล่างค่ะ'][cur]+'</p>'+
+    '<ol class="tl">'+STEPS.map((t,i)=>'<li class="'+(i<=cur?'done':'')+(i===cur?' now':'')+'"><i>'+(i<cur||(i===cur&&i===3)?'✓':i+1)+'</i><div><b>'+t+'</b>'+(i<=cur&&D.times[i]?'<span>'+esc(fmt(D.times[i]))+'</span>':'')+'</div></li>').join('')+'</ol>')+'</div>';
+  if(s===3){
+    const u=CARRIER_URL[D.carrier];
+    h+='<div class="card"><h2>การจัดส่ง</h2>'+(D.tracking?'<div class="trk"><b><small>'+esc(D.carrier||'ขนส่ง')+' · เลขพัสดุ</small>'+esc(D.tracking)+'</b><button class="btn ghost" type="button" id="cp">คัดลอก</button></div>'+
+      (u?'<button class="btn primary" type="button" id="go">ติดตามพัสดุบนเว็บ '+esc(D.carrier)+'</button><p class="muted" style="margin:8px 0 0">ระบบจะคัดลอกเลขพัสดุให้ แล้ววางในช่องค้นหาของหน้าเว็บขนส่งได้เลย</p>':'')
+      :'<p class="muted" style="margin:0">'+(D.carrier?esc(D.carrier)+' · ':'')+'ร้านยังไม่ได้ใส่เลขพัสดุ ถ้าอยากได้ ทักร้านได้เลยค่ะ</p>')+'</div>';
+    if(D.review)h+='<div class="card"><h2>ได้รับของแล้วใช่ไหม</h2><p class="muted" style="margin:0 0 12px">ช่วยรีวิวสินค้าสั้น ๆ ให้ร้านหน่อยนะคะ ให้ดาวและแนบรูปได้</p><a class="btn primary" href="'+esc(D.review)+'">รีวิวสินค้า ★</a></div>';
+  }
+  if(!x&&s!==3)h+='<div class="card" id="nt"></div>';
+  h+='<div class="card"><h2>รายการสินค้า</h2><div class="items">'+D.items.map(it=>'<div><b style="font-weight:500">'+esc(it.name)+'</b>'+(it.detail?'<span>'+esc(it.detail)+'</span>':'')+'</div>').join('')+'<div class="tot"><span>ยอดรวม</span><span>'+baht(D.sum)+'</span></div></div></div>';
+  h+='<p class="note">บันทึกหน้านี้ไว้เพื่อเช็กสถานะได้ตลอด · มีคำถามทักร้านทาง TikTok / Facebook: fixtory.studio</p>';
+  $('#app').innerHTML=h;
+  const cp=$('#cp');if(cp)cp.onclick=()=>copy(D.tracking,cp);
+  const go=$('#go');if(go)go.onclick=()=>{copy(D.tracking,cp);window.open(CARRIER_URL[D.carrier],'_blank','noopener')};
+  if($('#nt'))notif();
+}
+async function copy(t,b){try{await navigator.clipboard.writeText(t)}catch(e){const a=document.createElement('textarea');a.value=t;document.body.appendChild(a);a.select();try{document.execCommand('copy')}catch(x){}a.remove()}if(b){b.textContent='คัดลอกแล้ว ✓';setTimeout(()=>b.textContent='คัดลอก',1600)}}
+// ---------- แจ้งเตือนเข้ามือถือ ----------
+const u8=b=>{const p='='.repeat((4-b.length%4)%4),r=atob((b+p).replace(/-/g,'+').replace(/_/g,'/'));return Uint8Array.from([...r].map(c=>c.charCodeAt(0)))};
+const canPush=()=>'serviceWorker' in navigator&&'PushManager' in window&&'Notification' in window;
+const isIOS=/iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+const standalone=matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;
+async function notif(){
+  const box=$('#nt');
+  if(!canPush()){box.innerHTML='<h2>รับแจ้งเตือนเมื่อสถานะเปลี่ยน</h2><p class="muted" style="margin:0">'+(isIOS&&!standalone?'บน iPhone ต้องกดปุ่มแชร์ แล้วเลือก "เพิ่มไปยังหน้าจอโฮม" ก่อน จากนั้นเปิดหน้านี้จากไอคอนบนหน้าจอโฮมเพื่อเปิดแจ้งเตือน หรือจะบันทึกลิงก์นี้ไว้เช็กเองก็ได้ค่ะ':'อุปกรณ์หรือเบราว์เซอร์นี้รับแจ้งเตือนไม่ได้ บันทึกลิงก์หน้านี้ไว้เช็กสถานะได้ตลอดค่ะ')+'</p>';return}
+  let sub=null;try{const reg=await navigator.serviceWorker.register('/sw.js');sub=await reg.pushManager.getSubscription()}catch(e){}
+  const on=sub&&D.subs.includes(sub.endpoint);
+  box.innerHTML='<h2>รับแจ้งเตือนเมื่อสถานะเปลี่ยน</h2>'+(on?'<p style="margin:0 0 10px"><span class="ok">✓ เปิดแจ้งเตือนแล้ว</span> <span class="muted">เครื่องนี้จะเด้งเตือนเมื่อร้านได้รับยอด เริ่มผลิต และส่งของ</span></p><button class="btn ghost" type="button" id="off">ปิดแจ้งเตือน</button>'
+    :Notification.permission==='denied'?'<p class="muted" style="margin:0">เบราว์เซอร์บล็อกการแจ้งเตือนของเว็บนี้ไว้ เปิดได้ที่การตั้งค่าเว็บไซต์ในเบราว์เซอร์ หรือบันทึกลิงก์นี้ไว้เช็กเองค่ะ</p>'
+    :'<p class="muted" style="margin:0 0 12px">ให้มือถือเด้งเตือนเมื่อร้านได้รับยอด เริ่มผลิต และส่งของ (พร้อมเลขพัสดุ)</p><button class="btn primary" type="button" id="onb">🔔 เปิดแจ้งเตือน</button>')+'<div class="err" id="nerr" role="alert"></div>';
+  const ob=$('#onb');if(ob)ob.onclick=async()=>{ob.disabled=true;ob.textContent='กำลังเปิด…';
+    try{const p=await Notification.requestPermission();if(p!=='granted')throw new Error('ไม่ได้อนุญาตการแจ้งเตือน');
+      const reg=await navigator.serviceWorker.ready;const s=await reg.pushManager.getSubscription()||await reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:u8(VAPID)});
+      const r=await api({action:'trSub',o:NO,t:TK,sub:s.toJSON()});if(!r||r.result!=='success')throw new Error((r&&r.message)||'บันทึกไม่สำเร็จ');
+      D.subs.push(s.endpoint);notif()}catch(e){ob.disabled=false;ob.textContent='🔔 เปิดแจ้งเตือน';$('#nerr').textContent=e.message||'เปิดไม่สำเร็จ'}};
+  const off=$('#off');if(off)off.onclick=async()=>{off.disabled=true;try{await api({action:'trUnsub',o:NO,t:TK,endpoint:sub.endpoint});D.subs=D.subs.filter(e=>e!==sub.endpoint)}catch(e){}notif()};
+}
+load();
+</script>
+</body>
+</html>

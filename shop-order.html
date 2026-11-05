@@ -84,6 +84,7 @@ textarea{min-height:76px;resize:vertical}
 @media (max-width:480px){.two{grid-template-columns:1fr}.opts{grid-template-columns:1fr}.ptabs{grid-template-columns:1fr}}
 .hint{font-size:12.5px;color:var(--muted);margin:6px 0 0}
 .note{background:var(--sunk);border-radius:12px;padding:10px 12px;font-size:13px;color:var(--ink);margin-top:12px}
+.trk{margin-top:14px;padding:14px;border-radius:14px;box-shadow:inset 0 0 0 1.5px var(--line);text-align:left;display:grid;gap:6px}.trk b{font-weight:600}.trk span{font-size:13px;color:var(--muted)}.trk .btn{margin-top:6px}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:0;border-radius:999px;padding:11px 20px;font:inherit;font-weight:600;cursor:pointer}
 .btn.primary{background:var(--accent);color:var(--on-accent)}
 .btn.ghost{background:var(--surface);box-shadow:inset 0 0 0 1.5px var(--line);color:var(--ink)}
@@ -282,6 +283,7 @@ textarea{min-height:76px;resize:vertical}
       <div class="slip-msg" id="slipMsg" role="status"></div>
     </div>
     <div class="note" style="text-align:left" id="payNote">โอนแล้ว แนบสลิปด้านบนได้เลย หรือส่งสลิปพร้อมเลขที่ออเดอร์ทาง TikTok / Facebook: fixtory.studio หรือโทร 090-985-0326, 081-336-8232 ร้านจะเริ่มผลิตหลังได้รับยอดโอน</div>
+    <div class="trk" id="trkBox" hidden><b>ติดตามสถานะออเดอร์</b><span>ดูได้ว่าร้านได้รับยอด เริ่มผลิต หรือส่งของแล้วหรือยัง พร้อมเลขพัสดุ และกดรับแจ้งเตือนเข้ามือถือได้</span><a class="btn primary full" id="trkBtn" href="#" target="_blank" rel="noopener">เปิดหน้าติดตามสถานะ</a></div>
     <button class="btn ghost full" id="againBtn" type="button">สั่งซื้อเพิ่ม</button>
   </div>
 </section>
@@ -784,6 +786,8 @@ function finish(order,no){
   try{localStorage.setItem('fxCustomer',JSON.stringify({cName:order.name,cPhone:order.phone,cAddr:order.self?'':$('#cAddr').value.trim(),cProv:order.prov,cZip:order.zip,cAmp:$('#cAmp').value,cTam:$('#cTam').value,cSubText:$('#cSubText').value.trim()}))}catch(e){}
   $('#dNo').textContent=no||'รอร้านยืนยัน';$('#dChk').hidden=!!no;slipReset();$('#slipBox').hidden=!no;$('#payNote').textContent=no?'โอนแล้ว แนบสลิปด้านบนได้เลย หรือส่งสลิปพร้อมเลขที่ออเดอร์ทาง TikTok / Facebook: fixtory.studio หรือโทร 090-985-0326, 081-336-8232 ร้านจะเริ่มผลิตหลังได้รับยอดโอน':'โอนแล้ว ส่งสลิปพร้อมรูปสรุปออเดอร์ให้ร้านทาง TikTok / Facebook: fixtory.studio หรือโทร 090-985-0326, 081-336-8232 ร้านจะเริ่มผลิตหลังได้รับยอดโอน';$('#dAmt').textContent=fmt(order.gt);
   $('#formView').hidden=true;$('#bar').hidden=true;$('#doneView').hidden=false;scrollTo({top:0});
+  $('#trkBox').hidden=true;
+  if(no)fetch(GAS_URL,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({action:'trLink',o:no,phone:order.phone})}).then(r=>r.json()).then(r=>{if(r&&r.result==='success'&&r.url&&lastOrder===order){$('#trkBtn').href=r.url;$('#trkBox').hidden=false}}).catch(()=>{});
 }
 
 // ---------- รูปสรุปออเดอร์ (แบบเดียวกับฟอร์ม keycap) ----------
