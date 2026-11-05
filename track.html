@@ -116,12 +116,14 @@ async function load(){
   D=r;render();
 }
 function render(){
-  const s=D.stage,x=s==='x',cur=x?-1:s;
+  const s=D.stage,x=s==='x',cur=x?-1:s,P=!!D.pickup,ST=P?['รับออเดอร์แล้ว','ชำระเงินแล้ว','กำลังผลิต','พร้อมให้รับ']:STEPS;
   let h='<h1>ติดตามออเดอร์</h1><p class="sub">ออเดอร์ '+esc(D.no)+(D.d?' · สั่งเมื่อ '+esc(fmt(D.d)):'')+'</p>';
   h+='<div class="card">'+(x?'<div class="x">ออเดอร์นี้ถูกยกเลิกแล้ว'+(D.times.x?' · '+esc(fmt(D.times.x)):'')+'</div><p class="muted" style="margin:10px 0 0">ถ้ามีคำถาม ทักร้านทาง TikTok หรือ Facebook ได้เลยค่ะ</p>'
-    :'<p class="big">'+esc(STEPS[cur])+'</p><p class="muted" style="margin:0 0 16px">'+['ร้านได้รับออเดอร์แล้ว รอตรวจยอดโอนค่ะ','ร้านได้รับยอดแล้ว กำลังเตรียมผลิตให้ค่ะ','ร้านกำลังพิมพ์สินค้าของคุณอยู่ค่ะ','ส่งของแล้ว ติดตามพัสดุได้ด้านล่างค่ะ'][cur]+'</p>'+
-    '<ol class="tl">'+STEPS.map((t,i)=>'<li class="'+(i<=cur?'done':'')+(i===cur?' now':'')+'"><i>'+(i<cur||(i===cur&&i===3)?'✓':i+1)+'</i><div><b>'+t+'</b>'+(i<=cur&&D.times[i]?'<span>'+esc(fmt(D.times[i]))+'</span>':'')+'</div></li>').join('')+'</ol>')+'</div>';
-  if(s===3){
+    :'<p class="big">'+esc(ST[cur])+'</p><p class="muted" style="margin:0 0 16px">'+['ร้านได้รับออเดอร์แล้ว รอตรวจยอดโอนค่ะ','ร้านได้รับยอดแล้ว กำลังเตรียมผลิตให้ค่ะ','ร้านกำลังพิมพ์สินค้าของคุณอยู่ค่ะ',(P?'สินค้าพร้อมแล้ว นัดรับตามที่ตกลงกันไว้ได้เลยค่ะ':'ส่งของแล้ว ติดตามพัสดุได้ด้านล่างค่ะ')][cur]+'</p>'+
+    '<ol class="tl">'+ST.map((t,i)=>'<li class="'+(i<=cur?'done':'')+(i===cur?' now':'')+'"><i>'+(i<cur||(i===cur&&i===3)?'✓':i+1)+'</i><div><b>'+t+'</b>'+(i<=cur&&D.times[i]?'<span>'+esc(fmt(D.times[i]))+'</span>':'')+'</div></li>').join('')+'</ol>')+'</div>';
+  if(P&&!x)h+='<div class="card"><h2>นัดรับสินค้า</h2>'+(D.pickupNote?'<div class="trk"><b style="font-size:16px;letter-spacing:0"><small>จุดนัดรับ / วันเวลาที่แจ้งไว้</small>'+esc(D.pickupNote)+'</b></div>':'')+'<p class="muted" style="margin:0">'+(s===3?'สินค้าพร้อมแล้ว ทักร้านทาง TikTok / Facebook เพื่อยืนยันวันเวลานัดรับได้เลยค่ะ':'ร้านจะแจ้งเมื่อสินค้าพร้อมให้รับ')+'</p></div>';
+  if(s===3&&P&&D.review)h+='<div class="card"><h2>ได้รับของแล้วใช่ไหม</h2><p class="muted" style="margin:0 0 12px">ช่วยรีวิวสินค้าสั้น ๆ ให้ร้านหน่อยนะคะ ให้ดาวและแนบรูปได้</p><a class="btn primary" href="'+esc(D.review)+'">รีวิวสินค้า ★</a></div>';
+  if(s===3&&!P){
     const u=CARRIER_URL[D.carrier];
     h+='<div class="card"><h2>การจัดส่ง</h2>'+(D.tracking?'<div class="trk"><b><small>'+esc(D.carrier||'ขนส่ง')+' · เลขพัสดุ</small>'+esc(D.tracking)+'</b><button class="btn ghost" type="button" id="cp">คัดลอก</button></div>'+
       (u?'<button class="btn primary" type="button" id="go">ติดตามพัสดุบนเว็บ '+esc(D.carrier)+'</button><p class="muted" style="margin:8px 0 0">ระบบจะคัดลอกเลขพัสดุให้ แล้ววางในช่องค้นหาของหน้าเว็บขนส่งได้เลย</p>':'')
@@ -147,9 +149,9 @@ async function notif(){
   if(!canPush()){box.innerHTML='<h2>รับแจ้งเตือนเมื่อสถานะเปลี่ยน</h2><p class="muted" style="margin:0">'+(isIOS&&!standalone?'บน iPhone ต้องกดปุ่มแชร์ แล้วเลือก "เพิ่มไปยังหน้าจอโฮม" ก่อน จากนั้นเปิดหน้านี้จากไอคอนบนหน้าจอโฮมเพื่อเปิดแจ้งเตือน หรือจะบันทึกลิงก์นี้ไว้เช็กเองก็ได้ค่ะ':'อุปกรณ์หรือเบราว์เซอร์นี้รับแจ้งเตือนไม่ได้ บันทึกลิงก์หน้านี้ไว้เช็กสถานะได้ตลอดค่ะ')+'</p>';return}
   let sub=null;try{const reg=await navigator.serviceWorker.register('/sw.js');sub=await reg.pushManager.getSubscription()}catch(e){}
   const on=sub&&D.subs.includes(sub.endpoint);
-  box.innerHTML='<h2>รับแจ้งเตือนเมื่อสถานะเปลี่ยน</h2>'+(on?'<p style="margin:0 0 10px"><span class="ok">✓ เปิดแจ้งเตือนแล้ว</span> <span class="muted">เครื่องนี้จะเด้งเตือนเมื่อร้านได้รับยอด เริ่มผลิต และส่งของ</span></p><button class="btn ghost" type="button" id="off">ปิดแจ้งเตือน</button>'
+  box.innerHTML='<h2>รับแจ้งเตือนเมื่อสถานะเปลี่ยน</h2>'+(on?'<p style="margin:0 0 10px"><span class="ok">✓ เปิดแจ้งเตือนแล้ว</span> <span class="muted">เครื่องนี้จะเด้งเตือนเมื่อร้านได้รับยอด เริ่มผลิต และ'+(D.pickup?'สินค้าพร้อมให้รับ':'ส่งของ')+'</span></p><button class="btn ghost" type="button" id="off">ปิดแจ้งเตือน</button>'
     :Notification.permission==='denied'?'<p class="muted" style="margin:0">เบราว์เซอร์บล็อกการแจ้งเตือนของเว็บนี้ไว้ เปิดได้ที่การตั้งค่าเว็บไซต์ในเบราว์เซอร์ หรือบันทึกลิงก์นี้ไว้เช็กเองค่ะ</p>'
-    :'<p class="muted" style="margin:0 0 12px">ให้มือถือเด้งเตือนเมื่อร้านได้รับยอด เริ่มผลิต และส่งของ (พร้อมเลขพัสดุ)</p><button class="btn primary" type="button" id="onb">🔔 เปิดแจ้งเตือน</button>')+'<div class="err" id="nerr" role="alert"></div>';
+    :'<p class="muted" style="margin:0 0 12px">ให้มือถือเด้งเตือนเมื่อร้านได้รับยอด เริ่มผลิต และ'+(D.pickup?'สินค้าพร้อมให้รับ':'ส่งของ (พร้อมเลขพัสดุ)')+'</p><button class="btn primary" type="button" id="onb">🔔 เปิดแจ้งเตือน</button>')+'<div class="err" id="nerr" role="alert"></div>';
   const ob=$('#onb');if(ob)ob.onclick=async()=>{ob.disabled=true;ob.textContent='กำลังเปิด…';
     try{const p=await Notification.requestPermission();if(p!=='granted')throw new Error('ไม่ได้อนุญาตการแจ้งเตือน');
       const reg=await navigator.serviceWorker.ready;const s=await reg.pushManager.getSubscription()||await reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:u8(VAPID)});
