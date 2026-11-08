@@ -396,6 +396,15 @@ h1,h2,h3,h4{font-family:var(--f-display);font-weight:400;letter-spacing:0}
 .rvit .rp{background:var(--sunk);border-radius:10px;padding:6px 10px;font-size:13px;margin-top:2px}
 .rvit .rp b{color:var(--accent-text);font-weight:600}
 .rvmore{justify-self:start}
+.agbox{display:flex;align-items:center;gap:12px;background:var(--surface);border-radius:16px;padding:12px 16px;box-shadow:inset 0 0 0 1.5px var(--lav-2)}
+.agbox .ai{flex:none;width:40px;height:40px;border-radius:50%;background:var(--lav);color:var(--accent-text);display:grid;place-items:center;font-size:19px}
+.agbox .at{display:grid;gap:0;min-width:0;flex:1}
+.agbox small{font-size:12px;color:var(--muted)}
+.agbox b{font-weight:600;font-size:15px}
+.agbox span{font-size:14px;overflow-wrap:anywhere}
+.agbox a{color:var(--accent-text);font-weight:600}
+.agslot:empty{display:none}
+.wrap>.agslot{margin-top:14px}
 /* detail gallery: fit the whole image inside the frame (never crop) */
 @media (min-width:761px){.sheet.wide .gallery .main{position:relative}.sheet.wide .gallery .main>img{position:absolute;inset:0;width:100%;height:100%;max-height:none;object-fit:contain}}
 @media (prefers-reduced-motion:reduce){.card,.thumb img{transition:none}.card:hover{transform:none}.card:hover .thumb img{transform:none}}
@@ -511,6 +520,23 @@ function fillReviews(p){
   box.hidden=false;draw();
 }
 
+/* ---------- sales agent contact (from ?sale= link, only if the shop set it) ---------- */
+let AGT=null;
+const SALE=(()=>{try{return new URLSearchParams(location.search).get('sale')||''}catch(e){return''}})();
+function agentBox(){
+  if(!AGT)return null;
+  const parts=String(AGT.contact).split(/(0\d{1,2}[-\s]?\d{3}[-\s]?\d{3,4})/);
+  return el('div',{class:'agbox'},el('span',{class:'ai','aria-hidden':'true'},'💬'),
+    el('div',{class:'at'},el('small',{},lang==='en'?'Your Fixtory sales contact — ask anything before you order':'ตัวแทนที่ดูแลคุณ · สอบถามก่อนสั่งได้เลย'),el('b',{},AGT.name),
+      el('span',{},parts.map((x,i)=>i%2?el('a',{href:'tel:'+x.replace(/\D/g,'')},x):x))));
+}
+function fillAgent(){document.querySelectorAll('.agslot').forEach(n=>{const b=agentBox();n.replaceChildren(...(b?[b]:[]))})}
+function loadAgent(){
+  if(!SALE||loadAgent.p)return;
+  loadAgent.p=fetch(RV_URL,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({action:'agContact',sale:SALE})})
+    .then(r=>r.json()).then(d=>{if(d&&d.result==='success'&&d.agent&&d.agent.contact){AGT=d.agent;fillAgent()}}).catch(()=>{});
+}
+
 /* ---------- routing ---------- */
 function route(){
   const h=location.hash.slice(1);
@@ -538,7 +564,7 @@ function renderCatalog(){
       el('div',{class:'lockup-t'},el('h1',{class:'wm'},wordmark(S.shop.name)),el('span',{class:'wm-tag'},'From Craft to Smart Design'))),
     el('div',{class:'hero-ctrl'},el('button',{class:'lang',type:'button','aria-label':'Switch language'},lang==='th'?'EN':'TH'),el('button',{class:'thm',type:'button','aria-label':'สลับโหมดสว่าง/มืด'}),
       canEdit?el('nav',{class:'tabs'},el('a',{href:'#catalog','aria-current':'page'},'แคตตาล็อก'),el('a',{href:'#manage'},'จัดการสินค้า')):null)
-    ));
+    ),el('div',{class:'agslot'}));
   const cats=[...new Set(visible().map(p=>L(p,'category')).filter(Boolean))];
   const chips=el('div',{class:'chips',role:'group','aria-label':'หมวดสินค้า'},
     el('button',{class:'chip','aria-pressed':String(!catFilter),onclick:()=>{catFilter='';renderCatalog()}},t('all')),
@@ -555,7 +581,7 @@ function renderCatalog(){
     S.shop.phone?el('p',{class:'soc-phone'},t('call'),el('b',{},S.shop.phone)):null,
     el('p',{class:'soc-phone',style:'margin-top:6px'},lang==='en'?'Already ordered? ':'สั่งซื้อแล้ว? ',el('a',{href:'https://fixtory-studio.pages.dev/track.html',target:'_blank',rel:'noopener',style:'color:var(--accent-text);font-weight:600'},lang==='en'?'Track your order':'ติดตามออเดอร์'))));
   w.append(el('footer',{class:'foot-note'},el('b',{class:'wm'},wordmark(S.shop.name)),el('span',{class:'wm-tag'},'From Craft to Smart Design')));
-  app.append(w);drawGrid();loadReviews();
+  app.append(w);drawGrid();loadReviews();fillAgent();loadAgent();
   const top=document.querySelector('.top'),hero=w.querySelector('.hero');
   if(window._heroIO)window._heroIO.disconnect();
   top.classList.toggle('overlay',!!hero);
@@ -654,6 +680,7 @@ function openDetail(p){
         withQr.length?el('div',{class:'social-grid',style:'justify-content:flex-start'},withQr.map(c=>{const x=qrFor(c);const u=/^https?:\/\//.test(c.url)?c.url:(x.url||null);return el(u?'a':'div',{class:'soc',href:u,target:u?'_blank':null,rel:u?'noopener':null},el('img',{src:x.qr,alt:'QR '+x.label,width:'120',height:'120',style:'width:120px;height:120px'}),el('b',{},x.label),el('span',{},x.handle||''))})):null,
         rest.length?el('div',{class:'links'},rest.map(c=>/^https?:\/\//.test(c.url)?el('a',{class:'btn primary',href:c.url,target:'_blank',rel:'noopener'},c.label):el('span',{class:'btn'},c.label))):null);
     })()):(S.shop.contact?el('div',{class:'sec'},el('h4',{},t('order')),el('p',{},L(S.shop,'contact'))):null),
+    el('div',{class:'agslot'}),
     el('div',{class:'sec rvsec',id:'rvsec',hidden:true})
   ];
   const body=el('div',{class:'d-grid'},el('div',{class:'gallery'},main,strip),el('div',{class:'d-info'},info));
@@ -664,7 +691,7 @@ function openDetail(p){
   const fit=()=>{const di=document.querySelector('.sheet.wide .d-info');if(!di)return;di.classList.remove('tight','over');if(di.scrollHeight>di.clientHeight+2){di.classList.add('tight');if(di.scrollHeight>di.clientHeight+2)di.classList.add('over')}};
   requestAnimationFrame(fit);try{document.fonts.ready.then(fit)}catch(e){}
   if(!window._fitR){window._fitR=1;addEventListener('resize',()=>{clearTimeout(window._fitT);window._fitT=setTimeout(()=>{const di=document.querySelector('.sheet.wide .d-info');if(di){di.classList.remove('tight','over');if(di.scrollHeight>di.clientHeight+2){di.classList.add('tight');if(di.scrollHeight>di.clientHeight+2)di.classList.add('over')}}},150)})}
-  rvCur=p;fillReviews(p);loadReviews();
+  rvCur=p;fillReviews(p);loadReviews();fillAgent();loadAgent();
   if(canEdit){const h=document.querySelector('.sheet-h');const c=h.lastElementChild;h.insertBefore(el('button',{class:'btn',onclick:()=>{lastView='manage';openEditor(p)}},'แก้ไข'),c)}
 }
 

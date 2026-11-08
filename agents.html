@@ -59,6 +59,13 @@ button.warn{background:var(--bad);color:#fff;border-color:var(--bad)}.ok.bad{col
     <div class="alert" id="offWarn" hidden></div>
     <div class="links" id="links" hidden></div>
     <div class="row" id="regRow" style="margin-top:12px" hidden><button type="button" id="reg">บันทึกชื่อนี้ในรายชื่อตัวแทน</button></div>
+    <div class="ln" id="ctBox" style="margin-top:12px" hidden>
+      <b>ช่องทางติดต่อที่โชว์ให้ลูกค้า <span style="font-weight:400;color:var(--muted)">(ไม่บังคับ)</span></b>
+      <span class="who">ลูกค้าที่เปิดแคตตาล็อกจากลิงก์ของตัวแทนคนนี้ จะเห็นกล่อง "ตัวแทนที่ดูแลคุณ" ไว้ถามก่อนซื้อ เรื่องส่งของ/เคลมยังเป็นเบอร์ร้าน · <b style="font-size:12.5px">ขอความยินยอมตัวแทนก่อนใส่</b> · เว้นว่างทั้งสองช่อง = ไม่โชว์</span>
+      <label for="ctName" style="font-size:13px">ชื่อที่โชว์</label><input id="ctName" maxlength="40" placeholder="เช่น น้องพลอย">
+      <label for="ctVal" style="font-size:13px">ช่องทางติดต่อ</label><input id="ctVal" maxlength="80" placeholder="เช่น LINE: ploy.fx · 089-123-4567">
+      <div class="row"><button type="button" class="pri" id="ctSave">บันทึกช่องทางติดต่อ</button><span class="ok" id="ctOk"></span></div>
+    </div>
   </section>
 
   <section class="card" id="msgCard" hidden>
@@ -87,10 +94,13 @@ function urls(n){const q='?sale='+encodeURIComponent(n);return[
 async function copy(t,el){try{await navigator.clipboard.writeText(t);if(el){el.textContent='คัดลอกแล้ว ✓';setTimeout(()=>el.textContent='',2000)}}catch(e){prompt('คัดลอกลิงก์นี้',t)}}
 function render(){
   const n=clean($('#nm').value);if($('#nm').value!==n)$('#nm').value=n;
-  if(!n){$('#links').hidden=true;$('#msgCard').hidden=true;$('#offWarn').hidden=true;$('#regRow').hidden=true;return}
+  if(!n){$('#links').hidden=true;$('#msgCard').hidden=true;$('#offWarn').hidden=true;$('#regRow').hidden=true;$('#ctBox').hidden=true;CTN='';return}
   const ag=AG[n],off=ag&&ag.status==='เลิกแล้ว';
   $('#offWarn').hidden=!off;if(off)$('#offWarn').textContent=n+' ถูกปิดใช้งานอยู่ ออเดอร์จากลิงก์นี้จะไม่นับเป็นยอดของตัวแทน — เปิดใช้ได้ที่รายชื่อตัวแทนด้านล่าง';
   $('#regRow').hidden=!KEY||!!(ag&&ag.listed);$('#reg').onclick=()=>setAgent(n,'ใช้งาน',$('#reg'));
+  $('#ctBox').hidden=!KEY||off;
+  if(CTN!==n){CTN=n;$('#ctName').value=ag&&ag.display||'';$('#ctVal').value=ag&&ag.contact||'';$('#ctOk').textContent=''}
+  $('#ctSave').onclick=()=>saveContact(n);
   const U=urls(n);
   $('#links').innerHTML=U.map(x=>`<div class="ln"><b>${x.t}</b><span class="who">${x.who}</span><code>${esc(x.u)}</code><div class="row"><button type="button" data-u="${esc(x.u)}" class="${x.k==='cat'?'pri':''}">คัดลอก</button><a href="${esc(x.u)}" target="_blank" rel="noopener"><button type="button">เปิดดู</button></a><span class="ok"></span></div></div>`).join('');
   $('#links').hidden=false;
@@ -101,13 +111,13 @@ function render(){
   $('#shareMsg').hidden=!navigator.share;$('#shareMsg').onclick=()=>navigator.share({text:m}).catch(()=>{});
 }
 $('#nm').addEventListener('input',render);
-let AG={};// key -> {name,status,o,sum}
+let AG={},CTN='';// key -> {name,status,o,sum,display,contact}
 async function loadAgents(){
   if(!KEY){$('#agents').innerHTML='<p class="empty">เข้าสู่ระบบที่หน้า <a href="admin.html" style="color:var(--accent)">หลังร้าน</a> ก่อน เพื่อดูรายชื่อตัวแทน</p>';return}
   let r;try{r=await (await fetch(GAS_URL+'?dash=1&key='+encodeURIComponent(KEY)+'&t='+Date.now())).json()}catch(e){}
   if(!r||r.result!=='success'){$('#agents').innerHTML='<p class="empty">ดึงข้อมูลไม่ได้</p>';return}
   AG={};const get=n=>{const k=n.toLowerCase();return AG[k]=AG[k]||{name:n,status:'ใช้งาน',o:new Set(),sum:0,listed:false}};
-  (r.agents||[]).forEach(a=>{const g=get(a.name);g.status=a.status||'ใช้งาน';g.listed=true});
+  (r.agents||[]).forEach(a=>{const g=get(a.name);g.status=a.status||'ใช้งาน';g.listed=true;g.display=a.display||'';g.contact=a.contact||''});
   r.rows.filter(x=>x.sale&&x.status!=='ยกเลิก'&&x.pay!=='ยกเลิก').forEach(x=>{const g=get(x.sale);g.o.add(x.no);g.sum+=x.price});
   renderAgents();render();
 }
@@ -117,7 +127,7 @@ function renderAgents(){
   const all=Object.values(AG).sort((a,b)=>b.sum-a.sum||a.name.localeCompare(b.name));
   const on=all.filter(a=>a.status!=='เลิกแล้ว'),off=all.filter(a=>a.status==='เลิกแล้ว');
   const row=a=>{const isOff=a.status==='เลิกแล้ว',k=esc(a.name);
-    return `<tr${isOff?' style="opacity:.75"':''}><td>${k} <span class="st ${isOff?'off':'on'}">${isOff?'เลิกแล้ว':'ใช้งาน'}</span></td><td class="num">${a.o.size}</td><td class="num">${baht(a.sum)}</td><td style="text-align:right;white-space:nowrap">`+
+    return `<tr${isOff?' style="opacity:.75"':''}><td>${k} <span class="st ${isOff?'off':'on'}">${isOff?'เลิกแล้ว':'ใช้งาน'}</span>${a.contact&&!isOff?`<br><span style="font-size:12px;color:var(--muted)">โชว์ลูกค้า: ${esc(a.display||a.name)} · ${esc(a.contact)}</span>`:''}</td><td class="num">${a.o.size}</td><td class="num">${baht(a.sum)}</td><td style="text-align:right;white-space:nowrap">`+
       (ASK===a.name.toLowerCase()?`<button type="button" class="${isOff?'pri':'warn'}" data-do="${k}" data-st="${isOff?'ใช้งาน':'เลิกแล้ว'}">${isOff?'ยืนยันเปิด':'ยืนยันปิด'}</button> <button type="button" data-no>ไม่</button>`
         :`${isOff?'':`<button type="button" data-n="${k}">ดูลิงก์</button> `}<button type="button" data-ask="${k}">${isOff?'เปิดใช้':'ปิดใช้'}</button>`)+`</td></tr>`};
   const table=list=>'<table><thead><tr><th>ตัวแทน</th><th class="num">ออเดอร์</th><th class="num">ยอดขาย</th><th></th></tr></thead><tbody>'+list.map(row).join('')+'</tbody></table>';
@@ -136,6 +146,16 @@ async function setAgent(name,status,btn){
   let r=null;try{r=await (await fetch(GAS_URL,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({action:'setAgent',key:KEY,name,status})})).json()}catch(e){}
   if(r&&r.result==='success'){const k=name.toLowerCase();AG[k]=AG[k]||{name,o:new Set(),sum:0};AG[k].status=r.status;AG[k].listed=true;ASK=null;renderAgents();render();$('#agMsg').className='ok';$('#agMsg').textContent=`${name}: ${r.status==='เลิกแล้ว'?'ปิดใช้งานแล้ว':'เปิดใช้งานแล้ว'} ✓`}
   else{ASK=null;renderAgents();$('#agMsg').className='ok bad';$('#agMsg').textContent='บันทึกไม่สำเร็จ'+(r&&r.message?': '+r.message:' — ตรวจว่าติดตั้ง Agents.gs และ Deploy แล้ว')}
+}
+async function saveContact(n){
+  const b=$('#ctSave'),ok=$('#ctOk'),disp=$('#ctName').value.trim(),cont=$('#ctVal').value.trim();
+  if(disp&&!cont){ok.className='ok bad';ok.textContent='ใส่ช่องทางติดต่อด้วย หรือเว้นว่างทั้งสองช่องถ้าไม่โชว์';return}
+  b.disabled=true;ok.className='ok';ok.textContent='กำลังบันทึก…';
+  const ag=AG[n];let r=null;
+  try{r=await (await fetch(GAS_URL,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({action:'setAgent',key:KEY,name:ag?ag.name:n,status:ag&&ag.status||'ใช้งาน',keepStatus:!!(ag&&ag.listed),display:disp,contact:cont})})).json()}catch(e){}
+  b.disabled=false;
+  if(r&&r.result==='success'){const g=AG[n]=AG[n]||{name:n,status:'ใช้งาน',o:new Set(),sum:0};g.listed=true;g.display=disp;g.contact=cont;renderAgents();render();ok.className='ok';ok.textContent=cont?'บันทึกแล้ว ✓ ลูกค้าจากลิงก์นี้จะเห็นกล่องตัวแทน':'บันทึกแล้ว ✓ ไม่โชว์ช่องทางติดต่อ'}
+  else{ok.className='ok bad';ok.textContent='บันทึกไม่สำเร็จ'+(r&&r.message?': '+r.message:' — ตรวจว่าติดตั้ง Agents.gs ชุดใหม่และ Deploy แล้ว')}
 }
 loadAgents();
 </script>
