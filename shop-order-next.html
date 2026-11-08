@@ -282,7 +282,7 @@ textarea{min-height:76px;resize:vertical}
       <button class="btn primary full" id="slipBtn" type="button" disabled>ส่งสลิปให้ร้าน</button>
       <div class="slip-msg" id="slipMsg" role="status"></div>
     </div>
-    <div class="note" style="text-align:left" id="payNote">โอนแล้ว แนบสลิปด้านบนได้เลย หรือส่งสลิปพร้อมเลขที่ออเดอร์ทาง TikTok / Facebook: fixtory.studio หรือโทร 090-985-0326, 081-336-8232 ร้านจะเริ่มผลิตหลังได้รับยอดโอน</div>
+    <div class="note" style="text-align:left" id="payNote">โอนแล้ว แนบสลิปด้านบนได้เลย หรือส่งสลิปพร้อมเลขที่ออเดอร์ทาง TikTok / Facebook: fixtory.studio หรือโทร 081-336-8232 ร้านจะเริ่มผลิตหลังได้รับยอดโอน</div>
     <div class="trk" id="trkBox" hidden><b>ติดตามสถานะออเดอร์</b><span>ดูได้ว่าร้านได้รับยอด เริ่มผลิต หรือส่งของแล้วหรือยัง พร้อมเลขพัสดุ และกดรับแจ้งเตือนเข้ามือถือได้</span><a class="btn primary full" id="trkBtn" href="#" target="_blank" rel="noopener">เปิดหน้าติดตามสถานะ</a></div>
     <button class="btn ghost full" id="againBtn" type="button">สั่งซื้อเพิ่ม</button>
   </div>
@@ -784,7 +784,7 @@ let lastOrder=null;
 function finish(order,no){
   order.no=no;lastOrder=order;
   try{localStorage.setItem('fxCustomer',JSON.stringify({cName:order.name,cPhone:order.phone,cAddr:order.self?'':$('#cAddr').value.trim(),cProv:order.prov,cZip:order.zip,cAmp:$('#cAmp').value,cTam:$('#cTam').value,cSubText:$('#cSubText').value.trim()}))}catch(e){}
-  $('#dNo').textContent=no||'รอร้านยืนยัน';$('#dChk').hidden=!!no;slipReset();$('#slipBox').hidden=!no;$('#payNote').textContent=no?'โอนแล้ว แนบสลิปด้านบนได้เลย หรือส่งสลิปพร้อมเลขที่ออเดอร์ทาง TikTok / Facebook: fixtory.studio หรือโทร 090-985-0326, 081-336-8232 ร้านจะเริ่มผลิตหลังได้รับยอดโอน':'โอนแล้ว ส่งสลิปพร้อมรูปสรุปออเดอร์ให้ร้านทาง TikTok / Facebook: fixtory.studio หรือโทร 090-985-0326, 081-336-8232 ร้านจะเริ่มผลิตหลังได้รับยอดโอน';$('#dAmt').textContent=fmt(order.gt);
+  $('#dNo').textContent=no||'รอร้านยืนยัน';$('#dChk').hidden=!!no;slipReset();$('#slipBox').hidden=!no;$('#payNote').textContent=no?'โอนแล้ว แนบสลิปด้านบนได้เลย หรือส่งสลิปพร้อมเลขที่ออเดอร์ทาง TikTok / Facebook: fixtory.studio หรือโทร 081-336-8232 ร้านจะเริ่มผลิตหลังได้รับยอดโอน':'โอนแล้ว ส่งสลิปพร้อมรูปสรุปออเดอร์ให้ร้านทาง TikTok / Facebook: fixtory.studio หรือโทร 081-336-8232 ร้านจะเริ่มผลิตหลังได้รับยอดโอน';$('#dAmt').textContent=fmt(order.gt);
   $('#formView').hidden=true;$('#bar').hidden=true;$('#doneView').hidden=false;scrollTo({top:0});
   $('#trkBox').hidden=true;
   if(no)fetch(GAS_URL,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({action:'trLink',o:no,phone:order.phone})}).then(r=>r.json()).then(r=>{if(r&&r.result==='success'&&r.url&&lastOrder===order){$('#trkBtn').href=r.url;$('#trkBox').hidden=false;try{const K='fxMyOrders',u=new URL(r.url),L=JSON.parse(localStorage.getItem(K)||'[]').filter(x=>x.no!==no);L.unshift({no,u:u.pathname+u.search,d:Date.now()});localStorage.setItem(K,JSON.stringify(L.slice(0,10)))}catch(e){}}}).catch(()=>{});
@@ -837,7 +837,7 @@ async function drawSummary(o){
   const kv=(k,v,big)=>{g.font=(big?'600 36px ':'28px ')+F;g.fillStyle=big?'#2C2420':'#76665C';g.fillText(k,P,y);g.textAlign='right';g.fillStyle=big?'#A9572F':'#2C2420';g.fillText(v,W-P,y);g.textAlign='left';y+=big?60:44};
   kv('ค่าสินค้า',fmt(o.st));kv('ค่าจัดส่ง',o.sf?fmt(o.sf):'ไม่มี (นัดรับ)');kv('ยอดที่ต้องโอน',fmt(o.gt),true);y+=20;
   g.fillStyle='#F5E8DC';g.fillRect(P,y,W-2*P,96);g.font='24px '+F;g.fillStyle='#2C2420';
-  g.fillText('โอนแล้ว ส่งสลิป + รูปนี้ ทาง TikTok / Facebook: fixtory.studio',P+24,y+40);g.fillText('หรือโทร 090-985-0326, 081-336-8232',P+24,y+76);
+  g.fillText('โอนแล้ว ส่งสลิป + รูปนี้ ทาง TikTok / Facebook: fixtory.studio',P+24,y+40);g.fillText('หรือโทร 081-336-8232',P+24,y+76);
   return c;
 }
 async function openSaveOverlay(){
