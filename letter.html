@@ -1352,7 +1352,7 @@ footer { text-align: center; color: var(--muted); font-size: 13px; padding-top: 
     return btoa(bin).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
   }
   // hosted on fixtory-studio.pages.dev (letter.html) → same-site relative link; inside claude.ai → full URL
-  var ORDER_URL = (/fixtory-studio\.pages\.dev$|^localhost$/.test(location.hostname) ? 'shop-order.html' : 'https://fixtory-studio.pages.dev/shop-order.html') + '?p=letter';
+  var ORDER_URL = (/fixtory-studio\.pages\.dev$|^localhost$/.test(location.hostname) ? 'shop-order.html' : 'https://fixtory-studio.pages.dev/shop-order.html') + '?p=letter' + (function () { try { var sl = new URLSearchParams(location.search).get('sale'); return sl ? '&sale=' + encodeURIComponent(sl) : ''; } catch (e) { return ''; } })();
   document.addEventListener('click', function (e) { var a = e.target.closest && e.target.closest('#orderBtn'); if (a && !a.getAttribute('aria-disabled')) saveSnapshot($('code').textContent); }, true);
   function designCode(letter, text) {
     var nm = /^[A-Za-z0-9 ]+$/.test(text) ? text.replace(/ /g, '_') : '~' + b64url(text);
