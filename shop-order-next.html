@@ -83,6 +83,8 @@ textarea{min-height:76px;resize:vertical}
 .two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 @media (max-width:480px){.two{grid-template-columns:1fr}.opts{grid-template-columns:1fr}.ptabs{grid-template-columns:1fr}}
 .hint{font-size:12.5px;color:var(--muted);margin:6px 0 0}
+.limg{flex:none;border-radius:10px;object-fit:cover;background:var(--sunk)}
+.ltile{display:inline-grid;place-items:center;flex:none;border-radius:10px;font-weight:800;line-height:1;box-shadow:inset 0 0 0 1px rgba(0,0,0,.12)}
 .note{background:var(--sunk);border-radius:12px;padding:10px 12px;font-size:13px;color:var(--ink);margin-top:12px}
 .trk{margin-top:14px;padding:14px;border-radius:14px;box-shadow:inset 0 0 0 1.5px var(--line);text-align:left;display:grid;gap:6px}.trk b{font-weight:600}.trk span{font-size:13px;color:var(--muted)}.trk .btn{margin-top:6px}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:0;border-radius:999px;padding:11px 20px;font:inherit;font-weight:600;cursor:pointer}
@@ -338,9 +340,39 @@ const PRODUCTS={
   keycap:{name:'Alphabet Clicker',sub:'พวงกุญแจคีย์แคป',img:'kc/keycap-thumb.jpg'+IMG_V,big:'kc/keycap-th.jpg'+IMG_V,from:35,
     info:{summary:'พวงกุญแจคีย์แคปกดคลิกได้ เรียงตัวอักษรเป็นชื่อหรือคำที่ชอบ เลือกสีคีย์ สีเคส และสายคล้องเองได้ ราคารวมฐาน (เคส) และสายคล้องแล้ว',points:['ตัวอักษร A–Z หน้ายิ้ม 7 แบบ และหัวใจ ผสมกันได้ รวมไม่เกิน 8 ช่อง','เลือกสีคีย์ทีละตัว จาก 3 คอลเลกชัน: Pastel, Dark mode, Polar White','สีเคส 5 สี สายคล้อง 8 แบบ','ราคา 3 ตัว 100 บาท ตัวต่อไปตัวละ 35 บาท รวมฐาน (เคส) และสายคล้องแล้ว'],spec:[['วัสดุ','PLA'],['ระยะเวลาผลิต','1 วัน'],['ที่มาของแบบ','ร้านออกแบบเอง']],
       gallery:['kc/keycap-set.jpg','kc/keycap-tor.jpg','kc/keycap-kao.jpg','kc/keycap-tui.jpg','kc/col-1.jpg','kc/col-2.jpg','kc/col-4.jpg','kc/col-3.jpg','kc/col-5.jpg']}}
+  ,letter:{name:'Fixtory Letter',sub:'พวงกุญแจตัวอักษรตัวโต',img:'letter.jpg'+IMG_V,from:69,noCatalog:true,
+    info:{summary:'พวงกุญแจตัวอักษรตัวโต มีชื่อเต็มฝังเรียบในเนื้อ เลือกสไตล์น่ารักหรือเท่ ตัวอักษรไทยหรืออังกฤษ และสีได้เอง แถมจี้ดอกไม้ทุกชิ้น',
+      points:['ออกแบบและดูภาพ 3 มิติบนหน้า Fixtory Letter แล้วกด "สั่งซื้อแบบนี้" รหัสแบบจะมาลงตะกร้าเอง','1–4 ชิ้น ชิ้นละ 69 บาท · 5–9 ชิ้น ชิ้นละ 55 บาท · 10 ชิ้นขึ้นไป ชิ้นละ 49 บาท (คิดรวมทุกชื่อในออเดอร์)','สูงประมาณ 6.5 ซม. หนา 5 มม.'],
+      spec:[['ขนาด','สูง ~6.5 ซม. · หนา 5 มม.'],['วัสดุ','PLA ด้าน 2 สี'],['ผลิต','ภายใน 1 วันทำการ']]}}
   ,clips:{name:'คลิปหนีบเอกสาร',sub:'เซ็ต 20 อัน',img:'clips.jpg'+IMG_V,from:99,
     info:{summary:'คลิปหนีบเอกสารมีป้ายบอก ช่วยแยกเอกสารง่าย และชี้จุดที่ต้องลงนามให้ชัด มาพร้อมกล่องเก็บ',points:['1 เซ็ต 20 อัน: "โปรดลงนาม" 11 อัน และ "เอกสารแนบ 1–9" หมายเลขละ 1 อัน','สลักชื่อหรือข้อความด้านหลังได้ ฟรี','มีกล่องเก็บคลิป'],spec:[['วัสดุ','PLA'],['ระยะเวลาผลิต','1 วัน'],['ที่มาของแบบ','ร้านออกแบบเอง']]}}
 };
+// ---------- Fixtory Letter: รับ "รหัสแบบ" (MN2.ตัวโต.ชื่อ.สไตล์.สี) จากหน้าออกแบบ — ลำดับสีต้องตรงกับหน้าออกแบบ/หน้าร้าน (ห้ามสลับ เติมท้ายได้อย่างเดียว) ----------
+const LETTER_DESIGN_URL='letter.html';   // หน้าออกแบบบนเว็บนี้เอง (เก็บรูปตัวอย่างแต่ละแบบไว้ใน localStorage ให้หน้านี้ดึงไปโชว์)
+const LETTER_PALETTE=[["Mercerized White","ขาวครีม","#E6E0CF"],["Honey","น้ำผึ้ง","#E8DFC0"],["Milkshake","ขาวมิลค์เชค","#DCCDAF"],["Vanilla","วานิลลา","#CFC3A8"],["Oat","ข้าวโอ๊ต","#CBBD9E"],["Soft Cream","ครีมแมตต์นุ่ม","#DCCFBE"],["Beige","เบจ","#E2CB9E"],["Amber Nude","อำพัน","#D1B3A0"],["Pink Frost","ชมพูขาว","#EADADA"],["Cream Pink","ชมพูครีม","#E8D8E0"],["Lotus Pink","ชมพูแป้งบัว","#EDB3BF"],["Rose Lilac","ชมพูโรส","#DCAED2"],["Peach Pink","ชมพูพีช","#D49A88"],["Rose Red","แดงโรส","#B8475A"],["Burgundy","เบอร์กันดี","#6E2430"],["Ceramic Orange","ส้มเซรามิก","#DDB79F"],["Pumpkin","ส้มฟักทอง","#E2923A"],["Lemon","เหลืองเลมอน","#E8E45A"],["Lime","เหลืองเขียว","#CCDC52"],["Sea Green","เขียวทะเล","#8CD9B9"],["Pine Green","เขียวสน","#459255"],["Emerald","เขียวมรกต","#24493A"],["Olive Green","เขียวมะกอก","#5C6650"],["Grey Green","เทาเขียว","#6E8384"],["Sky Blue","ฟ้า","#A8D8E4"],["Light Blue","ฟ้าอ่อน","#A8CDE0"],["Cobalt Blue","น้ำเงินโคบอลต์","#2E5B93"],["Purple","ม่วง","#9381B8"],["Lavender Mist","ม่วงหมอก","#C6B9C0"],["Mahogany","มะฮอกกานี","#83635A"],["Sandalwood","น้ำตาลไม้จันทน์","#A3896F"],["Pigeon Grey","เทานกพิราบ","#B2B1AC"],["Cool Grey","เทาเย็น","#C6C6C6"],["Dark Grey","เทาเข้ม","#787878"],["Graphite","เทากราไฟต์","#45464A"]];
+const LETTER_MAX=30;
+function letterUnit(n){return n>=10?49:n>=5?55:69}
+function letterParse(raw){
+  const code=String(raw||'').trim().replace(/\s+/g,'');const p=code.split('.');
+  if(p.length!==5||p[0]!=='MN2')return null;
+  const letter=p[1];let name=p[2];if(!letter||Array.from(letter).length!==1||!name)return null;
+  if(name[0]==='~'){try{const bin=atob(name.slice(1).replace(/-/g,'+').replace(/_/g,'/'));name=new TextDecoder().decode(Uint8Array.from(bin,c=>c.charCodeAt(0)))}catch(e){return null}}
+  else name=name.replace(/_/g,' ');
+  const o=p[3]||'',cc=p[4]||'';if(cc.length!==2)return null;
+  const ink=LETTER_PALETTE[parseInt(cc[0],36)],base=LETTER_PALETTE[parseInt(cc[1],36)];if(!ink||!base)return null;
+  return {code,letter,name,style:o[0]==='R'?'เท่':'น่ารัก',ink,base};
+}
+function letterImg(code){try{return localStorage.getItem('fxLetterImg:'+code)||''}catch(e){return ''}}
+function letterSave(){try{localStorage.setItem('fxLetterCart',JSON.stringify(letterCart.map(x=>x.code)))}catch(e){}}
+function letterTile(it,sz){ // รูปจากหน้าออกแบบ ถ้าไม่มี (เช่นออกแบบจากที่อื่น) ใช้ไอคอน: พื้น = สีตัวโต, ตัวอักษร = สีชื่อ
+  const im=letterImg(it.code);if(im)return el('img',{class:'limg',src:im,alt:it.letter+' '+it.name,style:'width:'+sz+'px;height:'+sz+'px'});
+  return el('span',{class:'ltile',style:'width:'+sz+'px;height:'+sz+'px;font-size:'+Math.round(sz*.55)+'px;background:'+it.base[2]+';color:'+it.ink[2]},it.letter)}
+function addLetterCode(raw,quiet){
+  const it=letterParse(raw);
+  if(!it){if(!quiet)showErr('รหัสแบบไม่ถูกต้อง ต้องขึ้นต้นด้วย MN2. (คัดลอกจากหน้า Fixtory Letter)');return false}
+  if(letterCart.length>=LETTER_MAX){if(!quiet)showErr('สั่งมากกว่า '+LETTER_MAX+' ชิ้น โปรดติดต่อร้านโดยตรง');return false}
+  letterCart.push(it);letterSave();hideErr();return true;
+}
 // ---------- Alphabet Clicker (ยกมาจากฟอร์ม keycap เดิม index.html — ชื่อสี/สายคล้อง/คอลเลกชันต้องตรงกับแท็บสต๊อกใน Sheet) ----------
 const KC_HEX={"ฟ้า":"#7FC4E0","ชมพู":"#EFA9C6","ม่วง":"#B7A3E0","เหลือง":"#F2D34D","เนื้อ":"#E6C09C","ขาว":"#F5F5F2","ดำ":"#2B2B2B","ส้ม":"#F0954A","แดง":"#E0435A","เขียว":"#7FC97F","มิ้นท์":"#8FDDC6","ทราย":"#D8C6A8","น้ำเงิน":"#3F63C7","น้ำตาล":"#9A6B44","ชมพูอมแดง":"#E85C7A","เขียวอมฟ้า":"#3FB6B0"};
 const KC_COLS={pastel:{name:'Pastel',desc:'ตัวอักษรขาว ฐานพาสเทล',fixedSlot:'frame',fixedColor:'ขาว',vary:["ฟ้า","ชมพู","เหลือง","ม่วง"]},
@@ -429,6 +461,10 @@ let current=PRODUCTS[params.get('p')]?params.get('p'):'sipbuddy';
 let phapQty={};            // สี -> จำนวน
 let sipCart=[];            // [{design, opt, name}]
 let clipCart=[];           // [{text,body,ink}] 1 รายการ = 1 เซ็ต
+let letterCart=[];         // Fixtory Letter: 1 รายการ = 1 ชิ้น (จำไว้ในเครื่อง ลูกค้าออกแบบทีละชิ้นแล้วกลับมาเพิ่มได้)
+try{(JSON.parse(localStorage.getItem('fxLetterCart')||'[]')||[]).forEach(c=>{const it=letterParse(c);if(it)letterCart.push(it)})}catch(e){}
+if(params.get('code')){addLetterCode(params.get('code'),true);current='letter';
+  try{const u=new URL(location.href);u.searchParams.delete('code');u.searchParams.set('p','letter');history.replaceState(null,'',u)}catch(e){}}
 let clipSel={qty:1,text:'',col:'polar',color:'น้ำเงิน'};
 // คอลเลกชันสีคลิป — ชื่อ/ชุดสีเดียวกับ Alphabet Clicker (ฐาน = ตัวคลิป)
 const CLIP_COLS={pastel:{name:'Pastel',desc:'ตัวอักษรขาว ฐานพาสเทล',fixed:'ink',fixedColor:'ขาว',vary:["ฟ้า","ชมพู","เหลือง","ม่วง"]},
@@ -465,6 +501,7 @@ $('#dmClose').addEventListener('click',closeDetail);
 $('#dm').addEventListener('click',e=>{if(e.target.id==='dm')closeDetail()});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#dm').hidden)closeDetail()});
 function totalPieces(){return Object.values(phapQty).reduce((a,b)=>a+b,0)+sipCart.length+kcCart.length+clipCart.length}
+function otherPieces(){return totalPieces()}   // จำกัด 10 ชิ้นเฉพาะสินค้าอื่น — Fixtory Letter แยกนับ (สูงสุด LETTER_MAX)
 function openGallery(title,srcs){
   $('#dmTitle').textContent=title;
   $('#dmBody').replaceChildren(el('div',{class:'gal',style:'grid-column:1/-1'},srcs.map(s=>el('img',{src:s+IMG_V,alt:'',loading:'lazy'}))));
@@ -503,6 +540,20 @@ function renderConf(){
           el('label',{class:'lbl',for:'clipText'},'ข้อความสลักด้านหลัง',el('small',{},'ฟรี · ไม่บังคับ')),txt,
           el('p',{class:'hint'},'1 เซ็ต: "โปรดลงนาม" 11 อัน + "เอกสารแนบ 1–9" อย่างละ 1 อัน พร้อมกล่องเก็บ'))),
       el('button',{type:'button',class:'btn primary full',onclick:addClips},'+ เพิ่มลงตะกร้า'));
+  }else if(current==='letter'){
+    const n=letterCart.length,u=letterUnit(Math.max(n,1));
+    const inp=el('input',{type:'text',id:'letterCode',placeholder:'เช่น MN2.A.alice.Pma.e0',autocomplete:'off',spellcheck:'false',style:'font-family:ui-monospace,Menlo,monospace'});
+    const add=()=>{if(addLetterCode(inp.value)){inp.value='';renderConf();renderCart();$('#cart').scrollIntoView({behavior:'smooth',block:'center'})}};
+    inp.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();add()}});
+    box.append(
+      el('div',{class:'pv-wrap'},
+        el('figure',{class:'pv'},el('img',{src:'letter.jpg'+IMG_V,alt:'Fixtory Letter'})),
+        el('div',{},
+          el('p',{class:'hint',style:'margin-top:0'},'ออกแบบชื่อ ตัวอักษรหลัก Font และสีบนหน้า Fixtory Letter แล้วกด "สั่งซื้อแบบนี้" แบบจะมาลงตะกร้าให้เอง สั่งหลายชื่อ: กลับไปออกแบบชิ้นต่อไปได้เลย ตะกร้าจำชิ้นเดิมไว้'),
+          el('a',{class:'btn primary full',style:'text-decoration:none',href:LETTER_DESIGN_URL,target:'_blank',rel:'noopener'},n?'ออกแบบชิ้นต่อไป':'ไปหน้าออกแบบ'),
+          el('label',{class:'lbl',for:'letterCode'},'หรือวางรหัสแบบ',el('small',{},'ขึ้นต้นด้วย MN2.')),inp,
+          el('button',{type:'button',class:'btn ghost full',style:'margin-top:8px',onclick:add},'+ เพิ่มลงตะกร้า'),
+          el('div',{class:'note'},'ราคาต่อชิ้นคิดจากจำนวนรวม: 1–4 ชิ้น ฿69 · 5–9 ชิ้น ฿55 · 10 ชิ้นขึ้นไป ฿49'+(n?' · ตอนนี้ '+n+' ชิ้น ชิ้นละ '+fmt(u):'')+' · แถมจี้ดอกไม้ทุกชิ้น'))));
   }else if(current==='keycap'){
     renderKC(box);
   }else{
@@ -635,6 +686,12 @@ function lines(){ // แต่ละชิ้น = 1 แถวใน Sheet (ต�
     Object.defineProperty(it,'_pic',{value:{src:'sip/sip-'+String(s.design+1).padStart(2,'0')+'.jpg'+IMG_V,h:150},enumerable:false});out.push(it)});
   clipCart.forEach(c=>{const it={productName:'คลิปหนีบเอกสาร',detail:'1 เซ็ต (20 อัน) · '+c.col+' · คลิปสี'+c.body+' ตัวหนังสือสี'+c.ink+(c.text?' · สลักด้านหลัง: '+c.text:' · ไม่สลัก'),price:'99 บาท',priceValue:99};
     Object.defineProperty(it,'_pic',{value:{svg:clipSVG({body:c.body,ink:c.ink}),h:96},enumerable:false});out.push(it)});
+  if(letterCart.length){const u=letterUnit(letterCart.length);
+    letterCart.forEach(t=>{const it={productName:'Fixtory Letter',detail:'ตัวอักษรหลัก '+t.letter+' · ชื่อ "'+t.name+'" · Font '+t.style+' · สีตัวอักษรหลัก '+t.base[1]+' · สีตัวอักษรชื่อ '+t.ink[1]+' · รหัส '+t.code+(letterCart.length>1?' (ราคาชุด '+letterCart.length+' ชิ้น ชิ้นละ '+u+' บาท)':''),price:u+' บาท',priceValue:u};
+      const esc=v=>String(v).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+      const im=letterImg(t.code);
+      Object.defineProperty(it,'_side',{value:t,enumerable:false});
+      Object.defineProperty(it,'_pic',{value:im?{src:im,h:180}:{svg:'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="360" height="360"><rect width="120" height="120" rx="18" fill="'+t.base[2]+'" stroke="rgba(0,0,0,.15)"/><text x="60" y="72" text-anchor="middle" font-family="Prompt,sans-serif" font-weight="800" font-size="64" fill="'+t.ink[2]+'">'+esc(t.letter)+'</text><text x="60" y="104" text-anchor="middle" font-family="Prompt,sans-serif" font-weight="700" font-size="15" fill="'+t.ink[2]+'">'+esc(t.name)+'</text></svg>',h:120},enumerable:false});out.push(it)})}
   kcCart.forEach(k=>{const v=kcPrice(k.chars.length);
     // ช่อง orientation/caseColor/strapLabel/collection/letterN/letterColorN ใช้ชื่อเดียวกับฟอร์ม keycap เดิม
     // เพื่อให้ Apps Script ลงคอลัมน์เดิม หักสต๊อก keycap/สายคล้อง และหน้า sale อ่านได้เหมือนเดิม
@@ -651,13 +708,15 @@ function shipFee(){return $('#selfDeliver').checked||!lines().length?0:SHIP_FEE_
 function renderCart(){
   const c=$('#cart');c.replaceChildren();
   const phapN=Object.values(phapQty).reduce((a,b)=>a+b,0);
-  if(!phapN&&!sipCart.length&&!kcCart.length&&!clipCart.length){c.append(el('p',{class:'empty'},'ยังไม่มีสินค้าในตะกร้า'))}
+  if(!phapN&&!sipCart.length&&!kcCart.length&&!clipCart.length&&!letterCart.length){c.append(el('p',{class:'empty'},'ยังไม่มีสินค้าในตะกร้า'))}
   if(phapN)c.append(el('div',{class:'cart-item'},el('div',{},el('b',{},'น้องพับชู่ × '+phapN),el('div',{class:'hint',style:'margin:0'},Object.entries(phapQty).map(([k,v])=>k+' '+v).join(', '))),
     el('div',{style:'white-space:nowrap'},fmt(phapPrice(phapN)),el('button',{type:'button',class:'x',onclick:()=>{phapQty={};renderConf();renderCart()}},'ลบ'))));
   sipCart.forEach((s,i)=>{const p=PRODUCTS.sipbuddy;c.append(el('div',{class:'cart-item'},el('div',{},el('b',{},'Sip Buddy · '+String(s.design+1).padStart(2,'0')+' '+p.designs[s.design]),el('div',{class:'hint',style:'margin:0'},p.options[s.opt][0]+(s.name?' · ชื่อ "'+s.name+'"':''))),
     el('div',{style:'white-space:nowrap'},fmt(p.options[s.opt][1]),el('button',{type:'button',class:'x',onclick:()=>{sipCart.splice(i,1);renderCart()}},'ลบ'))))});
   clipCart.forEach((cl,i)=>{c.append(el('div',{class:'cart-item'},el('div',{},el('b',{},'คลิปหนีบเอกสาร · 1 เซ็ต'),el('div',{class:'hint',style:'margin:0'},cl.col+' · คลิปสี'+cl.body+' · ตัวหนังสือสี'+cl.ink+' · '+(cl.text?'สลักด้านหลัง: "'+cl.text+'"':'ไม่สลักข้อความ'))),
     el('div',{style:'white-space:nowrap'},fmt(99),el('button',{type:'button',class:'x',onclick:()=>{clipCart.splice(i,1);renderCart()}},'ลบ'))))});
+  if(letterCart.length){const u=letterUnit(letterCart.length);letterCart.forEach((t,i)=>{c.append(el('div',{class:'cart-item'},el('div',{style:'display:flex;gap:10px;align-items:center;min-width:0'},letterTile(t,64),el('div',{style:'min-width:0'},el('b',{},'Fixtory Letter · '+t.letter+' "'+t.name+'"'),el('div',{class:'hint',style:'margin:0'},'Font '+t.style+' · สีหลัก'+t.base[1]+' · สีชื่อ'+t.ink[1]))),
+    el('div',{style:'white-space:nowrap'},fmt(u),el('button',{type:'button',class:'x',onclick:()=>{letterCart.splice(i,1);letterSave();if(current==='letter')renderConf();renderCart()}},'ลบ'))))})}
   kcCart.forEach((k,i)=>{const th=kcSvgEl(k,'horizontal',260,56);th.classList.add('thumb');
     c.append(el('div',{class:'cart-item'},el('div',{style:'min-width:0'},el('b',{},'Alphabet Clicker · '+k.chars.map(x=>KC_FACE[x]?'☺':x==='❤'?'♥':x).join('')),
       el('div',{class:'hint',style:'margin:0'},KC_COLS[k.col].name+' · เคส'+k.caseColor+' · สาย '+KC_STRAPS[k.strap].label+' · '+(k.orient==='vertical'?'แนวตั้ง':'แนวนอน')),th),
@@ -783,6 +842,7 @@ $('#submitBtn').addEventListener('click',async()=>{
 let lastOrder=null;
 function finish(order,no){
   order.no=no;lastOrder=order;
+  try{localStorage.removeItem('fxLetterCart')}catch(e){}
   try{localStorage.setItem('fxCustomer',JSON.stringify({cName:order.name,cPhone:order.phone,cAddr:order.self?'':$('#cAddr').value.trim(),cProv:order.prov,cZip:order.zip,cAmp:$('#cAmp').value,cTam:$('#cTam').value,cSubText:$('#cSubText').value.trim()}))}catch(e){}
   $('#dNo').textContent=no||'รอร้านยืนยัน';$('#dChk').hidden=!!no;slipReset();$('#slipBox').hidden=!no;$('#payNote').textContent=no?'โอนแล้ว แนบสลิปด้านบนได้เลย หรือส่งสลิปพร้อมเลขที่ออเดอร์ทาง TikTok / Facebook: fixtory.studio หรือโทร 081-336-8232 ร้านจะเริ่มผลิตหลังได้รับยอดโอน':'โอนแล้ว ส่งสลิปพร้อมรูปสรุปออเดอร์ให้ร้านทาง TikTok / Facebook: fixtory.studio หรือโทร 081-336-8232 ร้านจะเริ่มผลิตหลังได้รับยอดโอน';$('#dAmt').textContent=fmt(order.gt);
   $('#formView').hidden=true;$('#bar').hidden=true;$('#doneView').hidden=false;scrollTo({top:0});
@@ -799,10 +859,12 @@ async function drawSummary(o){
   const ph=o.items.filter(it=>it.productName==='น้องพับชู่'),other=o.items.filter(it=>it.productName!=='น้องพับชู่');
   const cnt={};ph.forEach(it=>{const c=it.detail.replace(/^สี /,'').replace(/ \(.*$/,'');cnt[c]=(cnt[c]||0)+1});
   const rows=(ph.length?[{title:'น้องพับชู่ × '+ph.length,lines:wrap('สี '+Object.entries(cnt).map(([k,v])=>k+' '+v).join(', '),'28px '+F,W-2*P-200),price:ph.reduce((a,b)=>a+b.priceValue,0)}]:[])
-    .concat(other.map(it=>({title:it.productName,lines:wrap(it._kc?it.detail.split(' · สี: ')[0]:it.detail,'28px '+F,W-2*P-200),price:it.priceValue,kc:it._kc,pics:it._pic?[Object.assign({cap:''},it._pic)]:[]})));
+    .concat(other.map(it=>it._side?{title:it.productName,lines:[],price:it.priceValue,side:{t:it._side,pic:it._pic}}:({title:it.productName,lines:wrap(it._kc?it.detail.split(' · สี: ')[0]:it.detail,'28px '+F,W-2*P-200),price:it.priceValue,kc:it._kc,pics:it._pic?[Object.assign({cap:''},it._pic)]:[]})));
   // รูปสินค้าในรูปสรุป ให้ลูกค้าเก็บเป็นหลักฐานว่าสั่งอะไร: น้องพับชู่ตามสี, Sip Buddy ตามแบบ, ป้ายคลิปตามสี
   if(ph.length){const pc=PRODUCTS.phapchoo.colors;rows[0].pics=Object.entries(cnt).map(([k,v])=>{const m=pc.find(x=>x[0]===k);return m?{src:'pc/pc-'+m[2]+'.jpg'+IMG_V,h:190,cap:k+' × '+v}:null}).filter(Boolean)}
   const loadPic=q=>new Promise(ok=>{const im=new Image();im.onload=()=>ok(im);im.onerror=()=>ok(null);im.src=q.svg?'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(q.svg):q.src});
+  // Fixtory Letter: รูปชิ้นงานซ้าย รายละเอียด (ฟอนต์ สี รหัส) ขวา
+  let li=0;for(const r of rows){if(!r.side)continue;r.side.img=r.side.pic?await loadPic(r.side.pic):null;r.side.n=++li;r.sideH=176+(li===1?78:0)-62}
   for(const r of rows){r.pics=r.pics||[];for(const q of r.pics){q.img=await loadPic(q);if(q.img){q.w=q.h*q.img.naturalWidth/q.img.naturalHeight}}r.pics=r.pics.filter(q=>q.img);
     // จัดเป็นแถว ไม่ให้ล้นความกว้าง
     let x=0,line=0,lh=0;r.picH=0;r.pics.forEach(q=>{const ch=q.h+(q.cap?40:0);if(x&&x+q.w>W-2*P){r.picH+=lh+14;x=0;lh=0}q.x=x;q.ly=r.picH;x+=q.w+14;lh=Math.max(lh,ch)});if(r.pics.length)r.picH+=lh+18}
@@ -812,7 +874,7 @@ async function drawSummary(o){
     const dw=Math.min(W-2*P,v.w*3.2);r.img=img;r.iw=dw;r.ih=dw*v.h/v.w}
   const addr=o.self?'นัดรับ: '+o.addr:o.addr+(o.prov?' จ.'+o.prov:'')+(o.zip?' '+o.zip:'');
   const addrL=wrap(addr,'28px '+F,W-2*P);
-  let H=420+addrL.length*40+rows.reduce((a,r)=>a+62+r.lines.length*38+(r.img?r.ih+16:0)+(r.picH||0),0)+400;
+  let H=420+addrL.length*40+rows.reduce((a,r)=>a+62+r.lines.length*38+(r.img?r.ih+16:0)+(r.picH||0)+(r.sideH||0),0)+400;
   const c=document.createElement('canvas');c.width=W;c.height=H;const g=c.getContext('2d');
   g.fillStyle='#FAF8F4';g.fillRect(0,0,W,H);
   g.fillStyle='#2C2420';g.fillRect(0,0,W,170);
@@ -824,7 +886,42 @@ async function drawSummary(o){
   g.font='600 30px '+F;g.fillStyle='#2C2420';g.fillText(o.name+'  ·  '+o.phone,P,y);y+=44;
   g.font='28px '+F;g.fillStyle='#76665C';addrL.forEach(l=>{g.fillText(l,P,y);y+=40});y+=16;
   g.strokeStyle='#EDE2D6';g.lineWidth=3;g.beginPath();g.moveTo(P,y);g.lineTo(W-P,y);g.stroke();y+=56;
-  rows.forEach(r=>{g.font='600 30px '+F;g.fillStyle='#2C2420';g.fillText(r.title,P,y);g.textAlign='right';g.fillText(fmt(r.price),W-P,y);g.textAlign='left';y+=40;
+  rows.forEach(r=>{
+    if(r.side){ // Fixtory Letter แบบตาราง: หัวตารางครั้งเดียว แล้วแถวละชิ้น
+      const t=r.side.t,INK='#2C2420',MUT='#8A7A6E',LN='#EDE2D6',HEAD='#F4EDE5',ACC='#C4714A';
+      // คอลัมน์: [หัว, ความกว้าง, ชิดซ้าย/กลาง/ขวา]
+      const C=[['#',36,'c'],['รูป',150,'c'],['ตัวอักษรหลัก',116,'c'],['ชื่อ',170,'l'],['Font',92,'l'],['ตัวอักษรหลัก',148,'l'],['ตัวอักษรชื่อ',150,'l'],['ราคา',74,'r']];
+      const xs=[];let xx=P;C.forEach(c=>{xs.push(xx);xx+=c[1]});
+      const RH=176,top=y-34;let ry=top;
+      const rr=(x,yy,w,h,rad)=>{g.beginPath();if(g.roundRect)g.roundRect(x,yy,w,h,rad);else g.rect(x,yy,w,h)};
+      const cell=(k,txt,yy,font,col)=>{const c=C[k];g.font=font;g.fillStyle=col;g.textAlign=c[2]==='c'?'center':c[2]==='r'?'right':'left';
+        const x=c[2]==='c'?xs[k]+c[1]/2:c[2]==='r'?xs[k]+c[1]-8:xs[k]+8;g.fillText(txt,x,yy);g.textAlign='left'};
+      if(r.side.n===1){ // หัวตาราง
+        // หัวตาราง 2 ชั้น: "สี" ครอบ 2 คอลัมน์ (ตัวอักษรหลัก / ตัวอักษรชื่อ)
+        const HH=78;g.fillStyle=HEAD;rr(P,ry,W-2*P,HH,12);g.fill();
+        C.forEach((c,k)=>{if(k===2){cell(k,'ตัวอักษร',ry+34,'600 20px '+F,MUT);cell(k,'หลัก',ry+60,'600 20px '+F,MUT)}else if(k<5||k>6)cell(k,c[0],ry+48,'600 20px '+F,MUT)});
+        g.font='700 20px '+F;g.fillStyle=MUT;g.textAlign='center';g.fillText('สี',xs[5]+(C[5][1]+C[6][1])/2,ry+28);g.textAlign='left';
+        g.strokeStyle='#DCCFC2';g.lineWidth=1.5;g.beginPath();g.moveTo(xs[5]+8,ry+38);g.lineTo(xs[6]+C[6][1]-8,ry+38);g.stroke();
+        cell(5,C[5][0],ry+64,'600 19px '+F,MUT);cell(6,C[6][0],ry+64,'600 19px '+F,MUT);ry+=HH;}
+      const mid=ry+RH/2;
+      // รูป
+      const S=136,ix=xs[1]+(C[1][1]-S)/2,iy=mid-S/2;
+      g.fillStyle='#F3ECE4';rr(ix,iy,S,S,16);g.fill();
+      if(r.side.img){try{g.save();rr(ix,iy,S,S,16);g.clip();g.drawImage(r.side.img,ix,iy,S,S);g.restore()}catch(e){g.restore()}}
+      else{g.fillStyle=t.base[2];rr(ix+20,iy+20,S-40,S-40,12);g.fill();g.fillStyle=t.ink[2];g.font='800 64px '+F;g.textAlign='center';g.fillText(t.letter,ix+S/2,iy+S/2+23);g.textAlign='left'}
+      cell(0,String(r.side.n),mid+9,'700 26px '+F,ACC);
+      cell(2,t.letter,mid+14,'800 44px '+F,INK);
+      // ชื่อ + รหัสเล็ก ๆ ข้างใต้
+      const nm=wrap(t.name,'600 28px '+F,C[3][1]-16).slice(0,2),cl0=wrap(t.code,'17px ui-monospace,Menlo,monospace',C[3][1]-16).slice(0,3),blockH=nm.length*34+cl0.length*22,by=mid-blockH/2+22;nm.forEach((l,q)=>cell(3,l,by+q*34,'600 28px '+F,INK));
+      cl0.forEach((l,q)=>cell(3,l,by+nm.length*34-6+q*22,'17px ui-monospace,Menlo,monospace','#B0A196'));
+      cell(4,t.style==='เท่'?'เท่':'น่ารัก',mid-4,'600 26px '+F,INK);cell(4,t.style==='เท่'?'สปอร์ต':'Fixtory',mid+28,'20px '+F,MUT);
+      const colr=(k,c)=>{const x=xs[k]+8;g.fillStyle=c[2];g.beginPath();g.arc(x+15,mid-36,15,0,7);g.fill();g.strokeStyle='rgba(0,0,0,.16)';g.lineWidth=2;g.stroke();
+        wrap(c[1],'21px '+F,C[k][1]-12).slice(0,2).forEach((l,q)=>{g.font='21px '+F;g.fillStyle=INK;g.fillText(l,x,mid+8+q*30)})};
+      colr(5,t.base);colr(6,t.ink);
+      cell(7,fmt(r.price),mid+9,'700 26px '+F,INK);
+      g.strokeStyle=LN;g.lineWidth=2;g.beginPath();g.moveTo(P,ry+RH);g.lineTo(W-P,ry+RH);g.stroke();
+      y+=(ry+RH)-top;return}
+    g.font='600 30px '+F;g.fillStyle='#2C2420';g.fillText(r.title,P,y);g.textAlign='right';g.fillText(fmt(r.price),W-P,y);g.textAlign='left';y+=40;
     g.font='28px '+F;g.fillStyle='#76665C';r.lines.forEach(l=>{g.fillText(l,P,y);y+=38});
     if(r.img){try{g.drawImage(r.img,P,y-10,r.iw,r.ih)}catch(e){}y+=r.ih+16}
     if(r.pics&&r.pics.length){const y0=y-6;r.pics.forEach(q=>{const px=P+q.x,py=y0+q.ly;
@@ -875,7 +972,7 @@ $('#slipBtn').addEventListener('click',async()=>{if(!slipData||!lastOrder||!last
   catch(e){btn.textContent='ส่งแล้ว';slipMsg('ส่งสลิปแล้ว แต่ระบบยืนยันกลับไม่ได้ ถ้าร้านไม่ได้รับจะทักกลับไปค่ะ','ok');return}
   if(data&&data.result==='success'){btn.textContent='ส่งสลิปแล้ว ✓';slipMsg('ร้านได้รับสลิปแล้ว จะตรวจยอดและเริ่มผลิตให้ค่ะ ถ้าโอนเพิ่มเลือกรูปใหม่แล้วส่งได้อีก','ok');slipData=null;$('#slipFile').value='';return}
   btn.disabled=false;btn.textContent='ลองส่งอีกครั้ง';slipMsg('ส่งสลิปไม่สำเร็จ: '+((data&&data.message)||'ลองใหม่อีกครั้ง')+' หรือส่งทาง TikTok / Facebook แทนได้','bad')});
-$('#againBtn').addEventListener('click',()=>{phapQty={};sipCart=[];kcCart=[];clipCart=[];sipSel={design:null,opt:0,name:''};$('#doneView').hidden=true;$('#formView').hidden=false;$('#bar').hidden=false;renderConf();renderCart();scrollTo({top:0})});
+$('#againBtn').addEventListener('click',()=>{phapQty={};sipCart=[];kcCart=[];clipCart=[];letterCart=[];letterSave();sipSel={design:null,opt:0,name:''};$('#doneView').hidden=true;$('#formView').hidden=false;$('#bar').hidden=false;renderConf();renderCart();scrollTo({top:0})});
 
 renderTabs();renderConf();renderCart();
 </script>
