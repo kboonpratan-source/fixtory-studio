@@ -1244,8 +1244,8 @@ footer { text-align: center; color: var(--muted); font-size: 13px; padding-top: 
       if (hp) base = G.diff(base, [G.circle(hp[0], hp[1], holeR)]);
       if (hp) { var cg = centroid(base); hangTilt = Math.atan2(Math.abs(cg[0] - hp[0]), hp[1] - cg[1]) * 180 / Math.PI; }
       var Lfree = hp ? G.diff(L, [G.circle(hp[0], hp[1], holeR + 2.5)]) : L;
-      band = np.length ? findBand(Lfree, W, H, len1, thick1, s0, /[\u0E01-\u0E2E]/.test(letter) ? Object.assign({}, o, { vertOnly: true }) : o) : null;   // Thai: name always upright on a stem
-      if (band && np.length) {
+      band = np.length ? findBand(Lfree, W, H, len1, thick1, s0, /[\u0E01-\u0E2E]/.test(letter) && 'ธ'.indexOf(letter) < 0 ? Object.assign({}, o, { vertOnly: true }) : o) : null;   // Thai: name always upright on a stem — except S-shaped ธ, which takes the name across its middle like S
+      if (band && np.length && 'ธSs'.indexOf(letter) < 0) {
         // an upright stem reads tidier than a slanted band cutting across a joint: take it when the name stays (almost) as big
         var vb = findBand(Lfree, W, H, len1, thick1, s0, Object.assign({}, o, { vertOnly: true }));
         if (vb && vb !== band && Math.min(vb.sfit, s0) >= 0.92 * Math.min(band.sfit, s0)) band = vb;
