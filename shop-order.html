@@ -340,11 +340,11 @@ const PRODUCTS={
   keycap:{name:'Alphabet Clicker',sub:'พวงกุญแจคีย์แคป',img:'kc/keycap-thumb.jpg'+IMG_V,big:'kc/keycap-th.jpg'+IMG_V,from:35,
     info:{summary:'พวงกุญแจคีย์แคปกดคลิกได้ เรียงตัวอักษรเป็นชื่อหรือคำที่ชอบ เลือกสีคีย์ สีเคส และสายคล้องเองได้ ราคารวมฐาน (เคส) และสายคล้องแล้ว',points:['ตัวอักษร A–Z หน้ายิ้ม 7 แบบ และหัวใจ ผสมกันได้ รวมไม่เกิน 8 ช่อง','เลือกสีคีย์ทีละตัว จาก 3 คอลเลกชัน: Pastel, Dark mode, Polar White','สีเคส 5 สี สายคล้อง 8 แบบ','ราคา 3 ตัว 100 บาท ตัวต่อไปตัวละ 35 บาท รวมฐาน (เคส) และสายคล้องแล้ว'],spec:[['วัสดุ','PLA'],['ระยะเวลาผลิต','1 วัน'],['ที่มาของแบบ','ร้านออกแบบเอง']],
       gallery:['kc/keycap-set.jpg','kc/keycap-tor.jpg','kc/keycap-kao.jpg','kc/keycap-tui.jpg','kc/col-1.jpg','kc/col-2.jpg','kc/col-4.jpg','kc/col-3.jpg','kc/col-5.jpg']}}
-  ,letter:{name:'Fixtory Letter',sub:'พวงกุญแจตัวอักษรตัวโต',img:'letter.jpg'+IMG_V,from:69,perPiece:true,noCatalog:true,
+  ,letter:{name:'Fixtory Letter',sub:'พวงกุญแจตัวอักษรตัวโต',img:'letter.jpg'+IMG_V,from:69,perPiece:true,hidden:true/* ยังไม่เปิดขาย: โชว์เฉพาะเมื่อมาจากหน้าออกแบบ (?p=letter) — เปิดขายเมื่อไรให้ลบ hidden ออก */,noCatalog:true,
     info:{summary:'พวงกุญแจตัวอักษรตัวโต มีชื่อเต็มฝังเรียบในเนื้อ เลือกสไตล์น่ารักหรือเท่ ตัวอักษรไทยหรืออังกฤษ และสีได้เอง แถมจี้ดอกไม้ทุกชิ้น',
       points:['ออกแบบและดูภาพ 3 มิติบนหน้า Fixtory Letter แล้วกด "สั่งซื้อแบบนี้" รหัสแบบจะมาลงตะกร้าเอง','1–4 ชิ้น ชิ้นละ 69 บาท · 5–9 ชิ้น ชิ้นละ 55 บาท · 10 ชิ้นขึ้นไป ชิ้นละ 49 บาท (คิดรวมทุกชื่อในออเดอร์)','สูงประมาณ 6.5 ซม. หนา 5 มม.'],
       spec:[['ขนาด','สูง ~6.5 ซม. · หนา 5 มม.'],['วัสดุ','PLA ด้าน 2 สี'],['ผลิต','ภายใน 1 วันทำการ']]}}
-  ,clips:{name:'คลิปหนีบเอกสาร',sub:'เซ็ต 20 อัน',img:'clips.jpg'+IMG_V,from:99,
+  ,clips:{name:'คลิปหนีบเอกสาร',sub:'เซ็ต 20 อัน',img:'clips.jpg'+IMG_V,from:99,perPiece:true,unit:'เซ็ต',
     info:{summary:'คลิปหนีบเอกสารมีป้ายบอก ช่วยแยกเอกสารง่าย และชี้จุดที่ต้องลงนามให้ชัด มาพร้อมกล่องเก็บ',points:['1 เซ็ต 20 อัน: "โปรดลงนาม" 11 อัน และ "เอกสารแนบ 1–9" หมายเลขละ 1 อัน','สลักชื่อหรือข้อความด้านหลังได้ ฟรี','มีกล่องเก็บคลิป'],spec:[['วัสดุ','PLA'],['ระยะเวลาผลิต','1 วัน'],['ที่มาของแบบ','ร้านออกแบบเอง']]}}
 };
 // ---------- Fixtory Letter: รับ "รหัสแบบ" (MN2.ตัวโต.ชื่อ.สไตล์.สี) จากหน้าออกแบบ — ลำดับสีต้องตรงกับหน้าออกแบบ/หน้าร้าน (ห้ามสลับ เติมท้ายได้อย่างเดียว) ----------
@@ -478,8 +478,8 @@ let kcCart=[];             // ชิ้น Alphabet Clicker ในตะกร�
 let kc={chars:[],colors:[],col:'pastel',caseColor:'ดำ',strap:0,orient:'vertical',mode:'letters'};
 
 function renderTabs(){
-  $('#ptabs').replaceChildren(...Object.entries(PRODUCTS).map(([id,p])=>el('button',{type:'button',class:'ptab','aria-pressed':String(id===current),onclick:()=>{current=id;renderTabs();renderConf()}},
-    el('span',{class:'pimg',role:'button',tabindex:'0','aria-label':'ดูรูปและรายละเอียด '+p.name,onclick:e=>{e.stopPropagation();openDetail(id)},onkeydown:e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();e.stopPropagation();openDetail(id)}}},el('img',{src:p.img,alt:''}),el('i',{'aria-hidden':'true',html:'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m20 20-4.5-4.5M10.5 7.5v6M7.5 10.5h6"/></svg>'})),el('div',{},el('b',{},p.name),el('span',{},p.sub+(p.perPiece?' · '+fmt(p.from)+' / ชิ้น':' · เริ่ม '+fmt(p.from))),el('small',{class:'ptip'},'แตะรูปเพื่อดูรายละเอียด')))));
+  $('#ptabs').replaceChildren(...Object.entries(PRODUCTS).filter(([id,p])=>!p.hidden||id===params.get('p')||id===current).map(([id,p])=>el('button',{type:'button',class:'ptab','aria-pressed':String(id===current),onclick:()=>{current=id;renderTabs();renderConf()}},
+    el('span',{class:'pimg',role:'button',tabindex:'0','aria-label':'ดูรูปและรายละเอียด '+p.name,onclick:e=>{e.stopPropagation();openDetail(id)},onkeydown:e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();e.stopPropagation();openDetail(id)}}},el('img',{src:p.img,alt:''}),el('i',{'aria-hidden':'true',html:'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m20 20-4.5-4.5M10.5 7.5v6M7.5 10.5h6"/></svg>'})),el('div',{},el('b',{},p.name),el('span',{},p.sub+(p.perPiece?' · '+fmt(p.from)+' / '+(p.unit||'ชิ้น'):' · เริ่ม '+fmt(p.from))),el('small',{class:'ptip'},'แตะรูปเพื่อดูรายละเอียด')))));
 }
 function openDetail(id){
   const p=PRODUCTS[id],i=p.info||{};
