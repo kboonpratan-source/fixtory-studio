@@ -1352,7 +1352,7 @@ footer { text-align: center; color: var(--muted); font-size: 13px; padding-top: 
     return btoa(bin).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
   }
   // hosted on fixtory-studio.pages.dev (letter.html) → same-site relative link; inside claude.ai → full URL
-  var ORDER_URL = (/fixtory-studio\.pages\.dev$|^localhost$/.test(location.hostname) ? 'shop-order.html' : 'https://fixtory-studio.pages.dev/shop-order.html') + '?p=letter' + (function () { try { var sl = new URLSearchParams(location.search).get('sale'); return sl ? '&sale=' + encodeURIComponent(sl) : ''; } catch (e) { return ''; } })();
+  var ORDER_URL = (/fixtory-studio\.pages\.dev$|^localhost$/.test(location.hostname) ? 'shop-order.html' : 'https://fixtory-studio.pages.dev/shop-order.html') + '?p=letter' + (function () { try { var sl = new URLSearchParams(location.search).get('sale'); return sl ? '&sale=' + encodeURIComponent(sl) : ''; } catch (e) { return ''; } })();   // keep the agent ref (?sale=)
   document.addEventListener('click', function (e) { var a = e.target.closest && e.target.closest('#orderBtn'); if (a && !a.getAttribute('aria-disabled')) saveSnapshot($('code').textContent); }, true);
   function designCode(letter, text) {
     var nm = /^[A-Za-z0-9 ]+$/.test(text) ? text.replace(/ /g, '_') : '~' + b64url(text);
@@ -1395,7 +1395,11 @@ footer { text-align: center; color: var(--muted); font-size: 13px; padding-top: 
       if (!snapR) { snapR = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true }); snapR.setPixelRatio(1); snapR.setSize(360, 360, false); }
       var sz = Math.max(result.width, result.height), dist = Math.max(80, sz * 2.0);
       var cam = new THREE.PerspectiveCamera(35, 1, 1, 2000); cam.position.set(0, dist * 0.86, dist * 0.5); cam.lookAt(0, 0, 0);   // mostly top-down so the name reads
+      // clean product shot: no floor grid, plain light backdrop (also in dark mode)
+      var bg = scene.background, gv = grid ? grid.visible : false;
+      scene.background = new THREE.Color('#F3ECE4'); if (grid) grid.visible = false;
       snapR.render(scene, cam);
+      scene.background = bg; if (grid) grid.visible = gv;
       return snapR.domElement.toDataURL('image/jpeg', 0.82);
     } catch (e) { return ''; }
   }
