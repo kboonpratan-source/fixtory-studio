@@ -13,6 +13,8 @@
 //      r 0.5 (หนา 1.0) อยู่ในร่องเว้า ไม่โผล่พ้นตัว · ช่องเกี่ยวห่วงมุมมน r 1 ขอบมน r 0.6
 //   5. ขอบหน้าต่างรอบแผ่นพิง + รูพวงกุญแจ: ลบขอบโค้ง r 0.6 (บนและล่าง)
 //      แผ่นพิงเอง: ขอบมน r 0.6 · มุมปลาย r 3
+//   V2.1 (AU 13 พ.ย.): ไอคอนกระป๋อง + ห่วงดึง นูน 0.4 ข้างช่องเกี่ยวห่วง (บนขาท้ายด้าน -y)
+//      อยู่ในบอดี้ลาย (relief สีที่ 2) ให้ลูกค้าเห็นแล้วรู้ว่าตรงนี้คือที่เปิดกระป๋อง · ฝากระป๋องหันไปทางปลายลิ่ม
 //   6. คงฟังก์ชัน: พิมพ์ทีเดียวจบ (CLR 0.4) · ล็อก 66° · ร่อง S 13.2 / L 15.8 ·
 //      ลายนูน 0.4 แยกบอดี้ · ไม่ต้อง support · ยาวขึ้น 1.5 มม. (BACK 12.5→14 ให้ร่องเว้า)
 //
@@ -25,6 +27,7 @@ NAME1  = "PLOY";      // ชื่อบรรทัด 1 (≤5 ตัว)  — 
 NAME2  = "";          // ชื่อบรรทัด 2 (≤5 ตัว)  — เว้นว่างได้ (รวมสูงสุด 10 ตัว)
 FONT   = "Poppins:style=Bold";   // ชื่อภาษาไทย: ติดตั้ง Prompt Bold / Noto Sans Thai Bold แล้วเปลี่ยนตรงนี้
 SIZE   = "S";         // "S" มือถือ+เคส ≤12.5 มม. · "L" ≤15 มม.
+CAN_ICON = true;      // V2.1 ไอคอนกระป๋องนูนข้างที่เปิดกระป๋อง (ไปอยู่ในไฟล์ relief)
 
 /* [ส่งออก] */
 PART  = "all";        // "all" | "body" (สีหลัก) | "relief" (ลาย/ชื่อ สีที่ 2)
@@ -309,6 +312,17 @@ module relief(){
     }
 }
 
+// ---------------- V2.1 ไอคอนกระป๋อง (นูน 0.4 บนฐาน ข้างช่องเกี่ยวห่วง) ----------------
+CAN_X = 9.0; CAN_Y = -14.6;   // ศูนย์ไอคอน (บนขาท้ายด้าน -y · เส้น/ช่องว่าง ≥0.6 มม. พิมพ์หัว 0.4 ได้)
+module can_icon2d(){
+  translate([CAN_X, CAN_Y]) rotate(180){            // ฝาหันไปทางปลายลิ่ม (ด้านท้าย x=0)
+    offset(r=0.6) offset(delta=-0.6) translate([-3.2,-2.1]) square([6.4, 4.2]);   // ตัวกระป๋อง
+    translate([3.8,-1.8]) offset(r=0.3) offset(delta=-0.3) square([0.8, 3.6]);   // ฝา
+    translate([5.8,0]) difference(){ circle(1.2, $fn=32); circle(0.4, $fn=20); } // ห่วงดึง
+  }
+}
+module can_relief(){ if (CAN_ICON) translate([0,0,T-0.01]) linear_extrude(REL+0.01) can_icon2d(); }
+
 // ---------------- ประกอบ ----------------
 module leaf_rot(){ translate([H,0,AZ]) rotate([0,ANGLE,0]) translate([-H,0,-AZ]) children(); }
 
@@ -323,10 +337,11 @@ module phone(){
 }
 
 if (PART=="body"){ base(); leaf_rot() leaf_body(); }
-else if (PART=="relief"){ leaf_rot() relief(); }
+else if (PART=="relief"){ leaf_rot() relief(); can_relief(); }
 else {
   color("#D9343F") base();
   color("#E04650") leaf_rot() leaf_body();
   color("#FFF4E6") leaf_rot() relief();
+  color("#FFF4E6") can_relief();
   if (PHONE!="none") phone();
 }
