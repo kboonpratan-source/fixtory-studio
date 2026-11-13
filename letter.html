@@ -1086,6 +1086,7 @@ footer { text-align: center; color: var(--muted); font-size: 13px; padding-top: 
   // ---- curved letters (S, s, ธ …): follow the stroke's own centre line ----
   // rasterise the letter, distance-transform it, trace the ridge (the stroke's middle) through the centre of the
   // letter, then lay the name along that line glyph by glyph
+  var ROUNDY = 'CGOQUceo\u0E07\u0E25\u0E27\u0E2D\u0E2E';   // bowl letters: C G O Q U c e o ง ล ว อ ฮ
   var PATHY = 'Ss\u0E18\u0E23';   // S-shaped letters: S s ธ ร
   function findPath(Lfree, len1, thick1, s0, o) {
     var lb = G.bounds(Lfree), res = 0.4, nx = Math.ceil((lb.maxX - lb.minX) / res) + 3, ny = Math.ceil((lb.maxY - lb.minY) / res) + 3;
@@ -1333,6 +1334,11 @@ footer { text-align: center; color: var(--muted); font-size: 13px; padding-top: 
     // name outline at 100 mm em, measured
     var np = G.textPaths(fontN, name, 100, 0), nameInfo = null, nameWarn = null;
     var nb = np.length ? G.bounds(np) : null, len1 = nb ? (nb.maxX - nb.minX) / 100 : 0, thick1 = nb ? (nb.maxY - nb.minY) / 100 : 0;
+    // Thai names are centred on the consonant row, so the band must fit the taller side (marks above or below) twice
+    if (nb && /[\u0E01-\u0E4E]/.test(name)) {
+      var rf = G.bounds(G.textPaths(fontN, '\u0E19\u0E2D', 100, 0)), bm = (rf.minY + rf.maxY) / 2;
+      thick1 = 2 * Math.max(nb.maxY - bm, bm - nb.minY) / 100;
+    }
 
     var holeAt = null, base, s = 0, center = null, v = null, barW = 0, detected = false, band = null, hangTilt = null, arcUsed = null, pathUsed = null;
     if (o.side === 'auto') {
@@ -1342,7 +1348,7 @@ footer { text-align: center; color: var(--muted); font-size: 13px; padding-top: 
       if (hp) base = G.diff(base, [G.circle(hp[0], hp[1], holeR)]);
       if (hp) { var cg = centroid(base); hangTilt = Math.atan2(Math.abs(cg[0] - hp[0]), hp[1] - cg[1]) * 180 / Math.PI; }
       var Lfree = hp ? G.diff(L, [G.circle(hp[0], hp[1], holeR + 2.5)]) : L;
-      band = np.length ? findBand(Lfree, W, H, len1, thick1, s0, /[\u0E01-\u0E2E]/.test(letter) && 'ธ'.indexOf(letter) < 0 ? Object.assign({}, o, { vertOnly: true }) : o) : null;   // Thai: name always upright on a stem — except S-shaped ธ, which takes the name across its middle like S
+      band = np.length ? findBand(Lfree, W, H, len1, thick1, s0, /[\u0E01-\u0E2E]/.test(letter) && 'ธยงลวอฮ'.indexOf(letter) < 0 ? Object.assign({}, o, { vertOnly: true }) : o) : null;   // Thai: name always upright on a stem — except S-shaped ธ, which takes the name across its middle like S
       if (band && np.length && 'ธSs'.indexOf(letter) < 0) {
         // an upright stem reads tidier than a slanted band cutting across a joint: take it when the name stays (almost) as big
         var vb = findBand(Lfree, W, H, len1, thick1, s0, Object.assign({}, o, { vertOnly: true }));
@@ -1351,9 +1357,9 @@ footer { text-align: center; color: var(--muted); font-size: 13px; padding-top: 
       // round letters: curve the name along the bowl when that fits it noticeably bigger than any straight stroke
       var boxy = !!fontL.__boxy && o.curve !== 'on';   // square-cornered fonts (Russo One): their strokes are straight, so is the name
       if (np.length && o.curve !== 'off' && !boxy) {
-        var arc = (o.curve === 'on' || 'CGOQUceo'.indexOf(letter) >= 0) ? findArc(Lfree, H, len1, thick1, s0, o) : null, sStr = band ? Math.min(band.sfit, s0) : 0;
+        var arc = (o.curve === 'on' || ROUNDY.indexOf(letter) >= 0) ? findArc(Lfree, H, len1, thick1, s0, o) : null, sStr = band ? Math.min(band.sfit, s0) : 0;
         var sArc = arc ? Math.min(arc.sfit, s0) : 0;
-        var round = 'CGOQUceo'.indexOf(letter) >= 0;   // letters whose main stroke is a bowl
+        var round = ROUNDY.indexOf(letter) >= 0;   // letters whose main stroke is a bowl
         if (arc && (o.curve === 'on' || (round && sArc >= sStr * 0.75))) { arcUsed = arc; band = null; }
       }
       // S-curves (S, s, ธ): the name follows the stroke's own centre line
