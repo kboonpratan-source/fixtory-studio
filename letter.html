@@ -1083,6 +1083,104 @@ footer { text-align: center; color: var(--muted); font-size: 13px; padding-top: 
     });
     return best;
   }
+  // ---- curved letters (S, s, ธ …): follow the stroke's own centre line ----
+  // rasterise the letter, distance-transform it, trace the ridge (the stroke's middle) through the centre of the
+  // letter, then lay the name along that line glyph by glyph
+  var PATHY = 'Ss\u0E18';   // S-shaped letters: S s ธ
+  function findPath(Lfree, len1, thick1, s0, o) {
+    var lb = G.bounds(Lfree), res = 0.4, nx = Math.ceil((lb.maxX - lb.minX) / res) + 3, ny = Math.ceil((lb.maxY - lb.minY) / res) + 3;
+    var x0 = lb.minX - res, y0 = lb.minY - res, D = new Float32Array(nx * ny), INF = 1e9;
+    for (var j = 0; j < ny; j++) {
+      var segs = hsegs(Lfree, y0 + j * res);
+      for (var i = 0; i < nx; i++) { var x = x0 + i * res, inside = false; for (var q = 0; q < segs.length; q++) if (x >= segs[q][0] && x <= segs[q][1]) { inside = true; break; } D[j * nx + i] = inside ? INF : 0; }
+    }
+    var R2 = Math.SQRT2;
+    for (var j = 1; j < ny - 1; j++) for (var i = 1; i < nx - 1; i++) { var k = j * nx + i; if (!D[k]) continue; D[k] = Math.min(D[k], D[k - 1] + 1, D[k - nx] + 1, D[k - nx - 1] + R2, D[k - nx + 1] + R2); }
+    for (var j = ny - 2; j > 0; j--) for (var i = nx - 2; i > 0; i--) { var k = j * nx + i; if (!D[k]) continue; D[k] = Math.min(D[k], D[k + 1] + 1, D[k + nx] + 1, D[k + nx + 1] + R2, D[k + nx - 1] + R2); }
+    var dAt = function (i, j) { return i < 0 || j < 0 || i >= nx || j >= ny ? 0 : D[j * nx + i] * res; };
+    // start: thickest point near the middle of the letter
+    var cxp = (lb.maxX + lb.minX) / 2, cyp = (lb.maxY + lb.minY) / 2, rad = 0.22 * Math.max(lb.maxX - lb.minX, lb.maxY - lb.minY), si = -1, sj = -1, sv = 0;
+    for (var j = 0; j < ny; j++) for (var i = 0; i < nx; i++) { var x = x0 + i * res, y = y0 + j * res; if (Math.hypot(x - cxp, y - cyp) > rad) continue; var v = dAt(i, j); if (v > sv) { sv = v; si = i; sj = j; } }
+    if (si < 0) return null;
+    var DIRS = [[1, 0], [1, 1], [0, 1], [-1, 1], [-1, 0], [-1, -1], [0, -1], [1, -1]];
+    var bestD = null, bestS = -1;
+    DIRS.forEach(function (d) { var s = 0; for (var k = 1; k <= 8; k++) s += dAt(si + d[0] * k, sj + d[1] * k) + dAt(si - d[0] * k, sj - d[1] * k); if (s > bestS) { bestS = s; bestD = d; } });
+    var seen = {};
+    function trace(dx, dy) {
+      var out = [], i = si, j = sj, n = Math.hypot(dx, dy); dx /= n; dy /= n;
+      for (var step = 0; step < 4000; step++) {
+        var bi = -1, bj = -1, bv = -1;
+        DIRS.forEach(function (d) {
+          var l = Math.hypot(d[0], d[1]), c = (d[0] * dx + d[1] * dy) / l; if (c < 0.6) return;
+          var v = dAt(i + d[0], j + d[1]) + 0.15 * res * c; if (v > bv) { bv = v; bi = i + d[0]; bj = j + d[1]; }
+        });
+        if (bi < 0 || dAt(bi, bj) < 0.9 || seen[bj * nx + bi]) break;
+        seen[bj * nx + bi] = 1;
+        var ddx = bi - i, ddy = bj - j, l2 = Math.hypot(ddx, ddy);
+        dx = 0.75 * dx + 0.25 * ddx / l2; dy = 0.75 * dy + 0.25 * ddy / l2; n = Math.hypot(dx, dy); dx /= n; dy /= n;
+        i = bi; j = bj; out.push([i, j]);
+      }
+      return out;
+    }
+    seen[sj * nx + si] = 1;
+    var a = trace(bestD[0], bestD[1]), b = trace(-bestD[0], -bestD[1]);
+    var raw = b.reverse().concat([[si, sj]], a);
+    if (raw.length < 10) return null;
+    // smooth + resample every 0.5 mm
+    var P = raw.map(function (p) { return [x0 + p[0] * res, y0 + p[1] * res]; }), W = 6, sm = [];
+    for (var k = 0; k < P.length; k++) { var sx = 0, sy = 0, c = 0; for (var m = Math.max(0, k - W); m <= Math.min(P.length - 1, k + W); m++) { sx += P[m][0]; sy += P[m][1]; c++; } sm.push([sx / c, sy / c]); }
+    var pts = [sm[0]], cum = [0];
+    for (var k = 1; k < sm.length; k++) { var last = pts[pts.length - 1], dd = Math.hypot(sm[k][0] - last[0], sm[k][1] - last[1]); if (dd >= 0.5) { pts.push(sm[k]); cum.push(cum[cum.length - 1] + dd); } }
+    var hw = pts.map(function (p) { return dAt(Math.round((p[0] - x0) / res), Math.round((p[1] - y0) / res)); });
+    var total = cum[cum.length - 1], mid = total / 2;
+    var ang = function (k) { var a = pts[Math.max(0, k - 2)], b = pts[Math.min(pts.length - 1, k + 2)]; return Math.atan2(b[1] - a[1], b[0] - a[0]); };
+    // biggest name size whose window (length, half-width, bend) fits; window as central as possible
+    for (var s = s0; s >= s0 * 0.5; s -= 0.25) {
+      var need = len1 * s + 2 * (o.margin || 3), half = thick1 * s / 2 + Math.max(1.2, thick1 * s * 0.12), best = null;
+      for (var t0 = 0; t0 + need <= total; t0 += 0.5) {
+        var k0 = 0; while (k0 < cum.length - 1 && cum[k0] < t0) k0++;
+        var k1 = k0; while (k1 < cum.length - 1 && cum[k1] < t0 + need) k1++;
+        var okk = true, turn = 0;
+        for (var k = k0; k <= k1; k++) { if (hw[k] < half) { okk = false; break; } if (k > k0) { var da = ang(k) - ang(k - 1); while (da > Math.PI) da -= 2 * Math.PI; while (da < -Math.PI) da += 2 * Math.PI; turn = Math.max(turn, Math.abs(da) / Math.max(0.01, cum[k] - cum[k - 1])); } }
+        if (!okk || turn > 1 / Math.max(6, thick1 * s * 1.1)) continue;   // bend radius must stay above ~ the text height
+        var dist = Math.abs(t0 + need / 2 - mid);
+        if (!best || dist < best.dist) best = { dist: dist, t0: t0 };
+      }
+      if (best) {
+        var wmin = Infinity; for (var k = 0; k < pts.length; k++) if (cum[k] >= best.t0 && cum[k] <= best.t0 + need) wmin = Math.min(wmin, hw[k]);
+        return { pts: pts, cum: cum, tc: best.t0 + need / 2, sfit: s, w: 2 * wmin };
+      }
+    }
+    return null;
+  }
+  function pathAt(path, t) {
+    var c = path.cum, p = path.pts, k = 1; t = Math.max(0, Math.min(c[c.length - 1], t));
+    while (k < c.length - 1 && c[k] < t) k++;
+    var f = (t - c[k - 1]) / Math.max(1e-6, c[k] - c[k - 1]), a = p[k - 1], b = p[k];
+    var a2 = p[Math.max(0, k - 3)], b2 = p[Math.min(p.length - 1, k + 2)], tx = b2[0] - a2[0], ty = b2[1] - a2[1], n = Math.hypot(tx, ty) || 1;
+    return { x: a[0] + (b[0] - a[0]) * f, y: a[1] + (b[1] - a[1]) * f, tx: tx / n, ty: ty / n };
+  }
+  // glyph by glyph along the centre line; reads left→right (flip the line if it runs right→left)
+  function placePathName(font, name, s, path, thai) {
+    var em = 100, k = s / em, items = G.layout(font, name, em, 0), x = 0;
+    items.forEach(function (it) { x = Math.max(x, it.x0 + it.adv); });
+    var all = G.textPaths(font, name, em, 0), total = x, yMid;
+    if (thai) { var ref = G.bounds(G.textPaths(font, 'นอ', em, 0)); yMid = (ref.minY + ref.maxY) / 2; }
+    else yMid = centroid(all)[1];
+    var a = pathAt(path, path.tc - 5), b = pathAt(path, path.tc + 5), dir = (b.x - a.x) >= -0.15 * Math.abs(b.y - a.y) ? 1 : -1;
+    var res = [];
+    items.forEach(function (it) {
+      var gp = G.union(it.paths); if (!gp.length) return;
+      var gc = (it.x0 + it.adv / 2 - total / 2) * k, P = pathAt(path, path.tc + dir * gc);
+      var tx = P.tx * dir, ty = P.ty * dir, ux = -ty, uy = tx;
+      res = res.concat(gp.map(function (p) { return p.map(function (q) {
+        var lx = (q.X / S - it.adv / 2) * k, ly = (q.Y / S - yMid) * k;
+        return { X: Math.round((P.x + lx * tx + ly * ux) * S), Y: Math.round((P.y + lx * ty + ly * uy) * S) };
+      }); }));
+    });
+    return G.union(res);
+  }
+
   // lay the name along the arc, tops facing out on the upper half, in on the lower half (always reads upright)
   function placeArcName(font, name, s, arc, flip) {
     var em = 100, k = s / em, items = G.layout(font, name, em, 0), x = 0;
@@ -1236,7 +1334,7 @@ footer { text-align: center; color: var(--muted); font-size: 13px; padding-top: 
     var np = G.textPaths(fontN, name, 100, 0), nameInfo = null, nameWarn = null;
     var nb = np.length ? G.bounds(np) : null, len1 = nb ? (nb.maxX - nb.minX) / 100 : 0, thick1 = nb ? (nb.maxY - nb.minY) / 100 : 0;
 
-    var holeAt = null, base, s = 0, center = null, v = null, barW = 0, detected = false, band = null, hangTilt = null, arcUsed = null;
+    var holeAt = null, base, s = 0, center = null, v = null, barW = 0, detected = false, band = null, hangTilt = null, arcUsed = null, pathUsed = null;
     if (o.side === 'auto') {
       base = L.slice();
       if (o.corner > 0) { var r0 = G.offset(G.offset(base, -o.corner), o.corner); if (r0.length) base = r0; }
@@ -1257,7 +1355,13 @@ footer { text-align: center; color: var(--muted); font-size: 13px; padding-top: 
         var round = 'CGOQUceo'.indexOf(letter) >= 0;   // letters whose main stroke is a bowl
         if (arc && (o.curve === 'on' || (round && sArc >= sStr * 0.9))) { arcUsed = arc; band = null; }
       }
-      if (arcUsed) { s = Math.min(arcUsed.sfit, s0); barW = arcUsed.w; }
+      // S-curves (S, s, ธ): the name follows the stroke's own centre line
+      if (np.length && o.curve !== 'off' && PATHY.indexOf(letter) >= 0 && !arcUsed) {
+        var pth = findPath(Lfree, len1, thick1, s0, o);
+        if (pth && (!band || Math.min(pth.sfit, s0) >= Math.min(band.sfit, s0) * 0.8)) { pathUsed = pth; band = null; }
+      }
+      if (pathUsed) { s = Math.min(pathUsed.sfit, s0); barW = pathUsed.w; }
+      else if (arcUsed) { s = Math.min(arcUsed.sfit, s0); barW = arcUsed.w; }
       else if (band) {
         s = Math.min(band.sfit, s0); center = band.center;
         v = band.u.slice();
@@ -1288,8 +1392,8 @@ footer { text-align: center; color: var(--muted); font-size: 13px; padding-top: 
       } else if (np.length) nameWarn = 'ก้านสั้นเกินกว่าจะใส่ชื่อ ลองเพิ่มขนาดตัวอักษรหรือแถบยื่น';
     }
 
-    if ((center || arcUsed) && s > 0) {
-      np = arcUsed ? G.translate(placeArcName(fontN, name, s, arcUsed, o.dir === 'up'), o.nameDx, o.nameDy)
+    if ((center || arcUsed || pathUsed) && s > 0) {
+      np = pathUsed ? G.translate(placePathName(fontN, name, s, pathUsed, /[\u0E01-\u0E4E]/.test(name)), o.nameDx, o.nameDy) : arcUsed ? G.translate(placeArcName(fontN, name, s, arcUsed, o.dir === 'up'), o.nameDx, o.nameDy)
                    : placeName(np, s, [center[0] + o.nameDx, center[1] + o.nameDy], v, { thai: /[\u0E01-\u0E4E]/.test(name), font: fontN, w: barW });
       // thicken the name's strokes a little (thin hairlines print poorly and read weak at 8 mm)
       if (o.nameBold > 0) { var nb = G.offset(G.union(np), o.nameBold); if (nb.length) np = nb; }
@@ -1340,7 +1444,7 @@ footer { text-align: center; color: var(--muted); font-size: 13px; padding-top: 
     shift(baseTris); shift(nameTris);
     return { base: baseTris, name: nameTris, faceDown: faceDown, width: bb.maxX - bb.minX, height: bb.maxY - bb.minY, top: faceDown ? o.baseH : o.baseH + (nameTris.length ? o.nameH : 0),
       pieces: G.countPieces(base), mark: mark ? { kind: mark.kind, size: mark.size } : null,
-      barW: barW, detected: detected, autoBar: o.barW <= 0, auto: o.side === 'auto', curved: !!arcUsed, hangTilt: hangTilt, bandAng: band ? band.ang : null, nameInfo: nameInfo, nameWarn: nameWarn };
+      barW: barW, detected: detected, autoBar: o.barW <= 0, auto: o.side === 'auto', curved: !!(arcUsed || pathUsed), hangTilt: hangTilt, bandAng: band ? band.ang : null, nameInfo: nameInfo, nameWarn: nameWarn };
   }
 
 
@@ -1430,7 +1534,7 @@ footer { text-align: center; color: var(--muted); font-size: 13px; padding-top: 
   // same settings as the shop generator's defaults, so the shop prints exactly this
   function opts() {
     return { side: st.side === 'r' ? 'right' : st.side === 'a' ? 'auto' : 'left', dir: 'down', barW: 0, barExt: 0, nameDy: 0, nameDx: 0,
-      letterSize: 90, nameSize: 8, baseH: 5, nameH: 0.5, nameBold: 0, margin: 4, holeD: 5.5, holeTop: 6, corner: 0.6,
+      letterSize: 90, nameSize: 10, baseH: 5, nameH: 0.5, nameBold: 0, margin: 4, holeD: 5.5, holeTop: 6, corner: 0.6,
       equalHeight: true, curve: 'auto', style: 'inlay', holePos: 'auto', mark: 'icon', markSize: 3.2, iconSize: 7, iconMin: 5.5, engrave: 0.4, markText: 'fixtory.studio', noBase: false };
   }
 
