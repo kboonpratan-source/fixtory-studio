@@ -1086,7 +1086,7 @@ footer { text-align: center; color: var(--muted); font-size: 13px; padding-top: 
   // ---- curved letters (S, s, ธ …): follow the stroke's own centre line ----
   // rasterise the letter, distance-transform it, trace the ridge (the stroke's middle) through the centre of the
   // letter, then lay the name along that line glyph by glyph
-  var PATHY = 'Ss\u0E18';   // S-shaped letters: S s ธ
+  var PATHY = 'Ss\u0E18\u0E23';   // S-shaped letters: S s ธ ร
   function findPath(Lfree, len1, thick1, s0, o) {
     var lb = G.bounds(Lfree), res = 0.4, nx = Math.ceil((lb.maxX - lb.minX) / res) + 3, ny = Math.ceil((lb.maxY - lb.minY) / res) + 3;
     var x0 = lb.minX - res, y0 = lb.minY - res, D = new Float32Array(nx * ny), INF = 1e9;
@@ -1349,14 +1349,15 @@ footer { text-align: center; color: var(--muted); font-size: 13px; padding-top: 
         if (vb && vb !== band && Math.min(vb.sfit, s0) >= 0.92 * Math.min(band.sfit, s0)) band = vb;
       }
       // round letters: curve the name along the bowl when that fits it noticeably bigger than any straight stroke
-      if (np.length && o.curve !== 'off') {
+      var boxy = !!fontL.__boxy && o.curve !== 'on';   // square-cornered fonts (Russo One): their strokes are straight, so is the name
+      if (np.length && o.curve !== 'off' && !boxy) {
         var arc = (o.curve === 'on' || 'CGOQUceo'.indexOf(letter) >= 0) ? findArc(Lfree, H, len1, thick1, s0, o) : null, sStr = band ? Math.min(band.sfit, s0) : 0;
         var sArc = arc ? Math.min(arc.sfit, s0) : 0;
         var round = 'CGOQUceo'.indexOf(letter) >= 0;   // letters whose main stroke is a bowl
-        if (arc && (o.curve === 'on' || (round && sArc >= sStr * 0.9))) { arcUsed = arc; band = null; }
+        if (arc && (o.curve === 'on' || (round && sArc >= sStr * 0.75))) { arcUsed = arc; band = null; }
       }
       // S-curves (S, s, ธ): the name follows the stroke's own centre line
-      if (np.length && o.curve !== 'off' && PATHY.indexOf(letter) >= 0 && !arcUsed) {
+      if (np.length && o.curve !== 'off' && !boxy && PATHY.indexOf(letter) >= 0 && !arcUsed) {
         var pth = findPath(Lfree, len1, thick1, s0, o);
         if (pth && (!band || Math.min(pth.sfit, s0) >= Math.min(band.sfit, s0) * 0.8)) { pathUsed = pth; band = null; }
       }
@@ -1605,7 +1606,7 @@ footer { text-align: center; color: var(--muted); font-size: 13px; padding-top: 
       if (fonts.tbig) { fonts.tbig.__round = 1.6; fonts.tbig.__grow = 1.0; }
       ['p', 's', 'pu', 'su'].forEach(function (k) { if (fonts[k]) fonts[k].__fb = { font: fonts.ma, scale: 1.02 }; });
       ['P', 'S'].forEach(function (k) { if (fonts[k]) fonts[k].__fb = { font: fonts.mab, scale: 1.02 }; });
-      if (fonts.R) { fonts.R.__fb = { font: fonts.kb, scale: 1.0 }; fonts.R.__maxAsp = 1.1; }   // 'เท่' style: Thai names in Kanit Bold
+      if (fonts.R) { fonts.R.__fb = { font: fonts.kb, scale: 1.0 }; fonts.R.__maxAsp = 1.1; fonts.R.__boxy = true; }   // 'เท่' style: Thai names in Kanit Bold
       initThree(); applyColors(); syncButtons();
       $('loading').hidden = true; $('loading').style.display = 'none';
       rebuild();
