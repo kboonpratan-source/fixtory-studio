@@ -173,10 +173,13 @@ footer { text-align: center; color: var(--muted); font-size: 13px; padding-top: 
 .lines { display: flex; flex-direction: column; gap: 4px; font-size: 14px; }
 .lines div { display: flex; justify-content: space-between; gap: 12px; }
 .lines .tot { font-weight: 600; font-size: 16px; border-top: 1px solid var(--line); padding-top: 6px; }
+.stage3d { width: 100%; aspect-ratio: 1 / 1; max-height: 560px; border-radius: 16px; overflow: hidden; touch-action: none; cursor: grab; }
+.stage3d canvas { display: block; width: 100% !important; height: 100% !important; }
+.simnote { font-size: 12px; color: var(--muted); }
 .order-btn { width: 100%; font-size: 16px; padding-block: 12px; }
 .order-btn[aria-disabled="true"] { opacity: .45; pointer-events: none; }
 .kbwrap .kb button { height: 44px; font-size: 16px; }
-@media (max-width: 860px) { .viz { position: sticky; top: 0; z-index: 5; } .pvbox { min-height: 0; padding: 10px 8px 8px; border-radius: 0 0 18px 18px; } .pvbox svg { max-height: 34vh; width: auto; } .pvtools .btn { min-height: 32px; padding: 4px 10px; font-size: 13px; } }
+@media (max-width: 860px) { .stage3d { aspect-ratio: 4 / 3; max-height: 38vh; } .viz { position: sticky; top: 0; z-index: 5; } .pvbox { min-height: 0; padding: 10px 8px 8px; border-radius: 0 0 18px 18px; } .pvbox svg { max-height: 34vh; width: auto; } .pvtools .btn { min-height: 32px; padding: 4px 10px; font-size: 13px; } }
 </style>
 <div class="wrap">
   <header>
@@ -187,7 +190,9 @@ footer { text-align: center; color: var(--muted); font-size: 13px; padding-top: 
   <div class="app">
     <section class="viz" aria-label="ภาพตัวอย่าง">
       <div class="pvbox">
+        <div class="stage3d" id="stage3d" hidden></div>
         <div id="pv"></div>
+        <div class="simnote">ภาพจำลอง สีจริงอาจต่างเล็กน้อย</div>
         <div class="pvtools">
           <div class="seg" role="group" id="orient"><button type="button" data-v="vertical">แนวตั้ง</button><button type="button" data-v="horizontal">แนวนอน</button></div>
           <button type="button" class="btn ghost" id="dice">🎲 สุ่มสี</button>
@@ -233,6 +238,8 @@ footer { text-align: center; color: var(--muted); font-size: 13px; padding-top: 
   </div>
   <footer>ออกแบบและผลิตโดย Fixtory Studio · fixtory.studio · 081-336-8232</footer>
 </div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
 <script>
 (function () {
   'use strict';
@@ -339,10 +346,109 @@ function kcSVG(it,orient){
   function chip(ch, i, px) { var c = kcResolve(kc.col, kc.colors[i]); return el('span', { html: '<svg viewBox="0 0 38 38" width="' + px + '" height="' + px + '" aria-hidden="true">' + kcKey(0, 0, 38, c.body, c.frame, ch) + '</svg>' }).firstChild; }
   function previewSvg(it, maxW, maxH) { var r = kcSVG(it, it.orient), k = Math.min(maxW / r.w, maxH / r.h); return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + r.w + ' ' + r.h + '" width="' + Math.round(r.w * k) + '" height="' + Math.round(r.h * k) + '" role="img" aria-label="ตัวอย่าง">' + r.svg + '</svg>'; }
 
+
+  // ---------- 3D preview (shapes built in code — no print files are ever loaded) ----------
+  var V3 = { ok: false };
+  (function () {
+    if (!window.THREE || !THREE.OrbitControls) return;
+    var st = $('stage3d'), renderer;
+    try {
+      renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
+      if (!renderer.getContext()) return;
+    } catch (e) { return; }
+    renderer.setPixelRatio(Math.min(2, window.devicePixelRatio || 1));
+    renderer.outputEncoding = THREE.sRGBEncoding;
+    st.hidden = false; st.appendChild(renderer.domElement);
+    var scene = new THREE.Scene(), BG = '#EFE6DA'; scene.background = new THREE.Color(BG);
+    var cam = new THREE.PerspectiveCamera(30, 1, 1, 3000);
+    var ctl = new THREE.OrbitControls(cam, renderer.domElement); ctl.enableDamping = true; ctl.enablePan = false; ctl.autoRotate = true; ctl.autoRotateSpeed = 1.6;
+    renderer.domElement.addEventListener('pointerdown', function () { ctl.autoRotate = false; });
+    scene.add(new THREE.HemisphereLight(0xffffff, 0x8a7a6a, 0.8));
+    var d1 = new THREE.DirectionalLight(0xffffff, 0.75); d1.position.set(-60, 90, 140); scene.add(d1);
+    var d2 = new THREE.DirectionalLight(0xffffff, 0.3); d2.position.set(80, -40, -60); scene.add(d2);
+    var root = new THREE.Group(); scene.add(root);
+    var col = function (hex) { return new THREE.Color(hex).convertSRGBToLinear(); };
+    var matte = function (hex) { return new THREE.MeshStandardMaterial({ color: col(hex), roughness: 0.9, metalness: 0 }); };
+    function rrShape(w, h, r) { var s = new THREE.Shape(), x = -w / 2, y = -h / 2; s.moveTo(x + r, y); s.lineTo(x + w - r, y); s.quadraticCurveTo(x + w, y, x + w, y + r); s.lineTo(x + w, y + h - r); s.quadraticCurveTo(x + w, y + h, x + w - r, y + h); s.lineTo(x + r, y + h); s.quadraticCurveTo(x, y + h, x, y + h - r); s.lineTo(x, y + r); s.quadraticCurveTo(x, y, x + r, y); return s; }
+    function slab(w, h, r, depth, bev) { var g = new THREE.ExtrudeGeometry(rrShape(w, h, r), { depth: depth, bevelEnabled: !!bev, bevelThickness: bev || 0, bevelSize: bev || 0, bevelSegments: 3, curveSegments: 10 }); return g; }
+    var texCache = {};
+    function faceTex(ch, body, frame) {   // the printed key top: body colour, frame ring, letter / heart / emoji
+      var key = ch + '|' + body + '|' + frame; if (texCache[key]) return texCache[key];
+      var c = document.createElement('canvas'); c.width = c.height = 256; var g = c.getContext('2d');
+      var B = KC_HEX[body] || '#ccc', F = KC_HEX[frame] || '#fff';
+      g.fillStyle = B; g.fillRect(0, 0, 256, 256);
+      g.strokeStyle = F; g.lineWidth = 16; g.beginPath(); if (g.roundRect) g.roundRect(22, 22, 212, 212, 26); else g.rect(22, 22, 212, 212); g.stroke();
+      var tex = new THREE.CanvasTexture(c); tex.encoding = THREE.sRGBEncoding; tex.anisotropy = 4;
+      var face = kcFaceInner(ch);
+      if (face) { var im = new Image(); im.onload = function () { g.drawImage(im, 40, 40, 176, 176); tex.needsUpdate = true; need = true; }; im.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="176" height="176">' + face + '</svg>'); }
+      else { g.fillStyle = F; g.textAlign = 'center'; g.textBaseline = 'middle'; g.font = '700 ' + (ch === '❤' ? 150 : 140) + 'px Prompt, "Segoe UI", sans-serif'; g.fillText(ch === '❤' ? '♥' : ch, 128, 140); }
+      return (texCache[key] = tex);
+    }
+    var need = true, visible = true;
+    function clear(o) { while (o.children.length) { var c = o.children.pop(); clear(c); if (c.geometry) c.geometry.dispose(); } }
+    V3.build = function () {
+      clear(root);
+      var chars = kc.chars.length ? kc.chars : ['A', 'B', 'C'], cols = kc.chars.length ? kc.colors : KC_COLS[kc.col].vary.slice(0, 3);
+      var n = chars.length, K = 18, gap = 1.6, pad = 4, L = n * K + (n - 1) * gap + 2 * pad, Wd = K + 2 * pad, vert = kc.orient === 'vertical';
+      // case (rail): rounded slab + darker floor
+      var caseHex = KC_HEX[kc.caseColor];
+      var cw = vert ? Wd : L, chh = vert ? L : Wd;
+      var cs = new THREE.Mesh(slab(cw, chh, 6, 7, 0.8), matte(caseHex)); root.add(cs);
+      var fl = new THREE.Mesh(slab(cw - 3, chh - 3, 4.5, 0.4), matte(kcShade(caseHex, -0.22))); fl.position.z = 7.3; root.add(fl);
+      // keys
+      chars.forEach(function (ch, i) {
+        var c = kcResolve(kc.col, cols[i] || KC_COLS[kc.col].vary[0]), B = KC_HEX[c.body];
+        var off = -L / 2 + pad + K / 2 + i * (K + gap), x = vert ? 0 : off, y = vert ? -off : 0;
+        var g = new THREE.Group(); g.position.set(x, y, 7.6);
+        var skirt = new THREE.Mesh(slab(K, K, 3, 4, 0.6), matte(kcShade(B, -0.18))); g.add(skirt);
+        var top = new THREE.Mesh(slab(K * 0.8, K * 0.8, 2.6, 3, 0.8), matte(B)); top.position.set(0, 0.6, 4); g.add(top);
+        var face = new THREE.Mesh(new THREE.PlaneGeometry(K * 0.8, K * 0.8), new THREE.MeshStandardMaterial({ map: faceTex(ch, c.body, c.frame), roughness: 0.9, metalness: 0 }));
+        face.position.set(0, 0.6, 7.86); g.add(face);
+        root.add(g);
+      });
+      // strap: ring + loop + knot, at the top (vertical) or left (horizontal)
+      var S = KC_STRAPS[kc.strap], end = L / 2 + 2;
+      var knot = new THREE.Mesh(new THREE.BoxGeometry(7, 9, 6), matte(KC_HEX[S.knot]));
+      var loopPts = [], ringR = 6;
+      for (var t = 0; t <= 40; t++) { var a = t / 40 * Math.PI * 2; loopPts.push(new THREE.Vector3(Math.sin(a) * 7, 13 + 12 - Math.cos(a) * 12, 3.5)); }
+      var loop = new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(loopPts, true), 60, 1.6, 10, true), matte(KC_HEX[S.loop]));
+      var ring = new THREE.Mesh(new THREE.TorusGeometry(ringR, 1.1, 12, 40), new THREE.MeshStandardMaterial({ color: col(KC_HEX[S.ring]), roughness: 0.45, metalness: 0.3 }));
+      ring.position.set(0, 13 + 24 + ringR - 1, 3.5);
+      knot.position.set(0, 4.5 + 1, 3.5);
+      var sg = new THREE.Group(); sg.add(knot, loop, ring);
+      if (vert) sg.position.set(0, end - 3, 0); else { sg.rotation.z = Math.PI / 2; sg.position.set(-end + 3, 0, 0); }
+      root.add(sg);
+      // centre and frame it
+      var box = new THREE.Box3().setFromObject(root), ctr = box.getCenter(new THREE.Vector3()), size = box.getSize(new THREE.Vector3());
+      root.position.sub(ctr); root.position.z += 0;
+      var R = Math.max(size.x, size.y) * 0.5 + 6;
+      V3.dist = R / Math.tan(cam.fov * Math.PI / 360) * 1.05;
+      if (!V3.framed) { cam.position.set(0, -V3.dist * 0.25, V3.dist); ctl.target.set(0, 0, 0); V3.framed = true; }
+      else { var dir = cam.position.clone().normalize(); cam.position.copy(dir.multiplyScalar(V3.dist)); }
+      ctl.minDistance = V3.dist * 0.5; ctl.maxDistance = V3.dist * 2;
+      need = true;
+    };
+    function resize() { var w = st.clientWidth, h = st.clientHeight; if (!w || !h) return; renderer.setSize(w, h, false); cam.aspect = w / h; cam.updateProjectionMatrix(); need = true; }
+    window.addEventListener('resize', resize);
+    document.addEventListener('visibilitychange', function () { visible = !document.hidden; });
+    (function loop() { requestAnimationFrame(loop); if (!visible) return; resize(); if (ctl.update() || ctl.autoRotate || need) { renderer.render(scene, cam); need = false; } })();
+    // picture from the current view (save) or from the standard front view (cart)
+    V3.shot = function (front, size) {
+      var keep = cam.position.clone(), kw = renderer.domElement.width, kh = renderer.domElement.height;
+      renderer.setSize(size, size, false); cam.aspect = 1; cam.updateProjectionMatrix();
+      if (front) { cam.position.set(0, -V3.dist * 0.18, V3.dist * 0.95); cam.lookAt(0, 0, 0); }
+      renderer.render(scene, cam); var url = renderer.domElement.toDataURL('image/jpeg', 0.88);
+      cam.position.copy(keep); cam.lookAt(ctl.target); renderer.setSize(kw / renderer.getPixelRatio(), kh / renderer.getPixelRatio(), false); resize(); need = true;
+      return url;
+    };
+    V3.ok = true;
+  })();
+
   function render() {
     kcFixColors();
     var n = kc.chars.length, cols = KC_COLS[kc.col];
     $('pv').innerHTML = previewSvg(kc, kc.orient === 'vertical' ? 220 : 560, kc.orient === 'vertical' ? 520 : 170);
+    if (V3.ok) { $('pv').hidden = true; V3.build(); }
     seg('orient', kc.orient, function (v) { kc.orient = v; render(); });
     seg('mode', kc.mode, function (v) { kc.mode = v; render(); });
     $('cnt').textContent = n + '/' + KC_MAX + ' ช่อง';
@@ -411,9 +517,10 @@ function kcSVG(it,orient){
     img.onerror = function () { cb(null); };
     img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
   }
-  $('save').onclick = function () { toPng(function (c) { if (!c) return; var a = document.createElement('a'); a.download = 'fixtory-clicker-' + (kc.chars.filter(function (x) { return /[A-Z]/.test(x); }).join('') || 'design') + '.png'; a.href = c.toDataURL('image/png'); document.body.appendChild(a); a.click(); a.remove(); }); };
+  $('save').onclick = function () { if (V3.ok) { var a3 = document.createElement('a'); a3.download = 'fixtory-clicker-' + (kc.chars.filter(function (x) { return /[A-Z]/.test(x); }).join('') || 'design') + '.jpg'; a3.href = V3.shot(false, 1000); document.body.appendChild(a3); a3.click(); a3.remove(); return; } toPng(function (c) { if (!c) return; var a = document.createElement('a'); a.download = 'fixtory-clicker-' + (kc.chars.filter(function (x) { return /[A-Z]/.test(x); }).join('') || 'design') + '.png'; a.href = c.toDataURL('image/png'); document.body.appendChild(a); a.click(); a.remove(); }); };
   $('orderBtn').addEventListener('click', function () {
     var c = code();
+    if (V3.ok) { try { var u3 = V3.shot(true, 360), K3 = 'fxKcImgs', l3 = JSON.parse(localStorage.getItem(K3) || '[]').filter(function (x) { return x !== c; }); l3.unshift(c); while (l3.length > 30) localStorage.removeItem('fxKcImg:' + l3.pop()); localStorage.setItem('fxKcImg:' + c, u3); localStorage.setItem(K3, JSON.stringify(l3)); } catch (e) {} return; }
     toPng(function (cv) { if (!cv) return; try {
       var small = document.createElement('canvas'), k = 360 / Math.max(cv.width, cv.height); small.width = Math.round(cv.width * k); small.height = Math.round(cv.height * k);
       small.getContext('2d').drawImage(cv, 0, 0, small.width, small.height);
