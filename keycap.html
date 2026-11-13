@@ -1,0 +1,430 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="ออกแบบพวงกุญแจคีย์แคป Alphabet Clicker พิมพ์ชื่อ เลือกสี เคส และสายคล้อง ดูตัวอย่างก่อนสั่ง">
+<meta property="og:title" content="Alphabet Clicker · ออกแบบพวงกุญแจคีย์แคป · Fixtory Studio">
+<meta property="og:image" content="https://fixtory-studio.pages.dev/kc/keycap-th.jpg">
+<link rel="icon" href="icons/icon-192.png">
+</head>
+<body>
+<title>Alphabet Clicker · ออกแบบพวงกุญแจคีย์แคป</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&family=Fredoka:wght@600;700&family=Prompt:wght@400;500;600&display=swap">
+<style>
+/* Layout: Fixtory storefront look (cream ground, terracotta accent) — live 3D keychain on top, choices as tap-buttons below, order summary card last; two columns on wide screens */
+:root {
+  --bg: #FAF8F4; --surface: #FFFFFF; --sunk: #F5E8DC; --ink: #2C2420; --muted: #6F6056; --line: #EDE2D6;
+  --accent: #C4714A; --accent-text: #A9572F; --accent-ink: #FFFFFF; --ok: #4E6B3A;
+  --stage: #EFE4D8; --grid1: #D8C7B6; --grid2: #E6D8CA;
+  --shadow: 0 1px 2px rgba(44,36,32,.06), 0 8px 24px -12px rgba(44,36,32,.22);
+  --f-display: "DM Serif Display", "Prompt", Georgia, serif;
+  --f-body: "DM Sans", "Prompt", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-name: "Fredoka", "Prompt", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #1B1613; --surface: #26201C; --sunk: #322822; --ink: #F5E8DC; --muted: #BFAE9F; --line: #3A302A;
+  --accent: #E08A60; --accent-text: #EFA07A; --accent-ink: #1B1613; --ok: #A7C48A;
+  --stage: #2A231F; --grid1: #4A3D35; --grid2: #3A302A;
+  --shadow: 0 1px 2px rgba(0,0,0,.3), 0 10px 28px -14px rgba(0,0,0,.6); color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #1B1613; --surface: #26201C; --sunk: #322822; --ink: #F5E8DC; --muted: #BFAE9F; --line: #3A302A;
+  --accent: #E08A60; --accent-text: #EFA07A; --accent-ink: #1B1613; --ok: #A7C48A;
+  --stage: #2A231F; --grid1: #4A3D35; --grid2: #3A302A;
+  --shadow: 0 1px 2px rgba(0,0,0,.3), 0 10px 28px -14px rgba(0,0,0,.6); color-scheme: dark }
+
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--f-body); font-size: 15px; line-height: 1.6; }
+button, input { font: inherit; color: inherit; }
+:focus-visible { outline: 2.5px solid var(--accent); outline-offset: 2px; }
+.wrap { max-width: 1120px; margin: 0 auto; padding-block: 20px 48px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: flex; flex-direction: column; gap: 18px; }
+
+header { display: flex; flex-direction: column; gap: 4px; }
+.brand { display: flex; align-items: center; gap: 8px; font-family: var(--f-display); letter-spacing: .1em; text-transform: uppercase; font-size: 15px; }
+.brand svg { width: 18px; height: 26px; display: block; }
+.brand em { font-style: normal; color: var(--accent); }
+h1 { margin: 6px 0 0; font-family: var(--f-display); font-weight: 400; font-size: clamp(26px, 4vw, 38px); line-height: 1.15; color: var(--accent-text); text-wrap: balance; }
+.lede { margin: 0; color: var(--muted); max-width: 60ch; }
+
+.app { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); grid-template-areas: "viz panel" "sum panel"; grid-template-rows: auto 1fr; gap: 20px; align-items: start; }
+.viz { grid-area: viz; display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.panel { grid-area: panel; }
+.summary { grid-area: sum; }
+@media (max-width: 860px) { .app { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto; grid-template-areas: "viz" "panel" "sum"; } }
+.stage { position: relative; background: var(--stage); border-radius: 20px; overflow: hidden; aspect-ratio: 4 / 3; max-width: 100%; box-shadow: var(--shadow); }
+.stage canvas { display: block; width: 100%; height: 100%; touch-action: none; }
+.stage .tip { position: absolute; left: 14px; bottom: 10px; font-size: 12px; color: var(--muted); pointer-events: none; }
+.stage .loading { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; color: var(--muted); font-size: 14px; text-align: center; padding: 16px; }
+.facts { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 14px; color: var(--muted); }
+.facts b { color: var(--ink); font-weight: 600; font-variant-numeric: tabular-nums; }
+
+.panel { background: var(--surface); border-radius: 20px; padding: 20px; display: flex; flex-direction: column; gap: 22px; box-shadow: var(--shadow); min-width: 0; }
+.step { display: flex; flex-direction: column; gap: 10px; }
+.step-t { display: flex; align-items: baseline; gap: 10px; font-weight: 600; font-size: 16px; }
+.step-t i { font-style: normal; display: inline-grid; place-items: center; width: 24px; height: 24px; border-radius: 50%; background: var(--sunk); color: var(--accent-text); font-size: 13px; font-weight: 600; flex: none; }
+.hint { font-size: 13px; color: var(--muted); }
+.warn { font-size: 13px; color: var(--accent-text); }
+
+#name { font-family: var(--f-name); font-weight: 700; font-size: 28px; padding: 8px 16px; border: 0; box-shadow: inset 0 0 0 1.5px var(--line); border-radius: 14px; background: var(--bg); width: 100%; }
+#name:focus { outline: none; box-shadow: inset 0 0 0 2px var(--accent); }
+.count { font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
+
+.opts { display: flex; flex-wrap: wrap; gap: 8px; }
+.opt { border: 0; background: var(--bg); box-shadow: inset 0 0 0 1.5px var(--line); border-radius: 14px; padding: 9px 14px; cursor: pointer; display: flex; flex-direction: column; align-items: flex-start; gap: 0; text-align: left; min-height: 44px; }
+.opt b { font-weight: 600; font-size: 14.5px; }
+.opt span { font-size: 12.5px; color: var(--muted); }
+.opt[aria-pressed="true"] { background: var(--sunk); box-shadow: inset 0 0 0 2px var(--accent); }
+.opt[aria-pressed="true"] b { color: var(--accent-text); }
+
+.swatches { display: flex; flex-wrap: wrap; gap: 6px; }
+.sw { border: 0; background: var(--bg); box-shadow: inset 0 0 0 1.5px var(--line); border-radius: 999px; padding: 5px 12px 5px 6px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; font-size: 13px; min-height: 34px; }
+.sw .d { width: 18px; height: 18px; border-radius: 50%; box-shadow: inset 0 0 0 1px rgba(44,36,32,.15); flex: none; }
+.sw .d + .d { margin-left: -10px; }
+.sw[aria-pressed="true"] { box-shadow: inset 0 0 0 2px var(--accent); background: var(--sunk); font-weight: 600; }
+.custom-steps { display: flex; flex-direction: column; gap: 22px; }
+.fine-toggle { align-self: flex-start; }
+.fine { display: flex; flex-direction: column; gap: 10px; }
+.fine-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+.fcol { background: var(--bg); box-shadow: inset 0 0 0 1.5px var(--line); border-radius: 14px; padding: 8px; display: flex; flex-direction: column; align-items: center; gap: 6px; min-width: 92px; }
+.fcol .ch { font-family: var(--f-name); font-weight: 700; font-size: 24px; line-height: 1; }
+.frow { display: flex; align-items: center; gap: 4px; font-size: 12px; color: var(--muted); }
+.frow .lab { width: 26px; }
+.frow output { width: 22px; text-align: center; font-weight: 600; color: var(--ink); font-variant-numeric: tabular-nums; font-size: 14px; }
+.pm { border: 0; width: 30px; height: 30px; border-radius: 50%; background: var(--surface); box-shadow: inset 0 0 0 1.5px var(--line); cursor: pointer; font-size: 16px; line-height: 1; display: grid; place-items: center; }
+.pm:disabled { opacity: .35; cursor: default; }
+.subhead { font-size: 13px; font-weight: 600; color: var(--muted); margin-top: 4px; }
+
+.summary { background: var(--surface); border-radius: 20px; padding: 18px 20px; box-shadow: var(--shadow); display: flex; flex-direction: column; gap: 12px; }
+.price-row { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.price { font-family: var(--f-display); font-size: 34px; line-height: 1; color: var(--accent); font-variant-numeric: tabular-nums; }
+.tiers { font-size: 13px; color: var(--muted); }
+.tiers b { color: var(--ink); font-weight: 600; }
+.codebox { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.code { flex: 1 1 220px; min-width: 0; font-family: ui-monospace, Menlo, monospace; font-size: 15px; letter-spacing: .02em; background: var(--bg); box-shadow: inset 0 0 0 1.5px var(--line); border-radius: 12px; padding: 10px 12px; word-break: break-all; user-select: all; }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; border: 0; border-radius: 999px; padding: 10px 18px; font-weight: 600; font-size: 15px; cursor: pointer; text-decoration: none; min-height: 44px; white-space: nowrap; }
+.btn.primary { background: var(--accent); color: var(--accent-ink); }
+.btn.line { background: var(--surface); color: var(--ink); box-shadow: inset 0 0 0 1.5px var(--line); }
+.btn:disabled { opacity: .5; cursor: default; }
+#copyMsg { font-size: 13px; color: var(--ok); min-height: 1.4em; }
+.links { display: flex; flex-wrap: wrap; gap: 8px; }
+ol.how { margin: 0; padding-left: 20px; font-size: 13.5px; color: var(--muted); display: flex; flex-direction: column; gap: 2px; }
+footer { text-align: center; color: var(--muted); font-size: 13px; padding-top: 8px; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<style>
+/* Alphabet Clicker designer: big live preview, presets / dice, type on keycaps, colours per key, strap, live price */
+.kc-pv{margin:0;background:var(--sunk);border-radius:14px;padding:14px 10px 10px;display:flex;flex-direction:column;align-items:center;gap:10px;min-height:260px;justify-content:center}
+.kc-pv svg{display:block;max-width:100%;height:auto}
+.kc-pv.h{grid-column:1/-1;min-height:0}
+.kc-pv .seg button{padding:4px 9px;font-size:12px;white-space:nowrap}
+.kc-pv .cap{font-size:11.5px;color:var(--muted);text-align:center;margin:0}
+.seg{display:inline-flex;background:var(--surface);border-radius:999px;padding:3px;box-shadow:inset 0 0 0 1.5px var(--line)}
+.seg button{border:0;background:none;border-radius:999px;padding:5px 12px;font:inherit;font-size:13px;cursor:pointer;color:var(--muted)}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.colopts{display:grid;gap:6px}
+.colopt{display:flex;align-items:center;gap:10px;border:0;background:var(--bg);box-shadow:inset 0 0 0 1.5px var(--line);border-radius:12px;padding:7px 10px;font:inherit;color:inherit;cursor:pointer;text-align:left}
+.colopt[aria-pressed="true"]{box-shadow:inset 0 0 0 2.5px var(--accent);background:var(--sel)}
+.colopt svg{flex:none}
+.colopt span{display:grid;line-height:1.3;font-size:13.5px}
+.colopt small{color:var(--muted);font-size:12px}
+.dots{display:flex;flex-wrap:wrap;gap:8px}
+.dot{width:34px;height:34px;border-radius:50%;border:0;cursor:pointer;box-shadow:inset 0 0 0 1px rgba(44,36,32,.18);position:relative;padding:0}
+.dot[aria-pressed="true"]{box-shadow:0 0 0 2.5px var(--surface),0 0 0 4.5px var(--accent)}
+.word{display:flex;flex-wrap:wrap;gap:5px;min-height:46px;align-items:center;background:var(--bg);border-radius:12px;padding:6px 8px;box-shadow:inset 0 0 0 1.5px var(--line)}
+.word .ph{color:var(--muted);font-size:13px;padding-left:4px}
+.word svg{display:block}
+.kb{display:grid;grid-template-columns:repeat(9,minmax(0,1fr));gap:5px;margin-top:8px}
+.kb button{border:0;background:var(--surface);box-shadow:inset 0 0 0 1.5px var(--line);border-radius:9px;padding:0;height:40px;font:inherit;font-weight:600;font-size:15px;cursor:pointer;color:var(--ink);display:grid;place-items:center}
+.kb button:active{background:var(--sunk)}
+.kb button:disabled{opacity:.35;cursor:not-allowed}
+.kb.emo{grid-template-columns:repeat(8,minmax(0,1fr))}
+.kbrow{display:flex;gap:8px;margin-top:8px;align-items:center;flex-wrap:wrap}
+.kbrow .btn{padding:7px 14px;font-size:13.5px;font-weight:500}
+.kbrow .cnt{margin-left:auto;font-size:12.5px;color:var(--muted);font-variant-numeric:tabular-nums}
+.lc{display:flex;flex-wrap:wrap;gap:8px}
+.lcr{display:flex;align-items:center;gap:8px;background:var(--bg);border-radius:12px;padding:6px 8px;box-shadow:inset 0 0 0 1.5px var(--line)}
+.lcr svg{flex:none;display:block}
+.sw{display:flex;gap:5px}
+.sw button{width:24px;height:24px;border-radius:50%;border:0;padding:0;cursor:pointer;box-shadow:inset 0 0 0 1px rgba(44,36,32,.18)}
+.sw.swrap{flex-wrap:wrap;gap:7px;margin-top:4px}.sw.swrap button{width:28px;height:28px}
+.sw button[aria-pressed="true"]{box-shadow:0 0 0 2px var(--surface),0 0 0 3.5px var(--ink)}
+.straps{display:flex;gap:8px;overflow-x:auto;padding:2px 2px 6px;scrollbar-width:thin}
+.strap{flex:0 0 84px;border:0;background:var(--bg);box-shadow:inset 0 0 0 1.5px var(--line);border-radius:12px;padding:6px 4px;font:inherit;font-size:11.5px;color:var(--muted);cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px}
+.strap[aria-pressed="true"]{box-shadow:inset 0 0 0 2.5px var(--accent);background:var(--sel);color:var(--ink)}
+:root { --sel: var(--sunk); }
+@media (max-width: 860px) { .app { grid-template-columns: minmax(0, 1fr); grid-template-areas: "viz" "panel" "sum"; } }
+.pvbox { background: var(--stage); border-radius: 20px; box-shadow: var(--shadow); padding: 18px 12px 12px; display: flex; flex-direction: column; align-items: center; gap: 12px; min-height: 360px; justify-content: center; }
+.pvbox svg { display: block; max-width: 100%; height: auto; }
+.pvtools { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+.pvtools .btn { min-height: 38px; padding: 6px 14px; font-size: 14px; }
+.presets { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 8px; }
+.preset { border: 0; background: var(--bg); box-shadow: inset 0 0 0 1.5px var(--line); border-radius: 14px; padding: 8px 6px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; font: inherit; font-size: 12.5px; color: var(--ink); }
+.preset[aria-pressed="true"] { box-shadow: inset 0 0 0 2.5px var(--accent); background: var(--sunk); }
+.preset svg { display: block; }
+.lbl { display: flex; align-items: baseline; gap: 8px; font-weight: 600; font-size: 14.5px; margin-top: 4px; }
+.lbl small { font-weight: 500; color: var(--muted); font-size: 12.5px; }
+.btn.ghost { background: var(--surface); color: var(--ink); box-shadow: inset 0 0 0 1.5px var(--line); }
+.qty { display: inline-flex; align-items: center; gap: 10px; }
+.qty output { min-width: 2ch; text-align: center; font-size: 20px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.lines { display: flex; flex-direction: column; gap: 4px; font-size: 14px; }
+.lines div { display: flex; justify-content: space-between; gap: 12px; }
+.lines .tot { font-weight: 600; font-size: 16px; border-top: 1px solid var(--line); padding-top: 6px; }
+.order-btn { width: 100%; font-size: 16px; padding-block: 12px; }
+.order-btn[aria-disabled="true"] { opacity: .45; pointer-events: none; }
+.kbwrap .kb button { height: 44px; font-size: 16px; }
+@media (max-width: 860px) { .viz { position: sticky; top: 0; z-index: 5; } .pvbox { min-height: 0; padding: 10px 8px 8px; border-radius: 0 0 18px 18px; } .pvbox svg { max-height: 34vh; width: auto; } .pvtools .btn { min-height: 32px; padding: 4px 10px; font-size: 13px; } }
+</style>
+<div class="wrap">
+  <header>
+    <span class="brand"><svg viewBox="0 0 40 58" aria-hidden="true"><rect x="15.5" y="0" width="9" height="4.5" rx="1.6" fill="#C4714A"/><rect x="18" y="4" width="4" height="3.5" fill="#A85E3B"/><path d="M20 7.5L36 16.5L20 25.5L4 16.5Z" fill="#C97A53"/><path d="M4 16.5L20 25.5V28.5L4 19.5Z" fill="#A85E3B"/><path d="M36 16.5L20 25.5V28.5L36 19.5Z" fill="#B66A43"/><path d="M4 24.0L20 33.0L36 24.0V28.2L20 37.2L4 28.2Z" fill="#B4663F"/><path d="M4 29.2L20 38.2L36 29.2V33.4L20 42.4L4 33.4Z" fill="#9A5737"/><path d="M4 34.4L20 43.4L36 34.4V38.6L20 47.6L4 38.6Z" fill="#7C4830"/><path d="M4 39.6L20 48.6L36 39.6V43.8L20 52.8L4 43.8Z" fill="#5E3A2A"/><path d="M4 44.8L20 53.8L36 44.8V49.0L20 58.0L4 49.0Z" fill="#432D24"/></svg>FIXTORY<em>.STUDIO</em></span>
+    <h1>Alphabet Clicker · ออกแบบพวงกุญแจคีย์แคป</h1>
+    <p class="lede">พิมพ์ชื่อหรือคำที่ชอบลงบนคีย์แคป กดเล่นได้จริง เลือกชุดสี เคส และสายคล้อง หรือกด 🎲 ให้สุ่มสีให้</p>
+  </header>
+  <div class="app">
+    <section class="viz" aria-label="ภาพตัวอย่าง">
+      <div class="pvbox">
+        <div id="pv"></div>
+        <div class="pvtools">
+          <div class="seg" role="group" id="orient"><button type="button" data-v="vertical">แนวตั้ง</button><button type="button" data-v="horizontal">แนวนอน</button></div>
+          <button type="button" class="btn ghost" id="dice">🎲 สุ่มสี</button>
+          <button type="button" class="btn ghost" id="save">บันทึกรูป</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel" aria-label="ออกแบบ">
+      <div class="step">
+        <div class="step-t"><i>1</i>ข้อความ <span class="hint" id="cnt"></span></div>
+        <div class="word" id="word" aria-live="polite"></div>
+        <div class="kbrow"><div class="seg" role="group" id="mode"><button type="button" data-v="letters">ตัวอักษร</button><button type="button" data-v="emoji">Emoji</button></div>
+          <button type="button" class="btn ghost" id="back">⌫ ลบ</button><button type="button" class="btn ghost" id="clear">ล้าง</button></div>
+        <div class="kbwrap"><div class="kb" id="kb"></div></div>
+      </div>
+      <div class="step">
+        <div class="step-t"><i>2</i>ชุดสีแนะนำ <span class="hint">กดทีเดียวได้ทั้งชุด</span></div>
+        <div class="presets" id="presets"></div>
+      </div>
+      <div class="step">
+        <div class="step-t"><i>3</i>หรือเลือกเองทีละส่วน</div>
+        <div class="lbl">คอลเลกชันสีคีย์</div>
+        <div class="colopts" id="cols"></div>
+        <div class="lbl" id="perkeyLbl">สีคีย์แต่ละตัว</div>
+        <div class="lc" id="perkey"></div>
+        <div class="lbl">สีเคส <small id="caseName"></small></div>
+        <div class="dots" id="cases"></div>
+        <div class="lbl">สายคล้อง <small id="strapName"></small></div>
+        <div class="straps" id="straps"></div>
+      </div>
+    </section>
+
+    <section class="summary" aria-label="สรุปและสั่งซื้อ">
+      <div class="price-row"><span class="hint" id="perPiece"></span><span class="price" id="total">฿0</span></div>
+      <div class="tiers">฿35 / ตัว · 3 ตัว <b>฿100</b> · รวมเคสและสายคล้องแล้ว</div>
+      <div class="step"><div class="step-t" style="font-size:15px">จำนวนชิ้น (แบบเดียวกัน)</div>
+        <div class="qty"><button type="button" class="pm" id="minus" aria-label="ลดจำนวน">−</button><output id="qty">1</output><button type="button" class="pm" id="plus" aria-label="เพิ่มจำนวน">+</button></div></div>
+      <div class="lines" id="lines"></div>
+      <a class="btn primary order-btn" id="orderBtn" href="#" target="_blank" rel="noopener" aria-disabled="true">พิมพ์ข้อความก่อนสั่ง</a>
+      <div class="hint">รหัสแบบ (สั่งทาง TikTok / Facebook): <span class="code" id="code" style="display:inline-block;padding:4px 10px;font-size:13px"></span></div>
+    </section>
+  </div>
+  <footer>ออกแบบและผลิตโดย Fixtory Studio · fixtory.studio · 081-336-8232</footer>
+</div>
+<script>
+(function () {
+  'use strict';
+  var $ = function (id) { return document.getElementById(id); };
+  var el = (t, a = {}, ...k) => { const e = document.createElement(t); for (const [x, v] of Object.entries(a)) { if (v == null || v === false) continue; if (x === 'class') e.className = v; else if (x === 'html') e.innerHTML = v; else if (x.startsWith('on')) e.addEventListener(x.slice(2), v); else e.setAttribute(x, v === true ? '' : v) } for (const c of k.flat()) { if (c == null || c === false) continue; e.append(c.nodeType ? c : document.createTextNode(c)) } return e };
+  var fmt = n => '฿' + Number(n).toLocaleString('th-TH');
+
+  // ---- copied verbatim from shop-order.html (Alphabet Clicker) — options, colours and price must match the order page ----
+const KC_HEX={"ฟ้า":"#7FC4E0","ชมพู":"#EFA9C6","ม่วง":"#B7A3E0","เหลือง":"#F2D34D","เนื้อ":"#E6C09C","ขาว":"#F5F5F2","ดำ":"#2B2B2B","ส้ม":"#F0954A","แดง":"#E0435A","เขียว":"#7FC97F","มิ้นท์":"#8FDDC6","ทราย":"#D8C6A8","น้ำเงิน":"#3F63C7","น้ำตาล":"#9A6B44","ชมพูอมแดง":"#E85C7A","เขียวอมฟ้า":"#3FB6B0"};
+const KC_COLS={pastel:{name:'Pastel',desc:'ตัวอักษรขาว ฐานพาสเทล',fixedSlot:'frame',fixedColor:'ขาว',vary:["ฟ้า","ชมพู","เหลือง","ม่วง"]},
+  dark:{name:'Dark mode',desc:'ตัวอักษรดำ ฐานสี',fixedSlot:'frame',fixedColor:'ดำ',vary:["ฟ้า","ชมพู","เหลือง","ม่วง","น้ำตาล"]},
+  polar:{name:'Polar White',desc:'ฐานขาว ตัวอักษรสี',fixedSlot:'body',fixedColor:'ขาว',vary:["ฟ้า","ชมพู","ม่วง","น้ำเงิน"]}};
+const KC_CASES=["ดำ","ขาว","ม่วง","ชมพูอมแดง","เขียวอมฟ้า"];
+const KC_STRAPS=[{label:"ฟ้า / ขาว",loop:"ฟ้า",knot:"ขาว",ring:"ขาว"},{label:"ชมพู / แดง",loop:"ชมพู",knot:"แดง",ring:"แดง"},{label:"เหลือง / ส้ม",loop:"เหลือง",knot:"ส้ม",ring:"เหลือง"},{label:"ม่วง / แดง",loop:"ม่วง",knot:"แดง",ring:"ม่วง"},{label:"มิ้นท์ / ชมพู",loop:"มิ้นท์",knot:"ชมพู",ring:"ชมพู"},{label:"เขียว / ขาว",loop:"เขียว",knot:"ขาว",ring:"เหลือง"},{label:"ดำ / ชมพู",loop:"ดำ",knot:"ชมพู",ring:"ดำ"},{label:"แดง / ขาว",loop:"แดง",knot:"ขาว",ring:"แดง"}];
+const KC_EMOJI=['🙂','😉','😍','😎','😛','🤩','😊','❤'];
+const KC_FACE={'🙂':'หน้ายิ้ม','😉':'ขยิบตา','😍':'ตาหัวใจ','😎':'แว่นดำ','😛':'แลบลิ้น','🤩':'ตาดาว','😊':'ยิ้มตาปิด'};
+const KC_MAX=8;
+function kcPrice(n){return n<=0?0:Math.floor(n/3)*100+(n%3)*35}
+function kcFaceInner(em){
+  const K='#161616',R='#E0193A',mouth=`<path d="M27,60 Q50,82 73,60" fill="none" stroke="${K}" stroke-width="6" stroke-linecap="round"/>`,oval=`<ellipse cx="39" cy="37" rx="5.5" ry="9" fill="${K}"/><ellipse cx="61" cy="37" rx="5.5" ry="9" fill="${K}"/>`;
+  const heart=(cx,cy)=>`<path transform="translate(${cx},${cy})" d="M0,9 C-14,-1 -11,-11 -5,-11 C-2,-11 0,-8 0,-6 C0,-8 2,-11 5,-11 C11,-11 14,-1 0,9Z" fill="${R}"/>`;
+  const star=(cx,cy)=>{let p=[];for(let i=0;i<10;i++){const r=i%2?4.5:10.5,a=-Math.PI/2+i*Math.PI/5;p.push((cx+r*Math.cos(a)).toFixed(1)+','+(cy+r*Math.sin(a)).toFixed(1))}return `<polygon points="${p.join(' ')}" fill="${R}" stroke="${R}" stroke-width="1.5" stroke-linejoin="round"/>`};
+  let f='';
+  switch(em){
+    case '🙂':f=oval+mouth;break;
+    case '😉':f=`<ellipse cx="39" cy="37" rx="5.5" ry="9" fill="${K}"/><path d="M55,39 Q62,31 69,38" fill="none" stroke="${R}" stroke-width="5" stroke-linecap="round"/>`+mouth;break;
+    case '😍':f=heart(37,37)+heart(63,37)+mouth;break;
+    case '😎':f=`<path d="M17,27 L83,27 L82,32 Q80,46 66,46 Q57,46 54,34 Q50,31 46,34 Q43,46 34,46 Q20,46 18,32Z" fill="${K}"/><path d="M33,62 Q50,76 67,62" fill="none" stroke="${K}" stroke-width="6" stroke-linecap="round"/>`;break;
+    case '😛':f=oval+`<path d="M44,66 L44,74 Q44,84 52,84 Q60,84 59,74 L58,66Z" fill="${R}" stroke="${K}" stroke-width="3.5" stroke-linejoin="round"/>`+mouth;break;
+    case '🤩':f=star(37,37)+star(63,37)+mouth;break;
+    case '😊':f=`<path d="M32,41 Q38,29 44,41" fill="none" stroke="${R}" stroke-width="5.5" stroke-linecap="round"/><path d="M56,41 Q62,29 68,41" fill="none" stroke="${R}" stroke-width="5.5" stroke-linecap="round"/>`+mouth;break;
+    default:return null;
+  }
+  return `<circle cx="50" cy="50" r="47" fill="#C9A80F"/><circle cx="50" cy="49" r="45" fill="#F2D21B"/><circle cx="50" cy="49" r="41" fill="none" stroke="#C9A80F" stroke-width="1.2" opacity=".7"/>`+f;
+}
+function kcResolve(col,v){const c=KC_COLS[col];return c.fixedSlot==='frame'?{body:v,frame:c.fixedColor}:{body:c.fixedColor,frame:v}}
+function kcShade(hex,k){ // k<0 เข้มขึ้น, k>0 สว่างขึ้น
+  const n=parseInt((hex||'#cccccc').slice(1),16);let r=n>>16,g=n>>8&255,b=n&255;
+  const f=v=>Math.round(k<0?v*(1+k):v+(255-v)*k);return '#'+[f(r),f(g),f(b)].map(v=>v.toString(16).padStart(2,'0')).join('');
+}
+// คีย์แคปแบบนูน (มองจากด้านบน): ขอบข้างเอียงสีเข้ม + หน้าคีย์เล็กกว่าฐานและสว่าง + เงาตกกระทบ
+function kcKey(x,y,s,body,frame,ch,ghost){
+  const B=KC_HEX[body]||'#cccccc',F=KC_HEX[frame]||'#ffffff';
+  const tx=x+s*.13,ty=y+s*.07,tw=s*.74,th=s*.72; // หน้าคีย์ (ยกขึ้นด้านบนเล็กน้อย เห็นขอบล่างหนากว่า)
+  let g=`<g>`;
+  g+=`<rect x="${x+1}" y="${y+3.5}" width="${s}" height="${s}" rx="8" fill="#000" opacity=".22"/><rect x="${x+.5}" y="${y+2}" width="${s}" height="${s}" rx="8" fill="#000" opacity=".25"/>`;
+  g+=`<rect x="${x}" y="${y}" width="${s}" height="${s}" rx="7" fill="${kcShade(B,-.34)}"/>`;
+  g+=`<path d="M${x+7} ${y}H${x+s-7}Q${x+s} ${y} ${x+s} ${y+7}L${tx+tw} ${ty+th*.5}H${tx}L${x} ${y+7}Q${x} ${y} ${x+7} ${y}Z" fill="${kcShade(B,-.12)}"/>`;
+  g+=`<rect x="${tx}" y="${ty}" width="${tw}" height="${th}" rx="5" fill="${B}"/>`;
+  g+=`<rect x="${tx+1.5}" y="${ty+1}" width="${tw-3}" height="${th*.4}" rx="4" fill="#fff" opacity=".28"/>`;
+  g+=`<rect x="${tx+2.5}" y="${ty+2.5}" width="${tw-5}" height="${th-5}" rx="3.5" fill="none" stroke="${F}" stroke-width="2.4"/>`;
+  const face=kcFaceInner(ch),cx=tx+tw/2,cy=ty+th/2;
+  if(face){const d=tw*.72;g+=`<g transform="translate(${cx-d/2},${cy-d/2}) scale(${d/100})">${face}</g>`}
+  else{const t=ch==='❤'?'♥':ch;g+=`<text x="${cx}" y="${cy+th*.2}" text-anchor="middle" font-size="${(t==='♥'?.6:.55)*th}" font-weight="700" fill="${F}" font-family="Prompt, Segoe UI, sans-serif"${ghost?' opacity=".75"':''}>${t}</text>`}
+  return g+'</g>';
+}
+// วาดชิ้นงาน คืน {svg, w, h}
+function kcSVG(it,orient){
+  let chars=it.chars,cols=it.colors,ghost=false;
+  if(!chars.length){chars=['A','B','C'];cols=KC_COLS[it.col].vary.slice(0,3);ghost=true}
+  const n=chars.length,gap=3,st=KC_STRAPS[it.strap];let s='';
+  if(orient==='vertical'){
+    const size=38,railW=size+16,railH=n*size+(n-1)*gap+16,H=66+railH+12;
+    s+=`<circle cx="70" cy="12" r="9" fill="none" stroke="${KC_HEX[st.ring]}" stroke-width="3.5"/><path d="M70,17 C52,26 52,48 70,54 C88,48 88,26 70,17" fill="none" stroke="${KC_HEX[st.loop]}" stroke-width="6" stroke-linecap="round"/><rect x="63" y="50" width="14" height="16" rx="4" fill="${KC_HEX[st.knot]}"/>`;
+    const rx=70-railW/2;s+=`<rect x="${rx}" y="66" width="${railW}" height="${railH}" rx="14" fill="${KC_HEX[it.caseColor]}" stroke="rgba(0,0,0,.12)"/>`;s+=`<rect x="${rx+4}" y="70" width="${railW-8}" height="${railH-8}" rx="11" fill="${kcShade(KC_HEX[it.caseColor],-.22)}"/>`;
+    chars.forEach((ch,i)=>{const c=kcResolve(it.col,cols[i]||KC_COLS[it.col].vary[0]);s+=kcKey(rx+8,74+i*(size+gap),size,c.body,c.frame,ch,ghost)});
+    return {svg:s,w:140,h:H};
+  }
+  const size=30,railH=size+16,railW=n*size+(n-1)*gap+16,W=56+railW+10,H=Math.max(railH+16,80),cy=H/2;
+  s+=`<circle cx="14" cy="${cy}" r="9" fill="none" stroke="${KC_HEX[st.ring]}" stroke-width="3.5"/><path d="M19,${cy} C28,${cy-18} 50,${cy-18} 56,${cy} C50,${cy+18} 28,${cy+18} 19,${cy}" fill="none" stroke="${KC_HEX[st.loop]}" stroke-width="6" stroke-linecap="round"/><rect x="52" y="${cy-7}" width="16" height="14" rx="4" fill="${KC_HEX[st.knot]}"/>`;
+  s+=`<rect x="56" y="${cy-railH/2}" width="${railW}" height="${railH}" rx="14" fill="${KC_HEX[it.caseColor]}" stroke="rgba(0,0,0,.12)"/>`;s+=`<rect x="60" y="${cy-railH/2+4}" width="${railW-8}" height="${railH-8}" rx="11" fill="${kcShade(KC_HEX[it.caseColor],-.22)}"/>`;
+  chars.forEach((ch,i)=>{const c=kcResolve(it.col,cols[i]||KC_COLS[it.col].vary[0]);s+=kcKey(64+i*(size+gap),cy-railH/2+8,size,c.body,c.frame,ch,ghost)});
+  return {svg:s,w:W,h:H};
+}
+
+  // ---- end copy ----
+
+  // ready-made looks: collection + case + strap (+ key colours cycle through the collection)
+  var PRESETS = [
+    { name: 'พาสเทลหวาน', col: 'pastel', caseColor: 'ขาว', strap: 4 },
+    { name: 'พาสเทลม่วง', col: 'pastel', caseColor: 'ม่วง', strap: 3 },
+    { name: 'ดาร์กโหมด', col: 'dark', caseColor: 'ดำ', strap: 6 },
+    { name: 'ดาร์กสดใส', col: 'dark', caseColor: 'เขียวอมฟ้า', strap: 2 },
+    { name: 'โพลาร์ไวท์', col: 'polar', caseColor: 'ขาว', strap: 0 },
+    { name: 'โพลาร์ชมพู', col: 'polar', caseColor: 'ชมพูอมแดง', strap: 1 }
+  ];
+  var HIDDEN_CASES = [];   // case colours out of stock right now (names from KC_CASES)
+  var COLK = { pastel: 'p', dark: 'd', polar: 'w' }, KCOL = { p: 'pastel', d: 'dark', w: 'polar' };
+  var EMO = ['❤', '🙂', '😉', '😍', '😎', '😛', '🤩', '😊'];   // code digits 0–7
+  var MAX_QTY = 10;
+
+  var kc = { chars: ['F', 'I', 'X'], colors: [], col: 'pastel', caseColor: 'ขาว', strap: 4, orient: 'vertical', mode: 'letters' }, qty = 1;
+  try { var s0 = JSON.parse(localStorage.getItem('fxKcDraft') || 'null'); if (s0 && s0.chars) Object.assign(kc, s0); } catch (e) {}
+
+  function code() {
+    var ch = kc.chars.map(function (c) { var i = EMO.indexOf(c); return i >= 0 ? String(i) : c; }).join('');
+    var co = kc.colors.map(function (c) { return KC_COLS[kc.col].vary.indexOf(c); }).join('');
+    return 'KC1.' + COLK[kc.col] + KC_CASES.indexOf(kc.caseColor).toString(36) + kc.strap.toString(36) + (kc.orient === 'vertical' ? 'v' : 'h') + '.' + ch + '.' + co;
+  }
+  var ORDER_URL = (/fixtory-studio\.pages\.dev$|^localhost$/.test(location.hostname) ? 'shop-order.html' : 'https://fixtory-studio.pages.dev/shop-order.html') + '?p=keycap'
+    + (function () { try { var s = new URLSearchParams(location.search).get('sale'); return s ? '&sale=' + encodeURIComponent(s) : ''; } catch (e) { return ''; } })();   // keep the agent ref (?sale=)
+
+  function seg(id, val, on) { document.querySelectorAll('#' + id + ' button').forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.v === val)); b.onclick = function () { on(b.dataset.v); }; }); }
+  function chip(ch, i, px) { var c = kcResolve(kc.col, kc.colors[i]); return el('span', { html: '<svg viewBox="0 0 38 38" width="' + px + '" height="' + px + '" aria-hidden="true">' + kcKey(0, 0, 38, c.body, c.frame, ch) + '</svg>' }).firstChild; }
+  function previewSvg(it, maxW, maxH) { var r = kcSVG(it, it.orient), k = Math.min(maxW / r.w, maxH / r.h); return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + r.w + ' ' + r.h + '" width="' + Math.round(r.w * k) + '" height="' + Math.round(r.h * k) + '" role="img" aria-label="ตัวอย่าง">' + r.svg + '</svg>'; }
+
+  function render() {
+    kcFixColors();
+    var n = kc.chars.length, cols = KC_COLS[kc.col];
+    $('pv').innerHTML = previewSvg(kc, kc.orient === 'vertical' ? 220 : 560, kc.orient === 'vertical' ? 520 : 170);
+    seg('orient', kc.orient, function (v) { kc.orient = v; render(); });
+    seg('mode', kc.mode, function (v) { kc.mode = v; render(); });
+    $('cnt').textContent = n + '/' + KC_MAX + ' ช่อง';
+    var w = $('word'); w.textContent = ''; if (n) kc.chars.forEach(function (ch, i) { w.append(chip(ch, i, 34)); }); else w.append(el('span', { class: 'ph' }, 'แตะแป้นด้านล่างเพื่อพิมพ์'));
+    var kb = $('kb'); kb.className = 'kb' + (kc.mode === 'emoji' ? ' emo' : ''); kb.textContent = '';
+    (kc.mode === 'letters' ? [...'ABCDEFGHIJKLMNOPQRSTUVWXYZ', '❤'] : KC_EMOJI).forEach(function (ch) {
+      var f = kcFaceInner(ch);
+      kb.append(el('button', { type: 'button', disabled: n >= KC_MAX, 'aria-label': KC_FACE[ch] || (ch === '❤' ? 'หัวใจ' : ch), onclick: function () { if (kc.chars.length < KC_MAX) { kc.chars.push(ch); render(); } }, html: f ? '<svg viewBox="0 0 100 100" width="28" height="28" aria-hidden="true">' + f + '</svg>' : null }, f ? null : (ch === '❤' ? '♥' : ch)));
+    });
+    $('back').disabled = !n; $('clear').disabled = !n;
+    // presets
+    var pr = $('presets'); pr.textContent = '';
+    PRESETS.forEach(function (p) {
+      if (HIDDEN_CASES.indexOf(p.caseColor) >= 0) return;
+      var it = { chars: ['A', 'B', 'C'], colors: KC_COLS[p.col].vary.slice(0, 3), col: p.col, caseColor: p.caseColor, strap: p.strap, orient: 'horizontal' };
+      var on = kc.col === p.col && kc.caseColor === p.caseColor && kc.strap === p.strap;
+      pr.append(el('button', { type: 'button', class: 'preset', 'aria-pressed': String(on), onclick: function () { kc.col = p.col; kc.caseColor = p.caseColor; kc.strap = p.strap; kc.colors = kc.chars.map(function (c, i) { return KC_COLS[p.col].vary[i % KC_COLS[p.col].vary.length]; }); render(); }, html: previewSvg(it, 92, 40) + '<span>' + p.name + '</span>' }));
+    });
+    // collection
+    var co = $('cols'); co.textContent = '';
+    Object.entries(KC_COLS).forEach(function ([k, c]) {
+      co.append(el('button', { type: 'button', class: 'colopt', 'aria-pressed': String(kc.col === k), onclick: function () { kc.col = k; render(); } },
+        el('span', { html: '<svg viewBox="0 0 80 24" width="64" height="20" aria-hidden="true">' + c.vary.slice(0, 3).map(function (v, i) { var r = kcResolve(k, v); return '<g transform="translate(' + (i * 27) + ',0) scale(.63)">' + kcKey(0, 0, 38, r.body, r.frame, 'ABC'[i]) + '</g>'; }).join('') + '</svg>' }).firstChild,
+        el('span', {}, el('b', { style: 'font-weight:600' }, c.name), el('small', {}, c.desc))));
+    });
+    var pk = $('perkey'); pk.textContent = ''; $('perkeyLbl').hidden = !n;
+    kc.chars.forEach(function (ch, i) {
+      pk.append(el('div', { class: 'lcr' }, chip(ch, i, 30), el('div', { class: 'sw' }, cols.vary.map(function (v) { var r = kcResolve(kc.col, v); return el('button', { type: 'button', 'aria-label': 'ตัวที่ ' + (i + 1) + ' สี' + v, 'aria-pressed': String(kc.colors[i] === v), style: 'background:' + KC_HEX[r.body] + (r.body === r.frame ? '' : ';box-shadow:inset 0 0 0 3px ' + KC_HEX[r.frame]), onclick: function () { kc.colors[i] = v; render(); } }); }))));
+    });
+    $('caseName').textContent = kc.caseColor;
+    var ca = $('cases'); ca.textContent = '';
+    KC_CASES.forEach(function (c) { if (HIDDEN_CASES.indexOf(c) >= 0) return; ca.append(el('button', { type: 'button', class: 'dot', style: 'background:' + KC_HEX[c], 'aria-label': 'เคสสี' + c, 'aria-pressed': String(kc.caseColor === c), onclick: function () { kc.caseColor = c; render(); } })); });
+    $('strapName').textContent = KC_STRAPS[kc.strap].label;
+    var st = $('straps'); st.textContent = '';
+    KC_STRAPS.forEach(function (s, i) { st.append(el('button', { type: 'button', class: 'strap', 'aria-pressed': String(kc.strap === i), onclick: function () { kc.strap = i; render(); }, html: '<svg viewBox="0 0 60 70" width="40" height="46" aria-hidden="true"><path d="M30,6 C16,12 16,32 30,38 C44,32 44,12 30,6" fill="none" stroke="' + KC_HEX[s.loop] + '" stroke-width="6" stroke-linecap="round"/><rect x="24" y="34" width="12" height="14" rx="3" fill="' + KC_HEX[s.knot] + '"/><circle cx="30" cy="56" r="8" fill="none" stroke="' + KC_HEX[s.ring] + '" stroke-width="3.5"/></svg><span>' + s.label + '</span>' })); });
+    // price
+    var one = kcPrice(n), tot = one * qty;
+    $('perPiece').textContent = n ? 'ชิ้นละ ' + fmt(one) + ' (' + n + ' ช่อง)' : 'ยังไม่มีข้อความ';
+    $('total').textContent = fmt(tot);
+    $('qty').textContent = qty; $('minus').disabled = qty <= 1; $('plus').disabled = qty >= MAX_QTY;
+    var L = $('lines'); L.textContent = '';
+    if (n) { L.append(el('div', {}, el('span', {}, 'พวงกุญแจ ' + qty + ' ชิ้น × ' + fmt(one)), el('span', {}, fmt(tot)))); L.append(el('div', { class: 'tot' }, el('span', {}, 'รวม (ยังไม่รวมค่าส่ง)'), el('span', {}, fmt(tot)))); }
+    var c = n ? code() : ''; $('code').textContent = c || '—';
+    var ob = $('orderBtn');
+    if (n) { ob.removeAttribute('aria-disabled'); ob.href = ORDER_URL + '&code=' + encodeURIComponent(c) + '&qty=' + qty; ob.textContent = 'สั่งซื้อแบบนี้ · ' + fmt(tot); }
+    else { ob.setAttribute('aria-disabled', 'true'); ob.href = '#'; ob.textContent = 'พิมพ์ข้อความก่อนสั่ง'; }
+    try { localStorage.setItem('fxKcDraft', JSON.stringify({ chars: kc.chars, colors: kc.colors, col: kc.col, caseColor: kc.caseColor, strap: kc.strap, orient: kc.orient })); } catch (e) {}
+  }
+  function kcFixColors() { var v = KC_COLS[kc.col].vary; kc.colors = kc.chars.map(function (c, i) { return v.indexOf(kc.colors[i]) >= 0 ? kc.colors[i] : v[i % v.length]; }); }
+
+  $('back').onclick = function () { kc.chars.pop(); kc.colors.pop(); render(); };
+  $('clear').onclick = function () { kc.chars = []; kc.colors = []; render(); };
+  $('minus').onclick = function () { qty = Math.max(1, qty - 1); render(); };
+  $('plus').onclick = function () { qty = Math.min(MAX_QTY, qty + 1); render(); };
+  $('dice').onclick = function () {
+    var ks = Object.keys(KC_COLS); kc.col = ks[Math.floor(Math.random() * ks.length)];
+    var v = KC_COLS[kc.col].vary; kc.colors = kc.chars.map(function () { return v[Math.floor(Math.random() * v.length)]; });
+    var cs = KC_CASES.filter(function (c) { return HIDDEN_CASES.indexOf(c) < 0; }); kc.caseColor = cs[Math.floor(Math.random() * cs.length)];
+    kc.strap = Math.floor(Math.random() * KC_STRAPS.length); render();
+  };
+  // picture of the current design: for "save" and for the order page's cart (same site: shared localStorage)
+  function toPng(cb) {
+    var r = kcSVG(kc, kc.orient), k = Math.min(900 / r.w, 900 / r.h), W = Math.round(r.w * k), H = Math.round(r.h * k), pad = 40;
+    var svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + r.w + ' ' + r.h + '" width="' + W + '" height="' + H + '">' + r.svg + '</svg>';
+    var img = new Image(); img.onload = function () { var c = document.createElement('canvas'); c.width = W + 2 * pad; c.height = H + 2 * pad; var g = c.getContext('2d'); g.fillStyle = '#F3ECE4'; g.fillRect(0, 0, c.width, c.height); g.drawImage(img, pad, pad, W, H); cb(c); };
+    img.onerror = function () { cb(null); };
+    img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+  }
+  $('save').onclick = function () { toPng(function (c) { if (!c) return; var a = document.createElement('a'); a.download = 'fixtory-clicker-' + (kc.chars.filter(function (x) { return /[A-Z]/.test(x); }).join('') || 'design') + '.png'; a.href = c.toDataURL('image/png'); document.body.appendChild(a); a.click(); a.remove(); }); };
+  $('orderBtn').addEventListener('click', function () {
+    var c = code();
+    toPng(function (cv) { if (!cv) return; try {
+      var small = document.createElement('canvas'), k = 360 / Math.max(cv.width, cv.height); small.width = Math.round(cv.width * k); small.height = Math.round(cv.height * k);
+      small.getContext('2d').drawImage(cv, 0, 0, small.width, small.height);
+      var K = 'fxKcImgs', list = JSON.parse(localStorage.getItem(K) || '[]').filter(function (x) { return x !== c; });
+      list.unshift(c); while (list.length > 30) localStorage.removeItem('fxKcImg:' + list.pop());
+      localStorage.setItem('fxKcImg:' + c, small.toDataURL('image/jpeg', 0.85)); localStorage.setItem(K, JSON.stringify(list));
+    } catch (e) {} });
+  }, true);
+  render();
+})();
+</script>
+
+</body>
+</html>
