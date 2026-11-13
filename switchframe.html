@@ -238,7 +238,7 @@ footer { text-align: center; color: var(--muted); font-size: 13px; padding-top: 
     ['ฟ้าอ่อน', 'Light Blue', '#AFD3E8'],
     ['เทาอุ่น', 'Warm Grey', '#9A948C'],
     ['เทาอ่อน', 'Light Grey', '#C4C4C2'],
-    ['ฟ้าอ่อนใส', 'Clear Light Blue', '#A9CBE6'],
+    ['ฟ้าอ่อน (รีฟิล)', 'Light Blue (refill)', '#A9CBE6'],   // was "ฟ้าอ่อนใส" — K96P002C refill spool, hidden (almost the same as ฟ้าอ่อน)
     ['ฟ้าธารน้ำแข็ง', 'Glacier Blue', '#CFE6EE'],
     ['กรมท่าเข้ม', 'Navy', '#22324F'],
     ['ขาวอมเขียว', 'Mint White', '#D6E6D8'],
@@ -256,7 +256,7 @@ footer { text-align: center; color: var(--muted); font-size: 13px; padding-top: 
     ['เขียวสดใส', 'Fresh Green', '#8ED3A4']
   ];
   var IDX = {}; COLORS.forEach(function (c, i) { IDX[c[0]] = i; });
-  var HIDDEN = [];   // colour names out of stock right now — hidden from "ออกแบบสีเอง" (codes stay valid)
+  var HIDDEN = ['ฟ้าอ่อน (รีฟิล)'];   // colour names out of stock right now — hidden from "ออกแบบสีเอง" (codes stay valid)
   // ready-to-ship pairs [frame, lever] — order approved by AU 13 Nov
   var PAIRS = [['ขาว', 'เหลือง'], ['ขาวโอ๊ต', 'น้ำตาล'], ['กรมท่าเข้ม', 'ขาว'], ['ชมพูแอปริคอต', 'แดงจีน'], ['ฟ้าหมอก', 'เหลือง'], ['ดำ', 'ส้มเหลือง'], ['เขียวทหาร', 'แดงจีน']];
 
