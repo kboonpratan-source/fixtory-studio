@@ -1,0 +1,399 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="กรอบสวิตช์ไฟแบบคันโยก ครอบสวิตช์ปุ่มกระดกเดิม เลือกคู่สีพร้อมส่ง หรือออกแบบสีกรอบและคันโยกเอง">
+<meta property="og:title" content="กรอบสวิตช์ไฟแบบคันโยก · Fixtory Studio">
+<meta property="og:image" content="https://fixtory-studio.pages.dev/switchframe_poster_th.jpg">
+<link rel="icon" href="icons/icon-192.png">
+</head>
+<body>
+<title>กรอบสวิตช์ไฟแบบคันโยก · Fixtory Studio</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&family=Fredoka:wght@600;700&family=Prompt:wght@400;500;600&display=swap">
+<style>
+/* Layout: Fixtory storefront look (cream ground, terracotta accent) — live 3D keychain on top, choices as tap-buttons below, order summary card last; two columns on wide screens */
+:root {
+  --bg: #FAF8F4; --surface: #FFFFFF; --sunk: #F5E8DC; --ink: #2C2420; --muted: #6F6056; --line: #EDE2D6;
+  --accent: #C4714A; --accent-text: #A9572F; --accent-ink: #FFFFFF; --ok: #4E6B3A;
+  --stage: #EFE4D8; --grid1: #D8C7B6; --grid2: #E6D8CA;
+  --shadow: 0 1px 2px rgba(44,36,32,.06), 0 8px 24px -12px rgba(44,36,32,.22);
+  --f-display: "DM Serif Display", "Prompt", Georgia, serif;
+  --f-body: "DM Sans", "Prompt", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-name: "Fredoka", "Prompt", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #1B1613; --surface: #26201C; --sunk: #322822; --ink: #F5E8DC; --muted: #BFAE9F; --line: #3A302A;
+  --accent: #E08A60; --accent-text: #EFA07A; --accent-ink: #1B1613; --ok: #A7C48A;
+  --stage: #2A231F; --grid1: #4A3D35; --grid2: #3A302A;
+  --shadow: 0 1px 2px rgba(0,0,0,.3), 0 10px 28px -14px rgba(0,0,0,.6); color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #1B1613; --surface: #26201C; --sunk: #322822; --ink: #F5E8DC; --muted: #BFAE9F; --line: #3A302A;
+  --accent: #E08A60; --accent-text: #EFA07A; --accent-ink: #1B1613; --ok: #A7C48A;
+  --stage: #2A231F; --grid1: #4A3D35; --grid2: #3A302A;
+  --shadow: 0 1px 2px rgba(0,0,0,.3), 0 10px 28px -14px rgba(0,0,0,.6); color-scheme: dark }
+
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--f-body); font-size: 15px; line-height: 1.6; }
+button, input { font: inherit; color: inherit; }
+:focus-visible { outline: 2.5px solid var(--accent); outline-offset: 2px; }
+.wrap { max-width: 1120px; margin: 0 auto; padding-block: 20px 48px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: flex; flex-direction: column; gap: 18px; }
+
+header { display: flex; flex-direction: column; gap: 4px; }
+.brand { display: flex; align-items: center; gap: 8px; font-family: var(--f-display); letter-spacing: .1em; text-transform: uppercase; font-size: 15px; }
+.brand svg { width: 18px; height: 26px; display: block; }
+.brand em { font-style: normal; color: var(--accent); }
+h1 { margin: 6px 0 0; font-family: var(--f-display); font-weight: 400; font-size: clamp(26px, 4vw, 38px); line-height: 1.15; color: var(--accent-text); text-wrap: balance; }
+.lede { margin: 0; color: var(--muted); max-width: 60ch; }
+
+.app { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); grid-template-areas: "viz panel" "sum panel"; grid-template-rows: auto 1fr; gap: 20px; align-items: start; }
+.viz { grid-area: viz; display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.panel { grid-area: panel; }
+.summary { grid-area: sum; }
+@media (max-width: 860px) { .app { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto; grid-template-areas: "viz" "panel" "sum"; } }
+.stage { position: relative; background: var(--stage); border-radius: 20px; overflow: hidden; aspect-ratio: 4 / 3; max-width: 100%; box-shadow: var(--shadow); }
+.stage canvas { display: block; width: 100%; height: 100%; touch-action: none; }
+.stage .tip { position: absolute; left: 14px; bottom: 10px; font-size: 12px; color: var(--muted); pointer-events: none; }
+.stage .loading { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; color: var(--muted); font-size: 14px; text-align: center; padding: 16px; }
+.facts { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 14px; color: var(--muted); }
+.facts b { color: var(--ink); font-weight: 600; font-variant-numeric: tabular-nums; }
+
+.panel { background: var(--surface); border-radius: 20px; padding: 20px; display: flex; flex-direction: column; gap: 22px; box-shadow: var(--shadow); min-width: 0; }
+.step { display: flex; flex-direction: column; gap: 10px; }
+.step-t { display: flex; align-items: baseline; gap: 10px; font-weight: 600; font-size: 16px; }
+.step-t i { font-style: normal; display: inline-grid; place-items: center; width: 24px; height: 24px; border-radius: 50%; background: var(--sunk); color: var(--accent-text); font-size: 13px; font-weight: 600; flex: none; }
+.hint { font-size: 13px; color: var(--muted); }
+.warn { font-size: 13px; color: var(--accent-text); }
+
+#name { font-family: var(--f-name); font-weight: 700; font-size: 28px; padding: 8px 16px; border: 0; box-shadow: inset 0 0 0 1.5px var(--line); border-radius: 14px; background: var(--bg); width: 100%; }
+#name:focus { outline: none; box-shadow: inset 0 0 0 2px var(--accent); }
+.count { font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
+
+.opts { display: flex; flex-wrap: wrap; gap: 8px; }
+.opt { border: 0; background: var(--bg); box-shadow: inset 0 0 0 1.5px var(--line); border-radius: 14px; padding: 9px 14px; cursor: pointer; display: flex; flex-direction: column; align-items: flex-start; gap: 0; text-align: left; min-height: 44px; }
+.opt b { font-weight: 600; font-size: 14.5px; }
+.opt span { font-size: 12.5px; color: var(--muted); }
+.opt[aria-pressed="true"] { background: var(--sunk); box-shadow: inset 0 0 0 2px var(--accent); }
+.opt[aria-pressed="true"] b { color: var(--accent-text); }
+
+.swatches { display: flex; flex-wrap: wrap; gap: 6px; }
+.sw { border: 0; background: var(--bg); box-shadow: inset 0 0 0 1.5px var(--line); border-radius: 999px; padding: 5px 12px 5px 6px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; font-size: 13px; min-height: 34px; }
+.sw .d { width: 18px; height: 18px; border-radius: 50%; box-shadow: inset 0 0 0 1px rgba(44,36,32,.15); flex: none; }
+.sw .d + .d { margin-left: -10px; }
+.sw[aria-pressed="true"] { box-shadow: inset 0 0 0 2px var(--accent); background: var(--sunk); font-weight: 600; }
+.custom-steps { display: flex; flex-direction: column; gap: 22px; }
+.fine-toggle { align-self: flex-start; }
+.fine { display: flex; flex-direction: column; gap: 10px; }
+.fine-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+.fcol { background: var(--bg); box-shadow: inset 0 0 0 1.5px var(--line); border-radius: 14px; padding: 8px; display: flex; flex-direction: column; align-items: center; gap: 6px; min-width: 92px; }
+.fcol .ch { font-family: var(--f-name); font-weight: 700; font-size: 24px; line-height: 1; }
+.frow { display: flex; align-items: center; gap: 4px; font-size: 12px; color: var(--muted); }
+.frow .lab { width: 26px; }
+.frow output { width: 22px; text-align: center; font-weight: 600; color: var(--ink); font-variant-numeric: tabular-nums; font-size: 14px; }
+.pm { border: 0; width: 30px; height: 30px; border-radius: 50%; background: var(--surface); box-shadow: inset 0 0 0 1.5px var(--line); cursor: pointer; font-size: 16px; line-height: 1; display: grid; place-items: center; }
+.pm:disabled { opacity: .35; cursor: default; }
+.subhead { font-size: 13px; font-weight: 600; color: var(--muted); margin-top: 4px; }
+
+.summary { background: var(--surface); border-radius: 20px; padding: 18px 20px; box-shadow: var(--shadow); display: flex; flex-direction: column; gap: 12px; }
+.price-row { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.price { font-family: var(--f-display); font-size: 34px; line-height: 1; color: var(--accent); font-variant-numeric: tabular-nums; }
+.tiers { font-size: 13px; color: var(--muted); }
+.tiers b { color: var(--ink); font-weight: 600; }
+.codebox { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.code { flex: 1 1 220px; min-width: 0; font-family: ui-monospace, Menlo, monospace; font-size: 15px; letter-spacing: .02em; background: var(--bg); box-shadow: inset 0 0 0 1.5px var(--line); border-radius: 12px; padding: 10px 12px; word-break: break-all; user-select: all; }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; border: 0; border-radius: 999px; padding: 10px 18px; font-weight: 600; font-size: 15px; cursor: pointer; text-decoration: none; min-height: 44px; white-space: nowrap; }
+.btn.primary { background: var(--accent); color: var(--accent-ink); }
+.btn.line { background: var(--surface); color: var(--ink); box-shadow: inset 0 0 0 1.5px var(--line); }
+.btn:disabled { opacity: .5; cursor: default; }
+#copyMsg { font-size: 13px; color: var(--ok); min-height: 1.4em; }
+.links { display: flex; flex-wrap: wrap; gap: 8px; }
+ol.how { margin: 0; padding-left: 20px; font-size: 13.5px; color: var(--muted); display: flex; flex-direction: column; gap: 2px; }
+footer { text-align: center; color: var(--muted); font-size: 13px; padding-top: 8px; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<style>
+/* Lever Switch Cover designer: live 3D frame + lever, two ways to order (ready pair / custom colours) */
+.app { grid-template-areas: "viz panel" "sum panel"; }
+.modehead { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
+.modehead .tag { font-size: 12px; font-weight: 600; border-radius: 999px; padding: 2px 10px; background: var(--sunk); color: var(--accent-text); }
+.modebox { border-radius: 16px; padding: 14px; box-shadow: inset 0 0 0 1.5px var(--line); display: flex; flex-direction: column; gap: 10px; }
+.modebox[data-on="true"] { box-shadow: inset 0 0 0 2px var(--accent); background: color-mix(in srgb, var(--sunk) 45%, transparent); }
+.tiles { display: flex; flex-wrap: wrap; gap: 8px; }
+.tile { border: 0; padding: 0; cursor: pointer; width: 64px; height: 64px; border-radius: 14px; position: relative; box-shadow: inset 0 0 0 1px rgba(44,36,32,.18); }
+.tile i { position: absolute; left: 50%; top: 50%; width: 24px; height: 24px; margin: -12px 0 0 -12px; border-radius: 50%; box-shadow: 0 2px 4px rgba(0,0,0,.25), inset 0 0 0 1px rgba(0,0,0,.12); }
+.tile[aria-pressed="true"] { box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px var(--accent); }
+.dots { display: flex; flex-wrap: wrap; gap: 6px; }
+.dot { width: 30px; height: 30px; border-radius: 50%; border: 0; cursor: pointer; padding: 0; box-shadow: inset 0 0 0 1px rgba(44,36,32,.2); }
+.dot[aria-pressed="true"] { box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px var(--accent); }
+.pickname { font-weight: 600; color: var(--ink); }
+.qty { display: inline-flex; align-items: center; gap: 10px; }
+.qty output { min-width: 2ch; text-align: center; font-size: 20px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.lines { display: flex; flex-direction: column; gap: 4px; font-size: 14px; }
+.lines div { display: flex; justify-content: space-between; gap: 12px; }
+.lines .tot { font-weight: 600; font-size: 16px; border-top: 1px solid var(--line); padding-top: 6px; }
+.ship { font-size: 14px; color: var(--ok); font-weight: 600; }
+.check { border-radius: 14px; background: var(--bg); box-shadow: inset 0 0 0 1.5px var(--line); padding: 12px 14px; font-size: 13.5px; }
+.check b { display: block; margin-bottom: 4px; }
+.check ul { margin: 0; padding-left: 18px; color: var(--muted); }
+.check label { display: flex; gap: 8px; align-items: flex-start; margin-top: 8px; font-weight: 600; cursor: pointer; }
+.check input { margin-top: 4px; accent-color: var(--accent); }
+.order-btn { width: 100%; font-size: 16px; padding-block: 12px; }
+.order-btn[aria-disabled="true"] { opacity: .45; pointer-events: none; }
+.lever-tg { position: absolute; right: 12px; bottom: 10px; }
+.stage .state { position: absolute; left: 14px; top: 10px; font-size: 13px; font-weight: 600; background: var(--surface); border-radius: 999px; padding: 3px 12px; box-shadow: var(--shadow); }
+</style>
+<div class="wrap">
+  <header>
+    <span class="brand"><svg viewBox="0 0 40 58" aria-hidden="true"><rect x="15.5" y="0" width="9" height="4.5" rx="1.6" fill="#C4714A"/><rect x="18" y="4" width="4" height="3.5" fill="#A85E3B"/><path d="M20 7.5L36 16.5L20 25.5L4 16.5Z" fill="#C97A53"/><path d="M4 16.5L20 25.5V28.5L4 19.5Z" fill="#A85E3B"/><path d="M36 16.5L20 25.5V28.5L36 19.5Z" fill="#B66A43"/><path d="M4 24.0L20 33.0L36 24.0V28.2L20 37.2L4 28.2Z" fill="#B4663F"/><path d="M4 29.2L20 38.2L36 29.2V33.4L20 42.4L4 33.4Z" fill="#9A5737"/><path d="M4 34.4L20 43.4L36 34.4V38.6L20 47.6L4 38.6Z" fill="#7C4830"/><path d="M4 39.6L20 48.6L36 39.6V43.8L20 52.8L4 43.8Z" fill="#5E3A2A"/><path d="M4 44.8L20 53.8L36 44.8V49.0L20 58.0L4 49.0Z" fill="#432D24"/></svg>FIXTORY<em>.STUDIO</em></span>
+    <h1>กรอบสวิตช์ไฟแบบคันโยก</h1>
+    <p class="lede">Lever Switch Cover · ครอบสวิตช์ปุ่มกระดกเดิม ดันคันโยกขึ้น = เปิด ดันลง = ปิด เลือกคู่สีพร้อมส่ง หรือออกแบบสีกรอบกับสีคันโยกเอง</p>
+  </header>
+
+  <div class="app">
+    <section class="viz" aria-label="ภาพตัวอย่าง">
+      <div class="stage" id="stage">
+        <div class="loading" id="loading">กำลังโหลดภาพตัวอย่าง…</div>
+        <span class="state" id="stateTag">เปิด (ON)</span>
+        <button type="button" class="btn line lever-tg" id="flip">ดันคันโยกลง</button>
+        <div class="tip">ลากเพื่อหมุน · แตะคันโยกเพื่อดันขึ้น/ลง</div>
+      </div>
+      <div class="facts"><span>กรอบ <b>90 × 90 มม.</b></span><span>หนา <b>17 มม.</b></span><span>ช่องด้านใน <b>88 × 88 มม.</b></span><span>วัสดุ <b>PETG</b></span><span>ติดตั้ง <b>เทป 2 หน้า (แถมในชุด)</b></span></div>
+    </section>
+
+    <section class="panel" aria-label="เลือกแบบ">
+      <div class="modebox" id="boxPair">
+        <div class="modehead"><div class="step-t"><i>1</i>คู่สีแนะนำ · พร้อมส่ง</div><span class="tag">฿139 / ชิ้น</span></div>
+        <div class="hint">กรอบ × คันโยก <button type="button" class="btn line" id="swap" style="min-height:30px;padding:3px 12px;font-size:13px;margin-left:6px">⇄ สลับสี</button></div>
+        <div class="tiles" id="pairs"></div>
+        <div class="hint" id="pairName"></div>
+      </div>
+
+      <div class="modebox" id="boxCustom">
+        <div class="modehead"><div class="step-t"><i>2</i>ออกแบบสีเอง · ผลิตตามสั่ง</div><span class="tag">+฿60 / ออเดอร์</span></div>
+        <div class="hint">เลือกสีกรอบกับสีคันโยกได้ทุกสีในสต็อก (PETG) งานผลิตเฉพาะตัวสำหรับคุณ · เลือกสีเดียวกันทั้งสองแถว = ทั้งชิ้นสีเดียว</div>
+        <div class="subhead">สีกรอบ · <span class="pickname" id="frameName"></span></div>
+        <div class="dots" id="pickFrame"></div>
+        <div class="subhead">สีคันโยก · <span class="pickname" id="leverName"></span></div>
+        <div class="dots" id="pickLever"></div>
+      </div>
+
+      <div class="step">
+        <div class="step-t"><i>3</i>จำนวน</div>
+        <div class="qty"><button type="button" class="pm" id="minus" aria-label="ลดจำนวน">−</button><output id="qty">1</output><button type="button" class="pm" id="plus" aria-label="เพิ่มจำนวน">+</button><span class="hint">ชิ้น · สีเดียวกันทุกชิ้น</span></div>
+        <div class="tiers">฿139 / ชิ้น · 2–3 ชิ้น <b>฿119</b> / ชิ้น · 4 ชิ้นขึ้นไป <b>฿99</b> / ชิ้น</div>
+      </div>
+    </section>
+
+    <section class="summary" aria-label="สรุปและสั่งซื้อ">
+      <div class="price-row"><span class="hint" id="modeLabel">คู่สีแนะนำ · พร้อมส่ง</span><span class="price" id="total">฿139</span></div>
+      <div class="lines" id="lines"></div>
+      <div class="ship" id="ship"></div>
+      <div class="hint">ระยะเวลาขนส่งประมาณ 1–3 วัน</div>
+      <div class="check">
+        <b>เช็กก่อนสั่ง</b>
+        <ul>
+          <li>สวิตช์ปุ่มกระดกเดี่ยว (1 ช่อง)</li>
+          <li>หน้ากากสวิตช์ไม่เกิน 88 × 88 มม.</li>
+          <li>หน้ากากยื่นจากผนังไม่เกิน ~1.5 ซม.</li>
+          <li>ปุ่มกระดกยาวประมาณ 2.8 ซม.</li>
+        </ul>
+        <label><input type="checkbox" id="fitOk"> สวิตช์ของฉันตรงตามนี้</label>
+      </div>
+      <a class="btn primary order-btn" id="orderBtn" href="#" target="_blank" rel="noopener" aria-disabled="true">สั่งซื้อแบบนี้</a>
+      <div class="hint">รหัสแบบ (สั่งทาง TikTok / Facebook): <span class="code" id="code" style="display:inline-block;padding:4px 10px;font-size:13px"></span></div>
+    </section>
+  </div>
+  <footer>ออกแบบและผลิตโดย Fixtory Studio · fixtory.studio · 081-336-8232</footer>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script>
+(function () {
+  'use strict';
+  var $ = function (id) { return document.getElementById(id); };
+
+  // ---- settings (easy to change) ----
+  var PRICE = function (n) { return n >= 4 ? 99 : n >= 2 ? 119 : 139; };   // per piece, both ways
+  var CUSTOM_FEE = 60;                 // per order, custom colours (made to order)
+  var CUSTOM_WAIVE_4PLUS = false;      // turn on only when Fixtory Pricing confirms: 4+ pieces in one colour pair → no +฿60
+  var SHIP_CAP = 10, CUTOFF = '18:00'; // delivery-time text
+  var MAX_QTY = 30;
+
+  // R3D PETG Matte (stock list from Ops, 9 Nov) + White/Black (3 kg spools).
+  // Order = colour code index: NEVER reorder or delete, only append. Hex = approximate screen colour, tune freely.
+  var COLORS = [
+    ['ทองแดงโบราณ', 'Antique Copper', '#9A5B3C'],
+    ['ขาวโอ๊ต', 'Oat White', '#EDE3CF'],
+    ['เหลือง', 'Yellow', '#F2C230'],
+    ['สีผิวนวล', 'Nude', '#E8C9AE'],
+    ['น้ำตาล', 'Brown', '#7A4A2E'],
+    ['เขียวมะกอก', 'Olive Green', '#6F8566'],
+    ['ฟ้าหมอก', 'Haze Blue', '#BCD3EE'],
+    ['ฟ้าอ่อน', 'Light Blue', '#A9D2EA'],
+    ['เทาอุ่น', 'Warm Grey', '#9C948A'],
+    ['เทาอ่อน', 'Light Grey', '#C9CACB'],
+    ['ฟ้าอ่อนใส', 'Clear Light Blue', '#C2E4F0'],
+    ['ฟ้าธารน้ำแข็ง', 'Glacier Blue', '#8FB8C8'],
+    ['กรมท่าเข้ม', 'Navy', '#22305A'],
+    ['ขาวอมเขียว', 'Mint White', '#DCEBDC'],
+    ['ฟ้า', 'Blue', '#3E86C8'],
+    ['เขียวทหาร', 'Army Green', '#4E5A3A'],
+    ['ส้มเหลือง', 'Orange Yellow', '#E8862A'],
+    ['ชมพูแอปริคอต', 'Apricot Pink', '#F2B5B6'],
+    ['แดงไวน์', 'Wine Red', '#6E1F2A'],
+    ['เหลืองซิงค์', 'Zinc Yellow', '#E7D84A'],
+    ['แดงจีน', 'Chinese Red', '#C8222A'],
+    ['ขาว', 'White', '#F4F4F1'],
+    ['ดำ', 'Black', '#262626']
+  ];
+  var IDX = {}; COLORS.forEach(function (c, i) { IDX[c[0]] = i; });
+  var HIDDEN = [];   // colour names out of stock right now — hidden from "ออกแบบสีเอง" (codes stay valid)
+  // ready-to-ship pairs [frame, lever] — order approved by AU 13 Nov
+  var PAIRS = [['ขาว', 'เหลือง'], ['ขาวโอ๊ต', 'น้ำตาล'], ['กรมท่าเข้ม', 'ขาว'], ['ชมพูแอปริคอต', 'แดงจีน'], ['ฟ้าหมอก', 'เหลือง'], ['ดำ', 'ส้มเหลือง'], ['เขียวมะกอก', 'แดงจีน']];
+
+  var st = { frame: 'ขาว', lever: 'เหลือง', qty: 1, on: true };
+  var isPair = function () { return PAIRS.some(function (p) { return p[0] === st.frame && p[1] === st.lever; }); };
+
+  // ---------- 3D ----------
+  var scene, camera, renderer, controls, frameMat, leverMat, leverGroup, lever = { cur: -1, goal: -1 };
+  function rrect(s, w, h, r) { var x = -w / 2, y = -h / 2; s.moveTo(x + r, y); s.lineTo(x + w - r, y); s.quadraticCurveTo(x + w, y, x + w, y + r); s.lineTo(x + w, y + h - r); s.quadraticCurveTo(x + w, y + h, x + w - r, y + h); s.lineTo(x + r, y + h); s.quadraticCurveTo(x, y + h, x, y + h - r); s.lineTo(x, y + r); s.quadraticCurveTo(x, y, x + r, y); }
+  function stageColor() { return getComputedStyle(document.documentElement).getPropertyValue('--stage').trim() || '#EFE4D8'; }
+  function init3d() {
+    var el = $('stage');
+    renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
+    renderer.setPixelRatio(Math.min(2, window.devicePixelRatio || 1));
+    renderer.outputEncoding = THREE.sRGBEncoding;
+    el.insertBefore(renderer.domElement, el.firstChild);
+    scene = new THREE.Scene(); scene.background = new THREE.Color(stageColor());
+    camera = new THREE.PerspectiveCamera(32, 4 / 3, 1, 2000); camera.position.set(-120, 55, 255);
+    controls = new THREE.OrbitControls(camera, renderer.domElement); controls.target.set(0, 0, 10); controls.enableDamping = true; controls.minDistance = 120; controls.maxDistance = 420; controls.enablePan = false;
+    scene.add(new THREE.HemisphereLight(0xffffff, 0x8a7a6a, 0.75));
+    var d = new THREE.DirectionalLight(0xffffff, 0.85); d.position.set(-60, 120, 160); scene.add(d);
+    var d2 = new THREE.DirectionalLight(0xffffff, 0.25); d2.position.set(120, -40, 80); scene.add(d2);
+    // wall
+    var wall = new THREE.Mesh(new THREE.PlaneGeometry(600, 600), new THREE.MeshStandardMaterial({ color: 0xE9E3DA, roughness: 1 }));
+    wall.position.z = -0.5; wall.userData.wall = true; scene.add(wall);
+    // frame: rounded square 90×90, 17 deep, with a vertical slot for the lever stem
+    var sh = new THREE.Shape(); rrect(sh, 88, 88, 3.5);
+    var hole = new THREE.Path(); var sw = 9.5, sl = 24;   // slot width / length
+    hole.moveTo(-sw / 2, -sl / 2 + sw / 2); hole.lineTo(-sw / 2, sl / 2 - sw / 2); hole.absarc(0, sl / 2 - sw / 2, sw / 2, Math.PI, 0, true); hole.lineTo(sw / 2, -sl / 2 + sw / 2); hole.absarc(0, -sl / 2 + sw / 2, sw / 2, 0, Math.PI, true);
+    sh.holes.push(hole);
+    var g = new THREE.ExtrudeGeometry(sh, { depth: 16, bevelEnabled: true, bevelThickness: 0.5, bevelSize: 0.8, bevelSegments: 3, curveSegments: 24 });
+    frameMat = new THREE.MeshStandardMaterial({ roughness: 0.82, metalness: 0 });
+    scene.add(new THREE.Mesh(g, frameMat));
+    // lever: stem + ball, pivots behind the slot (rocker switch inside)
+    leverMat = new THREE.MeshStandardMaterial({ roughness: 0.6, metalness: 0 });
+    leverGroup = new THREE.Group(); leverGroup.position.set(0, 0, 6);
+    var stem = new THREE.Mesh(new THREE.CylinderGeometry(3.6, 4.2, 34, 32), leverMat); stem.rotation.x = Math.PI / 2; stem.position.z = 17;
+    var ball = new THREE.Mesh(new THREE.SphereGeometry(12, 48, 32), leverMat); ball.position.z = 40;
+    leverGroup.add(stem, ball); scene.add(leverGroup);
+    resize(); window.addEventListener('resize', resize);
+    // tap the lever to flip it
+    var ray = new THREE.Raycaster(), down = null;
+    renderer.domElement.addEventListener('pointerdown', function (e) { down = [e.clientX, e.clientY]; });
+    renderer.domElement.addEventListener('pointerup', function (e) {
+      if (!down || Math.hypot(e.clientX - down[0], e.clientY - down[1]) > 6) return;
+      var r = renderer.domElement.getBoundingClientRect();
+      ray.setFromCamera({ x: (e.clientX - r.left) / r.width * 2 - 1, y: -(e.clientY - r.top) / r.height * 2 + 1 }, camera);
+      if (ray.intersectObjects(leverGroup.children).length) setOn(!st.on);
+    });
+    applyColors(); $('loading').style.display = 'none';
+    (function loop() { requestAnimationFrame(loop); lever.cur += (lever.goal - lever.cur) * 0.2; leverGroup.rotation.x = lever.cur * 0.32; controls.update(); renderer.render(scene, camera); })();
+  }
+  function resize() { var el = $('stage'), w = el.clientWidth, h = el.clientHeight; renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix(); }
+  function setOn(on) { st.on = on; lever.goal = on ? -1 : 1; $('stateTag').textContent = on ? 'เปิด (ON)' : 'ปิด (OFF)'; $('flip').textContent = on ? 'ดันคันโยกลง' : 'ดันคันโยกขึ้น'; }
+  function applyColors() {
+    if (!frameMat) return;
+    frameMat.color.set(COLORS[IDX[st.frame]][2]).convertSRGBToLinear(); leverMat.color.set(COLORS[IDX[st.lever]][2]).convertSRGBToLinear();
+  }
+  function snapshot() {
+    try {
+      var bg = scene.background; scene.background = new THREE.Color('#F3ECE4');
+      var cam = new THREE.PerspectiveCamera(32, 1, 1, 2000); cam.position.set(-95, 45, 235); cam.lookAt(0, 0, 12);
+      var r = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true }); r.outputEncoding = THREE.sRGBEncoding; r.setSize(360, 360, false);
+      r.render(scene, cam); var url = r.domElement.toDataURL('image/jpeg', 0.82); r.dispose(); scene.background = bg; return url;
+    } catch (e) { return ''; }
+  }
+
+  // ---------- UI ----------
+  function sw(name) { return COLORS[IDX[name]][2]; }
+  function buildPairs() {
+    var box = $('pairs'); box.textContent = '';
+    PAIRS.forEach(function (p) {
+      var b = document.createElement('button'); b.type = 'button'; b.className = 'tile pair';
+      b.style.background = sw(p[0]); b.title = 'กรอบ' + p[0] + ' × คันโยก' + p[1]; b.setAttribute('aria-label', b.title);
+      b.dataset.f = p[0]; b.dataset.l = p[1];
+      var i = document.createElement('i'); i.style.background = sw(p[1]); b.appendChild(i);
+      b.addEventListener('click', function () { st.frame = p[0]; st.lever = p[1]; update(); });
+      box.appendChild(b);
+    });
+  }
+  function buildDots(id, key) {
+    var box = $(id); box.textContent = '';
+    COLORS.forEach(function (c) {
+      if (HIDDEN.indexOf(c[0]) >= 0) return;
+      var b = document.createElement('button'); b.type = 'button'; b.className = 'dot'; b.style.background = c[2];
+      b.title = c[0] + ' · ' + c[1]; b.setAttribute('aria-label', c[0]); b.dataset.c = c[0]; b.dataset.k = key;
+      b.addEventListener('click', function () { st[key] = c[0]; update(); });
+      box.appendChild(b);
+    });
+  }
+  $('swap').addEventListener('click', function () { var t = st.frame; st.frame = st.lever; st.lever = t; update(); });
+  $('minus').addEventListener('click', function () { st.qty = Math.max(1, st.qty - 1); update(); });
+  $('plus').addEventListener('click', function () { st.qty = Math.min(MAX_QTY, st.qty + 1); update(); });
+  $('flip').addEventListener('click', function () { setOn(!st.on); });
+  $('fitOk').addEventListener('change', update);
+
+  function fmt(n) { return '฿' + n.toLocaleString('en-US'); }
+  function code() { return 'SF1.' + IDX[st.frame].toString(36) + IDX[st.lever].toString(36); }
+  var ORDER_URL = (/fixtory-studio\.pages\.dev$|^localhost$/.test(location.hostname) ? 'shop-order.html' : 'https://fixtory-studio.pages.dev/shop-order.html') + '?p=switchframe'
+    + (function () { try { var s = new URLSearchParams(location.search).get('sale'); return s ? '&sale=' + encodeURIComponent(s) : ''; } catch (e) { return ''; } })();   // keep the agent ref (?sale=)
+
+  function update() {
+    var pair = isPair(), n = st.qty, unit = PRICE(n);
+    var fee = pair || (CUSTOM_WAIVE_4PLUS && n >= 4) ? 0 : CUSTOM_FEE, total = unit * n + fee;
+    document.querySelectorAll('.tile.pair').forEach(function (b) { b.setAttribute('aria-pressed', b.dataset.f === st.frame && b.dataset.l === st.lever ? 'true' : 'false'); });
+    document.querySelectorAll('.dot').forEach(function (b) { b.setAttribute('aria-pressed', st[b.dataset.k] === b.dataset.c ? 'true' : 'false'); });
+    $('boxPair').dataset.on = String(pair); $('boxCustom').dataset.on = String(!pair);
+    $('pairName').textContent = pair ? 'กรอบ' + st.frame + ' × คันโยก' + st.lever : 'ตอนนี้เป็นสีที่ออกแบบเอง (ไม่ตรงคู่แนะนำ)';
+    $('frameName').textContent = st.frame; $('leverName').textContent = st.lever;
+    $('qty').textContent = n; $('minus').disabled = n <= 1; $('plus').disabled = n >= MAX_QTY;
+    $('modeLabel').textContent = pair ? 'คู่สีแนะนำ · พร้อมส่ง' : 'ออกแบบสีเอง · ผลิตตามสั่ง';
+    var L = $('lines'); L.textContent = '';
+    var row = function (a, b, cls) { var d = document.createElement('div'); if (cls) d.className = cls; var x = document.createElement('span'); x.textContent = a; var y = document.createElement('span'); y.textContent = b; d.append(x, y); L.appendChild(d); };
+    row('กรอบสวิตช์ ' + n + ' ชิ้น × ' + fmt(unit), fmt(unit * n));
+    if (!pair) row(fee ? 'งานผลิตเฉพาะตัว (สีที่ออกแบบเอง) ต่อออเดอร์' : 'งานผลิตเฉพาะตัว (4 ชิ้นขึ้นไป)', fee ? fmt(fee) : 'ฟรี');
+    row('รวม (ยังไม่รวมค่าส่ง)', fmt(total), 'tot');
+    $('total').textContent = fmt(total);
+    $('ship').textContent = n > SHIP_CAP ? 'มากกว่า ' + SHIP_CAP + ' ชิ้น ทักแชตเพื่อนัดวันส่ง' : n <= 2 ? 'ส่งออกจากร้านภายใน 1 วันทำการ (สั่งก่อน ' + CUTOFF + ' น.)' : 'ส่งออกจากร้านภายใน 2 วันทำการ';
+    var c = code(); $('code').textContent = c;
+    var ob = $('orderBtn'), ok = $('fitOk').checked;
+    ob.href = ORDER_URL + '&code=' + encodeURIComponent(c) + '&qty=' + n;
+    if (ok) ob.removeAttribute('aria-disabled'); else ob.setAttribute('aria-disabled', 'true');
+    ob.textContent = ok ? 'สั่งซื้อแบบนี้ · ' + fmt(total) : 'ติ๊ก "เช็กก่อนสั่ง" ก่อนสั่งซื้อ';
+    applyColors();
+  }
+  // a still picture for the order page's cart / summary (same site: shared localStorage)
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest && e.target.closest('#orderBtn'); if (!a || a.getAttribute('aria-disabled')) return;
+    try {
+      var c = code(), img = snapshot(); if (!img) return;
+      var K = 'fxSwitchImgs', list = JSON.parse(localStorage.getItem(K) || '[]').filter(function (x) { return x !== c; });
+      list.unshift(c); while (list.length > 30) localStorage.removeItem('fxSwitchImg:' + list.pop());
+      localStorage.setItem('fxSwitchImg:' + c, img); localStorage.setItem(K, JSON.stringify(list));
+    } catch (err) {}
+  }, true);
+  window.matchMedia && matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function () { if (scene) scene.background = new THREE.Color(stageColor()); });
+
+  buildPairs(); buildDots('pickFrame', 'frame'); buildDots('pickLever', 'lever'); update();
+  try { init3d(); setOn(true); } catch (e) { $('loading').textContent = 'โหลดภาพตัวอย่างไม่สำเร็จ ยังเลือกสีและสั่งซื้อได้ตามปกติ'; }
+})();
+</script>
+
+</body>
+</html>
