@@ -175,6 +175,7 @@ footer { text-align: center; color: var(--muted); font-size: 13px; padding-top: 
       <div class="modebox" id="boxCustom">
         <div class="modehead"><div class="step-t"><i>2</i>ออกแบบสีเอง · ผลิตตามสั่ง</div><span class="tag">+฿60 / ออเดอร์</span></div>
         <div class="hint">เลือกสีกรอบกับสีคันโยกได้ทุกสีในสต็อก (PETG) งานผลิตเฉพาะตัวสำหรับคุณ · เลือกสีเดียวกันทั้งสองแถว = ทั้งชิ้นสีเดียว</div>
+        <div class="hint"><b>สั่ง 4 ชิ้นขึ้นไปสีเดียวกัน ไม่มีค่าออกแบบเอง</b></div>
         <div class="subhead">สีกรอบ · <span class="pickname" id="frameName"></span></div>
         <div class="dots" id="pickFrame"></div>
         <div class="subhead">สีคันโยก · <span class="pickname" id="leverName"></span></div>
@@ -220,41 +221,44 @@ footer { text-align: center; color: var(--muted); font-size: 13px; padding-top: 
   // ---- settings (easy to change) ----
   var PRICE = function (n) { return n >= 4 ? 99 : n >= 2 ? 119 : 139; };   // per piece, both ways
   var CUSTOM_FEE = 60;                 // per order, custom colours (made to order)
-  var CUSTOM_WAIVE_4PLUS = false;      // turn on only when Fixtory Pricing confirms: 4+ pieces in one colour pair → no +฿60
+  var CUSTOM_WAIVE_4PLUS = true;       // Pricing confirmed 13 Nov: 4+ pieces, all the same colour pair → no +฿60
   var SHIP_CAP = 10, CUTOFF = '18:00'; // delivery-time text
   var MAX_QTY = 30;
 
-  // R3D PETG Matte (stock list from Ops, 9 Nov) + White/Black (3 kg spools).
+  // R3D PETG Matte — names/hex from the R3D spool table (PETG section) + White (ขาวด้าน)/Black (3 kg spools).
   // Order = colour code index: NEVER reorder or delete, only append. Hex = approximate screen colour, tune freely.
   var COLORS = [
-    ['ทองแดงโบราณ', 'Antique Copper', '#9A5B3C'],
-    ['ขาวโอ๊ต', 'Oat White', '#EDE3CF'],
+    ['ทองแดงโบราณ', 'Antique Copper', '#9C7A4A'],
+    ['ขาวโอ๊ต', 'Oat White', '#E3DACB'],
     ['เหลือง', 'Yellow', '#F2C230'],
-    ['สีผิวนวล', 'Nude', '#E8C9AE'],
-    ['น้ำตาล', 'Brown', '#7A4A2E'],
-    ['เขียวมะกอก', 'Olive Green', '#6F8566'],
-    ['ฟ้าหมอก', 'Haze Blue', '#BCD3EE'],
-    ['ฟ้าอ่อน', 'Light Blue', '#A9D2EA'],
-    ['เทาอุ่น', 'Warm Grey', '#9C948A'],
-    ['เทาอ่อน', 'Light Grey', '#C9CACB'],
-    ['ฟ้าอ่อนใส', 'Clear Light Blue', '#C2E4F0'],
-    ['ฟ้าธารน้ำแข็ง', 'Glacier Blue', '#8FB8C8'],
-    ['กรมท่าเข้ม', 'Navy', '#22305A'],
-    ['ขาวอมเขียว', 'Mint White', '#DCEBDC'],
-    ['ฟ้า', 'Blue', '#3E86C8'],
-    ['เขียวทหาร', 'Army Green', '#4E5A3A'],
-    ['ส้มเหลือง', 'Orange Yellow', '#E8862A'],
-    ['ชมพูแอปริคอต', 'Apricot Pink', '#F2B5B6'],
-    ['แดงไวน์', 'Wine Red', '#6E1F2A'],
-    ['เหลืองซิงค์', 'Zinc Yellow', '#E7D84A'],
-    ['แดงจีน', 'Chinese Red', '#C8222A'],
-    ['ขาว', 'White', '#F4F4F1'],
-    ['ดำ', 'Black', '#262626']
+    ['สีผิวนวล', 'Nude', '#E2CDB8'],
+    ['น้ำตาล', 'Brown', '#6B4A36'],
+    ['เขียวมะกอก', 'Olive Green', '#6F7448'],
+    ['ฟ้าหมอก', 'Haze Blue', '#8C9FB0'],
+    ['ฟ้าอ่อน', 'Light Blue', '#AFD3E8'],
+    ['เทาอุ่น', 'Warm Grey', '#9A948C'],
+    ['เทาอ่อน', 'Light Grey', '#C4C4C2'],
+    ['ฟ้าอ่อนใส', 'Clear Light Blue', '#A9CBE6'],
+    ['ฟ้าธารน้ำแข็ง', 'Glacier Blue', '#CFE6EE'],
+    ['กรมท่าเข้ม', 'Navy', '#22324F'],
+    ['ขาวอมเขียว', 'Mint White', '#D6E6D8'],
+    ['ฟ้า', 'Blue', '#7DB8E0'],
+    ['เขียวทหาร', 'Army Green', '#4E5B3E'],
+    ['ส้มเหลือง', 'Orange Yellow', '#EE8A2A'],
+    ['ชมพูแอปริคอต', 'Apricot Pink', '#EBC3C0'],
+    ['แดงไวน์', 'Wine Red', '#6E2430'],
+    ['เหลืองซิงค์', 'Zinc Yellow', '#EFD94A'],
+    ['แดงจีน', 'Chinese Red', '#C7282E'],
+    ['ขาว', 'White', '#F2F1EC'],
+    ['ดำ', 'Black', '#262626'],
+    ['เหลืองแอปริคอตนม', 'Milk Apricot', '#EFD7A6'],
+    ['กากี', 'Khaki', '#B5A47E'],
+    ['เขียวสดใส', 'Fresh Green', '#8ED3A4']
   ];
   var IDX = {}; COLORS.forEach(function (c, i) { IDX[c[0]] = i; });
   var HIDDEN = [];   // colour names out of stock right now — hidden from "ออกแบบสีเอง" (codes stay valid)
   // ready-to-ship pairs [frame, lever] — order approved by AU 13 Nov
-  var PAIRS = [['ขาว', 'เหลือง'], ['ขาวโอ๊ต', 'น้ำตาล'], ['กรมท่าเข้ม', 'ขาว'], ['ชมพูแอปริคอต', 'แดงจีน'], ['ฟ้าหมอก', 'เหลือง'], ['ดำ', 'ส้มเหลือง'], ['เขียวมะกอก', 'แดงจีน']];
+  var PAIRS = [['ขาว', 'เหลือง'], ['ขาวโอ๊ต', 'น้ำตาล'], ['กรมท่าเข้ม', 'ขาว'], ['ชมพูแอปริคอต', 'แดงจีน'], ['ฟ้าหมอก', 'เหลือง'], ['ดำ', 'ส้มเหลือง'], ['เขียวทหาร', 'แดงจีน']];
 
   var st = { frame: 'ขาว', lever: 'เหลือง', qty: 1, on: true };
   var isPair = function () { return PAIRS.some(function (p) { return p[0] === st.frame && p[1] === st.lever; }); };
