@@ -371,6 +371,29 @@ function kcSVG(it,orient){
     var matte = function (hex) { return new THREE.MeshStandardMaterial({ color: col(hex), roughness: 0.9, metalness: 0 }); };
     function rrShape(w, h, r) { var s = new THREE.Shape(), x = -w / 2, y = -h / 2; s.moveTo(x + r, y); s.lineTo(x + w - r, y); s.quadraticCurveTo(x + w, y, x + w, y + r); s.lineTo(x + w, y + h - r); s.quadraticCurveTo(x + w, y + h, x + w - r, y + h); s.lineTo(x + r, y + h); s.quadraticCurveTo(x, y + h, x, y + h - r); s.lineTo(x, y + r); s.quadraticCurveTo(x, y, x + r, y); return s; }
     function slab(w, h, r, depth, bev) { var g = new THREE.ExtrudeGeometry(rrShape(w, h, r), { depth: depth, bevelEnabled: !!bev, bevelThickness: bev || 0, bevelSize: bev || 0, bevelSegments: 3, curveSegments: 10 }); return g; }
+    // keycap like the printed one: chamfered square (octagon), tapered sides, raised octagon frame + raised serif letter
+    function octShape(w, c) { var s = new THREE.Shape(), a = w / 2; s.moveTo(-a + c, -a); s.lineTo(a - c, -a); s.lineTo(a, -a + c); s.lineTo(a, a - c); s.lineTo(a - c, a); s.lineTo(-a + c, a); s.lineTo(-a, a - c); s.lineTo(-a, -a + c); s.closePath(); return s; }
+    function taper(geo, depth, k) { var p = geo.attributes.position; for (var i = 0; i < p.count; i++) { var f = 1 - (1 - k) * Math.min(1, Math.max(0, p.getZ(i) / depth)); p.setXY(i, p.getX(i) * f, p.getY(i) * f); } geo.computeVertexNormals(); return geo; }
+    function keyBody(K, H, k) { return taper(new THREE.ExtrudeGeometry(octShape(K, K * 0.13), { depth: H, bevelEnabled: false, steps: 1 }), H, k); }
+    function keyRim(w, c, t, h) { var o = octShape(w, c), i = octShape(w - 2 * t, c * 0.75); o.holes.push(new THREE.Path(i.getPoints().reverse())); return new THREE.ExtrudeGeometry(o, { depth: h, bevelEnabled: true, bevelThickness: 0.15, bevelSize: 0.12, bevelSegments: 1, steps: 1 }); }
+    var glyphCache = {};
+    function glyphTex(ch, hex) {   // letter / heart / face on a transparent canvas (layered → raised look)
+      var key = ch + '|' + hex; if (glyphCache[key]) return glyphCache[key];
+      var c = document.createElement('canvas'); c.width = c.height = 256; var g = c.getContext('2d');
+      var tex = new THREE.CanvasTexture(c); tex.encoding = THREE.sRGBEncoding; tex.anisotropy = 4;
+      var face = kcFaceInner(ch);
+      function draw() {
+        g.clearRect(0, 0, 256, 256);
+        if (face) return;
+        g.fillStyle = hex; g.textAlign = 'center'; g.textBaseline = 'middle';
+        if (ch === '❤') { g.font = '700 170px "Segoe UI Symbol", sans-serif'; g.fillText('♥', 128, 136); }
+        else { g.font = '400 235px "DM Serif Display", Georgia, "Times New Roman", serif'; g.lineWidth = 10; g.strokeStyle = hex; g.lineJoin = 'round'; g.fillText(ch, 128, 150); g.strokeText(ch, 128, 150); }
+        tex.needsUpdate = true; need = true;
+      }
+      if (face) { var im = new Image(); im.onload = function () { g.drawImage(im, 24, 24, 208, 208); tex.needsUpdate = true; need = true; }; im.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="208" height="208">' + face + '</svg>'); }
+      else { draw(); if (document.fonts && document.fonts.load) document.fonts.load('400 40px "DM Serif Display"').then(draw, function () {}); }
+      return (glyphCache[key] = tex);
+    }
     var texCache = {};
     function faceTex(ch, body, frame) {   // the printed key top: body colour, frame ring, letter / heart / emoji
       var key = ch + '|' + body + '|' + frame; if (texCache[key]) return texCache[key];
@@ -400,10 +423,14 @@ function kcSVG(it,orient){
         var c = kcResolve(kc.col, cols[i] || KC_COLS[kc.col].vary[0]), B = KC_HEX[c.body];
         var off = -L / 2 + pad + K / 2 + i * (K + gap), x = vert ? 0 : off, y = vert ? -off : 0;
         var g = new THREE.Group(); g.position.set(x, y, 7.6);
-        var skirt = new THREE.Mesh(slab(K, K, 3, 4, 0.6), matte(kcShade(B, -0.18))); g.add(skirt);
-        var top = new THREE.Mesh(slab(K * 0.8, K * 0.8, 2.6, 3, 0.8), matte(B)); top.position.set(0, 0.6, 4); g.add(top);
-        var face = new THREE.Mesh(new THREE.PlaneGeometry(K * 0.8, K * 0.8), new THREE.MeshStandardMaterial({ map: faceTex(ch, c.body, c.frame), roughness: 0.9, metalness: 0 }));
-        face.position.set(0, 0.6, 7.86); g.add(face);
+        var F = KC_HEX[c.frame] || '#ffffff', H = 8, k = 0.8, T = K * k;   // body height 8, top = 80% of base
+        g.add(new THREE.Mesh(keyBody(K, H, k), matte(B)));                     // tapered body, chamfered corners, flat top (body colour)
+        var rim = new THREE.Mesh(keyRim(T - 0.5, T * 0.15, 1.5, 0.9), matte(F)); rim.position.z = H; g.add(rim);   // raised octagon frame (2nd colour)
+        var gs = T - 3.6, isFace = !!kcFaceInner(ch), layers = isFace ? 1 : 4;
+        for (var l = 0; l < layers; l++) {                                    // raised letter: stacked cut-outs, darker below = visible side wall
+          var m = new THREE.MeshStandardMaterial({ map: glyphTex(ch, l === layers - 1 ? F : kcShade(F, -0.22)), transparent: true, alphaTest: 0.5, roughness: 0.9, metalness: 0, depthWrite: true });
+          var gl = new THREE.Mesh(new THREE.PlaneGeometry(gs, gs), m); gl.position.z = H + 0.03 + l * 0.22; g.add(gl);
+        }
         root.add(g);
       });
       // strap: ring + loop + knot, at the top (vertical) or left (horizontal)
