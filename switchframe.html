@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="กรอบสวิตช์ไฟแบบคันโยก ครอบสวิตช์ปุ่มกระดกเดิม เลือกคู่สีพร้อมส่ง หรือออกแบบสีกรอบและคันโยกเอง">
+<meta name="description" content="กรอบสวิตช์ไฟแบบคันโยก ครอบสวิตช์ปุ่มกระดกเดิม เลือกสีได้ 3 ส่วน กรอบ ก้าน หัวกลม · ฿199 ราคาเดียวทุกสี">
 <meta property="og:title" content="กรอบสวิตช์ไฟแบบคันโยก · Fixtory Studio">
 <meta property="og:image" content="https://fixtory-studio.pages.dev/switchframe_poster_th.jpg">
 <link rel="icon" href="icons/icon-192.png">
@@ -116,7 +116,7 @@ footer { text-align: center; color: var(--muted); font-size: 13px; padding-top: 
 </style>
 
 <style>
-/* Lever Switch Cover designer: live 3D frame + lever, two ways to order (ready pair / custom colours) */
+/* Lever Switch Cover designer: live 3D frame + stem + ball, 3 colour pickers, one price for every colour */
 @media (max-width: 860px) { .app { grid-template-columns: minmax(0, 1fr); grid-template-areas: "viz" "panel" "sum"; } }
 .modehead { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
 .modehead .tag { font-size: 12px; font-weight: 600; border-radius: 999px; padding: 2px 10px; background: var(--sunk); color: var(--accent-text); }
@@ -124,7 +124,9 @@ footer { text-align: center; color: var(--muted); font-size: 13px; padding-top: 
 .modebox[data-on="true"] { box-shadow: inset 0 0 0 2px var(--accent); background: color-mix(in srgb, var(--sunk) 45%, transparent); }
 .tiles { display: flex; flex-wrap: wrap; gap: 8px; }
 .tile { border: 0; padding: 0; cursor: pointer; width: 64px; height: 64px; border-radius: 14px; position: relative; box-shadow: inset 0 0 0 1px rgba(44,36,32,.18); }
-.tile i { position: absolute; left: 50%; top: 50%; width: 24px; height: 24px; margin: -12px 0 0 -12px; border-radius: 50%; box-shadow: 0 2px 4px rgba(0,0,0,.25), inset 0 0 0 1px rgba(0,0,0,.12); }
+.tile i { position: absolute; left: 50%; top: 50%; width: 24px; height: 24px; margin: -18px 0 0 -12px; border-radius: 50%; box-shadow: 0 2px 4px rgba(0,0,0,.25), inset 0 0 0 1px rgba(0,0,0,.12); z-index: 1; }
+.tile s { position: absolute; left: 50%; top: 50%; width: 8px; height: 22px; margin: -6px 0 0 -4px; border-radius: 2px; box-shadow: inset 0 0 0 1px rgba(0,0,0,.18); }
+.dice { min-height: 34px; padding: 4px 14px; font-size: 14px; }
 .tile[aria-pressed="true"] { box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px var(--accent); }
 .dots { display: flex; flex-wrap: wrap; gap: 6px; }
 .dot { width: 30px; height: 30px; border-radius: 50%; border: 0; cursor: pointer; padding: 0; box-shadow: inset 0 0 0 1px rgba(44,36,32,.2); }
@@ -150,7 +152,7 @@ footer { text-align: center; color: var(--muted); font-size: 13px; padding-top: 
   <header>
     <span class="brand"><svg viewBox="0 0 40 58" aria-hidden="true"><rect x="15.5" y="0" width="9" height="4.5" rx="1.6" fill="#C4714A"/><rect x="18" y="4" width="4" height="3.5" fill="#A85E3B"/><path d="M20 7.5L36 16.5L20 25.5L4 16.5Z" fill="#C97A53"/><path d="M4 16.5L20 25.5V28.5L4 19.5Z" fill="#A85E3B"/><path d="M36 16.5L20 25.5V28.5L36 19.5Z" fill="#B66A43"/><path d="M4 24.0L20 33.0L36 24.0V28.2L20 37.2L4 28.2Z" fill="#B4663F"/><path d="M4 29.2L20 38.2L36 29.2V33.4L20 42.4L4 33.4Z" fill="#9A5737"/><path d="M4 34.4L20 43.4L36 34.4V38.6L20 47.6L4 38.6Z" fill="#7C4830"/><path d="M4 39.6L20 48.6L36 39.6V43.8L20 52.8L4 43.8Z" fill="#5E3A2A"/><path d="M4 44.8L20 53.8L36 44.8V49.0L20 58.0L4 49.0Z" fill="#432D24"/></svg>FIXTORY<em>.STUDIO</em></span>
     <h1>กรอบสวิตช์ไฟแบบคันโยก</h1>
-    <p class="lede">Lever Switch Cover · ครอบสวิตช์ปุ่มกระดกเดิม ดันคันโยกขึ้น = เปิด ดันลง = ปิด เลือกคู่สีพร้อมส่ง หรือออกแบบสีกรอบกับสีคันโยกเอง</p>
+    <p class="lede">Lever Switch Cover · ครอบสวิตช์ปุ่มกระดกเดิม ดันคันโยกขึ้น = เปิด ดันลง = ปิด เลือกสีได้ 3 ส่วน: กรอบ · ก้าน · หัวกลม <b style="color:var(--ink)">฿199</b> ราคาเดียวทุกสี</p>
   </header>
 
   <div class="app">
@@ -166,31 +168,33 @@ footer { text-align: center; color: var(--muted); font-size: 13px; padding-top: 
 
     <section class="panel" aria-label="เลือกแบบ">
       <div class="modebox" id="boxPair">
-        <div class="modehead"><div class="step-t"><i>1</i>คู่สีแนะนำ · พร้อมส่ง</div><span class="tag">฿139 / ชิ้น</span></div>
-        <div class="hint">กรอบ × คันโยก <button type="button" class="btn line" id="swap" style="min-height:30px;padding:3px 12px;font-size:13px;margin-left:6px">⇄ สลับสี</button></div>
+        <div class="modehead"><div class="step-t"><i>1</i>ชุดสีแนะนำ</div><span class="tag">ราคาเท่ากับเลือกเอง</span></div>
+        <div class="hint">กรอบ × ก้าน × หัวกลม · แตะเพื่อใช้เป็นไกด์ แล้วปรับต่อในข้อ 2 ได้</div>
         <div class="tiles" id="pairs"></div>
         <div class="hint" id="pairName"></div>
       </div>
 
-      <div class="modebox" id="boxCustom">
-        <div class="modehead"><div class="step-t"><i>2</i>ออกแบบสีเอง · ผลิตตามสั่ง</div><span class="tag">+฿60 / ออเดอร์</span></div>
-        <div class="hint">เลือกสีกรอบกับสีคันโยกได้ทุกสีในสต็อก (PETG) งานผลิตเฉพาะตัวสำหรับคุณ · เลือกสีเดียวกันทั้งสองแถว = ทั้งชิ้นสีเดียว</div>
-        <div class="hint"><b>สั่ง 4 ชิ้นขึ้นไปสีเดียวกัน ไม่มีค่าออกแบบเอง</b></div>
+      <div class="modebox" id="boxCustom" data-on="true">
+        <div class="modehead"><div class="step-t"><i>2</i>เลือกสี 3 ส่วน</div><button type="button" class="btn line dice" id="dice">🎲 สุ่มสี</button></div>
+        <div class="hint">เลือกได้ทุกสีในสต็อก (PETG) · ราคาเดียวทุกสี</div>
         <div class="subhead">สีกรอบ · <span class="pickname" id="frameName"></span></div>
         <div class="dots" id="pickFrame"></div>
-        <div class="subhead">สีคันโยก · <span class="pickname" id="leverName"></span></div>
-        <div class="dots" id="pickLever"></div>
+        <div class="subhead">สีก้าน · <span class="pickname" id="stemName"></span></div>
+        <div class="dots" id="pickStem"></div>
+        <div class="subhead">สีหัวกลม · <span class="pickname" id="ballName"></span></div>
+        <div class="dots" id="pickBall"></div>
       </div>
 
       <div class="step">
         <div class="step-t"><i>3</i>จำนวน</div>
         <div class="qty"><button type="button" class="pm" id="minus" aria-label="ลดจำนวน">−</button><output id="qty">1</output><button type="button" class="pm" id="plus" aria-label="เพิ่มจำนวน">+</button><span class="hint">ชิ้น · สีเดียวกันทุกชิ้น</span></div>
-        <div class="tiers">฿139 / ชิ้น · 2–3 ชิ้น <b>฿119</b> / ชิ้น · 4 ชิ้นขึ้นไป <b>฿99</b> / ชิ้น</div>
+        <div class="tiers">1 ชิ้น <b>฿199</b> · 2–3 ชิ้น <b>฿179</b> / ชิ้น · 4 ชิ้นขึ้นไป <b>฿169</b> / ชิ้น · 10 ชิ้นขึ้นไปทักแชต</div>
+        <div class="warn" id="bulk" hidden>สั่ง 10 ชิ้นขึ้นไป ทักแชตร้าน (TikTok / Facebook / โทร 081-336-8232) เพื่อคุยราคาและวันส่ง</div>
       </div>
     </section>
 
     <section class="summary" aria-label="สรุปและสั่งซื้อ">
-      <div class="price-row"><span class="hint" id="modeLabel">คู่สีแนะนำ · พร้อมส่ง</span><span class="price" id="total">฿139</span></div>
+      <div class="price-row"><span class="hint" id="modeLabel"></span><span class="price" id="total">฿199</span></div>
       <div class="lines" id="lines"></div>
       <div class="ship" id="ship"></div>
       <div class="hint">ระยะเวลาขนส่งประมาณ 1–3 วัน</div>
@@ -219,11 +223,10 @@ footer { text-align: center; color: var(--muted); font-size: 13px; padding-top: 
   var $ = function (id) { return document.getElementById(id); };
 
   // ---- settings (easy to change) ----
-  var PRICE = function (n) { return n >= 4 ? 99 : n >= 2 ? 119 : 139; };   // per piece, both ways
-  var CUSTOM_FEE = 60;                 // per order, custom colours (made to order)
-  var CUSTOM_WAIVE_4PLUS = true;       // Pricing confirmed 13 Nov: 4+ pieces, all the same colour pair → no +฿60
-  var SHIP_CAP = 10, CUTOFF = '18:00'; // delivery-time text
-  var MAX_QTY = 30;
+  // Pricing approved by AU 14 Nov: one price for every colour (no custom fee) · 10+ pieces → chat
+  var PRICE = function (n) { return n >= 4 ? 169 : n >= 2 ? 179 : 199; };   // per piece
+  var CUTOFF = '18:00';                // delivery-time text
+  var MAX_QTY = 9;                     // 10 pieces and up: ask in chat
 
   // R3D PETG Matte — names/hex from the R3D spool table (PETG section) + White (ขาวด้าน)/Black (3 kg spools).
   // Order = colour code index: NEVER reorder or delete, only append. Hex = approximate screen colour, tune freely.
@@ -256,15 +259,24 @@ footer { text-align: center; color: var(--muted); font-size: 13px; padding-top: 
     ['เขียวสดใส', 'Fresh Green', '#8ED3A4']
   ];
   var IDX = {}; COLORS.forEach(function (c, i) { IDX[c[0]] = i; });
-  var HIDDEN = ['ฟ้าอ่อน (รีฟิล)'];   // colour names out of stock right now — hidden from "ออกแบบสีเอง" (codes stay valid)
-  // ready-to-ship pairs [frame, lever] — order approved by AU 13 Nov
-  var PAIRS = [['ขาว', 'เหลือง'], ['ขาวโอ๊ต', 'น้ำตาล'], ['กรมท่าเข้ม', 'ขาว'], ['ชมพูแอปริคอต', 'แดงจีน'], ['ฟ้าหมอก', 'เหลือง'], ['ดำ', 'ส้มเหลือง'], ['เขียวทหาร', 'แดงจีน']];
+  var HIDDEN = ['ฟ้าอ่อน (รีฟิล)'];   // colour names out of stock right now — hidden from the pickers (codes stay valid)
+  // "ชุดสีแนะนำ" [frame, stem, ball] — a guide only, same price as any colours. First = the real photo (ref/switchframe-3color)
+  var PAIRS = [['ดำ', 'ขาว', 'แดงจีน'], ['ขาว', 'ขาว', 'เหลือง'], ['ขาวโอ๊ต', 'ขาวโอ๊ต', 'น้ำตาล'], ['กรมท่าเข้ม', 'ขาว', 'ส้มเหลือง'], ['ชมพูแอปริคอต', 'ขาว', 'แดงจีน'], ['ฟ้าหมอก', 'ขาว', 'เหลือง'], ['เขียวทหาร', 'กากี', 'แดงจีน']];
 
-  var st = { frame: 'ขาว', lever: 'เหลือง', qty: 1, on: true };
-  var isPair = function () { return PAIRS.some(function (p) { return p[0] === st.frame && p[1] === st.lever; }); };
+  var st = { frame: 'ดำ', stem: 'ขาว', ball: 'แดงจีน', qty: 1, on: true };
+  var isPair = function () { return PAIRS.some(function (p) { return p[0] === st.frame && p[1] === st.stem && p[2] === st.ball; }); };
+  // design code: SF2.<frame><stem><ball> (base 36 = COLORS index) · old links SF1.<frame><lever> still open (stem = ball = lever)
+  (function readCode() {
+    try {
+      var c = (new URLSearchParams(location.search).get('code') || '').trim().toLowerCase(), m, v = function (ch) { var i = parseInt(ch, 36); return COLORS[i] ? COLORS[i][0] : null; };
+      if ((m = /^sf2\.([0-9a-z])([0-9a-z])([0-9a-z])$/.exec(c))) { if (v(m[1]) && v(m[2]) && v(m[3])) { st.frame = v(m[1]); st.stem = v(m[2]); st.ball = v(m[3]); } }
+      else if ((m = /^sf1\.([0-9a-z])([0-9a-z])$/.exec(c))) { if (v(m[1]) && v(m[2])) { st.frame = v(m[1]); st.stem = st.ball = v(m[2]); } }
+      var q = parseInt(new URLSearchParams(location.search).get('qty'), 10); if (q >= 1) st.qty = Math.min(q, MAX_QTY);
+    } catch (e) {}
+  })();
 
   // ---------- 3D ----------
-  var scene, camera, renderer, controls, frameMat, leverMat, leverGroup, lever = { cur: -1, goal: -1 };
+  var scene, camera, renderer, controls, frameMat, stemMat, ballMat, leverGroup, lever = { cur: -1, goal: -1 };
   function rrect(s, w, h, r) { var x = -w / 2, y = -h / 2; s.moveTo(x + r, y); s.lineTo(x + w - r, y); s.quadraticCurveTo(x + w, y, x + w, y + r); s.lineTo(x + w, y + h - r); s.quadraticCurveTo(x + w, y + h, x + w - r, y + h); s.lineTo(x + r, y + h); s.quadraticCurveTo(x, y + h, x, y + h - r); s.lineTo(x, y + r); s.quadraticCurveTo(x, y, x + r, y); }
   function stageColor() { return getComputedStyle(document.documentElement).getPropertyValue('--stage').trim() || '#EFE4D8'; }
   function init3d() {
@@ -291,10 +303,11 @@ footer { text-align: center; color: var(--muted); font-size: 13px; padding-top: 
     frameMat = new THREE.MeshStandardMaterial({ roughness: 0.82, metalness: 0 });
     scene.add(new THREE.Mesh(g, frameMat));
     // lever: stem + ball, pivots behind the slot (rocker switch inside)
-    leverMat = new THREE.MeshStandardMaterial({ roughness: 0.6, metalness: 0 });
+    stemMat = new THREE.MeshStandardMaterial({ roughness: 0.6, metalness: 0 });
+    ballMat = new THREE.MeshStandardMaterial({ roughness: 0.6, metalness: 0 });
     leverGroup = new THREE.Group(); leverGroup.position.set(0, 0, 6);
-    var stem = new THREE.Mesh(new THREE.CylinderGeometry(3.6, 4.2, 34, 32), leverMat); stem.rotation.x = Math.PI / 2; stem.position.z = 17;
-    var ball = new THREE.Mesh(new THREE.SphereGeometry(12, 48, 32), leverMat); ball.position.z = 40;
+    var stem = new THREE.Mesh(new THREE.CylinderGeometry(3.6, 4.2, 34, 32), stemMat); stem.rotation.x = Math.PI / 2; stem.position.z = 17;
+    var ball = new THREE.Mesh(new THREE.SphereGeometry(12, 48, 32), ballMat); ball.position.z = 40;
     leverGroup.add(stem, ball); scene.add(leverGroup);
     resize(); window.addEventListener('resize', resize);
     // tap the lever to flip it
@@ -313,7 +326,7 @@ footer { text-align: center; color: var(--muted); font-size: 13px; padding-top: 
   function setOn(on) { st.on = on; lever.goal = on ? -1 : 1; $('stateTag').textContent = on ? 'เปิด (ON)' : 'ปิด (OFF)'; $('flip').textContent = on ? 'ดันคันโยกลง' : 'ดันคันโยกขึ้น'; }
   function applyColors() {
     if (!frameMat) return;
-    frameMat.color.set(COLORS[IDX[st.frame]][2]).convertSRGBToLinear(); leverMat.color.set(COLORS[IDX[st.lever]][2]).convertSRGBToLinear();
+    frameMat.color.set(sw(st.frame)).convertSRGBToLinear(); stemMat.color.set(sw(st.stem)).convertSRGBToLinear(); ballMat.color.set(sw(st.ball)).convertSRGBToLinear();
   }
   function snapshot() {
     try {
@@ -330,10 +343,11 @@ footer { text-align: center; color: var(--muted); font-size: 13px; padding-top: 
     var box = $('pairs'); box.textContent = '';
     PAIRS.forEach(function (p) {
       var b = document.createElement('button'); b.type = 'button'; b.className = 'tile pair';
-      b.style.background = sw(p[0]); b.title = 'กรอบ' + p[0] + ' × คันโยก' + p[1]; b.setAttribute('aria-label', b.title);
-      b.dataset.f = p[0]; b.dataset.l = p[1];
-      var i = document.createElement('i'); i.style.background = sw(p[1]); b.appendChild(i);
-      b.addEventListener('click', function () { st.frame = p[0]; st.lever = p[1]; update(); });
+      b.style.background = sw(p[0]); b.title = setName(p[0], p[1], p[2]); b.setAttribute('aria-label', b.title);
+      b.dataset.f = p[0]; b.dataset.s = p[1]; b.dataset.b = p[2];
+      var k = document.createElement('s'); k.style.background = sw(p[1]); b.appendChild(k);
+      var i = document.createElement('i'); i.style.background = sw(p[2]); b.appendChild(i);
+      b.addEventListener('click', function () { st.frame = p[0]; st.stem = p[1]; st.ball = p[2]; update(); });
       box.appendChild(b);
     });
   }
@@ -347,34 +361,37 @@ footer { text-align: center; color: var(--muted); font-size: 13px; padding-top: 
       box.appendChild(b);
     });
   }
-  $('swap').addEventListener('click', function () { var t = st.frame; st.frame = st.lever; st.lever = t; update(); });
+  function setName(f, s, b) { return 'กรอบ' + f + ' × ก้าน' + s + ' × หัว' + b; }
+  $('dice').addEventListener('click', function () {
+    var pool = COLORS.filter(function (c) { return HIDDEN.indexOf(c[0]) < 0; }).map(function (c) { return c[0]; });
+    var r = function () { return pool[Math.floor(Math.random() * pool.length)]; };
+    st.frame = r(); st.stem = r(); st.ball = r(); update();
+  });
   $('minus').addEventListener('click', function () { st.qty = Math.max(1, st.qty - 1); update(); });
   $('plus').addEventListener('click', function () { st.qty = Math.min(MAX_QTY, st.qty + 1); update(); });
   $('flip').addEventListener('click', function () { setOn(!st.on); });
   $('fitOk').addEventListener('change', update);
 
   function fmt(n) { return '฿' + n.toLocaleString('en-US'); }
-  function code() { return 'SF1.' + IDX[st.frame].toString(36) + IDX[st.lever].toString(36); }
+  function code() { return 'SF2.' + IDX[st.frame].toString(36) + IDX[st.stem].toString(36) + IDX[st.ball].toString(36); }
   var ORDER_URL = (/fixtory-studio\.pages\.dev$|^localhost$/.test(location.hostname) ? 'shop-order.html' : 'https://fixtory-studio.pages.dev/shop-order.html') + '?p=switchframe'
     + (function () { try { var s = new URLSearchParams(location.search).get('sale'); return s ? '&sale=' + encodeURIComponent(s) : ''; } catch (e) { return ''; } })();   // keep the agent ref (?sale=)
 
   function update() {
-    var pair = isPair(), n = st.qty, unit = PRICE(n);
-    var fee = pair || (CUSTOM_WAIVE_4PLUS && n >= 4) ? 0 : CUSTOM_FEE, total = unit * n + fee;
-    document.querySelectorAll('.tile.pair').forEach(function (b) { b.setAttribute('aria-pressed', b.dataset.f === st.frame && b.dataset.l === st.lever ? 'true' : 'false'); });
+    var pair = isPair(), n = st.qty, unit = PRICE(n), total = unit * n;
+    document.querySelectorAll('.tile.pair').forEach(function (b) { b.setAttribute('aria-pressed', b.dataset.f === st.frame && b.dataset.s === st.stem && b.dataset.b === st.ball ? 'true' : 'false'); });
     document.querySelectorAll('.dot').forEach(function (b) { b.setAttribute('aria-pressed', st[b.dataset.k] === b.dataset.c ? 'true' : 'false'); });
-    $('boxPair').dataset.on = String(pair); $('boxCustom').dataset.on = String(!pair);
-    $('pairName').textContent = pair ? 'กรอบ' + st.frame + ' × คันโยก' + st.lever : 'ตอนนี้เป็นสีที่ออกแบบเอง (ไม่ตรงคู่แนะนำ)';
-    $('frameName').textContent = st.frame; $('leverName').textContent = st.lever;
-    $('qty').textContent = n; $('minus').disabled = n <= 1; $('plus').disabled = n >= MAX_QTY;
-    $('modeLabel').textContent = pair ? 'คู่สีแนะนำ · พร้อมส่ง' : 'ออกแบบสีเอง · ผลิตตามสั่ง';
+    $('boxPair').dataset.on = String(pair);
+    $('pairName').textContent = pair ? setName(st.frame, st.stem, st.ball) : 'ตอนนี้เป็นสีที่เลือกเอง · ราคาเท่ากัน';
+    $('frameName').textContent = st.frame; $('stemName').textContent = st.stem; $('ballName').textContent = st.ball;
+    $('qty').textContent = n; $('minus').disabled = n <= 1; $('plus').disabled = n >= MAX_QTY; $('bulk').hidden = n < MAX_QTY;
+    $('modeLabel').textContent = setName(st.frame, st.stem, st.ball);
     var L = $('lines'); L.textContent = '';
     var row = function (a, b, cls) { var d = document.createElement('div'); if (cls) d.className = cls; var x = document.createElement('span'); x.textContent = a; var y = document.createElement('span'); y.textContent = b; d.append(x, y); L.appendChild(d); };
-    row('กรอบสวิตช์ ' + n + ' ชิ้น × ' + fmt(unit), fmt(unit * n));
-    if (!pair) row(fee ? 'งานผลิตเฉพาะตัว (สีที่ออกแบบเอง) ต่อออเดอร์' : 'งานผลิตเฉพาะตัว (4 ชิ้นขึ้นไป)', fee ? fmt(fee) : 'ฟรี');
+    row('กรอบสวิตช์ ' + n + ' ชิ้น × ' + fmt(unit) + ' / ชิ้น', fmt(total));
     row('รวม (ยังไม่รวมค่าส่ง)', fmt(total), 'tot');
     $('total').textContent = fmt(total);
-    $('ship').textContent = n > SHIP_CAP ? 'มากกว่า ' + SHIP_CAP + ' ชิ้น ทักแชตเพื่อนัดวันส่ง' : n <= 2 ? 'ส่งออกจากร้านภายใน 1 วันทำการ (สั่งก่อน ' + CUTOFF + ' น.)' : 'ส่งออกจากร้านภายใน 2 วันทำการ';
+    $('ship').textContent = n <= 2 ? 'ส่งออกจากร้านภายใน 1 วันทำการ (สั่งก่อน ' + CUTOFF + ' น.)' : 'ส่งออกจากร้านภายใน 2 วันทำการ';
     var c = code(); $('code').textContent = c;
     var ob = $('orderBtn'), ok = $('fitOk').checked;
     ob.href = ORDER_URL + '&code=' + encodeURIComponent(c) + '&qty=' + n;
@@ -394,7 +411,7 @@ footer { text-align: center; color: var(--muted); font-size: 13px; padding-top: 
   }, true);
   window.matchMedia && matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function () { if (scene) scene.background = new THREE.Color(stageColor()); });
 
-  buildPairs(); buildDots('pickFrame', 'frame'); buildDots('pickLever', 'lever'); update();
+  buildPairs(); buildDots('pickFrame', 'frame'); buildDots('pickStem', 'stem'); buildDots('pickBall', 'ball'); update();
   try { init3d(); setOn(true); } catch (e) { $('loading').textContent = 'โหลดภาพตัวอย่างไม่สำเร็จ ยังเลือกสีและสั่งซื้อได้ตามปกติ'; }
 })();
 </script>
