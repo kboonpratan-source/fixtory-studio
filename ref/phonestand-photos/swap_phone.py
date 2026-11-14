@@ -60,6 +60,15 @@ a_ai, a_old = np.degrees(np.arctan(0.508)), np.degrees(np.arctan(0.663))
 A = cv2.getRotationMatrix2D(BR, -(a_old - a_ai), S)
 tgt = (335, 1466)
 A[:, 2] += np.array(tgt) - np.array(BR)
+# narrow the visible face (turn the phone towards a side view) so its bottom fits inside the stand:
+# squeeze across the phone axis, keeping the back edge (right frame line) where it is
+K = float(sys.argv[5]) if len(sys.argv) > 5 else 1.0
+u = np.array([np.sin(np.radians(a_old)), -np.cos(np.radians(a_old))])   # up the axis in the photo
+n = np.array([-u[1], u[0]])                                            # across the axis
+Q = np.eye(3); Q[:2, :2] = np.outer(u, u) + K * np.outer(n, n)
+tg = np.array(tgt, float)
+Q[:2, 2] = tg - Q[:2, :2] @ tg
+A = (Q @ np.vstack([A, [0, 0, 1]]))[:2]
 ph = cv2.warpAffine(phone, A, (SW, SH), flags=cv2.INTER_LANCZOS4)
 pm = cv2.warpAffine(m, A, (SW, SH), flags=cv2.INTER_LINEAR).astype(np.float32) / 255
 pm = cv2.GaussianBlur(pm, (0, 0), 0.8)
@@ -72,6 +81,13 @@ sh = np.zeros((SH, SW), np.float32)
 bl_w = A @ np.array([BL[0], BL[1], 1]); br_w = A @ np.array([BR[0], BR[1], 1])
 cv2.line(sh, tuple(int(v) for v in bl_w + (0, 8)), tuple(int(v) for v in br_w + (0, 8)), 1.0, 26)
 sh = cv2.GaussianBlur(sh, (0, 0), 14) * 0.45
+# remove what is left of the old phone around the new one (its screen glass, top-left): clone background from the left
+yy, xx = np.mgrid[0:SH, 0:SW]
+Lg = 633 - 0.70 * (yy - 740) - 65                     # outer edge of the old phone's glass
+Rold = 644 - 0.663 * (yy - 1000) + np.where(yy < 450, 45, 6)                   # old phone's back edge
+rem = (xx > Lg) & (xx < Rold) & (yy < 1060) & (pm < 0.5)
+remf = cv2.GaussianBlur(rem.astype(np.float32), (0, 0), 4)[..., None]
+src = (src * (1 - remf) + np.roll(src, 170, axis=1) * remf).astype(np.uint8)
 base = src.astype(np.float32) * (1 - sh[..., None])
 out = base * (1 - pm[..., None]) + ph * pm[..., None]
 
