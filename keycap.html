@@ -409,20 +409,34 @@ function kcSVG(it,orient){
     }
     var need = true, visible = true;
     function clear(o) { while (o.children.length) { var c = o.children.pop(); clear(c); if (c.geometry) c.geometry.dispose(); } }
+    V3.view = function (vert) { var d = V3.dist; return vert ? new THREE.Vector3(d * 0.58, -d * 0.16, d * 0.8) : new THREE.Vector3(d * 0.12, -d * 0.62, d * 0.78); };
     V3.build = function () {
       clear(root);
       var chars = kc.chars.length ? kc.chars : ['A', 'B', 'C'], cols = kc.chars.length ? kc.colors : KC_COLS[kc.col].vary.slice(0, 3);
-      var n = chars.length, K = 18, gap = 1.6, pad = 4, L = n * K + (n - 1) * gap + 2 * pad, Wd = K + 2 * pad, vert = kc.orient === 'vertical';
-      // case (rail): rounded slab + darker floor
-      var caseHex = KC_HEX[kc.caseColor];
-      var cw = vert ? Wd : L, chh = vert ? L : Wd;
-      var cs = new THREE.Mesh(slab(cw, chh, 6, 7, 0.8), matte(caseHex)); root.add(cs);
-      var fl = new THREE.Mesh(slab(cw - 3, chh - 3, 4.5, 0.4), matte(kcShade(caseHex, -0.22))); fl.position.z = 7.3; root.add(fl);
-      // keys
+      var n = chars.length, K = 18, vert = kc.orient === 'vertical';
+      // case = open-top rail box like the printed one: outer wall all round, one square pocket per character (1–8), thin dividers, small end tab with a hole
+      var T = 1.6, Dv = 1.2, C = K + 0.6, ZW = 12, ZF = 1.6, ZD = ZW - 2.2;   // wall, divider, pocket, wall top, floor top, divider top
+      var L = n * C + (n - 1) * Dv + 2 * T, Wd = C + 2 * T, cw = vert ? Wd : L, chh = vert ? L : Wd;
+      var cellAt = function (i) { var o = -L / 2 + T + C / 2 + i * (C + Dv); return vert ? [0, -o] : [o, 0]; };
+      var caseHex = KC_HEX[kc.caseColor], caseM = matte(caseHex);
+      var wallS = rrShape(cw, chh, 2.4); wallS.holes.push(rrShape(cw - 2 * T, chh - 2 * T, 1.2));
+      root.add(new THREE.Mesh(new THREE.ExtrudeGeometry(wallS, { depth: ZW, bevelEnabled: true, bevelThickness: 0.35, bevelSize: 0.3, bevelSegments: 2, curveSegments: 8 }), caseM));
+      var divS = rrShape(cw - 2 * T + 0.2, chh - 2 * T + 0.2, 1.2);
+      for (var ci = 0; ci < n; ci++) { var p0 = cellAt(ci), hs = rrShape(C, C, 1); var hp = new THREE.Path(); hs.getPoints(4).forEach(function (q, qi) { hp[qi ? 'lineTo' : 'moveTo'](q.x + p0[0], q.y + p0[1]); }); divS.holes.push(hp); }
+      var dv = new THREE.Mesh(new THREE.ExtrudeGeometry(divS, { depth: ZD - ZF, bevelEnabled: false, curveSegments: 6 }), caseM); dv.position.z = ZF; root.add(dv);
+      var fl = new THREE.Mesh(new THREE.ExtrudeGeometry(rrShape(cw - 2 * T + 0.2, chh - 2 * T + 0.2, 1.2), { depth: ZF, bevelEnabled: false }), matte(kcShade(caseHex, -0.18))); root.add(fl);
+      // tab with a hole at the short end (top for vertical, left for horizontal), flush with the case bottom
+      var tabS = new THREE.Shape(); tabS.moveTo(-4.5, -2); tabS.lineTo(4.5, -2); tabS.lineTo(4.5, 4); tabS.absarc(0, 4, 4.5, 0, Math.PI, false); tabS.lineTo(-4.5, -2);
+      var th = new THREE.Path(); th.absarc(0, 4, 2, 0, Math.PI * 2, true); tabS.holes.push(th);
+      var tab = new THREE.Mesh(new THREE.ExtrudeGeometry(tabS, { depth: 3.2, bevelEnabled: true, bevelThickness: 0.3, bevelSize: 0.25, bevelSegments: 2, curveSegments: 20 }), caseM);
+      tab.position.z = 0.3;
+      var tg = new THREE.Group(); tg.add(tab);
+      // keys sit in the pockets: base sunk into the box, top half above the wall
+      var KZ = ZW - 4;
       chars.forEach(function (ch, i) {
         var c = kcResolve(kc.col, cols[i] || KC_COLS[kc.col].vary[0]), B = KC_HEX[c.body];
-        var off = -L / 2 + pad + K / 2 + i * (K + gap), x = vert ? 0 : off, y = vert ? -off : 0;
-        var g = new THREE.Group(); g.position.set(x, y, 7.6);
+        var p0 = cellAt(i);
+        var g = new THREE.Group(); g.position.set(p0[0], p0[1], KZ);
         var F = KC_HEX[c.frame] || '#ffffff', H = 8, k = 0.8, T = K * k;   // body height 8, top = 80% of base
         g.add(new THREE.Mesh(keyBody(K, H, k), matte(B)));                     // tapered body, chamfered corners, flat top (body colour)
         var rim = new THREE.Mesh(keyRim(T - 0.5, T * 0.15, 1.5, 0.9), matte(F)); rim.position.z = H; g.add(rim);   // raised octagon frame (2nd colour)
@@ -433,24 +447,24 @@ function kcSVG(it,orient){
         }
         root.add(g);
       });
-      // strap: ring + loop + knot, at the top (vertical) or left (horizontal)
-      var S = KC_STRAPS[kc.strap], end = L / 2 + 2;
-      var knot = new THREE.Mesh(new THREE.BoxGeometry(7, 9, 6), matte(KC_HEX[S.knot]));
-      var loopPts = [], ringR = 6;
-      for (var t = 0; t <= 40; t++) { var a = t / 40 * Math.PI * 2; loopPts.push(new THREE.Vector3(Math.sin(a) * 7, 13 + 12 - Math.cos(a) * 12, 3.5)); }
+      // strap: short cord threaded through the tab hole, then knot + loop + ring
+      var S = KC_STRAPS[kc.strap], end = L / 2, ringR = 6, HZ = 1.9;
+      var cord = new THREE.Mesh(new THREE.TorusGeometry(3.2, 0.9, 10, 32), matte(KC_HEX[S.loop])); cord.rotation.y = Math.PI / 2; cord.position.set(0, 4 + 3.2, HZ);
+      var knot = new THREE.Mesh(new THREE.BoxGeometry(7, 9, 6), matte(KC_HEX[S.knot])); knot.position.set(0, 15.5, HZ);
+      var loopPts = [];
+      for (var t = 0; t <= 40; t++) { var a = t / 40 * Math.PI * 2; loopPts.push(new THREE.Vector3(Math.sin(a) * 7, 20 + 12 - Math.cos(a) * 12, HZ)); }
       var loop = new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(loopPts, true), 60, 1.6, 10, true), matte(KC_HEX[S.loop]));
       var ring = new THREE.Mesh(new THREE.TorusGeometry(ringR, 1.1, 12, 40), new THREE.MeshStandardMaterial({ color: col(KC_HEX[S.ring]), roughness: 0.45, metalness: 0.3 }));
-      ring.position.set(0, 13 + 24 + ringR - 1, 3.5);
-      knot.position.set(0, 4.5 + 1, 3.5);
-      var sg = new THREE.Group(); sg.add(knot, loop, ring);
-      if (vert) sg.position.set(0, end - 3, 0); else { sg.rotation.z = Math.PI / 2; sg.position.set(-end + 3, 0, 0); }
-      root.add(sg);
+      ring.position.set(0, 20 + 24 + ringR - 1, HZ);
+      tg.add(cord, knot, loop, ring);
+      if (vert) tg.position.set(0, end, 0); else { tg.rotation.z = Math.PI / 2; tg.position.set(-end, 0, 0); }
+      root.add(tg);
       // centre and frame it
       var box = new THREE.Box3().setFromObject(root), ctr = box.getCenter(new THREE.Vector3()), size = box.getSize(new THREE.Vector3());
       root.position.sub(ctr); root.position.z += 0;
       var R = Math.max(size.x, size.y) * 0.5 + 6;
       V3.dist = R / Math.tan(cam.fov * Math.PI / 360) * 1.05;
-      if (!V3.framed) { cam.position.set(0, -V3.dist * 0.25, V3.dist); ctl.target.set(0, 0, 0); V3.framed = true; }
+      if (V3.framed !== kc.orient) { cam.position.copy(V3.view(vert)); ctl.target.set(0, 0, 0); V3.framed = kc.orient; }   // default view: tilted so key tops + the case's long side wall show (re-aimed when orientation changes)
       else { var dir = cam.position.clone().normalize(); cam.position.copy(dir.multiplyScalar(V3.dist)); }
       ctl.minDistance = V3.dist * 0.5; ctl.maxDistance = V3.dist * 2;
       need = true;
@@ -463,7 +477,7 @@ function kcSVG(it,orient){
     V3.shot = function (front, size) {
       var keep = cam.position.clone(), kw = renderer.domElement.width, kh = renderer.domElement.height;
       renderer.setSize(size, size, false); cam.aspect = 1; cam.updateProjectionMatrix();
-      if (front) { cam.position.set(0, -V3.dist * 0.18, V3.dist * 0.95); cam.lookAt(0, 0, 0); }
+      if (front) { cam.position.copy(V3.view(kc.orient === 'vertical')); cam.lookAt(0, 0, 0); }
       renderer.render(scene, cam); var url = renderer.domElement.toDataURL('image/jpeg', 0.88);
       cam.position.copy(keep); cam.lookAt(ctl.target); renderer.setSize(kw / renderer.getPixelRatio(), kh / renderer.getPixelRatio(), false); resize(); need = true;
       return url;
