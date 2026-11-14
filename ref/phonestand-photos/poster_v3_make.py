@@ -18,7 +18,7 @@ def rpaste(ph, box, r=22):
 
 # ── hero (real photo) ──
 HH = 800
-hero = ImageOps.fit(img('hero.jpg'), (W, HH), centering=(0.62, 0.6))
+hero = ImageOps.fit(img('hero.jpg'), (W, HH), centering=(0.5, 0.75))
 im.paste(hero, (0, 0))
 g = Image.new('L', (1, HH))
 for y in range(HH): g.putpixel((0, y), int(max(0, 215 - y * 0.62)))
