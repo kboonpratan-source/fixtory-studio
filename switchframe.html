@@ -126,6 +126,9 @@ footer { text-align: center; color: var(--muted); font-size: 13px; padding-top: 
 .tile { border: 0; padding: 0; cursor: pointer; width: 64px; height: 64px; border-radius: 14px; position: relative; box-shadow: inset 0 0 0 1px rgba(44,36,32,.18); }
 .tile i { position: absolute; left: 50%; top: 50%; width: 24px; height: 24px; margin: -18px 0 0 -12px; border-radius: 50%; box-shadow: 0 2px 4px rgba(0,0,0,.25), inset 0 0 0 1px rgba(0,0,0,.12); z-index: 1; }
 .tile s { position: absolute; left: 50%; top: 50%; width: 8px; height: 22px; margin: -6px 0 0 -4px; border-radius: 2px; box-shadow: inset 0 0 0 1px rgba(0,0,0,.18); }
+/* ⇄ swap frame ↔ ball on every suggested set (same look as letter.html .swap, 44px tap target) */
+.swap { margin-left: auto; border: 0; background: var(--sunk); color: inherit; border-radius: 999px; padding: 6px 14px; font: inherit; font-size: 13px; font-weight: 600; cursor: pointer; box-shadow: inset 0 0 0 1px var(--line); min-height: 44px; white-space: nowrap; }
+.swap[aria-pressed="true"] { box-shadow: inset 0 0 0 2px var(--accent); color: var(--accent-text); }
 .dice { min-height: 34px; padding: 4px 14px; font-size: 14px; }
 .tile[aria-pressed="true"] { box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px var(--accent); }
 .dots { display: flex; flex-wrap: wrap; gap: 6px; }
@@ -168,7 +171,7 @@ footer { text-align: center; color: var(--muted); font-size: 13px; padding-top: 
 
     <section class="panel" aria-label="เลือกแบบ">
       <div class="modebox" id="boxPair">
-        <div class="modehead"><div class="step-t"><i>1</i>ชุดสีแนะนำ</div><span class="tag">ราคาเท่ากับเลือกเอง</span></div>
+        <div class="modehead"><div class="step-t"><i>1</i>ชุดสีแนะนำ</div><span class="tag">ราคาเท่ากับเลือกเอง</span><button type="button" class="swap" id="swap" aria-pressed="false" title="สลับสีกรอบ ↔ หัวกลม ทุกชุด (ก้านคงเดิม)">⇄ สลับสี</button></div>
         <div class="hint">กรอบ × ก้าน × หัวกลม · แตะเพื่อใช้เป็นไกด์ แล้วปรับต่อในข้อ 2 ได้</div>
         <div class="tiles" id="pairs"></div>
         <div class="hint" id="pairName"></div>
@@ -176,7 +179,7 @@ footer { text-align: center; color: var(--muted); font-size: 13px; padding-top: 
 
       <div class="modebox" id="boxCustom" data-on="true">
         <div class="modehead"><div class="step-t"><i>2</i>เลือกสี 3 ส่วน</div><button type="button" class="btn line dice" id="dice">🎲 สุ่มสี</button></div>
-        <div class="hint">เลือกได้ทุกสีในสต็อก (PETG) · ราคาเดียวทุกสี</div>
+        <div class="hint">เลือกสีได้ · ราคาเดียวทุกสี</div>
         <div class="subhead">สีกรอบ · <span class="pickname" id="frameName"></span></div>
         <div class="dots" id="pickFrame"></div>
         <div class="subhead">สีก้าน · <span class="pickname" id="stemName"></span></div>
@@ -352,6 +355,14 @@ footer { text-align: center; color: var(--muted); font-size: 13px; padding-top: 
       box.appendChild(b);
     });
   }
+  // ⇄ swap frame ↔ ball on every set in the card (stem stays) · press again = back · if the picked set is a card set, follow it
+  $('swap').addEventListener('click', function () {
+    var picked = isPair();
+    PAIRS.forEach(function (p) { var t = p[0]; p[0] = p[2]; p[2] = t; });
+    if (picked) { var t = st.frame; st.frame = st.ball; st.ball = t; }
+    var b = $('swap'); b.setAttribute('aria-pressed', b.getAttribute('aria-pressed') === 'true' ? 'false' : 'true');
+    buildPairs(); update();
+  });
   function buildDots(id, key) {
     var box = $(id); box.textContent = '';
     COLORS.forEach(function (c) {
