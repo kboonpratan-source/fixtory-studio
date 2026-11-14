@@ -171,7 +171,7 @@ footer { text-align: center; color: var(--muted); font-size: 13px; padding-top: 
 
     <section class="panel" aria-label="เลือกแบบ">
       <div class="modebox" id="boxPair">
-        <div class="modehead"><div class="step-t"><i>1</i>ชุดสีแนะนำ</div><span class="tag">ราคาเท่ากับเลือกเอง</span><button type="button" class="swap" id="swap" aria-pressed="false" title="สลับสีกรอบ ↔ หัวกลม ทุกชุด (ก้านคงเดิม)">⇄ สลับสี</button></div>
+        <div class="modehead"><div class="step-t"><i>1</i>ชุดสีแนะนำ</div><button type="button" class="swap" id="swap" aria-pressed="false" title="สลับสีกรอบ ↔ หัวกลม ทุกชุด (ก้านคงเดิม)">⇄ สลับสี</button></div>
         <div class="hint">กรอบ × ก้าน × หัวกลม · แตะเพื่อใช้เป็นไกด์ แล้วปรับต่อในข้อ 2 ได้</div>
         <div class="tiles" id="pairs"></div>
         <div class="hint" id="pairName"></div>
@@ -394,7 +394,7 @@ footer { text-align: center; color: var(--muted); font-size: 13px; padding-top: 
     document.querySelectorAll('.tile.pair').forEach(function (b) { b.setAttribute('aria-pressed', b.dataset.f === st.frame && b.dataset.s === st.stem && b.dataset.b === st.ball ? 'true' : 'false'); });
     document.querySelectorAll('.dot').forEach(function (b) { b.setAttribute('aria-pressed', st[b.dataset.k] === b.dataset.c ? 'true' : 'false'); });
     $('boxPair').dataset.on = String(pair);
-    $('pairName').textContent = pair ? setName(st.frame, st.stem, st.ball) : 'ตอนนี้เป็นสีที่เลือกเอง · ราคาเท่ากัน';
+    $('pairName').textContent = pair ? setName(st.frame, st.stem, st.ball) : 'ตอนนี้เป็นสีที่เลือกเอง';
     $('frameName').textContent = st.frame; $('stemName').textContent = st.stem; $('ballName').textContent = st.ball;
     $('qty').textContent = n; $('minus').disabled = n <= 1; $('plus').disabled = n >= MAX_QTY; $('bulk').hidden = n < MAX_QTY;
     $('modeLabel').textContent = setName(st.frame, st.stem, st.ball);
