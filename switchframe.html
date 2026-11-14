@@ -102,6 +102,8 @@ h1 { margin: 6px 0 0; font-family: var(--f-display); font-weight: 400; font-size
 .price { font-family: var(--f-display); font-size: 34px; line-height: 1; color: var(--accent); font-variant-numeric: tabular-nums; }
 .tiers { font-size: 13px; color: var(--muted); }
 .tiers b { color: var(--ink); font-weight: 600; }
+.setdeal { color: var(--accent); margin-top: 4px; }
+.setdeal b { color: var(--accent); }
 .codebox { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
 .code { flex: 1 1 220px; min-width: 0; font-family: ui-monospace, Menlo, monospace; font-size: 15px; letter-spacing: .02em; background: var(--bg); box-shadow: inset 0 0 0 1.5px var(--line); border-radius: 12px; padding: 10px 12px; word-break: break-all; user-select: all; }
 .btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; border: 0; border-radius: 999px; padding: 10px 18px; font-weight: 600; font-size: 15px; cursor: pointer; text-decoration: none; min-height: 44px; white-space: nowrap; }
@@ -136,6 +138,7 @@ footer { text-align: center; color: var(--muted); font-size: 13px; padding-top: 
 .qty output { min-width: 2ch; text-align: center; font-size: 20px; font-weight: 600; font-variant-numeric: tabular-nums; }
 .lines { display: flex; flex-direction: column; gap: 4px; font-size: 14px; }
 .lines div { display: flex; justify-content: space-between; gap: 12px; }
+.lines .deal { color: var(--accent); font-size: 13px; }
 .lines .tot { font-weight: 600; font-size: 16px; border-top: 1px solid var(--line); padding-top: 6px; }
 .ship { font-size: 14px; color: var(--ok); font-weight: 600; }
 .check { border-radius: 14px; background: var(--bg); box-shadow: inset 0 0 0 1.5px var(--line); padding: 12px 14px; font-size: 13.5px; }
@@ -188,7 +191,8 @@ footer { text-align: center; color: var(--muted); font-size: 13px; padding-top: 
       <div class="step">
         <div class="step-t"><i>3</i>จำนวน</div>
         <div class="qty"><button type="button" class="pm" id="minus" aria-label="ลดจำนวน">−</button><output id="qty">1</output><button type="button" class="pm" id="plus" aria-label="เพิ่มจำนวน">+</button><span class="hint">ชิ้น · สีเดียวกันทุกชิ้น</span></div>
-        <div class="tiers">1 ชิ้น <b>฿199</b> · 2–3 ชิ้น <b>฿179</b> / ชิ้น · 4 ชิ้นขึ้นไป <b>฿169</b> / ชิ้น · 10 ชิ้นขึ้นไปทักแชต</div>
+        <div class="tiers">1 ชิ้น <b>฿199</b> · 2–3 ชิ้น <b>฿159</b> / ชิ้น · 4–9 ชิ้น <b>฿139</b> / ชิ้น · 10 ชิ้นขึ้นไปทักแชต</div>
+        <div class="tiers setdeal">ทำทั้งบ้านสีเดียวกัน 4 ชิ้นขึ้นไป เหลือ <b>฿99</b> / ชิ้น</div>
         <div class="warn" id="bulk" hidden>สั่ง 10 ชิ้นขึ้นไป ทักแชตร้าน (TikTok / Facebook / โทร 081-336-8232) เพื่อคุยราคาและวันส่ง</div>
       </div>
     </section>
@@ -223,8 +227,12 @@ footer { text-align: center; color: var(--muted); font-size: 13px; padding-top: 
   var $ = function (id) { return document.getElementById(id); };
 
   // ---- settings (easy to change) ----
-  // Pricing approved by AU 14 Nov: one price for every colour (no custom fee) · 10+ pieces → chat
-  var PRICE = function (n) { return n >= 4 ? 169 : n >= 2 ? 179 : 199; };   // per piece
+  // Pricing approved by AU 14 Nov (final): every colour same price · tiers by total qty 199 / 159 / 139
+  // · same colour set (same SF2 code) 4+ pieces → ฿99 / piece · 10+ pieces → chat
+  // This page orders ONE colour set, so 4–9 pieces = ฿99 (same rule as the cart in shop-order.html)
+  var TIER = function (n) { return n >= 4 ? 139 : n >= 2 ? 159 : 199; };   // per piece, by total qty
+  var SET_MIN = 4, SET_PRICE = 99;
+  var PRICE = function (n) { return n >= SET_MIN ? SET_PRICE : TIER(n); };   // per piece, one colour set
   var CUTOFF = '18:00';                // delivery-time text
   var MAX_QTY = 9;                     // 10 pieces and up: ask in chat
 
@@ -389,6 +397,7 @@ footer { text-align: center; color: var(--muted); font-size: 13px; padding-top: 
     var L = $('lines'); L.textContent = '';
     var row = function (a, b, cls) { var d = document.createElement('div'); if (cls) d.className = cls; var x = document.createElement('span'); x.textContent = a; var y = document.createElement('span'); y.textContent = b; d.append(x, y); L.appendChild(d); };
     row('กรอบสวิตช์ ' + n + ' ชิ้น × ' + fmt(unit) + ' / ชิ้น', fmt(total));
+    if (n >= SET_MIN) row('ได้ราคาชุดสีเดียวกัน ฿' + SET_PRICE + ' (ปกติ ' + fmt(TIER(n)) + ' / ชิ้น)', '', 'deal');
     row('รวม (ยังไม่รวมค่าส่ง)', fmt(total), 'tot');
     $('total').textContent = fmt(total);
     $('ship').textContent = n <= 2 ? 'ส่งออกจากร้านภายใน 1 วันทำการ (สั่งก่อน ' + CUTOFF + ' น.)' : 'ส่งออกจากร้านภายใน 2 วันทำการ';
