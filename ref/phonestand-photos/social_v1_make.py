@@ -43,12 +43,12 @@ def rounded(canvas, im, xy, r):
 
 
 # Source crops (full-res originals; bottom ~12% of each photo holds the camera watermark, kept out)
-HERO = ('08_clean.jpg', (0, 300, 1666, 1900))          # phone leaning on the stand, Santa face visible
+HERO = ('08_newphone.jpg', (0, 300, 1666, 1900))          # phone leaning on the stand, Santa face visible
 HINGE = ('13.jpg', (560, 840, 1140, 1420))       # flat round pivot disc set in the side wall + FIXTORY
 HINGE_DOT = (438 / 580, 312 / 580)                # disc centre inside that crop
 STEPS = [('16.jpg', (230, 380, 1530, 1480), 'พับเก็บ', 'ห้อยเป็นพวงกุญแจ'),
          ('crop_s2.jpg', None, 'ยกแผ่นพิงขึ้น', 'จนล็อก'),
-         ('crop_s3.jpg', None, 'วางมือถือ', 'ใส่เคสได้')]
+         ('08_newphone.jpg', (0, 560, 1500, 1560), 'วางมือถือ', 'ใส่เคสได้')]
 FEATS = [('พับเก็บได้', 'Foldable'), ('มีพวงกุญแจ', 'Keychain'),
          ('เปิดฝากระป๋องได้', 'Can opener'), ('ใส่ชื่อได้ ฟรี!', 'Free name')]
 
@@ -154,7 +154,7 @@ class Poster:
 # 1) Portrait 2:3 (1024x1536) — alternative layout: title in a solid band, not over the phone
 p = Poster(1024, 1536)
 p.header(0, 330)
-p.hero(330, 570, centering=(0.6, 0.45))
+p.hero(330, 570, centering=(0.5, 0.5))
 p.hinge(850, 520, 125, 24)
 p.chips(918)
 p.steps(1036)
@@ -164,7 +164,7 @@ p.save('mini_phone_stand_2x3_alt.png')
 # 2) Square 1:1 (1080x1080) — IG/FB feed
 s = Poster(1080, 1080)
 s.header(0, 300, title=80, sub=38, line=26)
-s.hero(300, 560, centering=(0.6, 0.45))
+s.hero(300, 560, centering=(0.5, 0.5))
 s.hinge(905, 500, 118, 22)
 s.chips(876, h=90, th=25, en=19)
 s.footer(h=96, size=32)
@@ -174,7 +174,7 @@ s.save('mini_phone_stand_1x1.png')
 t = Poster(1080, 1920)
 t.d.rectangle((0, 0, 1080, 220), fill=RED)
 t.header(200, 560, title=92, sub=44, line=30, center=True)
-t.hero(560, 640, centering=(0.6, 0.45))
+t.hero(560, 640, centering=(0.5, 0.5))
 t.hinge(890, 790, 130, 24)
 t.chips(1226, cols=2, h=88, th=30, en=20)
 t.steps(1428, ph=190, head=36, t1=28, t2=22)
