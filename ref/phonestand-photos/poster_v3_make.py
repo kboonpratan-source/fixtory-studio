@@ -33,6 +33,12 @@ d.rounded_rectangle((48, 236, 48 + bw + 48, 310), 37, fill=RED)
 T((72, 273), sub, fs, 'white', anchor='lm')
 T((54, 338), 'ขาตั้ง • พวงกุญแจ • ที่เปิดฝากระป๋อง ในชิ้นเดียว', font('Medium', 30), 'white', stroke=2, sf=(60, 0, 4))
 
+# material pill (like Lever Switch Cover)
+mt = 'วัสดุ PETG'; fm = font('SemiBold', 30); mw = d.textlength(mt, font=fm)
+d.rounded_rectangle((52, 384, 52 + mw + 40, 440), 28, fill='white')
+T((72, 412), mt, fm, RED, anchor='lm')
+T((52 + mw + 56, 412), 'แข็งแรง ทนทาน ใช้ได้นาน', font('Medium', 26), 'white', anchor='lm', stroke=2, sf=(60, 0, 4))
+
 # hinge callout (real close-up)
 cr = 290; cx, cy = W - 52 - cr, 430
 d.ellipse((cx - 8, cy - 8, cx + cr + 8, cy + cr + 8), fill='white')
