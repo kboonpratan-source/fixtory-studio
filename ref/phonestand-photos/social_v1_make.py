@@ -43,7 +43,7 @@ def rounded(canvas, im, xy, r):
 
 
 # Source crops (full-res originals; bottom ~12% of each photo holds the camera watermark, kept out)
-HERO = ('08.jpg', (0, 300, 1666, 1900))          # phone leaning on the stand, Santa face visible
+HERO = ('08_clean.jpg', (0, 300, 1666, 1900))          # phone leaning on the stand, Santa face visible
 HINGE = ('13.jpg', (560, 840, 1140, 1420))       # flat round pivot disc set in the side wall + FIXTORY
 HINGE_DOT = (438 / 580, 312 / 580)                # disc centre inside that crop
 STEPS = [('16.jpg', (230, 380, 1530, 1480), 'พับเก็บ', 'ห้อยเป็นพวงกุญแจ'),
