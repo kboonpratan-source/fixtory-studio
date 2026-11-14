@@ -344,9 +344,9 @@ const PRODUCTS={
     info:{summary:'พวงกุญแจตัวอักษรตัวโต มีชื่อเต็มฝังเรียบในเนื้อ เลือกสไตล์น่ารักหรือเท่ ตัวอักษรไทยหรืออังกฤษ และสีได้เอง แถมจี้ดอกไม้ทุกชิ้น',
       points:['ออกแบบและดูภาพ 3 มิติบนหน้า Fixtory Letter แล้วกด "สั่งซื้อแบบนี้" รหัสแบบจะมาลงตะกร้าเอง','1–4 ชิ้น ชิ้นละ 69 บาท · 5–9 ชิ้น ชิ้นละ 55 บาท · 10 ชิ้นขึ้นไป ชิ้นละ 49 บาท (คิดรวมทุกชื่อในออเดอร์)','สูงประมาณ 6.5 ซม. หนา 5 มม.'],
       spec:[['ขนาด','สูง ~6.5 ซม. · หนา 5 มม.'],['วัสดุ','PLA ด้าน 2 สี'],['ผลิต','ภายใน 1 วันทำการ']]}}
-  ,switchframe:{name:'กรอบสวิตช์ไฟแบบคันโยก',sub:'Lever Switch Cover',img:'switchframe_poster_th.jpg'+IMG_V,from:139,
+  ,switchframe:{name:'กรอบสวิตช์ไฟแบบคันโยก',sub:'Lever Switch Cover',img:'switchframe_poster_th.jpg'+IMG_V,from:199,
     info:{summary:'กรอบครอบสวิตช์ไฟแบบปุ่มกระดก เปลี่ยนเป็นคันโยกหัวกลม ดันขึ้นเปิด ดันลงปิด ติดด้วยเทป 2 หน้า ไม่ต้องเจาะ',
-      points:['เลือกสีกรอบและคันโยกบนหน้าออกแบบ แล้วกด "สั่งซื้อแบบนี้" แบบจะมาลงตะกร้าเอง','คู่สีแนะนำ ฿139 / ชิ้น · 2–3 ชิ้น ฿119 · 4 ชิ้นขึ้นไป ฿99 (คิดรวมทุกแบบในออเดอร์)','ออกแบบสีเอง +฿60 ต่อออเดอร์ · สั่ง 4 ชิ้นขึ้นไปในคู่สีเดียวกัน ไม่บวกเพิ่ม','ใช้กับสวิตช์ปุ่มกระดกเดี่ยว หน้ากากไม่เกิน 88 × 88 มม.'],
+      points:['เลือกสี 3 ส่วน กรอบ / ก้าน / หัวกลม บนหน้าออกแบบ แล้วกด "สั่งซื้อแบบนี้" แบบจะมาลงตะกร้าเอง','ราคาเดียวทุกสี: 1 ชิ้น ฿199 · 2–3 ชิ้น ฿179 / ชิ้น · 4 ชิ้นขึ้นไป ฿169 / ชิ้น (คิดรวมทุกแบบในออเดอร์)','ชุดสีแนะนำเป็นไกด์ ราคาเท่ากับเลือกสีเอง · 10 ชิ้นขึ้นไป ทักแชตขอราคา','ใช้กับสวิตช์ปุ่มกระดกเดี่ยว หน้ากากไม่เกิน 88 × 88 มม.'],
       spec:[['ขนาด','90 × 90 × 17 มม.'],['วัสดุ','PETG ด้าน 2 สี'],['ติดตั้ง','เทป 2 หน้า (แถมในชุด)']],
       gallery:['switchframe_1.jpg','switchframe_2.jpg','switchframe_3.jpg','switchframe_4.jpg']}}
   ,santastand:{name:'ที่วางมือถือ Santa Edition',sub:'ธีมคริสต์มาส',img:'santa-stand.svg'+IMG_V,from:199,perPiece:true,tag:'ฟรี! ใส่ชื่อได้',hidden:true/* ยังไม่เปิดขาย (รอ license + รูปจริง) — เปิดขายเมื่อไรให้ลบ hidden ออก */,
@@ -380,30 +380,29 @@ function addLetterCode(raw,quiet){
   if(letterCart.length>=LETTER_MAX){if(!quiet)showErr('สั่งมากกว่า '+LETTER_MAX+' ชิ้น โปรดติดต่อร้านโดยตรง');return false}
   letterCart.push(it);letterSave();hideErr();return true;
 }
-// ---------- กรอบสวิตช์ไฟ: รับ "รหัสแบบ" SF1.<กรอบ><คันโยก> (เลขฐาน 36 = ลำดับสีใน COLORS ของ switchframe.html — ห้ามสลับ เติมท้ายได้อย่างเดียว) ----------
+// ---------- กรอบสวิตช์ไฟ: รับ "รหัสแบบ" SF2.<กรอบ><ก้าน><หัว> และ SF1.<กรอบ><คันโยก> เดิม (ก้าน=หัว) · เลขฐาน 36 = ลำดับสีใน COLORS ของ switchframe.html — ห้ามสลับ เติมท้ายได้อย่างเดียว ----------
 const SF_DESIGN_URL='switchframe.html';
-const SF_COLORS=[['ทองแดงโบราณ','#9C7A4A'],['ขาวโอ๊ต','#E3DACB'],['เหลือง','#F2C230'],['สีผิวนวล','#E2CDB8'],['น้ำตาล','#6B4A36'],['เขียวมะกอก','#6F7448'],['ฟ้าหมอก','#8C9FB0'],['ฟ้าอ่อน','#AFD3E8'],['เทาอุ่น','#9A948C'],['เทาอ่อน','#C4C4C2'],['ฟ้าอ่อนใส','#A9CBE6'],['ฟ้าธารน้ำแข็ง','#CFE6EE'],['กรมท่าเข้ม','#22324F'],['ขาวอมเขียว','#D6E6D8'],['ฟ้า','#7DB8E0'],['เขียวทหาร','#4E5B3E'],['ส้มเหลือง','#EE8A2A'],['ชมพูแอปริคอต','#EBC3C0'],['แดงไวน์','#6E2430'],['เหลืองซิงค์','#EFD94A'],['แดงจีน','#C7282E'],['ขาว','#F2F1EC'],['ดำ','#262626'],['เหลืองแอปริคอตนม','#EFD7A6'],['กากี','#B5A47E'],['เขียวสดใส','#8ED3A4']];
-const SF_PAIRS=[['ขาว','เหลือง'],['ขาวโอ๊ต','น้ำตาล'],['กรมท่าเข้ม','ขาว'],['ชมพูแอปริคอต','แดงจีน'],['ฟ้าหมอก','เหลือง'],['ดำ','ส้มเหลือง'],['เขียวทหาร','แดงจีน']];
-const SF_MAX=30,SF_FEE=60;
-function sfUnit(n){return n>=4?99:n>=2?119:139}
+const SF_COLORS=[['ทองแดงโบราณ','#9C7A4A'],['ขาวโอ๊ต','#E3DACB'],['เหลือง','#F2C230'],['สีผิวนวล','#E2CDB8'],['น้ำตาล','#6B4A36'],['เขียวมะกอก','#6F7448'],['ฟ้าหมอก','#8C9FB0'],['ฟ้าอ่อน','#AFD3E8'],['เทาอุ่น','#9A948C'],['เทาอ่อน','#C4C4C2'],['ฟ้าอ่อน (รีฟิล)','#A9CBE6'],['ฟ้าธารน้ำแข็ง','#CFE6EE'],['กรมท่าเข้ม','#22324F'],['ขาวอมเขียว','#D6E6D8'],['ฟ้า','#7DB8E0'],['เขียวทหาร','#4E5B3E'],['ส้มเหลือง','#EE8A2A'],['ชมพูแอปริคอต','#EBC3C0'],['แดงไวน์','#6E2430'],['เหลืองซิงค์','#EFD94A'],['แดงจีน','#C7282E'],['ขาว','#F2F1EC'],['ดำ','#262626'],['เหลืองแอปริคอตนม','#EFD7A6'],['กากี','#B5A47E'],['เขียวสดใส','#8ED3A4']];
+const SF_PAIRS=[['ดำ','ขาว','แดงจีน'],['ขาว','ขาว','เหลือง'],['ขาวโอ๊ต','ขาวโอ๊ต','น้ำตาล'],['กรมท่าเข้ม','ขาว','ส้มเหลือง'],['ชมพูแอปริคอต','ขาว','แดงจีน'],['ฟ้าหมอก','ขาว','เหลือง'],['เขียวทหาร','กากี','แดงจีน']]; // ชุดสีแนะนำ (กรอบ×ก้าน×หัว) = PAIRS ใน switchframe.html · เป็นไกด์เท่านั้น ราคาเท่ากับเลือกเอง
+const SF_MAX=9; // 10 ชิ้นขึ้นไป ทักแชตขอราคา (ไม่รับผ่านเว็บ)
+function sfUnit(n){return n>=4?169:n>=2?179:199} // ราคาเดียวทุกสี (AU อนุมัติ 14 พ.ย. 2569)
 function sfParse(raw){
-  const code=String(raw||'').trim().replace(/\s+/g,'');const m=/^SF1\.([0-9a-z])([0-9a-z])$/i.exec(code);if(!m)return null;
-  const f=SF_COLORS[parseInt(m[1],36)],l=SF_COLORS[parseInt(m[2],36)];if(!f||!l)return null;
-  return {code:'SF1.'+m[1].toLowerCase()+m[2].toLowerCase(),frame:f,lever:l,pair:SF_PAIRS.some(p=>p[0]===f[0]&&p[1]===l[0])};
+  const code=String(raw||'').trim().replace(/\s+/g,'').toLowerCase();let m=/^sf2\.([0-9a-z])([0-9a-z])([0-9a-z])$/.exec(code),d;
+  if(m)d=[m[1],m[2],m[3]];else{m=/^sf1\.([0-9a-z])([0-9a-z])$/.exec(code);if(!m)return null;d=[m[1],m[2],m[2]]} // SF1 เดิม: ก้าน = หัว = คันโยก
+  const f=SF_COLORS[parseInt(d[0],36)],st=SF_COLORS[parseInt(d[1],36)],b=SF_COLORS[parseInt(d[2],36)];if(!f||!st||!b)return null;
+  return {code:'SF2.'+d.join(''),frame:f,stem:st,ball:b,pair:SF_PAIRS.some(p=>p[0]===f[0]&&p[1]===st[0]&&p[2]===b[0])};
 }
 function sfCount(){return sfCart.reduce((a,b)=>a+b.qty,0)}
-function sfFee(){ // ออกแบบสีเอง +60 ต่อออเดอร์ · ยกเว้นสั่ง 4 ชิ้นขึ้นไปในคู่สีเดียวกัน (ผสมหลายคู่สียังบวก) — ตาม Pricing 13 พ.ย.
-  const cu=sfCart.filter(x=>!x.pair);if(!cu.length)return 0;
-  return cu.length===1&&cu[0].qty>=4?0:SF_FEE}
 function sfImg(code){try{return localStorage.getItem('fxSwitchImg:'+code)||''}catch(e){return ''}}
 function sfSave(){try{localStorage.setItem('fxSwitchCart',JSON.stringify(sfCart.map(x=>[x.code,x.qty])))}catch(e){}}
-function sfSVG(it,px){return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="'+px+'" height="'+px+'"><rect x="6" y="6" width="88" height="88" rx="6" fill="'+it.frame[1]+'" stroke="rgba(0,0,0,.18)"/><ellipse cx="50" cy="56" rx="5" ry="12" fill="rgba(0,0,0,.35)"/><rect x="46" y="34" width="8" height="22" rx="4" fill="'+it.lever[1]+'"/><circle cx="50" cy="32" r="13" fill="'+it.lever[1]+'" stroke="rgba(0,0,0,.18)"/></svg>'}
-function sfTile(it,sz){const im=sfImg(it.code);return im?el('img',{class:'limg',src:im,alt:'กรอบ'+it.frame[0]+' คันโยก'+it.lever[0],style:'width:'+sz+'px;height:'+sz+'px'}):el('span',{html:sfSVG(it,sz)}).firstChild}
+function sfSVG(it,px){return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="'+px+'" height="'+px+'"><rect x="6" y="6" width="88" height="88" rx="6" fill="'+it.frame[1]+'" stroke="rgba(0,0,0,.18)"/><ellipse cx="50" cy="56" rx="5" ry="12" fill="rgba(0,0,0,.35)"/><rect x="46" y="34" width="8" height="22" rx="4" fill="'+it.stem[1]+'"/><circle cx="50" cy="32" r="13" fill="'+it.ball[1]+'" stroke="rgba(0,0,0,.18)"/></svg>'}
+function sfName(t){return 'กรอบ'+t.frame[0]+' × ก้าน'+t.stem[0]+' × หัว'+t.ball[0]}
+function sfTile(it,sz){const im=sfImg(it.code);return im?el('img',{class:'limg',src:im,alt:sfName(it),style:'width:'+sz+'px;height:'+sz+'px'}):el('span',{html:sfSVG(it,sz)}).firstChild}
 function addSfCode(raw,qty,quiet){
   const it=sfParse(raw);
-  if(!it){if(!quiet)showErr('รหัสแบบไม่ถูกต้อง ต้องขึ้นต้นด้วย SF1. (คัดลอกจากหน้าออกแบบกรอบสวิตช์)');return false}
+  if(!it){if(!quiet)showErr('รหัสแบบไม่ถูกต้อง ต้องขึ้นต้นด้วย SF2. หรือ SF1. (คัดลอกจากหน้าออกแบบกรอบสวิตช์)');return false}
   const q=Math.max(1,Math.min(SF_MAX,parseInt(qty,10)||1));
-  if(sfCount()+q>SF_MAX){if(!quiet)showErr('สั่งมากกว่า '+SF_MAX+' ชิ้น โปรดติดต่อร้านโดยตรง');return false}
+  if(sfCount()+q>SF_MAX){if(!quiet)showErr('กรอบสวิตช์ 10 ชิ้นขึ้นไป ทักแชตร้านเพื่อขอราคาได้เลย');return false}
   const ex=sfCart.find(x=>x.code===it.code);if(ex)ex.qty+=q;else{it.qty=q;sfCart.push(it)}
   sfSave();hideErr();return true;
 }
@@ -517,7 +516,7 @@ let sipCart=[];            // [{design, opt, name}]
 let clipCart=[];           // [{text,body,ink}] 1 รายการ = 1 เซ็ต
 let letterCart=[];         // Fixtory Letter: 1 รายการ = 1 ชิ้น (จำไว้ในเครื่อง ลูกค้าออกแบบทีละชิ้นแล้วกลับมาเพิ่มได้)
 try{(JSON.parse(localStorage.getItem('fxLetterCart')||'[]')||[]).forEach(c=>{const it=letterParse(c);if(it)letterCart.push(it)})}catch(e){}
-let sfCart=[];             // กรอบสวิตช์ไฟ: 1 รายการ = 1 แบบ (รหัส SF1.) + จำนวน (จำไว้ในเครื่อง)
+let sfCart=[];             // กรอบสวิตช์ไฟ: 1 รายการ = 1 แบบ (รหัส SF2.) + จำนวน (จำไว้ในเครื่อง)
 try{(JSON.parse(localStorage.getItem('fxSwitchCart')||'[]')||[]).forEach(([c,q])=>{const it=sfParse(c);if(it&&!sfCart.some(x=>x.code===it.code)){it.qty=Math.max(1,Math.min(SF_MAX,q|0));sfCart.push(it)}})}catch(e){}
 let santaCart=[];          // ที่วางมือถือ Santa: 1 รายการ = 1 ชิ้น {name}
 let santaSel={qty:1,name:''};
@@ -525,7 +524,7 @@ const SANTA_MAX=19;          // 20 ชิ้นขึ้นไป ให้ท�
 function santaUnit(n){return n>=10?119:n>=4?169:n>=2?179:199}
 let kcCart=[];             // ชิ้น Alphabet Clicker ในตะกร้า
 try{(JSON.parse(localStorage.getItem('fxKcCart')||'[]')||[]).forEach(c=>{const it=kcParse(c);if(it&&kcCart.length<MAX_PIECES)kcCart.push(it)})}catch(e){}
-if(params.get('code')){const pc=params.get('code'),sw=params.get('p')==='switchframe'||/^SF1\./i.test(pc),kk=params.get('p')==='keycap'||/^KC1\./i.test(pc);
+if(params.get('code')){const pc=params.get('code'),sw=params.get('p')==='switchframe'||/^SF[12]\./i.test(pc),kk=params.get('p')==='keycap'||/^KC1\./i.test(pc);
   if(sw){addSfCode(pc,params.get('qty'),true);current='switchframe'}else if(kk){addKcCode(pc,params.get('qty'),true);current='keycap'}else{addLetterCode(pc,true);current='letter'}
   try{const u=new URL(location.href);u.searchParams.delete('code');u.searchParams.delete('qty');u.searchParams.set('p',current);history.replaceState(null,'',u)}catch(e){}}
 let clipSel={qty:1,text:'',col:'polar',color:'น้ำเงิน'};
@@ -634,19 +633,19 @@ function renderConf(){
           el('button',{type:'button',class:'btn ghost full',style:'margin-top:8px',onclick:add},'+ เพิ่มลงตะกร้า'),
           el('div',{class:'note'},'ราคาต่อชิ้นคิดจากจำนวนรวม: 1–4 ชิ้น ฿69 · 5–9 ชิ้น ฿55 · 10 ชิ้นขึ้นไป ฿49'+(n?' · ตอนนี้ '+n+' ชิ้น ชิ้นละ '+fmt(u):'')+' · แถมจี้ดอกไม้ทุกชิ้น'))));
   }else if(current==='switchframe'){
-    const n=sfCount(),u=sfUnit(Math.max(n,1)),fee=sfFee();
-    const inp=el('input',{type:'text',id:'sfCode',placeholder:'เช่น SF1.ln',autocomplete:'off',spellcheck:'false',style:'font-family:ui-monospace,Menlo,monospace'});
+    const n=sfCount(),u=sfUnit(Math.max(n,1));
+    const inp=el('input',{type:'text',id:'sfCode',placeholder:'เช่น SF2.mln',autocomplete:'off',spellcheck:'false',style:'font-family:ui-monospace,Menlo,monospace'});
     const add=()=>{if(addSfCode(inp.value,1)){inp.value='';renderConf();renderCart();$('#cart').scrollIntoView({behavior:'smooth',block:'center'})}};
     inp.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();add()}});
     box.append(
       el('div',{class:'pv-wrap'},
         el('figure',{class:'pv'},el('img',{src:'switchframe_poster_th.jpg'+IMG_V,alt:'กรอบสวิตช์ไฟแบบคันโยก',style:'cursor:zoom-in',onclick:()=>openDetail('switchframe')})),
         el('div',{},
-          el('p',{class:'hint',style:'margin-top:0'},'เลือกสีกรอบและคันโยกบนหน้าออกแบบ แล้วกด "สั่งซื้อแบบนี้" แบบจะมาลงตะกร้าให้เอง สั่งหลายสี: กลับไปออกแบบแบบต่อไปได้เลย ตะกร้าจำแบบเดิมไว้ ปรับจำนวนได้ในตะกร้า'),
+          el('p',{class:'hint',style:'margin-top:0'},'เลือกสีกรอบ ก้าน และหัวกลมบนหน้าออกแบบ แล้วกด "สั่งซื้อแบบนี้" แบบจะมาลงตะกร้าให้เอง สั่งหลายสี: กลับไปออกแบบแบบต่อไปได้เลย ตะกร้าจำแบบเดิมไว้ ปรับจำนวนได้ในตะกร้า'),
           el('a',{class:'btn primary full',style:'text-decoration:none',href:SF_DESIGN_URL+(saleRef?'?sale='+encodeURIComponent(saleRef):''),target:'_blank',rel:'noopener'},n?'ออกแบบแบบต่อไป':'ไปหน้าออกแบบ'),
-          el('label',{class:'lbl',for:'sfCode'},'หรือวางรหัสแบบ',el('small',{},'ขึ้นต้นด้วย SF1.')),inp,
+          el('label',{class:'lbl',for:'sfCode'},'หรือวางรหัสแบบ',el('small',{},'ขึ้นต้นด้วย SF2. (รหัส SF1. เดิมใช้ได้)')),inp,
           el('button',{type:'button',class:'btn ghost full',style:'margin-top:8px',onclick:add},'+ เพิ่มลงตะกร้า'),
-          el('div',{class:'note'},'คู่สีแนะนำ ฿139 / ชิ้น · 2–3 ชิ้น ฿119 · 4 ชิ้นขึ้นไป ฿99 (คิดรวมทุกแบบในออเดอร์) · ออกแบบสีเอง +฿60 ต่อออเดอร์ (สั่ง 4 ชิ้นขึ้นไปในคู่สีเดียวกัน ไม่บวก)'+(n?' · ตอนนี้ '+n+' ชิ้น ชิ้นละ '+fmt(u)+(fee?' + งานผลิตเฉพาะตัว '+fmt(fee):''):'')))));
+          el('div',{class:'note'},'ราคาเดียวทุกสี: 1 ชิ้น ฿199 · 2–3 ชิ้น ฿179 / ชิ้น · 4 ชิ้นขึ้นไป ฿169 / ชิ้น (คิดรวมทุกแบบในออเดอร์) · 10 ชิ้นขึ้นไป ทักแชตขอราคา'+(n?' · ตอนนี้ '+n+' ชิ้น ชิ้นละ '+fmt(u):'')))));
   }else if(current==='keycap'){
     renderKC(box);
   }else{
@@ -792,9 +791,9 @@ function lines(){ // แต่ละชิ้น = 1 แถวใน Sheet (ต�
       const im=letterImg(t.code);
       Object.defineProperty(it,'_side',{value:t,enumerable:false});
       Object.defineProperty(it,'_pic',{value:im?{src:im,h:180}:{svg:'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="360" height="360"><rect width="120" height="120" rx="18" fill="'+t.base[2]+'" stroke="rgba(0,0,0,.15)"/><text x="60" y="72" text-anchor="middle" font-family="Prompt,sans-serif" font-weight="800" font-size="64" fill="'+t.ink[2]+'">'+esc(t.letter)+'</text><text x="60" y="104" text-anchor="middle" font-family="Prompt,sans-serif" font-weight="700" font-size="15" fill="'+t.ink[2]+'">'+esc(t.name)+'</text></svg>',h:120},enumerable:false});out.push(it)})}
-  if(sfCart.length){const n=sfCount(),u=sfUnit(n);let fee=sfFee();
-    sfCart.forEach(t=>{for(let i=0;i<t.qty;i++){const f=!t.pair&&fee?fee:0;fee-=f;
-      const it={productName:'กรอบสวิตช์ไฟแบบคันโยก',detail:'กรอบสี'+t.frame[0]+' · คันโยกสี'+t.lever[0]+' · '+(t.pair?'คู่สีแนะนำ':'ออกแบบสีเอง')+' · รหัส '+t.code+(n>1?' (ราคาชุด '+n+' ชิ้น ชิ้นละ '+u+' บาท)':'')+(f?' · รวมงานผลิตเฉพาะตัว '+f+' บาท ต่อออเดอร์':''),price:(u+f)+' บาท',priceValue:u+f};
+  if(sfCart.length){const n=sfCount(),u=sfUnit(n);
+    sfCart.forEach(t=>{for(let i=0;i<t.qty;i++){
+      const it={productName:'กรอบสวิตช์ไฟแบบคันโยก',detail:'กรอบสี'+t.frame[0]+' · ก้านสี'+t.stem[0]+' · หัวกลมสี'+t.ball[0]+' · '+(t.pair?'ชุดสีแนะนำ':'เลือกสีเอง')+' · รหัส '+t.code+(n>1?' (ราคาชุด '+n+' ชิ้น ชิ้นละ '+u+' บาท)':''),price:u+' บาท',priceValue:u};
       const im=sfImg(t.code);
       Object.defineProperty(it,'_pic',{value:im?{src:im,h:150}:{svg:sfSVG(t,300),h:110},enumerable:false});out.push(it)}})}
   if(santaCart.length){const n=santaCart.length,u=santaUnit(n);
@@ -827,12 +826,11 @@ function renderCart(){
     el('div',{style:'white-space:nowrap'},fmt(99),el('button',{type:'button',class:'x',onclick:()=>{clipCart.splice(i,1);renderCart()}},'ลบ'))))});
   if(letterCart.length){const u=letterUnit(letterCart.length);letterCart.forEach((t,i)=>{c.append(el('div',{class:'cart-item'},el('div',{style:'display:flex;gap:10px;align-items:center;min-width:0'},letterTile(t,64),el('div',{style:'min-width:0'},el('b',{},'Fixtory Letter · '+t.letter+' "'+t.name+'"'),el('div',{class:'hint',style:'margin:0'},'Font '+t.style+' · สีหลัก'+t.base[1]+' · สีชื่อ'+t.ink[1]))),
     el('div',{style:'white-space:nowrap'},fmt(u),el('button',{type:'button',class:'x',onclick:()=>{letterCart.splice(i,1);letterSave();if(current==='letter')renderConf();renderCart()}},'ลบ'))))})}
-  if(sfCart.length){const n=sfCount(),u=sfUnit(n),fee=sfFee();
-    const step=(t,d)=>{if(d>0&&sfCount()>=SF_MAX){showErr('สั่งมากกว่า '+SF_MAX+' ชิ้น โปรดติดต่อร้านโดยตรง');return}t.qty+=d;if(t.qty<1)sfCart.splice(sfCart.indexOf(t),1);sfSave();if(current==='switchframe')renderConf();renderCart()};
-    sfCart.forEach((t,i)=>{c.append(el('div',{class:'cart-item'},el('div',{style:'display:flex;gap:10px;align-items:center;min-width:0'},sfTile(t,64),el('div',{style:'min-width:0'},el('b',{},'กรอบสวิตช์ไฟ · '+t.frame[0]+' × '+t.lever[0]),el('div',{class:'hint',style:'margin:0'},(t.pair?'คู่สีแนะนำ':'ออกแบบสีเอง')+' · '+t.qty+' ชิ้น × '+fmt(u)),
+  if(sfCart.length){const n=sfCount(),u=sfUnit(n);
+    const step=(t,d)=>{if(d>0&&sfCount()>=SF_MAX){showErr('กรอบสวิตช์ 10 ชิ้นขึ้นไป ทักแชตร้านเพื่อขอราคาได้เลย');return}t.qty+=d;if(t.qty<1)sfCart.splice(sfCart.indexOf(t),1);sfSave();if(current==='switchframe')renderConf();renderCart()};
+    sfCart.forEach((t,i)=>{c.append(el('div',{class:'cart-item'},el('div',{style:'display:flex;gap:10px;align-items:center;min-width:0'},sfTile(t,64),el('div',{style:'min-width:0'},el('b',{},'กรอบสวิตช์ไฟ · '+t.frame[0]+' × '+t.stem[0]+' × '+t.ball[0]),el('div',{class:'hint',style:'margin:0'},(t.pair?'ชุดสีแนะนำ':'เลือกสีเอง')+' · '+t.qty+' ชิ้น × '+fmt(u)),
       el('div',{class:'step'},el('button',{type:'button','aria-label':'ลดจำนวน',onclick:()=>step(t,-1)},'−'),el('b',{},String(t.qty)),el('button',{type:'button','aria-label':'เพิ่มจำนวน',onclick:()=>step(t,1)},'+')))),
-      el('div',{style:'white-space:nowrap'},fmt(u*t.qty),el('button',{type:'button',class:'x',onclick:()=>{sfCart.splice(i,1);sfSave();if(current==='switchframe')renderConf();renderCart()}},'ลบ'))))});
-    if(fee)c.append(el('div',{class:'cart-item'},el('div',{},el('b',{},'งานผลิตเฉพาะตัว (กรอบสวิตช์สีที่ออกแบบเอง)'),el('div',{class:'hint',style:'margin:0'},'ต่อออเดอร์ · สั่ง 4 ชิ้นขึ้นไปในคู่สีเดียวกัน ไม่บวก')),el('div',{style:'white-space:nowrap'},fmt(fee))))}
+      el('div',{style:'white-space:nowrap'},fmt(u*t.qty),el('button',{type:'button',class:'x',onclick:()=>{sfCart.splice(i,1);sfSave();if(current==='switchframe')renderConf();renderCart()}},'ลบ'))))});}
   kcCart.forEach((k,i)=>{const th=kcSvgEl(k,'horizontal',260,56);th.classList.add('thumb');
     c.append(el('div',{class:'cart-item'},el('div',{style:'min-width:0'},el('b',{},'Alphabet Clicker · '+k.chars.map(x=>KC_FACE[x]?'☺':x==='❤'?'♥':x).join('')),
       el('div',{class:'hint',style:'margin:0'},KC_COLS[k.col].name+' · เคส'+k.caseColor+' · สาย '+KC_STRAPS[k.strap].label+' · '+(k.orient==='vertical'?'แนวตั้ง':'แนวนอน')),th),
