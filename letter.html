@@ -1345,7 +1345,18 @@ footer { text-align: center; color: var(--muted); font-size: 13px; padding-top: 
       base = L.slice();
       if (o.corner > 0) { var r0 = G.offset(G.offset(base, -o.corner), o.corner); if (r0.length) base = r0; }
       var hp = dot ? dotHole(base, dot, o) : pickHole(base, o); holeAt = hp;
-      if (hp) base = G.diff(base, [G.circle(hp[0], hp[1], holeR)]);
+      // a stroke too slim for a full 3 mm wall round the hole (top of d h k): swell it just there, blended smooth,
+      // so every piece hangs from a hole inside the letter with the same strong wall
+      var wallMin = 3;
+      if (hp) {
+        var Ew = G.offset(base, -(holeR + wallMin - 0.05));
+        if (!Ew.length || !inPoly(Ew, hp[0], hp[1])) {
+          var sw = G.union(base.concat([G.circle(hp[0], hp[1], holeR + wallMin)]));
+          var sm = G.offset(G.offset(sw, 2.5), -2.5);   // fill the notch where the boss meets the stroke (only near the hole)
+          base = sm.length ? G.union(sw.concat(G.inter(sm, [G.circle(hp[0], hp[1], holeR + wallMin + 4)]))) : sw;
+        }
+        base = G.diff(base, [G.circle(hp[0], hp[1], holeR)]);
+      }
       if (hp) { var cg = centroid(base); hangTilt = Math.atan2(Math.abs(cg[0] - hp[0]), hp[1] - cg[1]) * 180 / Math.PI; }
       var Lfree = hp ? G.diff(L, [G.circle(hp[0], hp[1], holeR + 2.5)]) : L;
       band = np.length ? findBand(Lfree, W, H, len1, thick1, s0, /[\u0E01-\u0E2E]/.test(letter) && 'ธยงลวอฮ'.indexOf(letter) < 0 ? Object.assign({}, o, { vertOnly: true }) : o) : null;   // Thai: name always upright on a stem — except S-shaped ธ, which takes the name across its middle like S
