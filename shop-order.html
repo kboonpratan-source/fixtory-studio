@@ -340,7 +340,7 @@ const PRODUCTS={
   keycap:{name:'Alphabet Clicker',sub:'พวงกุญแจคีย์แคป',img:'kc/keycap-thumb.jpg'+IMG_V,big:'kc/keycap-th.jpg'+IMG_V,from:35,perPiece:true,unit:'ตัว',
     info:{summary:'พวงกุญแจคีย์แคปกดคลิกได้ เรียงตัวอักษรเป็นชื่อหรือคำที่ชอบ เลือกสีคีย์ สีเคส และสายคล้องเองได้ ราคารวมฐาน (เคส) และสายคล้องแล้ว',points:['ตัวอักษร A–Z หน้ายิ้ม 7 แบบ และหัวใจ ผสมกันได้ รวมไม่เกิน 8 ช่อง','เลือกสีคีย์ทีละตัว จาก 3 คอลเลกชัน: Pastel, Dark mode, Polar White','สีเคส 5 สี สายคล้อง 8 แบบ','ราคา 3 ตัว 100 บาท ตัวต่อไปตัวละ 35 บาท รวมฐาน (เคส) และสายคล้องแล้ว'],spec:[['วัสดุ','PLA'],['ระยะเวลาผลิต','1 วัน'],['ที่มาของแบบ','ร้านออกแบบเอง']],
       gallery:['kc/keycap-set.jpg','kc/keycap-tor.jpg','kc/keycap-kao.jpg','kc/keycap-tui.jpg','kc/col-1.jpg','kc/col-2.jpg','kc/col-4.jpg','kc/col-3.jpg','kc/col-5.jpg']}}
-  ,letter:{name:'Fixtory Letter',sub:'พวงกุญแจตัวอักษรตัวโต',img:'letter.jpg'+IMG_V,from:69,perPiece:true,hidden:true/* ยังไม่เปิดขาย: โชว์เฉพาะเมื่อมาจากหน้าออกแบบ (?p=letter) — เปิดขายเมื่อไรให้ลบ hidden ออก */,noCatalog:true,
+  ,letter:{name:'Fixtory Letter',sub:'พวงกุญแจตัวอักษรตัวโต',img:'letter.jpg'+IMG_V,from:69,perPiece:true/* เปิดขาย 20 พ.ย. 2569 (AU สั่งผ่าน PM) */,
     info:{summary:'พวงกุญแจตัวอักษรตัวโต มีชื่อเต็มฝังเรียบในเนื้อ เลือกสไตล์น่ารักหรือเท่ ตัวอักษรไทยหรืออังกฤษ และสีได้เอง แถมจี้ดอกไม้ทุกชิ้น',
       points:['ออกแบบและดูภาพ 3 มิติบนหน้า Fixtory Letter แล้วกด "สั่งซื้อแบบนี้" รหัสแบบจะมาลงตะกร้าเอง','1–4 ชิ้น ชิ้นละ 69 บาท · 5–9 ชิ้น ชิ้นละ 55 บาท · 10 ชิ้นขึ้นไป ชิ้นละ 49 บาท (คิดรวมทุกชื่อในออเดอร์)','สูงประมาณ 6.5 ซม. หนา 5 มม.'],
       spec:[['ขนาด','สูง ~6.5 ซม. · หนา 5 มม.'],['วัสดุ','PLA ด้าน 2 สี'],['ผลิต','ภายใน 1 วันทำการ']]}}
@@ -629,7 +629,7 @@ function renderConf(){
         el('figure',{class:'pv'},el('img',{src:'letter.jpg'+IMG_V,alt:'Fixtory Letter'})),
         el('div',{},
           el('p',{class:'hint',style:'margin-top:0'},'ออกแบบชื่อ ตัวอักษรหลัก Font และสีบนหน้า Fixtory Letter แล้วกด "สั่งซื้อแบบนี้" แบบจะมาลงตะกร้าให้เอง สั่งหลายชื่อ: กลับไปออกแบบชิ้นต่อไปได้เลย ตะกร้าจำชิ้นเดิมไว้'),
-          el('a',{class:'btn primary full',style:'text-decoration:none',href:LETTER_DESIGN_URL,target:'_blank',rel:'noopener'},n?'ออกแบบชิ้นต่อไป':'ไปหน้าออกแบบ'),
+          el('a',{class:'btn primary full',style:'text-decoration:none',href:LETTER_DESIGN_URL+(saleRef?'?sale='+encodeURIComponent(saleRef):''),target:'_blank',rel:'noopener'},n?'ออกแบบชิ้นต่อไป':'ไปหน้าออกแบบ'),
           el('label',{class:'lbl',for:'letterCode'},'หรือวางรหัสแบบ',el('small',{},'ขึ้นต้นด้วย MN2.')),inp,
           el('button',{type:'button',class:'btn ghost full',style:'margin-top:8px',onclick:add},'+ เพิ่มลงตะกร้า'),
           el('div',{class:'note'},'ราคาต่อชิ้นคิดจากจำนวนรวม: 1–4 ชิ้น ฿69 · 5–9 ชิ้น ฿55 · 10 ชิ้นขึ้นไป ฿49'+(n?' · ตอนนี้ '+n+' ชิ้น ชิ้นละ '+fmt(u):'')+' · แถมจี้ดอกไม้ทุกชิ้น'))));
