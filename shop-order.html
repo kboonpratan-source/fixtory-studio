@@ -349,10 +349,10 @@ const PRODUCTS={
       points:['เลือกสี 3 ส่วน กรอบ / ก้าน / หัวกลม บนหน้าออกแบบ แล้วกด "สั่งซื้อแบบนี้" แบบจะมาลงตะกร้าเอง','1 ชิ้น ฿199 · 2–3 ชิ้น ฿169 / ชิ้น · 4–9 ชิ้น ฿149 / ชิ้น (คิดรวมทุกแบบในออเดอร์)','ชุดสีแนะนำเป็นไกด์ · 10 ชิ้นขึ้นไป ทักแชตขอราคา','ใช้กับสวิตช์ปุ่มกระดกเดี่ยว หน้ากากไม่เกิน 88 × 88 มม.'],
       spec:[['ขนาด','90 × 90 × 17 มม.'],['วัสดุ','PETG ด้าน 2 สี'],['ติดตั้ง','เทป 2 หน้า (แถมในชุด)']],
       gallery:['switchframe_1.jpg','switchframe_2.jpg','switchframe_3.jpg','switchframe_4.jpg']}}
-  ,namepop:{name:'NAME POP',sub:'ป้ายชื่อตัวอักษรนูน 2 สี',img:'name_pop_poster_th.jpg'+IMG_V,from:99,perPiece:true,fromLabel:true/* เปิดขาย 23 พ.ย. 2569 แบบสั่งทำทางแชต (AU สั่งผ่าน PM) · ยังไม่มีหน้าออกแบบ ไม่ลงตะกร้า */,
+  ,namepop:{name:'NAME POP',sub:'ป้ายชื่อตัวอักษรนูน 2 สี',img:'cat/namepop-poster.jpg'+IMG_V,from:99,perPiece:true,fromLabel:true/* เปิดขาย 23 พ.ย. 2569 · สั่งลงตะกร้าผ่านหน้าออกแบบ namepop.html (รหัส NP1) ตั้งแต่ 23 พ.ย. 2569 (AU สั่ง) */,
     info:{summary:'ป้ายชื่อตัวอักษรนูน 2 สี ใส่ชื่อหรือคำของคุณเองได้ เลือกทำเป็นพวงกุญแจ แม่เหล็กติดตู้เย็น หรือ Griptok แม่เหล็ก สลับสีตัวอักษรกับพื้นได้',
-      points:['พวงกุญแจ / แม่เหล็กติดตู้เย็น: Ø40 มม. ฿99 · Ø50 มม. ฿129 · Ø60 มม. ฿149','Griptok แม่เหล็ก Ø40 มม. ฿159','สั่ง 3 ชิ้นขึ้นไป (คละแบบได้) ลดชิ้นละ ฿10 · 10 ชิ้นขึ้นไป ทักแชตขอราคา','สั่งทำทางแชต บอกชื่อ · สี · ขนาด · แบบ'],
-      spec:[['ขนาด','Ø40 / 50 / 60 มม.'],['Griptok','Ø40 มม.'],['สี','ชมพู / เขียวน้ำทะเล สลับกันได้']],
+      points:['พวงกุญแจ / แม่เหล็กติดตู้เย็น: Ø40 มม. ฿99 · Ø50 มม. ฿129 · Ø60 มม. ฿149','Griptok แม่เหล็ก Ø40 มม. ฿159','สั่ง 3 ชิ้นขึ้นไป (คละแบบได้) ลดชิ้นละ ฿10 · 10 ชิ้นขึ้นไป ทักแชตขอราคา','ออกแบบบนหน้า NAME POP แล้วกด "สั่งซื้อแบบนี้" แบบจะมาลงตะกร้าเอง'],
+      spec:[['ขนาด','Ø40 / 50 / 60 มม.'],['Griptok','Ø40 มม.'],['สี','ตัวอักษร + พื้น เลือกได้ 16 สี']],
       gallery:['cat/namepop-1.jpg','cat/namepop-2.jpg','cat/namepop-3.jpg','cat/namepop-4.jpg','cat/namepop-5.jpg','cat/namepop-6.jpg']}}
   ,xmasorn:{name:"พวงกุญแจ X'mas",sub:'ต้นคริสต์มาสใส่ชื่อ + หน้าต่าง',img:'cat/xmasorn-1.jpg'+IMG_V,from:99,fromLabel:true,tag:'เฉพาะช่วงเทศกาล'/* เปิดขาย 23 พ.ย. 2569 แบบสั่งทำทางแชต (ร้านออกแบบเอง · ราคา AU อนุมัติ) · ไม่ลงตะกร้า */,
     info:{summary:"พวงกุญแจคริสต์มาส 2 ชิ้นซ้อนกัน ร้อยโซ่ไข่ปลาเส้นเดียว — ต้นคริสต์มาสสีเขียวใส่ชื่อบนแถบเป็นตัวอักษรขาวนูน + กรอบหน้าต่างสีแดงลาย X'MAS (บ้าน ต้นไม้ พระจันทร์) ร้านออกแบบเอง เปิดเฉพาะช่วงเทศกาล",
@@ -418,7 +418,30 @@ function addSfCode(raw,qty,quiet){
   sfSave();hideErr();return true;
 }
 // ---------- Alphabet Clicker (ยกมาจากฟอร์ม keycap เดิม index.html — ชื่อสี/สายคล้อง/คอลเลกชันต้องตรงกับแท็บสต๊อกใน Sheet) ----------
+// NAME POP: บล็อกด้านล่างคัดลอกมาจาก namepop.html ทั้งบล็อก (ห้ามแก้ที่นี่ แก้ที่ namepop.html แล้ว copy ใหม่) — KC_HEX ของ Alphabet Clicker ใช้ตัวในบล็อกนี้ (ค่าเดียวกัน)
+  // ---- copied verbatim into shop-order.html (NAME POP) — colours, options, code and price must match the order page ----
 const KC_HEX={"ฟ้า":"#7FC4E0","ชมพู":"#EFA9C6","ม่วง":"#B7A3E0","เหลือง":"#F2D34D","เนื้อ":"#E6C09C","ขาว":"#F5F5F2","ดำ":"#2B2B2B","ส้ม":"#F0954A","แดง":"#E0435A","เขียว":"#7FC97F","มิ้นท์":"#8FDDC6","ทราย":"#D8C6A8","น้ำเงิน":"#3F63C7","น้ำตาล":"#9A6B44","ชมพูอมแดง":"#E85C7A","เขียวอมฟ้า":"#3FB6B0"};
+const NP_COLORS=Object.keys(KC_HEX);   // index (base 36, 1 ตัว) ใช้ในรหัส NP1
+const NP_TYPES={k:'พวงกุญแจ',m:'แม่เหล็กติดตู้เย็น',g:'Griptok แม่เหล็ก'};
+const NP_SIZES={k:[4,5,6],m:[4,5,6],g:[4]};   // 4/5/6 = Ø40/Ø50/Ø60 มม. · Griptok มีแค่ Ø40
+const NP_BASE={k:{4:99,5:129,6:149},m:{4:99,5:129,6:149},g:{4:159}};
+const NP_MAXLEN=8,NP_MAXQTY=9,NP_BULK=3,NP_BULKOFF=10;   // บรรทัดละ ≤8 ตัว · ≤9 ชิ้น/ออเดอร์ (10+ ทักแชต) · 3 ชิ้นขึ้นไป (รวมทุกแบบ NAME POP) ลดชิ้นละ ฿10
+const NP_CHAT='https://www.facebook.com/share/1CoEGCMttn/';
+// รหัสแบบ: NP1.<k|m|g><4|5|6>.<สีตัวอักษร b36><สีพื้น b36>.<บรรทัด1>~<บรรทัด2>  (แต่ละบรรทัด encodeURIComponent)
+function npEncode(d){return 'NP1.'+d.t+d.s+'.'+NP_COLORS.indexOf(d.fg).toString(36)+NP_COLORS.indexOf(d.bg).toString(36)+'.'+d.lines.map(encodeURIComponent).join('~')}
+function npParse(code){
+  const m=/^NP1\.([kmg])([456])\.([0-9a-z])([0-9a-z])\.(.+)$/.exec(String(code||'').trim());if(!m)return null;
+  const t=m[1],s=+m[2],fi=parseInt(m[3],36),bi=parseInt(m[4],36);
+  if(NP_SIZES[t].indexOf(s)<0||fi>=NP_COLORS.length||bi>=NP_COLORS.length||fi===bi)return null;
+  let lines;try{lines=m[5].split('~').map(decodeURIComponent)}catch(e){return null}
+  if(lines.length<1||lines.length>2||lines.some(l=>!/^[A-Z0-9]+$/.test(l)||l.length>NP_MAXLEN))return null;
+  return {t,s,fg:NP_COLORS[fi],bg:NP_COLORS[bi],lines};
+}
+function npUnit(t,s){return (NP_BASE[t]||{})[s]||0}
+// ราคารวม: items=[{t,s,qty}] ทุกชิ้น NAME POP ในออเดอร์ · รวม ≥3 ชิ้น ลดชิ้นละ ฿10
+function npPrice(items){const n=items.reduce((a,x)=>a+(x.qty||0),0),off=n>=NP_BULK?NP_BULKOFF:0;return items.reduce((a,x)=>a+(npUnit(x.t,x.s)-off)*(x.qty||0),0)}
+function npLabel(d){return 'NAME POP '+NP_TYPES[d.t]+' Ø'+d.s+'0 มม. · '+d.lines.join(' / ')+' · ตัวอักษร'+d.fg+' พื้น'+d.bg}
+  // ---- end copy ----
 const KC_COLS={pastel:{name:'Pastel',desc:'ตัวอักษรขาว ฐานพาสเทล',fixedSlot:'frame',fixedColor:'ขาว',vary:["ฟ้า","ชมพู","เหลือง","ม่วง"]},
   dark:{name:'Dark mode',desc:'ตัวอักษรดำ ฐานสี',fixedSlot:'frame',fixedColor:'ดำ',vary:["ฟ้า","ชมพู","เหลือง","ม่วง","น้ำตาล"]},
   polar:{name:'Polar White',desc:'ฐานขาว ตัวอักษรสี',fixedSlot:'body',fixedColor:'ขาว',vary:["ฟ้า","ชมพู","ม่วง","น้ำเงิน"]}};
@@ -510,6 +533,26 @@ function kcDetail(it){
   const word=it.chars.map(c=>KC_FACE[c]?'['+KC_FACE[c]+']':c).join('');
   return word+' · '+KC_COLS[it.col].name+' · เคส'+it.caseColor+' · สาย '+KC_STRAPS[it.strap].label+' · '+(it.orient==='vertical'?'แนวตั้ง':'แนวนอน')+' · สี: '+it.chars.map((c,i)=>c+':'+it.colors[i]).join(', ');
 }
+// ---------- NAME POP: รับรหัสแบบ NP1. จากหน้าออกแบบ namepop.html (?p=namepop&np=<รหัส>&qty=<n>) แบบเดียวกับ Alphabet Clicker / กรอบสวิตช์ ----------
+// ตะกร้า: 1 รายการ = 1 แบบ (รหัส NP1) + จำนวน · จำไว้ในเครื่อง (fxNpCart) · รวมทุกแบบไม่เกิน NP_MAXQTY (10+ ทักแชต) · ราคาคิดด้วย npPrice ของทุกชิ้น NAME POP ในตะกร้า
+const NP_DESIGN_URL='namepop.html';
+function npCount(){return npCart.reduce((a,b)=>a+b.qty,0)}
+function npOff(){return npCount()>=NP_BULK?NP_BULKOFF:0}          // ส่วนลดต่อชิ้น (3 ชิ้นขึ้นไป คละแบบ)
+function npTotal(){return npPrice(npCart.map(x=>({t:x.t,s:x.s,qty:x.qty})))}
+function npSave(){try{localStorage.setItem('fxNpCart',JSON.stringify(npCart.map(x=>[x.code,x.qty])))}catch(e){}}
+function npImg(code){try{return localStorage.getItem('fxNpImg:'+code)||''}catch(e){return ''}}
+function npSVG(it,px){const e=v=>String(v).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])),two=it.lines.length>1,fs=two?20:26;
+  return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="'+px+'" height="'+px+'"><circle cx="50" cy="52" r="44" fill="'+kcShade(KC_HEX[it.bg],-.3)+'"/><circle cx="50" cy="50" r="44" fill="'+KC_HEX[it.bg]+'"/>'+
+    it.lines.map((l,i)=>'<text x="50" y="'+(two?(i?72:44):59)+'" text-anchor="middle" font-family="Arial Black,Prompt,sans-serif" font-weight="900" font-size="'+Math.min(fs,Math.floor(150/Math.max(l.length,1)))+'" fill="'+KC_HEX[it.fg]+'">'+e(l)+'</text>').join('')+'</svg>'}
+function npTile(it,sz){const im=npImg(it.code);return im?el('img',{class:'limg',src:im,alt:npLabel(it),style:'width:'+sz+'px;height:'+sz+'px'}):el('span',{html:npSVG(it,sz)}).firstChild}
+function addNpCode(raw,qty,quiet){
+  const code=String(raw||'').trim(),d=npParse(code);
+  if(!d){if(!quiet)showErr('รหัสแบบไม่ถูกต้อง ต้องขึ้นต้นด้วย NP1. (คัดลอกจากหน้าออกแบบ NAME POP)');return false}
+  const q=Math.max(1,Math.min(NP_MAXQTY,parseInt(qty,10)||1));
+  if(npCount()+q>NP_MAXQTY){if(!quiet)showErr('NAME POP 10 ชิ้นขึ้นไป ทักแชตร้านเพื่อขอราคาได้เลย');return false}
+  const c=npEncode(d),ex=npCart.find(x=>x.code===c);if(ex)ex.qty+=q;else npCart.push({...d,code:c,qty:q});
+  npSave();hideErr();return true;
+}
 // ราคาน้องพับชู่ตามจำนวนรวม: 1 = 399, 2 = 699, 3 = 999 (ชุดละ 3 ชิ้นซ้ำได้)
 function phapPrice(n){const t=[0,399,699];return Math.floor(n/3)*999+t[n%3]}
 
@@ -535,6 +578,11 @@ const SANTA_MAX=19;          // 20 ชิ้นขึ้นไป ให้ท�
 function santaUnit(n){return n>=10?119:n>=4?169:n>=2?179:199}
 let kcCart=[];             // ชิ้น Alphabet Clicker ในตะกร้า
 try{(JSON.parse(localStorage.getItem('fxKcCart')||'[]')||[]).forEach(c=>{const it=kcParse(c);if(it&&kcCart.length<MAX_PIECES)kcCart.push(it)})}catch(e){}
+let npCart=[];             // NAME POP: [{t,s,fg,bg,lines,code,qty}]
+try{(JSON.parse(localStorage.getItem('fxNpCart')||'[]')||[]).forEach(([c,q])=>{const d=npParse(c);if(!d)return;const code=npEncode(d);if(npCart.some(x=>x.code===code))return;const n=Math.max(1,Math.min(NP_MAXQTY-npCount(),q|0));if(n>0)npCart.push({...d,code,qty:n})})}catch(e){}
+if(params.get('np')){addNpCode(params.get('np'),params.get('qty'),false);current='namepop';
+  // ลบ np/qty ออกจาก URL ทันที รีเฟรชแล้วไม่เพิ่มซ้ำ (เหมือน keycap)
+  try{const u=new URL(location.href);u.searchParams.delete('np');u.searchParams.delete('qty');u.searchParams.set('p','namepop');history.replaceState(null,'',u)}catch(e){}}
 if(params.get('code')){const pc=params.get('code'),sw=params.get('p')==='switchframe'||/^SF[12]\./i.test(pc),kk=params.get('p')==='keycap'||/^KC1\./i.test(pc);
   if(sw){addSfCode(pc,params.get('qty'),true);current='switchframe'}else if(kk){addKcCode(pc,params.get('qty'),true);current='keycap'}else{addLetterCode(pc,true);current='letter'}
   try{const u=new URL(location.href);u.searchParams.delete('code');u.searchParams.delete('qty');u.searchParams.set('p',current);history.replaceState(null,'',u)}catch(e){}}
@@ -658,21 +706,21 @@ function renderConf(){
           el('button',{type:'button',class:'btn ghost full',style:'margin-top:8px',onclick:add},'+ เพิ่มลงตะกร้า'),
           el('div',{class:'note'},'1 ชิ้น ฿199 · 2–3 ชิ้น ฿169 / ชิ้น · 4–9 ชิ้น ฿149 / ชิ้น (คิดรวมทุกแบบในออเดอร์) · 10 ชิ้นขึ้นไป ทักแชตขอราคา'+(n?' · ตอนนี้ '+n+' ชิ้น ชิ้นละ '+fmt(u)+' รวม '+fmt(sfTotal()):'')))));
   }else if(current==='namepop'){
-    // NAME POP: สั่งทำทางแชต (ยังไม่ลงตะกร้า) · ลิงก์แชตเดียวกับ "10 ชิ้นขึ้นไป ทักแชต" · ส่งต่อรหัสตัวแทน (?sale=) ในข้อความที่ให้ลูกค้าคัดลอก
-    const msg='สั่งทำ NAME POP\nชื่อ/คำ: \nสีตัวอักษร / สีพื้น: \nขนาด: Ø40 / Ø50 / Ø60 มม.\nแบบ: พวงกุญแจ / แม่เหล็กติดตู้เย็น / Griptok\nจำนวน: '+(saleRef?'\nรหัสตัวแทน: '+saleRef:'');
-    const ta=el('textarea',{id:'npMsg',rows:'8',readonly:true,style:'width:100%;font:inherit;font-size:13px;border:0;box-shadow:inset 0 0 0 1.5px var(--line);border-radius:12px;padding:10px 12px;background:var(--surface);color:var(--ink);resize:none'});ta.value=msg;
-    const cp=el('button',{type:'button',class:'btn ghost full',style:'margin-top:8px',onclick:()=>{const done=()=>{cp.textContent='คัดลอกแล้ว ไปวางในแชตได้เลย';setTimeout(()=>cp.textContent='คัดลอกข้อความ',2200)};try{navigator.clipboard.writeText(msg).then(done,()=>{ta.select();document.execCommand('copy');done()})}catch(e){ta.select();try{document.execCommand('copy')}catch(x){}done()}}},'คัดลอกข้อความ');
-    const chat=(href,label,cls)=>el('a',{class:'btn '+cls+' full',style:'text-decoration:none;margin-top:8px',href,target:'_blank',rel:'noopener'},label);
+    // NAME POP: ออกแบบบนหน้า namepop.html แล้วกด "สั่งซื้อแบบนี้" แบบลงตะกร้าเอง (แบบ Alphabet Clicker) · 10 ชิ้นขึ้นไป ทักแชต (ลิงก์เดิม)
+    const n=npCount(),off=npOff();
+    const inp=el('input',{type:'text',id:'npCode',placeholder:'เช่น NP1.k5.ef.FIXTORY~STUDIO',autocomplete:'off',spellcheck:'false',style:'font-family:ui-monospace,Menlo,monospace'});
+    const add=()=>{if(addNpCode(inp.value,1)){inp.value='';renderConf();renderCart();$('#cart').scrollIntoView({behavior:'smooth',block:'center'})}};
+    inp.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();add()}});
     box.append(
       el('div',{class:'pv-wrap'},
-        el('figure',{class:'pv'},el('img',{src:'name_pop_poster_th.jpg'+IMG_V,alt:'NAME POP ป้ายชื่อตัวอักษรนูน 2 สี',style:'cursor:zoom-in',onclick:()=>openDetail('namepop')})),
+        el('figure',{class:'pv'},el('img',{src:'cat/namepop-poster.jpg'+IMG_V,alt:'NAME POP ป้ายชื่อตัวอักษรนูน 2 สี',style:'cursor:zoom-in',onclick:()=>openDetail('namepop')})),
         el('div',{},
-          el('p',{class:'hint',style:'margin-top:0;font-size:14px;color:var(--ink);font-weight:600'},'สั่งทำทางแชต — บอกชื่อ · สี · ขนาด · แบบ'),
-          el('div',{class:'note',style:'margin-top:8px'},'พวงกุญแจ / แม่เหล็กติดตู้เย็น: Ø40 มม. ฿99 · Ø50 มม. ฿129 · Ø60 มม. ฿149 · Griptok แม่เหล็ก Ø40 มม. ฿159 · สั่ง 3 ชิ้นขึ้นไป (คละแบบได้) ลดชิ้นละ ฿10 · 10 ชิ้นขึ้นไป ทักแชตขอราคา'),
-          el('label',{class:'lbl',for:'npMsg'},'ข้อความสำหรับส่งในแชต',el('small',{},'คัดลอกแล้วเติมรายละเอียด')),ta,cp,
-          chat('https://www.facebook.com/share/1CoEGCMttn/','ทักแชต Facebook','primary'),
-          chat('https://vt.tiktok.com/ZSgqn8JYh/','ทักแชต TikTok','ghost'),
-          chat('tel:0813368232','โทร 081-336-8232','ghost'))));
+          el('p',{class:'hint',style:'margin-top:0'},'ใส่ชื่อ เลือกแบบ ขนาด และสีบนหน้าออกแบบ แล้วกด "สั่งซื้อแบบนี้" แบบจะมาลงตะกร้าให้เอง สั่งหลายแบบ: กลับไปออกแบบแบบต่อไปได้เลย ตะกร้าจำแบบเดิมไว้ ปรับจำนวนได้ในตะกร้า'),
+          el('a',{class:'btn primary full',style:'text-decoration:none',href:NP_DESIGN_URL+(saleRef?'?sale='+encodeURIComponent(saleRef):''),target:'_blank',rel:'noopener'},n?'ออกแบบ NAME POP แบบต่อไป':'ออกแบบ NAME POP'),
+          el('label',{class:'lbl',for:'npCode'},'หรือวางรหัสแบบ',el('small',{},'ขึ้นต้นด้วย NP1.')),inp,
+          el('button',{type:'button',class:'btn ghost full',style:'margin-top:8px',onclick:add},'+ เพิ่มลงตะกร้า'),
+          el('div',{class:'note'},'พวงกุญแจ / แม่เหล็กติดตู้เย็น: Ø40 มม. ฿99 · Ø50 มม. ฿129 · Ø60 มม. ฿149 · Griptok แม่เหล็ก Ø40 มม. ฿159 · สั่งรวม 3 ชิ้นขึ้นไป (คละแบบได้) ลดชิ้นละ ฿10 · สั่งผ่านเว็บได้ไม่เกิน 9 ชิ้น'+(n?' · ตอนนี้ '+n+' ชิ้น'+(off?' ลดชิ้นละ ฿'+off:'')+' รวม '+fmt(npTotal()):'')),
+          el('a',{class:'btn ghost full',style:'text-decoration:none;margin-top:8px',href:NP_CHAT,target:'_blank',rel:'noopener'},'สั่ง 10 ชิ้นขึ้นไป · ทักแชตขอราคา'))));
   }else if(current==='xmasorn'){
     // พวงกุญแจ X'mas: สั่งทำทางแชต (ไม่ลงตะกร้า) · แบบเดียวกับ NAME POP · ส่งต่อรหัสตัวแทน (?sale=) ในข้อความที่ให้ลูกค้าคัดลอก
     const msg="สั่งทำ พวงกุญแจ X'mas\nแบบ: ชุดคู่ ฿199 / ต้นเขียวใส่ชื่อ ฿129 / หน้าต่างแดง ฿99\nชื่อบนต้น (ภาษาอังกฤษ ~8 ตัวอักษร): \nจำนวน: "+(saleRef?'\nรหัสตัวแทน: '+saleRef:'');
@@ -841,6 +889,11 @@ function lines(){ // แต่ละชิ้น = 1 แถวใน Sheet (ต�
       Object.defineProperty(it,'_pic',{value:im?{src:im,h:150}:{svg:sfSVG(t,300),h:110},enumerable:false});out.push(it)}})}
   if(santaCart.length){const n=santaCart.length,u=santaUnit(n);
     santaCart.forEach(t=>out.push({productName:'ที่วางมือถือ Santa Edition',detail:(t.name?'สลักชื่อ: '+t.name:'ไม่สลักชื่อ')+(n>1?' (ราคาชุด '+n+' ชิ้น ชิ้นละ '+u+' บาท)':''),price:u+' บาท',priceValue:u}))}
+  if(npCart.length){const n=npCount(),off=npOff();
+    npCart.forEach(t=>{const u=npUnit(t.t,t.s)-off;for(let i=0;i<t.qty;i++){
+      const it={productName:'NAME POP',detail:npLabel(t)+' · รหัส '+t.code+(off?' (สั่งรวม '+n+' ชิ้น ลดชิ้นละ '+off+' บาท)':''),price:u+' บาท',priceValue:u};
+      const im=npImg(t.code);
+      Object.defineProperty(it,'_pic',{value:im?{src:im,h:150}:{svg:npSVG(t,300),h:110},enumerable:false});out.push(it)}})}
   kcCart.forEach(k=>{const v=kcPrice(k.chars.length);
     // ช่อง orientation/caseColor/strapLabel/collection/letterN/letterColorN ใช้ชื่อเดียวกับฟอร์ม keycap เดิม
     // เพื่อให้ Apps Script ลงคอลัมน์เดิม หักสต๊อก keycap/สายคล้อง และหน้า sale อ่านได้เหมือนเดิม
@@ -857,7 +910,7 @@ function shipFee(){return $('#selfDeliver').checked||!lines().length?0:SHIP_FEE_
 function renderCart(){
   const c=$('#cart');c.replaceChildren();
   const phapN=Object.values(phapQty).reduce((a,b)=>a+b,0);
-  if(!phapN&&!sipCart.length&&!kcCart.length&&!clipCart.length&&!letterCart.length&&!sfCart.length&&!santaCart.length){c.append(el('p',{class:'empty'},'ยังไม่มีสินค้าในตะกร้า'))}
+  if(!phapN&&!sipCart.length&&!kcCart.length&&!clipCart.length&&!letterCart.length&&!sfCart.length&&!santaCart.length&&!npCart.length){c.append(el('p',{class:'empty'},'ยังไม่มีสินค้าในตะกร้า'))}
   if(phapN)c.append(el('div',{class:'cart-item'},el('div',{},el('b',{},'น้องพับชู่ × '+phapN),el('div',{class:'hint',style:'margin:0'},Object.entries(phapQty).map(([k,v])=>k+' '+v).join(', '))),
     el('div',{style:'white-space:nowrap'},fmt(phapPrice(phapN)),el('button',{type:'button',class:'x',onclick:()=>{phapQty={};renderConf();renderCart()}},'ลบ'))));
   sipCart.forEach((s,i)=>{const p=PRODUCTS.sipbuddy;c.append(el('div',{class:'cart-item'},el('div',{},el('b',{},'Sip Buddy · '+String(s.design+1).padStart(2,'0')+' '+p.designs[s.design]),el('div',{class:'hint',style:'margin:0'},p.options[s.opt][0]+(s.name?' · ชื่อ "'+s.name+'"':''))),
@@ -874,6 +927,12 @@ function renderCart(){
     sfCart.forEach((t,i)=>{const u=sfUnit(n);c.append(el('div',{class:'cart-item'},el('div',{style:'display:flex;gap:10px;align-items:center;min-width:0'},sfTile(t,64),el('div',{style:'min-width:0'},el('b',{},'กรอบสวิตช์ไฟ · '+t.frame[0]+' × '+t.stem[0]+' × '+t.ball[0]),el('div',{class:'hint',style:'margin:0'},(t.pair?'ชุดสีแนะนำ':'เลือกสีเอง')+' · '+t.qty+' ชิ้น × '+fmt(u)),
       el('div',{class:'step'},el('button',{type:'button','aria-label':'ลดจำนวน',onclick:()=>step(t,-1)},'−'),el('b',{},String(t.qty)),el('button',{type:'button','aria-label':'เพิ่มจำนวน',onclick:()=>step(t,1)},'+')))),
       el('div',{style:'white-space:nowrap'},fmt(u*t.qty),el('button',{type:'button',class:'x',onclick:()=>{sfCart.splice(i,1);sfSave();if(current==='switchframe')renderConf();renderCart()}},'ลบ'))))});}
+  if(npCart.length){const off=npOff();
+    const step=(t,d)=>{if(d>0&&npCount()>=NP_MAXQTY){showErr('NAME POP 10 ชิ้นขึ้นไป ทักแชตร้านเพื่อขอราคาได้เลย');return}hideErr();t.qty+=d;if(t.qty<1)npCart.splice(npCart.indexOf(t),1);npSave();if(current==='namepop')renderConf();renderCart()};
+    npCart.forEach((t,i)=>{const u=npUnit(t.t,t.s)-off;c.append(el('div',{class:'cart-item'},el('div',{style:'display:flex;gap:10px;align-items:center;min-width:0'},npTile(t,64),el('div',{style:'min-width:0'},el('b',{},'NAME POP · '+t.lines.join(' / ')),el('div',{class:'hint',style:'margin:0'},NP_TYPES[t.t]+' Ø'+t.s+'0 มม. · ตัวอักษร'+t.fg+' พื้น'+t.bg+' · '+t.qty+' ชิ้น × '+fmt(u)+(off?' (ลดแล้ว ฿'+off+')':'')),
+      el('div',{class:'step'},el('button',{type:'button','aria-label':'ลดจำนวน',onclick:()=>step(t,-1)},'−'),el('b',{},String(t.qty)),el('button',{type:'button','aria-label':'เพิ่มจำนวน',onclick:()=>step(t,1)},'+')))),
+      el('div',{style:'white-space:nowrap'},fmt(u*t.qty),el('button',{type:'button',class:'x',onclick:()=>{npCart.splice(i,1);npSave();if(current==='namepop')renderConf();renderCart()}},'ลบ'))))});
+    if(!off&&npCount())c.append(el('p',{class:'hint',style:'margin:4px 0 0'},'NAME POP สั่งรวม 3 ชิ้นขึ้นไป (คละแบบได้) ลดชิ้นละ ฿10'))}
   kcCart.forEach((k,i)=>{const th=kcSvgEl(k,'horizontal',260,56);th.classList.add('thumb');
     c.append(el('div',{class:'cart-item'},el('div',{style:'min-width:0'},el('b',{},'Alphabet Clicker · '+k.chars.map(x=>KC_FACE[x]?'☺':x==='❤'?'♥':x).join('')),
       el('div',{class:'hint',style:'margin:0'},KC_COLS[k.col].name+' · เคส'+k.caseColor+' · สาย '+KC_STRAPS[k.strap].label+' · '+(k.orient==='vertical'?'แนวตั้ง':'แนวนอน')),th),
@@ -999,7 +1058,7 @@ $('#submitBtn').addEventListener('click',async()=>{
 let lastOrder=null;
 function finish(order,no){
   order.no=no;lastOrder=order;
-  try{localStorage.removeItem('fxLetterCart');localStorage.removeItem('fxSwitchCart');localStorage.removeItem('fxKcCart')}catch(e){}
+  try{localStorage.removeItem('fxLetterCart');localStorage.removeItem('fxSwitchCart');localStorage.removeItem('fxKcCart');localStorage.removeItem('fxNpCart')}catch(e){}
   try{localStorage.setItem('fxCustomer',JSON.stringify({cName:order.name,cPhone:order.phone,cAddr:order.self?'':$('#cAddr').value.trim(),cProv:order.prov,cZip:order.zip,cAmp:$('#cAmp').value,cTam:$('#cTam').value,cSubText:$('#cSubText').value.trim()}))}catch(e){}
   $('#dNo').textContent=no||'รอร้านยืนยัน';$('#dChk').hidden=!!no;slipReset();$('#slipBox').hidden=!no;$('#payNote').textContent=no?'โอนแล้ว แนบสลิปด้านบนได้เลย หรือส่งสลิปพร้อมเลขที่ออเดอร์ทาง TikTok / Facebook: fixtory.studio หรือโทร 081-336-8232 ร้านจะเริ่มผลิตหลังได้รับยอดโอน':'โอนแล้ว ส่งสลิปพร้อมรูปสรุปออเดอร์ให้ร้านทาง TikTok / Facebook: fixtory.studio หรือโทร 081-336-8232 ร้านจะเริ่มผลิตหลังได้รับยอดโอน';$('#dAmt').textContent=fmt(order.gt);
   $('#formView').hidden=true;$('#bar').hidden=true;$('#doneView').hidden=false;scrollTo({top:0});
@@ -1129,7 +1188,7 @@ $('#slipBtn').addEventListener('click',async()=>{if(!slipData||!lastOrder||!last
   catch(e){btn.textContent='ส่งแล้ว';slipMsg('ส่งสลิปแล้ว แต่ระบบยืนยันกลับไม่ได้ ถ้าร้านไม่ได้รับจะทักกลับไปค่ะ','ok');return}
   if(data&&data.result==='success'){btn.textContent='ส่งสลิปแล้ว ✓';slipMsg('ร้านได้รับสลิปแล้ว จะตรวจยอดและเริ่มผลิตให้ค่ะ ถ้าโอนเพิ่มเลือกรูปใหม่แล้วส่งได้อีก','ok');slipData=null;$('#slipFile').value='';return}
   btn.disabled=false;btn.textContent='ลองส่งอีกครั้ง';slipMsg('ส่งสลิปไม่สำเร็จ: '+((data&&data.message)||'ลองใหม่อีกครั้ง')+' หรือส่งทาง TikTok / Facebook แทนได้','bad')});
-$('#againBtn').addEventListener('click',()=>{phapQty={};sipCart=[];kcCart=[];kcSave();santaCart=[];clipCart=[];letterCart=[];letterSave();sfCart=[];sfSave();sipSel={design:null,opt:0,name:''};$('#doneView').hidden=true;$('#formView').hidden=false;$('#bar').hidden=false;renderConf();renderCart();scrollTo({top:0})});
+$('#againBtn').addEventListener('click',()=>{phapQty={};sipCart=[];kcCart=[];kcSave();santaCart=[];clipCart=[];letterCart=[];letterSave();sfCart=[];sfSave();npCart=[];npSave();sipSel={design:null,opt:0,name:''};$('#doneView').hidden=true;$('#formView').hidden=false;$('#bar').hidden=false;renderConf();renderCart();scrollTo({top:0})});
 
 renderTabs();renderConf();renderCart();
 </script>
