@@ -1,0 +1,444 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NAME POP · ออกแบบป้ายชื่อตัวอักษรนูน | Fixtory Studio</title>
+<meta name="description" content="ออกแบบ NAME POP ป้ายกลมตัวอักษรนูน 2 สี ใส่ชื่อหรือคำที่ชอบ เลือกสี ขนาด และแบบ (พวงกุญแจ · แม่เหล็ก · Griptok) ดูตัวอย่างก่อนสั่ง">
+<meta property="og:title" content="NAME POP · ออกแบบป้ายชื่อตัวอักษรนูน · Fixtory Studio">
+<meta property="og:description" content="ใส่ชื่อ เลือกสีตัวอักษรและสีพื้น ดูตัวอย่างสด แล้วสั่งได้เลย">
+<meta property="og:image" content="https://fixtory-studio.pages.dev/name_pop_poster_th.jpg">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&family=Luckiest+Guy&family=Prompt:wght@400;500;600&display=swap">
+<style>
+/* Layout: same storefront look as keycap.html / letter.html — live preview on top (sticky on phones), choices below, order summary last */
+:root {
+  --bg: #FAF8F4; --surface: #FFFFFF; --sunk: #F5E8DC; --ink: #2C2420; --muted: #6F6056; --line: #EDE2D6;
+  --accent: #C4714A; --accent-text: #A9572F; --accent-ink: #FFFFFF; --ok: #4E6B3A;
+  --stage: #EFE4D8;
+  --shadow: 0 1px 2px rgba(44,36,32,.06), 0 8px 24px -12px rgba(44,36,32,.22);
+  --f-display: "DM Serif Display", "Prompt", Georgia, serif;
+  --f-body: "DM Sans", "Prompt", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-pop: "Luckiest Guy", "Prompt", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #1B1613; --surface: #26201C; --sunk: #322822; --ink: #F5E8DC; --muted: #BFAE9F; --line: #3A302A;
+  --accent: #E08A60; --accent-text: #EFA07A; --accent-ink: #1B1613; --ok: #A7C48A;
+  --stage: #2A231F;
+  --shadow: 0 1px 2px rgba(0,0,0,.3), 0 10px 28px -14px rgba(0,0,0,.6); color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #1B1613; --surface: #26201C; --sunk: #322822; --ink: #F5E8DC; --muted: #BFAE9F; --line: #3A302A;
+  --accent: #E08A60; --accent-text: #EFA07A; --accent-ink: #1B1613; --ok: #A7C48A;
+  --stage: #2A231F;
+  --shadow: 0 1px 2px rgba(0,0,0,.3), 0 10px 28px -14px rgba(0,0,0,.6); color-scheme: dark }
+
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--f-body); font-size: 15px; line-height: 1.6; }
+button, input { font: inherit; color: inherit; }
+:focus-visible { outline: 2.5px solid var(--accent); outline-offset: 2px; }
+.wrap { max-width: 1120px; margin: 0 auto; padding-block: 20px 48px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: flex; flex-direction: column; gap: 18px; }
+header { display: flex; flex-direction: column; gap: 4px; }
+.brand { display: flex; align-items: center; gap: 8px; font-family: var(--f-display); letter-spacing: .1em; text-transform: uppercase; font-size: 15px; }
+.brand svg { width: 18px; height: 26px; display: block; }
+.brand em { font-style: normal; color: var(--accent); }
+h1 { margin: 6px 0 0; font-family: var(--f-display); font-weight: 400; font-size: clamp(26px, 4vw, 38px); line-height: 1.15; color: var(--accent-text); text-wrap: balance; }
+.lede { margin: 0; color: var(--muted); max-width: 60ch; }
+
+.app { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); grid-template-areas: "viz panel" "sum panel"; grid-template-rows: auto 1fr; gap: 20px; align-items: start; }
+.viz { grid-area: viz; display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.panel { grid-area: panel; background: var(--surface); border-radius: 20px; padding: 20px; display: flex; flex-direction: column; gap: 22px; box-shadow: var(--shadow); min-width: 0; }
+.summary { grid-area: sum; background: var(--surface); border-radius: 20px; padding: 18px 20px; box-shadow: var(--shadow); display: flex; flex-direction: column; gap: 12px; }
+@media (max-width: 860px) { .app { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto; grid-template-areas: "viz" "panel" "sum"; } }
+
+.pvbox { background: var(--stage); border-radius: 20px; box-shadow: var(--shadow); padding: 18px 12px 12px; display: flex; flex-direction: column; align-items: center; gap: 10px; min-height: 360px; justify-content: center; }
+#pv { width: 100%; display: flex; justify-content: center; }
+#pv svg { display: block; width: 100%; max-width: 420px; height: auto; }
+.pvcap { font-size: 13px; color: var(--muted); text-align: center; font-variant-numeric: tabular-nums; }
+.pvcap b { color: var(--ink); font-weight: 600; }
+.simnote { font-size: 12px; color: var(--muted); }
+.pvtools { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+.pvtools .btn { min-height: 38px; padding: 6px 14px; font-size: 14px; }
+
+.step { display: flex; flex-direction: column; gap: 10px; }
+.step-t { display: flex; align-items: baseline; gap: 10px; font-weight: 600; font-size: 16px; flex-wrap: wrap; }
+.step-t i { font-style: normal; display: inline-grid; place-items: center; width: 24px; height: 24px; border-radius: 50%; background: var(--sunk); color: var(--accent-text); font-size: 13px; font-weight: 600; flex: none; }
+.hint { font-size: 13px; color: var(--muted); }
+.warn { font-size: 13px; color: var(--accent-text); min-height: 1.2em; }
+.lbl { display: flex; align-items: baseline; gap: 8px; font-weight: 600; font-size: 14.5px; margin-top: 2px; }
+.lbl small { font-weight: 500; color: var(--muted); font-size: 12.5px; }
+
+.opts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.opt { border: 0; background: var(--bg); box-shadow: inset 0 0 0 1.5px var(--line); border-radius: 14px; padding: 8px 8px 9px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 2px; text-align: center; min-height: 44px; }
+.opt svg { display: block; }
+.opt b { font-weight: 600; font-size: 14px; line-height: 1.3; }
+.opt span { font-size: 12px; color: var(--muted); line-height: 1.3; }
+.opt[aria-pressed="true"] { background: var(--sunk); box-shadow: inset 0 0 0 2px var(--accent); }
+.opt[aria-pressed="true"] b { color: var(--accent-text); }
+.opt:disabled { opacity: .4; cursor: not-allowed; }
+
+.lines-in { display: flex; flex-direction: column; gap: 8px; }
+.lin { display: flex; align-items: center; gap: 8px; }
+.lin label { flex: none; width: 64px; font-size: 13px; color: var(--muted); }
+.lin input { flex: 1 1 auto; min-width: 0; font-family: var(--f-pop); font-size: 26px; letter-spacing: .06em; line-height: 1.2; padding: 8px 14px 4px; border: 0; box-shadow: inset 0 0 0 1.5px var(--line); border-radius: 14px; background: var(--bg); text-transform: uppercase; }
+.lin input:focus { outline: none; box-shadow: inset 0 0 0 2px var(--accent); }
+.lin input::placeholder { color: var(--muted); opacity: .55; }
+.lin output { flex: none; width: 34px; text-align: right; font-size: 12.5px; color: var(--muted); font-variant-numeric: tabular-nums; }
+
+.pairs { display: grid; grid-template-columns: repeat(auto-fill, minmax(92px, 1fr)); gap: 8px; }
+.pair { border: 0; background: var(--bg); box-shadow: inset 0 0 0 1.5px var(--line); border-radius: 14px; padding: 8px 6px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 12px; color: var(--ink); line-height: 1.3; text-align: center; }
+.pair svg { display: block; }
+.pair[aria-pressed="true"] { box-shadow: inset 0 0 0 2.5px var(--accent); background: var(--sunk); }
+.colrow { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.dots { display: flex; flex-wrap: wrap; gap: 8px; }
+.dot { width: 34px; height: 34px; border-radius: 50%; border: 0; cursor: pointer; box-shadow: inset 0 0 0 1px rgba(44,36,32,.18); padding: 0; }
+.dot[aria-pressed="true"] { box-shadow: 0 0 0 2.5px var(--surface), 0 0 0 4.5px var(--accent); }
+.dot:disabled { opacity: .25; cursor: not-allowed; background-image: linear-gradient(135deg, transparent 46%, rgba(44,36,32,.6) 46%, rgba(44,36,32,.6) 54%, transparent 54%); }
+
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; border: 0; border-radius: 999px; padding: 10px 18px; font-weight: 600; font-size: 15px; cursor: pointer; text-decoration: none; min-height: 44px; white-space: nowrap; }
+.btn.primary { background: var(--accent); color: var(--accent-ink); }
+.btn.ghost { background: var(--surface); color: var(--ink); box-shadow: inset 0 0 0 1.5px var(--line); }
+.btn:disabled { opacity: .5; cursor: default; }
+.price-row { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.price { font-family: var(--f-display); font-size: 34px; line-height: 1; color: var(--accent); font-variant-numeric: tabular-nums; }
+.tiers { font-size: 13px; color: var(--muted); }
+.tiers b { color: var(--ink); font-weight: 600; }
+.qty { display: inline-flex; align-items: center; gap: 10px; }
+.qty output { min-width: 2ch; text-align: center; font-size: 20px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.pm { border: 0; width: 36px; height: 36px; border-radius: 50%; background: var(--surface); box-shadow: inset 0 0 0 1.5px var(--line); cursor: pointer; font-size: 18px; line-height: 1; display: grid; place-items: center; }
+.pm:disabled { opacity: .35; cursor: default; }
+.lines { display: flex; flex-direction: column; gap: 4px; font-size: 14px; }
+.lines div { display: flex; justify-content: space-between; gap: 12px; }
+.lines .disc { color: var(--ok); }
+.lines .tot { font-weight: 600; font-size: 16px; border-top: 1px solid var(--line); padding-top: 6px; }
+.order-btn { width: 100%; font-size: 16px; padding-block: 12px; }
+.order-btn[aria-disabled="true"] { opacity: .45; pointer-events: none; }
+.code { font-family: ui-monospace, Menlo, monospace; font-size: 13px; background: var(--bg); box-shadow: inset 0 0 0 1.5px var(--line); border-radius: 10px; padding: 4px 10px; word-break: break-all; user-select: all; display: inline-block; }
+footer { text-align: center; color: var(--muted); font-size: 13px; padding-top: 8px; }
+@media (max-width: 860px) {
+  .viz { position: sticky; top: 0; z-index: 5; }
+  .pvbox { min-height: 0; padding: 8px 8px 8px; border-radius: 0 0 18px 18px; gap: 6px; }
+  #pv svg { max-height: 30vh; width: auto; }
+  .pvtools .btn { min-height: 32px; padding: 4px 10px; font-size: 13px; }
+  .simnote { display: none; }
+}
+@media (max-width: 380px) { .lin label { width: 52px; } .lin input { font-size: 22px; } }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <span class="brand"><svg viewBox="0 0 40 58" aria-hidden="true"><rect x="15.5" y="0" width="9" height="4.5" rx="1.6" fill="#C4714A"/><rect x="18" y="4" width="4" height="3.5" fill="#A85E3B"/><path d="M20 7.5L36 16.5L20 25.5L4 16.5Z" fill="#C97A53"/><path d="M4 16.5L20 25.5V28.5L4 19.5Z" fill="#A85E3B"/><path d="M36 16.5L20 25.5V28.5L36 19.5Z" fill="#B66A43"/><path d="M4 24.0L20 33.0L36 24.0V28.2L20 37.2L4 28.2Z" fill="#B4663F"/><path d="M4 29.2L20 38.2L36 29.2V33.4L20 42.4L4 33.4Z" fill="#9A5737"/><path d="M4 34.4L20 43.4L36 34.4V38.6L20 47.6L4 38.6Z" fill="#7C4830"/><path d="M4 39.6L20 48.6L36 39.6V43.8L20 52.8L4 43.8Z" fill="#5E3A2A"/><path d="M4 44.8L20 53.8L36 44.8V49.0L20 58.0L4 49.0Z" fill="#432D24"/></svg>FIXTORY<em>.STUDIO</em></span>
+    <h1>NAME POP · ออกแบบป้ายชื่อตัวอักษรนูน</h1>
+    <p class="lede">ใส่ชื่อหรือคำที่ชอบ 1–2 บรรทัด ตัวอักษรจะขยายเต็มวงกลมแบบของจริง เลือกสีตัวอักษรกับสีพื้น ขนาด และแบบที่จะใช้ หรือกด 🎲 ให้สุ่มสีให้</p>
+  </header>
+  <div class="app">
+    <section class="viz" aria-label="ภาพตัวอย่าง">
+      <div class="pvbox">
+        <div id="pv"></div>
+        <div class="pvcap" id="pvcap"></div>
+        <div class="simnote">ภาพจำลอง ตัวอักษรของจริงตัดตามแบบ สีจริงอาจต่างเล็กน้อย</div>
+        <div class="pvtools">
+          <button type="button" class="btn ghost" id="dice">🎲 สุ่มสี</button>
+          <button type="button" class="btn ghost" id="swap">⇄ สลับสี</button>
+          <button type="button" class="btn ghost" id="save">บันทึกรูป</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel" aria-label="ออกแบบ">
+      <div class="step">
+        <div class="step-t"><i>1</i>แบบที่จะใช้</div>
+        <div class="opts" id="types"></div>
+      </div>
+      <div class="step">
+        <div class="step-t"><i>2</i>ขนาด <span class="hint" id="sizeHint"></span></div>
+        <div class="opts" id="sizes"></div>
+      </div>
+      <div class="step">
+        <div class="step-t"><i>3</i>ข้อความ <span class="hint">A–Z 0–9 · บรรทัดละไม่เกิน 8 ตัว</span></div>
+        <div class="lines-in">
+          <div class="lin"><label for="l1">บรรทัด 1</label><input id="l1" maxlength="8" autocomplete="off" autocapitalize="characters" spellcheck="false" inputmode="text" placeholder="FIXTORY"><output id="c1"></output></div>
+          <div class="lin"><label for="l2">บรรทัด 2</label><input id="l2" maxlength="8" autocomplete="off" autocapitalize="characters" spellcheck="false" inputmode="text" placeholder="(ไม่ใส่ก็ได้)"><output id="c2"></output></div>
+        </div>
+        <div class="warn" id="txtWarn" aria-live="polite"></div>
+      </div>
+      <div class="step">
+        <div class="step-t"><i>4</i>สี <span class="hint">กดคู่สีแนะนำ หรือเลือกเองด้านล่าง</span></div>
+        <div class="pairs" id="pairs"></div>
+        <div class="lbl">สีตัวอักษร <small id="fgName"></small></div>
+        <div class="dots" id="fgDots"></div>
+        <div class="lbl">สีพื้น <small id="bgName"></small></div>
+        <div class="dots" id="bgDots"></div>
+      </div>
+    </section>
+
+    <section class="summary" aria-label="สรุปและสั่งซื้อ">
+      <div class="price-row"><span class="hint" id="perPiece"></span><span class="price" id="total">฿0</span></div>
+      <div class="tiers">พวงกุญแจ / แม่เหล็ก Ø40 <b>฿99</b> · Ø50 <b>฿129</b> · Ø60 <b>฿149</b> · Griptok Ø40 <b>฿159</b><br>สั่งรวม NAME POP 3 ชิ้นขึ้นไป (คละแบบได้) <b>ลดชิ้นละ ฿10</b></div>
+      <div class="step"><div class="step-t" style="font-size:15px">จำนวนชิ้น (แบบเดียวกัน)</div>
+        <div class="qty"><button type="button" class="pm" id="minus" aria-label="ลดจำนวน">−</button><output id="qty">1</output><button type="button" class="pm" id="plus" aria-label="เพิ่มจำนวน">+</button></div></div>
+      <div class="lines" id="lines"></div>
+      <a class="btn primary order-btn" id="orderBtn" href="#" target="_blank" rel="noopener" aria-disabled="true">ใส่ข้อความก่อนสั่ง</a>
+      <a class="btn ghost" id="chatBtn" href="https://www.facebook.com/share/1CoEGCMttn/" target="_blank" rel="noopener">สั่ง 10 ชิ้นขึ้นไป · ทักแชตขอราคา</a>
+      <div class="hint">รหัสแบบ (สั่งทาง TikTok / Facebook): <span class="code" id="code">—</span></div>
+    </section>
+  </div>
+  <footer>ออกแบบและผลิตโดย Fixtory Studio · fixtory.studio · 081-336-8232</footer>
+</div>
+<script>
+(function () {
+  'use strict';
+  var $ = function (id) { return document.getElementById(id); };
+  var el = (t, a = {}, ...k) => { const e = document.createElement(t); for (const [x, v] of Object.entries(a)) { if (v == null || v === false) continue; if (x === 'class') e.className = v; else if (x === 'html') e.innerHTML = v; else if (x.startsWith('on')) e.addEventListener(x.slice(2), v); else e.setAttribute(x, v === true ? '' : v) } for (const c of k.flat()) { if (c == null || c === false) continue; e.append(c.nodeType ? c : document.createTextNode(c)) } return e };
+  var fmt = n => '฿' + Number(n).toLocaleString('th-TH');
+
+  // ---- copied verbatim into shop-order.html (NAME POP) — colours, options, code and price must match the order page ----
+const KC_HEX={"ฟ้า":"#7FC4E0","ชมพู":"#EFA9C6","ม่วง":"#B7A3E0","เหลือง":"#F2D34D","เนื้อ":"#E6C09C","ขาว":"#F5F5F2","ดำ":"#2B2B2B","ส้ม":"#F0954A","แดง":"#E0435A","เขียว":"#7FC97F","มิ้นท์":"#8FDDC6","ทราย":"#D8C6A8","น้ำเงิน":"#3F63C7","น้ำตาล":"#9A6B44","ชมพูอมแดง":"#E85C7A","เขียวอมฟ้า":"#3FB6B0"};
+const NP_COLORS=Object.keys(KC_HEX);   // index (base 36, 1 ตัว) ใช้ในรหัส NP1
+const NP_TYPES={k:'พวงกุญแจ',m:'แม่เหล็กติดตู้เย็น',g:'Griptok แม่เหล็ก'};
+const NP_SIZES={k:[4,5,6],m:[4,5,6],g:[4]};   // 4/5/6 = Ø40/Ø50/Ø60 มม. · Griptok มีแค่ Ø40
+const NP_BASE={k:{4:99,5:129,6:149},m:{4:99,5:129,6:149},g:{4:159}};
+const NP_MAXLEN=8,NP_MAXQTY=9,NP_BULK=3,NP_BULKOFF=10;   // บรรทัดละ ≤8 ตัว · ≤9 ชิ้น/ออเดอร์ (10+ ทักแชต) · 3 ชิ้นขึ้นไป (รวมทุกแบบ NAME POP) ลดชิ้นละ ฿10
+const NP_CHAT='https://www.facebook.com/share/1CoEGCMttn/';
+// รหัสแบบ: NP1.<k|m|g><4|5|6>.<สีตัวอักษร b36><สีพื้น b36>.<บรรทัด1>~<บรรทัด2>  (แต่ละบรรทัด encodeURIComponent)
+function npEncode(d){return 'NP1.'+d.t+d.s+'.'+NP_COLORS.indexOf(d.fg).toString(36)+NP_COLORS.indexOf(d.bg).toString(36)+'.'+d.lines.map(encodeURIComponent).join('~')}
+function npParse(code){
+  const m=/^NP1\.([kmg])([456])\.([0-9a-z])([0-9a-z])\.(.+)$/.exec(String(code||'').trim());if(!m)return null;
+  const t=m[1],s=+m[2],fi=parseInt(m[3],36),bi=parseInt(m[4],36);
+  if(NP_SIZES[t].indexOf(s)<0||fi>=NP_COLORS.length||bi>=NP_COLORS.length||fi===bi)return null;
+  let lines;try{lines=m[5].split('~').map(decodeURIComponent)}catch(e){return null}
+  if(lines.length<1||lines.length>2||lines.some(l=>!/^[A-Z0-9]+$/.test(l)||l.length>NP_MAXLEN))return null;
+  return {t,s,fg:NP_COLORS[fi],bg:NP_COLORS[bi],lines};
+}
+function npUnit(t,s){return (NP_BASE[t]||{})[s]||0}
+// ราคารวม: items=[{t,s,qty}] ทุกชิ้น NAME POP ในออเดอร์ · รวม ≥3 ชิ้น ลดชิ้นละ ฿10
+function npPrice(items){const n=items.reduce((a,x)=>a+(x.qty||0),0),off=n>=NP_BULK?NP_BULKOFF:0;return items.reduce((a,x)=>a+(npUnit(x.t,x.s)-off)*(x.qty||0),0)}
+function npLabel(d){return 'NAME POP '+NP_TYPES[d.t]+' Ø'+d.s+'0 มม. · '+d.lines.join(' / ')+' · ตัวอักษร'+d.fg+' พื้น'+d.bg}
+  // ---- end copy ----
+
+  // ---------- drawing: a list of shapes → SVG (preview) or canvas (saved picture) ----------
+  function shade(hex, k) { var n = parseInt((hex || '#cccccc').slice(1), 16), r = n >> 16, g = n >> 8 & 255, b = n & 255; var f = function (v) { return Math.round(k < 0 ? v * (1 + k) : v + (255 - v) * k); }; return '#' + [f(r), f(g), f(b)].map(function (v) { return v.toString(16).padStart(2, '0'); }).join(''); }
+  function lum(hex) { var n = parseInt(hex.slice(1), 16); return (0.299 * (n >> 16) + 0.587 * (n >> 8 & 255) + 0.114 * (n & 255)) / 255; }
+  var FONT = '"Luckiest Guy", "Arial Black", Impact, sans-serif', FS = 100, GSTROKE = 7;
+  var mctx = document.createElement('canvas').getContext('2d'), mcache = {};
+  function ink(ch) {   // glyph ink box at font-size 100 (baseline at y=0), incl. the fattening stroke
+    if (mcache[ch]) return mcache[ch];
+    mctx.font = FS + 'px ' + FONT; var m = mctx.measureText(ch), h = GSTROKE / 2;
+    var L = m.actualBoundingBoxLeft, R = m.actualBoundingBoxRight, A = m.actualBoundingBoxAscent, D = m.actualBoundingBoxDescent;
+    if (!(R + L > 0) || !(A + D > 0)) { L = 0; R = m.width || 60; A = 72; D = 0; }
+    return (mcache[ch] = { l: L + h, r: R + h, a: A + h, d: D + h });
+  }
+  // place glyphs so the word bulges to fill the circle (like the printed piece): middle letters tall, outer letters shorter
+  function layout(lines, cx, cy, R) {
+    var out = [], ri = R * 0.86, gap = R * 0.05, two = lines.length === 2;
+    lines.forEach(function (ln, li) {
+      var n = ln.length; if (!n) return;
+      var yMid = two ? ri * 0.5 : 0;   // distance of the line's middle from centre
+      var lineW = 2 * Math.sqrt(ri * ri - yMid * yMid) * (two ? 1 : 0.94);
+      var hMax = two ? ri - gap / 2 : 2 * ri * 0.78;
+      // each letter keeps its own proportions (an I stays narrow); the whole line is squeezed/stretched to the chord width within limits
+      var asp = [], sum = 0; for (var j = 0; j < n; j++) { var bj = ink(ln[j]); asp.push((bj.l + bj.r) / (bj.a + bj.d)); sum += asp[j]; }
+      var fx = Math.max(0.4, Math.min(1.1, lineW / (sum * hMax))), widths = asp.map(function (a) { return a * fx * hMax; }), tw = widths.reduce(function (a, b) { return a + b; }, 0);
+      var x0 = cx - tw / 2, acc = 0;
+      for (var i = 0; i < n; i++) {
+        var slot = widths[i], pad = slot * 0.035, gx = x0 + acc + slot / 2; acc += slot;
+        var xe = Math.min(ri * 0.985, Math.abs(gx - cx) + slot * 0.3);
+        var half = Math.sqrt(ri * ri - xe * xe), h, top;
+        if (two) { h = Math.max(hMax * 0.38, Math.min(hMax, half - gap / 2)); top = li === 0 ? cy - gap / 2 - h : cy + gap / 2; }
+        else { h = Math.max(hMax * 0.42, Math.min(hMax, 2 * half * 0.86)); top = cy - h / 2; }
+        var b = ink(ln[i]), w = slot - 2 * pad, sx = w / (b.l + b.r), sy = h / (b.a + b.d);
+        out.push({ ch: ln[i], m: [sx, 0, 0, sy, gx - w / 2 + b.l * sx, top + b.a * sy] });
+      }
+    });
+    return out;
+  }
+  var SCALE = { 4: 0.8, 5: 0.9, 6: 1 };
+  // the whole piece in a 300×330 box; d={t,s,fg,bg,lines}
+  function scene(d, opt) {
+    opt = opt || {};
+    var F = KC_HEX[d.fg], B = KC_HEX[d.bg], R = 118 * (opt.fixed ? 1 : SCALE[d.s]), cx = 150, cy = 192, dz = R * 0.055, ops = [];
+    var metal = '#D9CBB5', metalD = '#B9A88E';
+    if (d.t === 'g') {   // clear griptok stand behind the disc
+      ops.push({ k: 'c', cx: cx, cy: cy + R * 0.16, r: R * 1.2, fill: '#000', op: 0.12, blur: 6 });
+      ops.push({ k: 'c', cx: cx, cy: cy + R * 0.12, r: R * 1.18, fill: '#FFFFFF', op: 0.7, stroke: '#C9C2BA', sw: 2 });
+      ops.push({ k: 'c', cx: cx, cy: cy + R * 0.12, r: R * 1.04, fill: 'none', stroke: '#E4DED6', sw: 5 });
+    }
+    // drop shadow
+    ops.push({ k: 'c', cx: cx + 3, cy: cy + dz + 7, r: R * 1.01, fill: '#000', op: 0.22, blur: 7 });
+    if (d.t === 'k') {   // tab with a hole on top (same colour as the base) + metal ring and clasp
+      var ty = cy - R - R * 0.1;
+      ops.push({ k: 'c', cx: cx, cy: ty + dz, r: R * 0.17, fill: shade(B, -0.3) });
+      ops.push({ k: 'c', cx: cx, cy: ty, r: R * 0.17, fill: B });
+      ops.push({ k: 'c', cx: cx, cy: ty, r: R * 0.075, fill: opt.bg || '#EFE4D8' });
+      ops.push({ k: 'c', cx: cx, cy: ty, r: R * 0.075, fill: '#000', op: 0.18 });
+    }
+    // disc: side wall (darker) then top
+    ops.push({ k: 'c', cx: cx, cy: cy + dz, r: R, fill: shade(B, -0.3) });
+    ops.push({ k: 'c', cx: cx, cy: cy, r: R, fill: B });
+    ops.push({ k: 'c', cx: cx, cy: cy, r: R - 2.5, fill: 'none', stroke: shade(B, 0.22), sw: 2, op: 0.7 });
+    if (d.t === 'k') {   // split ring through the hole + clasp
+      var ty2 = cy - R - R * 0.1, rr = R * 0.2;
+      ops.push({ k: 'p', d: 'M' + (cx - 3) + ' ' + (ty2 + R * 0.04) + ' C' + (cx - rr * 1.6) + ' ' + (ty2 - rr * 0.3) + ' ' + (cx - rr * 0.8) + ' ' + (ty2 - rr * 2.2) + ' ' + (cx + rr * 0.2) + ' ' + (ty2 - rr * 2.1) + ' C' + (cx + rr * 1.3) + ' ' + (ty2 - rr * 2) + ' ' + (cx + rr * 1.4) + ' ' + (ty2 - rr * 0.4) + ' ' + (cx + 3) + ' ' + (ty2 + R * 0.04), fill: 'none', stroke: metalD, sw: 6.5 });
+      ops.push({ k: 'p', d: 'M' + (cx - 3) + ' ' + (ty2 + R * 0.04) + ' C' + (cx - rr * 1.6) + ' ' + (ty2 - rr * 0.3) + ' ' + (cx - rr * 0.8) + ' ' + (ty2 - rr * 2.2) + ' ' + (cx + rr * 0.2) + ' ' + (ty2 - rr * 2.1) + ' C' + (cx + rr * 1.3) + ' ' + (ty2 - rr * 2) + ' ' + (cx + rr * 1.4) + ' ' + (ty2 - rr * 0.4) + ' ' + (cx + 3) + ' ' + (ty2 + R * 0.04), fill: 'none', stroke: metal, sw: 4 });
+      var cy3 = ty2 - rr * 2.1;
+      ops.push({ k: 'p', d: 'M' + (cx + rr * 0.2) + ' ' + cy3 + ' L' + (cx + rr * 0.5) + ' ' + (cy3 - 26) + ' Q' + (cx + rr * 0.7) + ' ' + (cy3 - 40) + ' ' + (cx + rr * 1.6) + ' ' + (cy3 - 40), fill: 'none', stroke: metalD, sw: 7.5 });
+      ops.push({ k: 'p', d: 'M' + (cx + rr * 0.2) + ' ' + cy3 + ' L' + (cx + rr * 0.5) + ' ' + (cy3 - 26) + ' Q' + (cx + rr * 0.7) + ' ' + (cy3 - 40) + ' ' + (cx + rr * 1.6) + ' ' + (cy3 - 40), fill: 'none', stroke: metal, sw: 4.5 });
+    }
+    var lines = d.lines.filter(function (l) { return l; }); if (!lines.length) lines = ['ABC'];
+    var gl = layout(lines, cx, cy - dz * 0.3, R);
+    var lh = R * 0.055;   // raised letters: shadow on the base, darker side wall, top face, small shine
+    gl.forEach(function (g) { ops.push({ k: 'g', ch: g.ch, m: g.m, dy: lh * 0.9, dx: lh * 0.35, fill: '#000', op: 0.28, blur: 2.5 }); });
+    gl.forEach(function (g) { ops.push({ k: 'g', ch: g.ch, m: g.m, dy: lh, fill: shade(F, -0.32) }); });
+    gl.forEach(function (g) { ops.push({ k: 'g', ch: g.ch, m: g.m, dy: lh * 0.5, fill: shade(F, -0.16) }); });
+    gl.forEach(function (g) { ops.push({ k: 'g', ch: g.ch, m: g.m, dy: 0, fill: F }); });
+    gl.forEach(function (g) { ops.push({ k: 'g', ch: g.ch, m: g.m, dy: -lh * 0.18, fill: shade(F, 0.35), op: 0.35, clipTop: true }); });
+    return ops;
+  }
+  var esc = function (s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;'); };
+  function toSVG(ops, w, h, label) {
+    var s = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 330" width="' + w + '" height="' + h + '" role="img" aria-label="' + esc(label || 'ตัวอย่าง NAME POP') + '"><defs><filter id="npb2" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="2.5"/></filter><filter id="npb6" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="6"/></filter></defs>';
+    ops.forEach(function (o) {
+      var op = o.op != null ? ' opacity="' + o.op + '"' : '', bl = o.blur ? ' filter="url(#' + (o.blur > 4 ? 'npb6' : 'npb2') + ')"' : '';
+      if (o.k === 'c') s += '<circle cx="' + o.cx.toFixed(1) + '" cy="' + o.cy.toFixed(1) + '" r="' + o.r.toFixed(1) + '" fill="' + o.fill + '"' + (o.stroke ? ' stroke="' + o.stroke + '" stroke-width="' + o.sw + '"' : '') + op + bl + '/>';
+      else if (o.k === 'p') s += '<path d="' + o.d + '" fill="' + o.fill + '" stroke="' + o.stroke + '" stroke-width="' + o.sw + '" stroke-linecap="round"' + op + '/>';
+      else if (o.k === 'g') { var m = o.m; s += '<text transform="matrix(' + [m[0], 0, 0, m[3], m[4] + (o.dx || 0), m[5] + o.dy].map(function (v) { return +v.toFixed(4); }).join(' ') + ')" font-family=\'' + FONT + '\' font-size="' + FS + '" fill="' + o.fill + '" stroke="' + o.fill + '" stroke-width="' + GSTROKE + '" stroke-linejoin="round"' + op + bl + '>' + esc(o.ch) + '</text>'; }
+    });
+    return s + '</svg>';
+  }
+  function toCanvas(ops, size, bg) {
+    var c = document.createElement('canvas'); c.width = c.height = size; var g = c.getContext('2d'), k = size / 330, ox = (330 - 300) / 2;
+    g.fillStyle = bg; g.fillRect(0, 0, size, size);
+    ops.forEach(function (o) {
+      g.save(); g.setTransform(k, 0, 0, k, ox * k, 0); g.globalAlpha = o.op != null ? o.op : 1;
+      if (o.blur && 'filter' in g) g.filter = 'blur(' + (o.blur * k) + 'px)';
+      if (o.k === 'c') { g.beginPath(); g.arc(o.cx, o.cy, o.r, 0, Math.PI * 2); if (o.fill !== 'none') { g.fillStyle = o.fill; g.fill(); } if (o.stroke) { g.lineWidth = o.sw; g.strokeStyle = o.stroke; g.stroke(); } }
+      else if (o.k === 'p') { g.lineWidth = o.sw; g.strokeStyle = o.stroke; g.lineCap = 'round'; g.stroke(new Path2D(o.d)); }
+      else if (o.k === 'g' && o.op != null && o.op < 1) {   // translucent glyph: draw opaque on a layer first so fill+stroke don't double up
+        var t = document.createElement('canvas'); t.width = t.height = size; var tg = t.getContext('2d'); tg.setTransform(k, 0, 0, k, ox * k, 0);
+        var m2 = o.m; tg.transform(m2[0], 0, 0, m2[3], m2[4] + (o.dx || 0), m2[5] + o.dy); tg.font = FS + 'px ' + FONT; tg.textAlign = 'left'; tg.fillStyle = tg.strokeStyle = o.fill; tg.lineWidth = GSTROKE; tg.lineJoin = 'round'; tg.fillText(o.ch, 0, 0); tg.strokeText(o.ch, 0, 0);
+        g.setTransform(1, 0, 0, 1, 0, 0); g.drawImage(t, 0, 0);
+      }
+      else if (o.k === 'g') { var m = o.m; g.transform(m[0], 0, 0, m[3], m[4] + (o.dx || 0), m[5] + o.dy); g.font = FS + 'px ' + FONT; g.textBaseline = 'alphabetic'; g.textAlign = 'left'; g.fillStyle = g.strokeStyle = o.fill; g.lineWidth = GSTROKE; g.lineJoin = 'round'; g.fillText(o.ch, 0, 0); g.strokeText(o.ch, 0, 0); }
+      g.restore();
+    });
+    return c;
+  }
+
+  // ---------- state ----------
+  var PAIRS = [
+    { name: 'ชมพูบนเขียวอมฟ้า', fg: 'ชมพูอมแดง', bg: 'เขียวอมฟ้า' },
+    { name: 'เขียวอมฟ้าบนชมพู', fg: 'เขียวอมฟ้า', bg: 'ชมพูอมแดง' },
+    { name: 'ขาวบนน้ำเงิน', fg: 'ขาว', bg: 'น้ำเงิน' },
+    { name: 'ดำบนเหลือง', fg: 'ดำ', bg: 'เหลือง' },
+    { name: 'ส้มบนม่วง', fg: 'ส้ม', bg: 'ม่วง' }
+  ];
+  var d = { t: 'k', s: 5, fg: 'ชมพูอมแดง', bg: 'เขียวอมฟ้า', lines: ['FIXTORY', 'STUDIO'] }, qty = 1;
+  try { var q0 = new URLSearchParams(location.search).get('np'), p0 = q0 && npParse(q0); if (p0) d = p0; else { var s0 = npParse(localStorage.getItem('fxNpDraft') || ''); if (s0) d = s0; } } catch (e) {}
+  var SALE = (function () { try { return new URLSearchParams(location.search).get('sale') || ''; } catch (e) { return ''; } })();
+  var ORDER_URL = (/fixtory-studio\.pages\.dev$|^localhost$/.test(location.hostname) ? 'shop-order.html' : 'https://fixtory-studio.pages.dev/shop-order.html') + '?p=namepop';
+  $('l1').value = d.lines[0] || ''; $('l2').value = d.lines[1] || '';
+
+  function clean(v) { return v.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, NP_MAXLEN); }
+  function onType(e) {
+    var inp = e.target, raw = inp.value, v = clean(raw), bad = raw.toUpperCase().replace(/\s/g, '') !== v && raw.length > 0;
+    if (inp.value !== v) { var p = inp.selectionStart; inp.value = v; try { inp.setSelectionRange(Math.min(p, v.length), Math.min(p, v.length)); } catch (x) {} }
+    $('txtWarn').textContent = bad ? 'ใช้ได้เฉพาะ A–Z และ 0–9 (ภาษาอังกฤษตัวพิมพ์ใหญ่) บรรทัดละไม่เกิน 8 ตัว' : '';
+    d.lines = [$('l1').value, $('l2').value].filter(function (l) { return l; }); render();
+  }
+  $('l1').addEventListener('input', onType); $('l2').addEventListener('input', onType);
+
+  function pairSvg(p) {
+    return '<svg viewBox="0 0 48 48" width="40" height="40" aria-hidden="true"><circle cx="24" cy="26" r="21" fill="' + shade(KC_HEX[p.bg], -0.3) + '"/><circle cx="24" cy="24" r="21" fill="' + KC_HEX[p.bg] + '"/><text x="24" y="31" text-anchor="middle" font-family=\'' + FONT + '\' font-size="17" fill="' + KC_HEX[p.fg] + '" stroke="' + KC_HEX[p.fg] + '" stroke-width="1">Ab</text></svg>';
+  }
+  function typeIcon(t) {
+    var c = '#3FB6B0', f = '#E85C7A';
+    var disc = '<circle cx="22" cy="25" r="11" fill="' + c + '"/><text x="22" y="29.5" text-anchor="middle" font-family=\'' + FONT + '\' font-size="11" fill="' + f + '">A</text>';
+    if (t === 'k') return '<svg viewBox="0 0 44 40" width="40" height="36" aria-hidden="true"><circle cx="22" cy="12" r="3" fill="' + c + '"/><path d="M21 12 C14 9 15 1 22 1 C29 1 30 9 23 12" fill="none" stroke="#B9A88E" stroke-width="2"/>' + disc + '</svg>';
+    if (t === 'm') return '<svg viewBox="0 0 44 40" width="40" height="36" aria-hidden="true"><rect x="4" y="4" width="36" height="34" rx="4" fill="#E6E9EC" stroke="#C9CDD2"/>' + disc + '</svg>';
+    return '<svg viewBox="0 0 44 40" width="40" height="36" aria-hidden="true"><circle cx="22" cy="27" r="14" fill="#fff" stroke="#C9C2BA"/>' + disc + '</svg>';
+  }
+
+  function render() {
+    if (NP_SIZES[d.t].indexOf(d.s) < 0) d.s = NP_SIZES[d.t][0];
+    var hasText = d.lines.length > 0;
+    // preview
+    var label = 'ตัวอย่าง NAME POP ' + NP_TYPES[d.t] + ' Ø' + d.s + '0 มม. ข้อความ ' + (d.lines.join(' ') || '-') + ' ตัวอักษร' + d.fg + ' พื้น' + d.bg;
+    $('pv').innerHTML = toSVG(scene(d), 300, 330, label);
+    $('pvcap').innerHTML = '<b>' + NP_TYPES[d.t] + '</b> · Ø' + d.s + '0 มม. · ตัวอักษร' + d.fg + ' / พื้น' + d.bg + (hasText ? '' : ' · (ตัวอย่าง ABC)');
+    // type
+    var ty = $('types'); ty.textContent = '';
+    ['k', 'm', 'g'].forEach(function (t) {
+      ty.append(el('button', { type: 'button', class: 'opt', 'aria-pressed': String(d.t === t), onclick: function () { d.t = t; render(); }, html: typeIcon(t) + '<b>' + NP_TYPES[t] + '</b><span>' + (t === 'g' ? '฿159 · Ø40 เท่านั้น' : 'เริ่ม ฿99') + '</span>' }));
+    });
+    // size
+    var sz = $('sizes'); sz.textContent = '';
+    [4, 5, 6].forEach(function (s) {
+      var ok = NP_SIZES[d.t].indexOf(s) >= 0, p = npUnit(d.t, s);
+      sz.append(el('button', { type: 'button', class: 'opt', disabled: !ok, 'aria-pressed': String(d.s === s), onclick: function () { d.s = s; render(); }, html: '<svg viewBox="0 0 40 40" width="' + (18 + (s - 4) * 6) + '" height="' + (18 + (s - 4) * 6) + '" aria-hidden="true"><circle cx="20" cy="20" r="19" fill="' + KC_HEX[d.bg] + '"/></svg><b>Ø' + s + '0 มม.</b><span>' + (ok ? fmt(p) : 'ไม่มีสำหรับ Griptok') + '</span>' }));
+    });
+    $('sizeHint').textContent = d.t === 'g' ? 'Griptok มีขนาดเดียว Ø40 มม.' : '';
+    $('c1').textContent = $('l1').value.length + '/8'; $('c2').textContent = $('l2').value.length + '/8';
+    // colours
+    var pr = $('pairs'); pr.textContent = '';
+    PAIRS.forEach(function (p) { pr.append(el('button', { type: 'button', class: 'pair', 'aria-pressed': String(d.fg === p.fg && d.bg === p.bg), onclick: function () { d.fg = p.fg; d.bg = p.bg; render(); }, html: pairSvg(p) + '<span>' + p.name + '</span>' })); });
+    $('fgName').textContent = d.fg; $('bgName').textContent = d.bg;
+    var fd = $('fgDots'), bd = $('bgDots'); fd.textContent = ''; bd.textContent = '';
+    NP_COLORS.forEach(function (c) {
+      fd.append(el('button', { type: 'button', class: 'dot', style: 'background-color:' + KC_HEX[c], title: c, 'aria-label': 'ตัวอักษรสี' + c, 'aria-pressed': String(d.fg === c), disabled: c === d.bg, onclick: function () { d.fg = c; render(); } }));
+      bd.append(el('button', { type: 'button', class: 'dot', style: 'background-color:' + KC_HEX[c], title: c, 'aria-label': 'พื้นสี' + c, 'aria-pressed': String(d.bg === c), disabled: c === d.fg, onclick: function () { d.bg = c; render(); } }));
+    });
+    // price (this design alone; the cart applies the 3+ discount across all NAME POP pieces)
+    var unit = npUnit(d.t, d.s), tot = npPrice([{ t: d.t, s: d.s, qty: qty }]), off = qty >= NP_BULK ? NP_BULKOFF : 0;
+    $('perPiece').textContent = 'ชิ้นละ ' + fmt(unit - off) + (off ? ' (ลดแล้ว ฿' + off + ')' : '');
+    $('total').textContent = fmt(hasText ? tot : 0);
+    $('qty').textContent = qty; $('minus').disabled = qty <= 1; $('plus').disabled = qty >= NP_MAXQTY;
+    var L = $('lines'); L.textContent = '';
+    if (hasText) {
+      L.append(el('div', {}, el('span', {}, NP_TYPES[d.t] + ' Ø' + d.s + '0 · ' + qty + ' ชิ้น × ' + fmt(unit)), el('span', {}, fmt(unit * qty))));
+      if (off) L.append(el('div', { class: 'disc' }, el('span', {}, 'ส่วนลด 3 ชิ้นขึ้นไป ชิ้นละ ฿' + off), el('span', {}, '−' + fmt(off * qty))));
+      else L.append(el('div', { class: 'hint' }, el('span', {}, 'สั่งรวม 3 ชิ้นขึ้นไป (คละแบบในตะกร้าได้) ลดชิ้นละ ฿10')));
+      L.append(el('div', { class: 'tot' }, el('span', {}, 'รวม (ยังไม่รวมค่าส่ง)'), el('span', {}, fmt(tot))));
+    }
+    var code = hasText ? npEncode(d) : ''; $('code').textContent = code || '—';
+    var ob = $('orderBtn');
+    if (hasText) { ob.removeAttribute('aria-disabled'); ob.href = ORDER_URL + '&np=' + encodeURIComponent(code) + '&qty=' + qty + (SALE ? '&sale=' + encodeURIComponent(SALE) : ''); ob.textContent = 'สั่งซื้อแบบนี้ · ' + fmt(tot); }
+    else { ob.setAttribute('aria-disabled', 'true'); ob.href = '#'; ob.textContent = 'ใส่ข้อความก่อนสั่ง'; }
+    $('chatBtn').href = NP_CHAT;
+    $('chatBtn').textContent = qty >= NP_MAXQTY ? 'ต้องการ 10 ชิ้นขึ้นไป? ทักแชตขอราคา' : 'สั่ง 10 ชิ้นขึ้นไป · ทักแชตขอราคา';
+    try { if (code) localStorage.setItem('fxNpDraft', code); } catch (e) {}
+  }
+
+  $('minus').onclick = function () { qty = Math.max(1, qty - 1); render(); };
+  $('plus').onclick = function () { qty = Math.min(NP_MAXQTY, qty + 1); render(); };
+  $('swap').onclick = function () { var t = d.fg; d.fg = d.bg; d.bg = t; render(); };
+  $('dice').onclick = function () {   // random pair that still reads well (enough light/dark contrast)
+    var a, b, n = 0;
+    do { a = NP_COLORS[Math.floor(Math.random() * NP_COLORS.length)]; b = NP_COLORS[Math.floor(Math.random() * NP_COLORS.length)]; n++; }
+    while ((a === b || Math.abs(lum(KC_HEX[a]) - lum(KC_HEX[b])) < 0.22 || (a === d.fg && b === d.bg)) && n < 200);
+    d.fg = a; d.bg = b; render();
+  };
+  function picture(size) { return toCanvas(scene(d, { bg: '#F3ECE4' }), size, '#F3ECE4'); }
+  $('save').onclick = function () {
+    var c = picture(1000), a = document.createElement('a');
+    a.download = 'fixtory-namepop-' + (d.lines.join('-') || 'design') + '.png'; a.href = c.toDataURL('image/png'); document.body.appendChild(a); a.click(); a.remove();
+  };
+  // picture for the order page's cart (same site: shared localStorage), like keycap.html
+  $('orderBtn').addEventListener('click', function () {
+    if (!d.lines.length) return;
+    try {
+      var c = npEncode(d), K = 'fxNpImgs', list = JSON.parse(localStorage.getItem(K) || '[]').filter(function (x) { return x !== c; });
+      list.unshift(c); while (list.length > 30) localStorage.removeItem('fxNpImg:' + list.pop());
+      localStorage.setItem('fxNpImg:' + c, picture(360).toDataURL('image/jpeg', 0.85)); localStorage.setItem(K, JSON.stringify(list));
+    } catch (e) {}
+  }, true);
+
+  render();
+  // re-measure once the bubble font has loaded (glyph boxes change)
+  if (document.fonts && document.fonts.load) document.fonts.load('100px "Luckiest Guy"').then(function () { mcache = {}; render(); }, function () {});
+})();
+</script>
+</body>
+</html>
