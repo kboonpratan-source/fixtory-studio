@@ -5,7 +5,7 @@
 <title>NAME POP Poster</title>
 <!--
   โปสเตอร์ร่าง: ป้ายชื่อตัวอักษรนูน 2 สี (ชื่อร่าง NAME POP) · 1024×1536
-  แก้ราคา: ค้นหา id="price" แล้วเปลี่ยน ฿— เป็นราคา (ยังไม่ใส่ราคาตามใบสั่ง)
+  แก้ราคา: ค้นหา id="price" (ตารางราคาต่อชิ้น · รอบ 2 AU อนุมัติ 23 พ.ย.)
   แก้ชื่อสินค้า: ค้นหา class="name"
   เรนเดอร์: node render.js (Playwright) → name_badge_poster_th.jpg
 -->
@@ -81,10 +81,19 @@ body{font-family:Prompt,sans-serif;color:#fff;position:relative;
 .cta{left:44px;top:1246px;width:520px}
 .cta b{display:block;font-size:27px;font-weight:600;line-height:1.35}
 .cta span{display:block;font-size:18px;color:#d0d0d0;line-height:1.4}
-.price{left:584px;top:1242px;width:416px;height:92px;background:#7a1622;border:2px solid #b52a3a;border-radius:16px;text-align:center;padding-top:8px}
-.price b{font-size:36px;font-weight:700;line-height:1.25}
-.price span{display:block;font-size:17px;color:#f1d6da;line-height:1.35}
-.sep{left:36px;top:1350px;width:952px;height:1px;background:var(--line)}
+.price{left:692px;top:1242px;width:308px;height:280px;background:#7a1622;border:2px solid #b52a3a;border-radius:16px;padding:10px 14px 0;text-align:center}
+.price .pt{font-size:22px;font-weight:700;line-height:1.3}
+.price table{width:100%;border-collapse:collapse;margin-top:4px}
+.price th{font-size:14px;font-weight:500;color:#f1d6da;line-height:1.25;padding:0 2px 4px;border-bottom:1px solid rgba(255,255,255,.28)}
+.price td{font-size:26px;font-weight:700;line-height:1.3;padding:1px 2px}
+.price td.s{font-size:19px;font-weight:600;text-align:left;color:#fff}
+.price td.na{font-size:14px;font-weight:500;color:#f1d6da;line-height:1.3}
+.price tr+tr td{border-top:1px solid rgba(255,255,255,.12)}
+.price .disc{margin-top:6px;background:#fff;color:#7a1622;border-radius:10px;padding:3px 6px;font-size:17px;font-weight:700;line-height:1.35}
+.price .disc small{font-size:14px;font-weight:500}
+.price .bulk{font-size:14px;color:#f1d6da;line-height:1.35;margin-top:4px}
+.price .ord{font-size:15px;font-weight:600;line-height:1.35;margin-top:2px}
+.sep{left:36px;top:1350px;width:640px;height:1px;background:var(--line)}
 /* footer */
 .qr{top:1364px;width:120px;text-align:center}
 .qr .q{background:#fff;border-radius:12px;padding:8px}.qr img{width:104px;height:104px;display:block}
@@ -147,7 +156,18 @@ body{font-family:Prompt,sans-serif;color:#fff;position:relative;
   </div></div>
 
 <div class="abs cta"><b>ป้ายชื่อที่เป็นของคุณคนเดียว</b><span>เหมาะเป็นของขวัญ ของที่ระลึก หรือแต่งกระเป๋า ตู้เย็น และมือถือ</span></div>
-<div class="abs price"><b id="price">ราคา ฿—</b><span>หากสนใจ 10 ชิ้นขึ้นไป โปรดติดต่อร้าน</span></div>
+<div class="abs price" id="price">
+  <div class="pt">ราคาต่อชิ้น</div>
+  <table>
+    <tr><th>ขนาด</th><th>พวงกุญแจ<br>แม่เหล็ก</th><th>Griptok<br>แม่เหล็ก</th></tr>
+    <tr><td class="s">Ø40</td><td>฿99</td><td>฿159</td></tr>
+    <tr><td class="s">Ø50</td><td>฿129</td><td class="na" rowspan="2">มีเฉพาะ<br>Ø40</td></tr>
+    <tr><td class="s">Ø60</td><td>฿149</td></tr>
+  </table>
+  <div class="disc">3 ชิ้นขึ้นไป ลดชิ้นละ ฿10 <small>(คละแบบได้)</small></div>
+  <div class="bulk">หากสนใจ 10 ชิ้นขึ้นไป โปรดติดต่อร้าน</div>
+  <div class="ord">สั่งทำ: ทักแชตบอกชื่อ · สี · ขนาด · แบบ</div>
+</div>
 <div class="abs sep"></div>
 
 <div class="abs qr" style="left:44px"><div class="q"><img src="img/qr-tiktok.png" alt=""></div><span>TikTok</span><small>@fixtory.studio</small></div>
