@@ -354,6 +354,11 @@ const PRODUCTS={
       points:['พวงกุญแจ / แม่เหล็กติดตู้เย็น: Ø40 มม. ฿99 · Ø50 มม. ฿129 · Ø60 มม. ฿149','Griptok แม่เหล็ก Ø40 มม. ฿159','สั่ง 3 ชิ้นขึ้นไป (คละแบบได้) ลดชิ้นละ ฿10 · 10 ชิ้นขึ้นไป ทักแชตขอราคา','สั่งทำทางแชต บอกชื่อ · สี · ขนาด · แบบ'],
       spec:[['ขนาด','Ø40 / 50 / 60 มม.'],['Griptok','Ø40 มม.'],['สี','ชมพู / เขียวน้ำทะเล สลับกันได้']],
       gallery:['cat/namepop-2.jpg','cat/namepop-3.jpg','cat/namepop-4.jpg','cat/namepop-5.jpg','cat/namepop-6.jpg']}}
+  ,xmasorn:{name:"พวงกุญแจ X'mas",sub:'ต้นคริสต์มาสใส่ชื่อ + หน้าต่าง',img:'cat/xmasorn-1.jpg'+IMG_V,from:99,fromLabel:true,tag:'เฉพาะช่วงเทศกาล'/* เปิดขาย 23 พ.ย. 2569 แบบสั่งทำทางแชต (ร้านออกแบบเอง · ราคา AU อนุมัติ) · ไม่ลงตะกร้า */,
+    info:{summary:"พวงกุญแจคริสต์มาส 2 ชิ้นซ้อนกัน ร้อยโซ่ไข่ปลาเส้นเดียว — ต้นคริสต์มาสสีเขียวใส่ชื่อบนแถบเป็นตัวอักษรขาวนูน + กรอบหน้าต่างสีแดงลาย X'MAS (บ้าน ต้นไม้ พระจันทร์) ร้านออกแบบเอง เปิดเฉพาะช่วงเทศกาล",
+      points:['ชุดคู่ (ต้นใส่ชื่อ + หน้าต่าง) ฿199 — แนะนำ คุ้มกว่าซื้อแยก (แยก ฿228)','ต้นเขียวใส่ชื่ออย่างเดียว ฿129 · หน้าต่างแดงอย่างเดียว ฿99','ชื่อบนต้นเป็นภาษาอังกฤษ ~8 ตัวอักษรพอดีแถบ','สั่งทำทางแชต บอกแบบ · ชื่อบนต้น · จำนวน'],
+      spec:[['ชิ้นงาน','2 ชิ้นซ้อนกัน ร้อยโซ่ไข่ปลาเส้นเดียว'],['สี','ต้นเขียว · หน้าต่างแดง · ตัวอักษร/ลายขาว'],['ช่วงขาย','เฉพาะช่วงเทศกาล']],
+      gallery:['cat/xmasorn-2.jpg','cat/xmasorn-3.jpg']}}
   ,santastand:{name:'ที่วางมือถือ Santa Edition',sub:'ธีมคริสต์มาส',img:'santa-stand.svg'+IMG_V,from:199,perPiece:true,tag:'ฟรี! ใส่ชื่อได้',hidden:true/* ยังไม่เปิดขาย (รอ license + รูปจริง) — เปิดขายเมื่อไรให้ลบ hidden ออก */,
     info:{summary:'ที่วางมือถือธีมซานต้า สลักชื่อได้ฟรี (ไม่ใส่ก็ได้) ราคาเท่ากัน',points:['฿199 / ชิ้น · 2–3 ชิ้น ฿179 · 4–9 ชิ้น ฿169 · 10 ชิ้นขึ้นไป ฿119 (คิดรวมทั้งออเดอร์)','สลักชื่อฟรี ไม่บังคับ','สั่ง 20 ชิ้นขึ้นไป ทักแชตขอราคา'],spec:[]}}
   ,clips:{name:'คลิปหนีบเอกสาร',sub:'เซ็ต 20 อัน',img:'clips.jpg'+IMG_V,from:99,perPiece:true,unit:'เซ็ต',
@@ -665,6 +670,22 @@ function renderConf(){
           el('p',{class:'hint',style:'margin-top:0;font-size:14px;color:var(--ink);font-weight:600'},'สั่งทำทางแชต — บอกชื่อ · สี · ขนาด · แบบ'),
           el('div',{class:'note',style:'margin-top:8px'},'พวงกุญแจ / แม่เหล็กติดตู้เย็น: Ø40 มม. ฿99 · Ø50 มม. ฿129 · Ø60 มม. ฿149 · Griptok แม่เหล็ก Ø40 มม. ฿159 · สั่ง 3 ชิ้นขึ้นไป (คละแบบได้) ลดชิ้นละ ฿10 · 10 ชิ้นขึ้นไป ทักแชตขอราคา'),
           el('label',{class:'lbl',for:'npMsg'},'ข้อความสำหรับส่งในแชต',el('small',{},'คัดลอกแล้วเติมรายละเอียด')),ta,cp,
+          chat('https://www.facebook.com/share/1CoEGCMttn/','ทักแชต Facebook','primary'),
+          chat('https://vt.tiktok.com/ZSgqn8JYh/','ทักแชต TikTok','ghost'),
+          chat('tel:0813368232','โทร 081-336-8232','ghost'))));
+  }else if(current==='xmasorn'){
+    // พวงกุญแจ X'mas: สั่งทำทางแชต (ไม่ลงตะกร้า) · แบบเดียวกับ NAME POP · ส่งต่อรหัสตัวแทน (?sale=) ในข้อความที่ให้ลูกค้าคัดลอก
+    const msg="สั่งทำ พวงกุญแจ X'mas\nแบบ: ชุดคู่ ฿199 / ต้นเขียวใส่ชื่อ ฿129 / หน้าต่างแดง ฿99\nชื่อบนต้น (ภาษาอังกฤษ ~8 ตัวอักษร): \nจำนวน: "+(saleRef?'\nรหัสตัวแทน: '+saleRef:'');
+    const ta=el('textarea',{id:'xoMsg',rows:'6',readonly:true,style:'width:100%;font:inherit;font-size:13px;border:0;box-shadow:inset 0 0 0 1.5px var(--line);border-radius:12px;padding:10px 12px;background:var(--surface);color:var(--ink);resize:none'});ta.value=msg;
+    const cp=el('button',{type:'button',class:'btn ghost full',style:'margin-top:8px',onclick:()=>{const done=()=>{cp.textContent='คัดลอกแล้ว ไปวางในแชตได้เลย';setTimeout(()=>cp.textContent='คัดลอกข้อความ',2200)};try{navigator.clipboard.writeText(msg).then(done,()=>{ta.select();document.execCommand('copy');done()})}catch(e){ta.select();try{document.execCommand('copy')}catch(x){}done()}}},'คัดลอกข้อความ');
+    const chat=(href,label,cls)=>el('a',{class:'btn '+cls+' full',style:'text-decoration:none;margin-top:8px',href,target:'_blank',rel:'noopener'},label);
+    box.append(
+      el('div',{class:'pv-wrap'},
+        el('figure',{class:'pv'},el('img',{src:'cat/xmasorn-1.jpg'+IMG_V,alt:"พวงกุญแจ X'mas ต้นคริสต์มาสใส่ชื่อซ้อนกรอบหน้าต่างแดง",style:'cursor:zoom-in',onclick:()=>openDetail('xmasorn')})),
+        el('div',{},
+          el('p',{class:'hint',style:'margin-top:0;font-size:14px;color:var(--ink);font-weight:600'},'สั่งทำทางแชต — บอกแบบ · ชื่อบนต้น · จำนวน'),
+          el('div',{class:'note',style:'margin-top:8px'},el('b',{},'แนะนำ ชุดคู่ (ต้นใส่ชื่อ + หน้าต่าง) ฿199'),' คุ้มกว่าซื้อแยก (แยก ฿228) · ต้นเขียวใส่ชื่ออย่างเดียว ฿129 · หน้าต่างแดงอย่างเดียว ฿99 · ชื่อภาษาอังกฤษ ~8 ตัวอักษรพอดีแถบ · เฉพาะช่วงเทศกาล'),
+          el('label',{class:'lbl',for:'xoMsg'},'ข้อความสำหรับส่งในแชต',el('small',{},'คัดลอกแล้วเติมรายละเอียด')),ta,cp,
           chat('https://www.facebook.com/share/1CoEGCMttn/','ทักแชต Facebook','primary'),
           chat('https://vt.tiktok.com/ZSgqn8JYh/','ทักแชต TikTok','ghost'),
           chat('tel:0813368232','โทร 081-336-8232','ghost'))));
