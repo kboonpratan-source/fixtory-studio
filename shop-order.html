@@ -349,6 +349,11 @@ const PRODUCTS={
       points:['เลือกสี 3 ส่วน กรอบ / ก้าน / หัวกลม บนหน้าออกแบบ แล้วกด "สั่งซื้อแบบนี้" แบบจะมาลงตะกร้าเอง','1 ชิ้น ฿199 · 2–3 ชิ้น ฿169 / ชิ้น · 4–9 ชิ้น ฿149 / ชิ้น (คิดรวมทุกแบบในออเดอร์)','ชุดสีแนะนำเป็นไกด์ · 10 ชิ้นขึ้นไป ทักแชตขอราคา','ใช้กับสวิตช์ปุ่มกระดกเดี่ยว หน้ากากไม่เกิน 88 × 88 มม.'],
       spec:[['ขนาด','90 × 90 × 17 มม.'],['วัสดุ','PETG ด้าน 2 สี'],['ติดตั้ง','เทป 2 หน้า (แถมในชุด)']],
       gallery:['switchframe_1.jpg','switchframe_2.jpg','switchframe_3.jpg','switchframe_4.jpg']}}
+  ,namepop:{name:'NAME POP',sub:'ป้ายชื่อตัวอักษรนูน 2 สี',img:'cat/namepop-1.jpg'+IMG_V,from:99,perPiece:true,fromLabel:true/* เปิดขาย 23 พ.ย. 2569 แบบสั่งทำทางแชต (AU สั่งผ่าน PM) · ยังไม่มีหน้าออกแบบ ไม่ลงตะกร้า */,
+    info:{summary:'ป้ายชื่อตัวอักษรนูน 2 สี ใส่ชื่อหรือคำของคุณเองได้ เลือกทำเป็นพวงกุญแจ แม่เหล็กติดตู้เย็น หรือ Griptok แม่เหล็ก สลับสีตัวอักษรกับพื้นได้',
+      points:['พวงกุญแจ / แม่เหล็กติดตู้เย็น: Ø40 มม. ฿99 · Ø50 มม. ฿129 · Ø60 มม. ฿149','Griptok แม่เหล็ก Ø40 มม. ฿159','สั่ง 3 ชิ้นขึ้นไป (คละแบบได้) ลดชิ้นละ ฿10 · 10 ชิ้นขึ้นไป ทักแชตขอราคา','สั่งทำทางแชต บอกชื่อ · สี · ขนาด · แบบ'],
+      spec:[['ขนาด','Ø40 / 50 / 60 มม.'],['Griptok','Ø40 มม.'],['สี','ชมพู / เขียวน้ำทะเล สลับกันได้']],
+      gallery:['cat/namepop-2.jpg','cat/namepop-3.jpg','cat/namepop-4.jpg','cat/namepop-5.jpg','cat/namepop-6.jpg']}}
   ,santastand:{name:'ที่วางมือถือ Santa Edition',sub:'ธีมคริสต์มาส',img:'santa-stand.svg'+IMG_V,from:199,perPiece:true,tag:'ฟรี! ใส่ชื่อได้',hidden:true/* ยังไม่เปิดขาย (รอ license + รูปจริง) — เปิดขายเมื่อไรให้ลบ hidden ออก */,
     info:{summary:'ที่วางมือถือธีมซานต้า สลักชื่อได้ฟรี (ไม่ใส่ก็ได้) ราคาเท่ากัน',points:['฿199 / ชิ้น · 2–3 ชิ้น ฿179 · 4–9 ชิ้น ฿169 · 10 ชิ้นขึ้นไป ฿119 (คิดรวมทั้งออเดอร์)','สลักชื่อฟรี ไม่บังคับ','สั่ง 20 ชิ้นขึ้นไป ทักแชตขอราคา'],spec:[]}}
   ,clips:{name:'คลิปหนีบเอกสาร',sub:'เซ็ต 20 อัน',img:'clips.jpg'+IMG_V,from:99,perPiece:true,unit:'เซ็ต',
@@ -541,7 +546,7 @@ let kc={chars:[],colors:[],col:'pastel',caseColor:'ดำ',strap:0,orient:'verti
 
 function renderTabs(){
   $('#ptabs').replaceChildren(...Object.entries(PRODUCTS).filter(([id,p])=>!p.hidden||id===params.get('p')||id===current).map(([id,p])=>el('button',{type:'button',class:'ptab','aria-pressed':String(id===current),onclick:()=>{current=id;renderTabs();renderConf()}},
-    el('span',{class:'pimg',role:'button',tabindex:'0','aria-label':'ดูรูปและรายละเอียด '+p.name,onclick:e=>{e.stopPropagation();openDetail(id)},onkeydown:e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();e.stopPropagation();openDetail(id)}}},el('img',{src:p.img,alt:''}),el('i',{'aria-hidden':'true',html:'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m20 20-4.5-4.5M10.5 7.5v6M7.5 10.5h6"/></svg>'})),el('div',{},el('b',{},p.name),el('span',{},p.sub+(p.perPiece?' · '+fmt(p.from)+' / '+(p.unit||'ชิ้น'):' · เริ่ม '+fmt(p.from))+(p.tag?' · '+p.tag:'')),el('small',{class:'ptip'},'แตะรูปเพื่อดูรายละเอียด')))));
+    el('span',{class:'pimg',role:'button',tabindex:'0','aria-label':'ดูรูปและรายละเอียด '+p.name,onclick:e=>{e.stopPropagation();openDetail(id)},onkeydown:e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();e.stopPropagation();openDetail(id)}}},el('img',{src:p.img,alt:''}),el('i',{'aria-hidden':'true',html:'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m20 20-4.5-4.5M10.5 7.5v6M7.5 10.5h6"/></svg>'})),el('div',{},el('b',{},p.name),el('span',{},p.sub+(p.perPiece?' · '+(p.fromLabel?'เริ่ม ':'')+fmt(p.from)+' / '+(p.unit||'ชิ้น'):' · เริ่ม '+fmt(p.from))+(p.tag?' · '+p.tag:'')),el('small',{class:'ptip'},'แตะรูปเพื่อดูรายละเอียด')))));
 }
 function openDetail(id){
   const p=PRODUCTS[id],i=p.info||{};
@@ -647,6 +652,22 @@ function renderConf(){
           el('label',{class:'lbl',for:'sfCode'},'หรือวางรหัสแบบ',el('small',{},'ขึ้นต้นด้วย SF2. (รหัส SF1. เดิมใช้ได้)')),inp,
           el('button',{type:'button',class:'btn ghost full',style:'margin-top:8px',onclick:add},'+ เพิ่มลงตะกร้า'),
           el('div',{class:'note'},'1 ชิ้น ฿199 · 2–3 ชิ้น ฿169 / ชิ้น · 4–9 ชิ้น ฿149 / ชิ้น (คิดรวมทุกแบบในออเดอร์) · 10 ชิ้นขึ้นไป ทักแชตขอราคา'+(n?' · ตอนนี้ '+n+' ชิ้น ชิ้นละ '+fmt(u)+' รวม '+fmt(sfTotal()):'')))));
+  }else if(current==='namepop'){
+    // NAME POP: สั่งทำทางแชต (ยังไม่ลงตะกร้า) · ลิงก์แชตเดียวกับ "10 ชิ้นขึ้นไป ทักแชต" · ส่งต่อรหัสตัวแทน (?sale=) ในข้อความที่ให้ลูกค้าคัดลอก
+    const msg='สั่งทำ NAME POP\nชื่อ/คำ: \nสีตัวอักษร / สีพื้น: \nขนาด: Ø40 / Ø50 / Ø60 มม.\nแบบ: พวงกุญแจ / แม่เหล็กติดตู้เย็น / Griptok\nจำนวน: '+(saleRef?'\nรหัสตัวแทน: '+saleRef:'');
+    const ta=el('textarea',{id:'npMsg',rows:'8',readonly:true,style:'width:100%;font:inherit;font-size:13px;border:0;box-shadow:inset 0 0 0 1.5px var(--line);border-radius:12px;padding:10px 12px;background:var(--surface);color:var(--ink);resize:none'});ta.value=msg;
+    const cp=el('button',{type:'button',class:'btn ghost full',style:'margin-top:8px',onclick:()=>{const done=()=>{cp.textContent='คัดลอกแล้ว ไปวางในแชตได้เลย';setTimeout(()=>cp.textContent='คัดลอกข้อความ',2200)};try{navigator.clipboard.writeText(msg).then(done,()=>{ta.select();document.execCommand('copy');done()})}catch(e){ta.select();try{document.execCommand('copy')}catch(x){}done()}}},'คัดลอกข้อความ');
+    const chat=(href,label,cls)=>el('a',{class:'btn '+cls+' full',style:'text-decoration:none;margin-top:8px',href,target:'_blank',rel:'noopener'},label);
+    box.append(
+      el('div',{class:'pv-wrap'},
+        el('figure',{class:'pv'},el('img',{src:'cat/namepop-1.jpg'+IMG_V,alt:'NAME POP ป้ายชื่อตัวอักษรนูน 2 สี',style:'cursor:zoom-in',onclick:()=>openDetail('namepop')})),
+        el('div',{},
+          el('p',{class:'hint',style:'margin-top:0;font-size:14px;color:var(--ink);font-weight:600'},'สั่งทำทางแชต — บอกชื่อ · สี · ขนาด · แบบ'),
+          el('div',{class:'note',style:'margin-top:8px'},'พวงกุญแจ / แม่เหล็กติดตู้เย็น: Ø40 มม. ฿99 · Ø50 มม. ฿129 · Ø60 มม. ฿149 · Griptok แม่เหล็ก Ø40 มม. ฿159 · สั่ง 3 ชิ้นขึ้นไป (คละแบบได้) ลดชิ้นละ ฿10 · 10 ชิ้นขึ้นไป ทักแชตขอราคา'),
+          el('label',{class:'lbl',for:'npMsg'},'ข้อความสำหรับส่งในแชต',el('small',{},'คัดลอกแล้วเติมรายละเอียด')),ta,cp,
+          chat('https://www.facebook.com/share/1CoEGCMttn/','ทักแชต Facebook','primary'),
+          chat('https://vt.tiktok.com/ZSgqn8JYh/','ทักแชต TikTok','ghost'),
+          chat('tel:0813368232','โทร 081-336-8232','ghost'))));
   }else if(current==='keycap'){
     renderKC(box);
   }else{
