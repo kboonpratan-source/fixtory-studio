@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<title>NAME POP Poster</title>
+<!--
+  โปสเตอร์ร่าง: ป้ายชื่อตัวอักษรนูน 2 สี (ชื่อร่าง NAME POP) · 1024×1536
+  แก้ราคา: ค้นหา id="price" แล้วเปลี่ยน ฿— เป็นราคา (ยังไม่ใส่ราคาตามใบสั่ง)
+  แก้ชื่อสินค้า: ค้นหา class="name"
+  เรนเดอร์: node render.js (Playwright) → name_badge_poster_th.jpg
+-->
+<style>
+@font-face{font-family:Prompt;font-weight:400;src:url(fonts/prompt-thai-400-normal.woff2) format('woff2');unicode-range:U+0E01-0E5B,U+200C-200D,U+25CC}
+@font-face{font-family:Prompt;font-weight:500;src:url(fonts/prompt-thai-500-normal.woff2) format('woff2');unicode-range:U+0E01-0E5B,U+200C-200D,U+25CC}
+@font-face{font-family:Prompt;font-weight:600;src:url(fonts/prompt-thai-600-normal.woff2) format('woff2');unicode-range:U+0E01-0E5B,U+200C-200D,U+25CC}
+@font-face{font-family:Prompt;font-weight:700;src:url(fonts/prompt-thai-700-normal.woff2) format('woff2');unicode-range:U+0E01-0E5B,U+200C-200D,U+25CC}
+@font-face{font-family:Prompt;font-weight:800;src:url(fonts/prompt-thai-800-normal.woff2) format('woff2');unicode-range:U+0E01-0E5B,U+200C-200D,U+25CC}
+@font-face{font-family:Prompt;font-weight:400;src:url(fonts/prompt-latin-400-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+2000-206F,U+20AC-20BF,U+2122,U+2212,U+00D7,U+2205,U+00B7}
+@font-face{font-family:Prompt;font-weight:500;src:url(fonts/prompt-latin-500-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+2000-206F,U+20AC-20BF,U+2122,U+2212,U+00D7,U+2205,U+00B7}
+@font-face{font-family:Prompt;font-weight:600;src:url(fonts/prompt-latin-600-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+2000-206F,U+20AC-20BF,U+2122,U+2212,U+00D7,U+2205,U+00B7}
+@font-face{font-family:Prompt;font-weight:700;src:url(fonts/prompt-latin-700-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+2000-206F,U+20AC-20BF,U+2122,U+2212,U+00D7,U+2205,U+00B7}
+@font-face{font-family:Prompt;font-weight:800;src:url(fonts/prompt-latin-800-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+2000-206F,U+20AC-20BF,U+2122,U+2212,U+00D7,U+2205,U+00B7}
+:root{--pink:#f2647f;--teal:#3fb6bf;--bg:#1b1c20;--card:rgba(255,255,255,.06);--line:rgba(255,255,255,.16);--red:#c8102e}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1024px;height:1536px;overflow:hidden;background:var(--bg)}
+body{font-family:Prompt,sans-serif;color:#fff;position:relative;
+  background:radial-gradient(520px 420px at 82% 18%,rgba(242,100,127,.28),transparent 70%),
+             radial-gradient(520px 420px at 10% 60%,rgba(63,182,191,.20),transparent 70%),
+             linear-gradient(160deg,#26272c,#17181b 60%,#141417)}
+.abs{position:absolute}
+/* header */
+.brand{left:44px;top:22px;display:flex;align-items:center;gap:26px}
+.brand .logo{font-weight:700;font-size:40px;line-height:.92}
+.brand .logo span{display:block;font-weight:400;font-size:34px;letter-spacing:1px}
+.brand .tag{border-left:2px solid var(--line);padding-left:24px;font-size:21px;line-height:1.25;font-weight:400;color:#e8e8e8}
+/* title */
+.name{left:40px;top:128px;font-weight:800;font-size:92px;line-height:.95;letter-spacing:-2px}
+.name .p{color:var(--pink)} .name .t{color:var(--teal)}
+.th1{left:44px;top:240px;font-weight:700;font-size:44px;line-height:1.3}
+.en1{left:46px;top:304px;font-weight:400;font-size:24px;color:#dcdcdc}
+.pill{left:40px;top:354px;padding:12px 26px;border-radius:40px;font-weight:700;font-size:30px;line-height:1.3;
+  background:linear-gradient(90deg,var(--pink),#f58aa0);color:#fff;box-shadow:0 8px 24px rgba(242,100,127,.35)}
+.pillsub{left:44px;top:428px;font-size:18px;color:#cfcfcf;line-height:1.4}
+/* hero */
+.hero{left:556px;top:40px;width:430px;height:470px;border-radius:28px;overflow:hidden;box-shadow:0 20px 50px rgba(0,0,0,.55);border:3px solid rgba(255,255,255,.85)}
+.hero img{width:100%;height:100%;object-fit:cover;object-position:50% 40%}
+.stamp{left:522px;top:412px;width:150px;height:150px;border-radius:50%;background:var(--teal);color:#fff;transform:rotate(-12deg);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;box-shadow:0 10px 26px rgba(0,0,0,.45);border:4px solid #fff}
+.stamp b{font-size:30px;line-height:1.15;font-weight:800}.stamp span{font-size:17px;line-height:1.25;font-weight:500}
+/* chips */
+.chips{left:40px;top:490px;display:flex;gap:12px}
+.chip{border:1.5px solid var(--line);background:var(--card);border-radius:16px;padding:10px 16px;font-size:20px;font-weight:600;line-height:1.3}
+.chip small{display:block;font-size:14px;font-weight:400;color:#c9c9c9}
+/* section box */
+.box{border:1.5px solid var(--line);background:rgba(255,255,255,.05);border-radius:24px}
+.h{font-weight:700;font-size:30px;line-height:1.3}.h small{display:block;font-weight:400;font-size:19px;color:#d0d0d0}
+.uses{left:24px;top:578px;width:976px;height:384px;padding:18px 22px}
+.ucards{display:flex;gap:18px;margin-top:12px}
+.uc{flex:1;background:#fff;border-radius:18px;overflow:hidden;color:#1b1c20}
+.uc .im{height:184px;overflow:hidden;background:#fff}.uc .im img{width:100%;height:100%;object-fit:cover}.uc .im img.fit{object-fit:contain}
+.uc .tx{padding:10px 14px 12px}
+.uc .tx b{display:block;font-size:24px;line-height:1.3;font-weight:700}
+.uc .tx i{display:block;font-style:normal;font-size:15px;color:#666;line-height:1.3}
+.uc .sz{display:inline-block;margin-top:8px;padding:4px 12px;border-radius:20px;font-size:17px;font-weight:600;background:var(--teal);color:#fff;line-height:1.35}
+.uc .sz.only{background:var(--pink)}
+/* row 3 */
+.depth{left:24px;top:980px;width:318px;height:250px;padding:16px 18px}
+.depth .im{margin-top:8px;height:150px;border-radius:14px;overflow:hidden}.depth .im img{width:100%;height:100%;object-fit:cover}
+.sizes{left:354px;top:980px;width:300px;height:250px;padding:16px 18px}
+.circles{display:flex;align-items:flex-end;justify-content:space-around;margin-top:14px;height:120px}
+.cw{text-align:center}
+.circ{border-radius:50%;background:var(--teal);border:5px solid var(--pink);margin:0 auto}
+.cw span{display:block;margin-top:6px;font-size:18px;font-weight:600}
+.sizes .note{margin-top:6px;font-size:14px;color:#cfcfcf;text-align:center;line-height:1.3}
+.swap{left:666px;top:980px;width:334px;height:250px;padding:16px 18px}
+.sw{display:flex;gap:12px;margin-top:10px}
+.sw div{flex:1;text-align:center}
+.sw img{width:100%;height:112px;object-fit:cover;border-radius:12px;display:block}
+.sw span{display:block;margin-top:6px;font-size:14px;line-height:1.3;font-weight:500}
+/* price bar */
+.cta{left:44px;top:1246px;width:520px}
+.cta b{display:block;font-size:27px;font-weight:600;line-height:1.35}
+.cta span{display:block;font-size:18px;color:#d0d0d0;line-height:1.4}
+.price{left:584px;top:1242px;width:416px;height:92px;background:#7a1622;border:2px solid #b52a3a;border-radius:16px;text-align:center;padding-top:8px}
+.price b{font-size:36px;font-weight:700;line-height:1.25}
+.price span{display:block;font-size:17px;color:#f1d6da;line-height:1.35}
+.sep{left:36px;top:1350px;width:952px;height:1px;background:var(--line)}
+/* footer */
+.qr{top:1364px;width:120px;text-align:center}
+.qr .q{background:#fff;border-radius:12px;padding:8px}.qr img{width:104px;height:104px;display:block}
+.qr span{display:block;margin-top:4px;font-size:15px;font-weight:600;line-height:1.2}
+.qr small{display:block;font-size:11px;color:#ccc}
+.ft{left:350px;top:1362px;border-left:2px solid var(--line);padding-left:30px}
+.ft .w{font-size:30px;font-weight:700;line-height:1.2}
+.ft .c{font-size:15px;color:#ccc;margin-top:4px}
+.ft .t{font-size:32px;font-weight:700;line-height:1.15;letter-spacing:1px}
+.ft .m{font-size:18px;font-weight:600;margin-top:4px;line-height:1.3}
+.ft .e{font-size:15px;color:#ccc;line-height:1.3}
+.bar{left:36px;top:1527px;width:952px;height:3px;background:var(--red)}
+</style>
+</head>
+<body>
+<div class="abs brand"><div class="logo">Fixtory<span>Studio</span></div><div class="tag">From Craft to<br>Smart Design</div></div>
+
+<div class="abs name"><span class="p">NAME</span> <span class="t">POP</span></div>
+<div class="abs th1">ป้ายชื่อตัวอักษรนูน 2 สี</div>
+<div class="abs en1">Custom 3D Name Badge · Two-Tone</div>
+<div class="abs pill">ใส่ชื่อ / คำของคุณเองได้</div>
+<div class="abs pillsub">ชื่อเล่น ชื่อร้าน ชื่อทีม หรือคำที่ชอบ<br>ตัวอย่างในภาพ: “FIXTORY STUDIO”</div>
+
+<div class="abs hero"><img src="img/hero.jpg" alt=""></div>
+<div class="abs stamp"><b>นูน<br>3 มิติ</b><span>Raised 3D<br>Letters</span></div>
+
+<div class="abs chips">
+  <div class="chip">ตัวอักษรนูน<small>3D raised letters</small></div>
+  <div class="chip">สลับสีได้<small>Swap 2 colors</small></div>
+  <div class="chip">3 ขนาด<small>Ø 40 · 50 · 60 mm</small></div>
+</div>
+
+<div class="abs box uses">
+  <div class="h">เลือกแบบใช้งานได้ 3 แบบ<small>Choose your style</small></div>
+  <div class="ucards">
+    <div class="uc"><div class="im"><img class="fit" src="img/keychain.jpg" alt=""></div>
+      <div class="tx"><b>พวงกุญแจ</b><i>Keychain</i><span class="sz">Ø 40 / 50 / 60 มม.</span></div></div>
+    <div class="uc"><div class="im"><img class="fit" src="img/magnet.jpg" alt=""></div>
+      <div class="tx"><b>แม่เหล็กติดตู้เย็น</b><i>Fridge Magnet</i><span class="sz">Ø 40 / 50 / 60 มม.</span></div></div>
+    <div class="uc"><div class="im"><img class="fit" src="img/griptok.jpg" alt=""></div>
+      <div class="tx"><b>Griptok แม่เหล็ก</b><i>Magnetic Phone Grip</i><span class="sz only">Ø 40 มม. เท่านั้น</span></div></div>
+  </div>
+</div>
+
+<div class="abs box depth"><div class="h" style="font-size:24px">ตัวอักษรนูน 3 มิติ<small style="font-size:15px">Raised letters, real depth</small></div>
+  <div class="im"><img src="img/depth.jpg" alt=""></div></div>
+
+<div class="abs box sizes"><div class="h" style="font-size:24px">3 ขนาด<small style="font-size:15px">Sizes (diameter)</small></div>
+  <div class="circles">
+    <div class="cw"><div class="circ" style="width:62px;height:62px"></div><span>Ø40</span></div>
+    <div class="cw"><div class="circ" style="width:78px;height:78px"></div><span>Ø50</span></div>
+    <div class="cw"><div class="circ" style="width:94px;height:94px"></div><span>Ø60</span></div>
+  </div>
+  <div class="note">หน่วย: มิลลิเมตร (มม.)</div></div>
+
+<div class="abs box swap"><div class="h" style="font-size:24px">สลับสีได้<small style="font-size:15px">Swap letter &amp; base colors</small></div>
+  <div class="sw">
+    <div><img src="img/swap_pink.jpg" alt=""><span>ตัวอักษรชมพู<br>พื้นเขียวน้ำทะเล</span></div>
+    <div><img src="img/swap_teal.jpg" alt=""><span>ตัวอักษรเขียวน้ำทะเล<br>พื้นชมพู</span></div>
+  </div></div>
+
+<div class="abs cta"><b>ป้ายชื่อที่เป็นของคุณคนเดียว</b><span>เหมาะเป็นของขวัญ ของที่ระลึก หรือแต่งกระเป๋า ตู้เย็น และมือถือ</span></div>
+<div class="abs price"><b id="price">ราคา ฿—</b><span>หากสนใจ 10 ชิ้นขึ้นไป โปรดติดต่อร้าน</span></div>
+<div class="abs sep"></div>
+
+<div class="abs qr" style="left:44px"><div class="q"><img src="img/qr-tiktok.png" alt=""></div><span>TikTok</span><small>@fixtory.studio</small></div>
+<div class="abs qr" style="left:184px"><div class="q"><img src="img/qr-facebook.png" alt=""></div><span>Facebook</span></div>
+<div class="abs ft">
+  <div class="w">fixtory.studio</div>
+  <div class="c">ติดต่อ / Contact</div>
+  <div class="t">081-336-8232</div>
+  <div class="m">ออกแบบและผลิตโดย Fixtory Studio</div>
+  <div class="e">Designed and Made by Fixtory Studio</div>
+</div>
+<div class="abs bar"></div>
+</body>
+</html>
