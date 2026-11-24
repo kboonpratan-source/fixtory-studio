@@ -1,0 +1,450 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>พวงกุญแจ X'mas · ออกแบบต้นคริสต์มาสใส่ชื่อ | Fixtory Studio</title>
+<meta name="description" content="ออกแบบพวงกุญแจ X'mas ต้นคริสต์มาสใส่ชื่อตัวอักษรนูน + กรอบหน้าต่างหิมะ เลือกสีต้น ชื่อ กรอบ และลายในหน้าต่าง ดูตัวอย่างสดก่อนสั่ง (เฉพาะช่วงเทศกาล)">
+<meta property="og:title" content="พวงกุญแจ X'mas · ออกแบบเอง ใส่ชื่อ เลือกสี · Fixtory Studio">
+<meta property="og:description" content="ใส่ชื่อบนต้นคริสต์มาส เลือกสีทุกส่วน ดูตัวอย่างสด แล้วสั่งได้เลย">
+<meta property="og:image" content="https://fixtory-studio.pages.dev/cat/xmasorn-1.jpg">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Luckiest+Guy&family=Prompt:wght@400;500;600&display=swap">
+<style>
+/* Layout: same storefront look as namepop.html / keycap.html — live preview on top (sticky on phones), choices below, order summary last */
+:root {
+  --bg: #FAF8F4; --surface: #FFFFFF; --sunk: #F5E8DC; --ink: #2C2420; --muted: #6F6056; --line: #EDE2D6;
+  --accent: #C4714A; --accent-text: #A9572F; --accent-ink: #FFFFFF; --ok: #4E6B3A;
+  --stage: #EFE4D8;
+  --shadow: 0 1px 2px rgba(44,36,32,.06), 0 8px 24px -12px rgba(44,36,32,.22);
+  --f-display: "DM Serif Display", "Prompt", Georgia, serif;
+  --f-body: "DM Sans", "Prompt", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #1B1613; --surface: #26201C; --sunk: #322822; --ink: #F5E8DC; --muted: #BFAE9F; --line: #3A302A;
+  --accent: #E08A60; --accent-text: #EFA07A; --accent-ink: #1B1613; --ok: #A7C48A;
+  --stage: #2A231F;
+  --shadow: 0 1px 2px rgba(0,0,0,.3), 0 10px 28px -14px rgba(0,0,0,.6); color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #1B1613; --surface: #26201C; --sunk: #322822; --ink: #F5E8DC; --muted: #BFAE9F; --line: #3A302A;
+  --accent: #E08A60; --accent-text: #EFA07A; --accent-ink: #1B1613; --ok: #A7C48A;
+  --stage: #2A231F;
+  --shadow: 0 1px 2px rgba(0,0,0,.3), 0 10px 28px -14px rgba(0,0,0,.6); color-scheme: dark }
+
+/* same-site copy of Luckiest Guy (vendor/, Apache-2.0) so X'MAS on the base never depends on Google Fonts */
+@font-face { font-family: "XM Luckiest"; src: url(vendor/luckiest-guy-latin-400-normal.woff) format("woff"); font-display: swap; }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--f-body); font-size: 15px; line-height: 1.6; }
+button, input { font: inherit; color: inherit; }
+:focus-visible { outline: 2.5px solid var(--accent); outline-offset: 2px; }
+.wrap { max-width: 1120px; margin: 0 auto; padding-block: 20px 48px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: flex; flex-direction: column; gap: 18px; }
+header { display: flex; flex-direction: column; gap: 4px; }
+.brand { display: flex; align-items: center; gap: 8px; font-family: var(--f-display); letter-spacing: .1em; text-transform: uppercase; font-size: 15px; }
+.brand svg { width: 18px; height: 26px; display: block; }
+.brand em { font-style: normal; color: var(--accent); }
+h1 { margin: 6px 0 0; font-family: var(--f-display); font-weight: 400; font-size: clamp(26px, 4vw, 38px); line-height: 1.15; color: var(--accent-text); text-wrap: balance; }
+.lede { margin: 0; color: var(--muted); max-width: 62ch; }
+.tag { display: inline-block; font-size: 12.5px; font-weight: 600; color: var(--accent-text); background: var(--sunk); border-radius: 999px; padding: 2px 10px; width: fit-content; }
+
+.app { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); grid-template-areas: "viz panel" "sum panel"; grid-template-rows: auto 1fr; gap: 20px; align-items: start; }
+.viz { grid-area: viz; display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.panel { grid-area: panel; background: var(--surface); border-radius: 20px; padding: 20px; display: flex; flex-direction: column; gap: 22px; box-shadow: var(--shadow); min-width: 0; }
+.summary { grid-area: sum; background: var(--surface); border-radius: 20px; padding: 18px 20px; box-shadow: var(--shadow); display: flex; flex-direction: column; gap: 12px; }
+@media (max-width: 860px) { .app { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto; grid-template-areas: "viz" "panel" "sum"; } }
+
+.pvbox { background: var(--stage); border-radius: 20px; box-shadow: var(--shadow); padding: 18px 12px 12px; display: flex; flex-direction: column; align-items: center; gap: 10px; min-height: 360px; justify-content: center; }
+#pv { width: 100%; display: flex; justify-content: center; }
+#pv svg { display: block; width: 100%; max-width: 400px; height: auto; }
+.pvcap { font-size: 13px; color: var(--muted); text-align: center; font-variant-numeric: tabular-nums; }
+.pvcap b { color: var(--ink); font-weight: 600; }
+.simnote { font-size: 12px; color: var(--muted); }
+.pvtools { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+.pvtools .btn { min-height: 38px; padding: 6px 14px; font-size: 14px; }
+
+.step { display: flex; flex-direction: column; gap: 10px; }
+.step-t { display: flex; align-items: baseline; gap: 10px; font-weight: 600; font-size: 16px; flex-wrap: wrap; }
+.step-t i { font-style: normal; display: inline-grid; place-items: center; width: 24px; height: 24px; border-radius: 50%; background: var(--sunk); color: var(--accent-text); font-size: 13px; font-weight: 600; flex: none; }
+.hint { font-size: 13px; color: var(--muted); }
+.warn { font-size: 13px; color: var(--accent-text); min-height: 1.2em; }
+.lbl { display: flex; align-items: baseline; gap: 8px; font-weight: 600; font-size: 14.5px; margin-top: 2px; flex-wrap: wrap; }
+.lbl small { font-weight: 500; color: var(--muted); font-size: 12.5px; }
+[hidden] { display: none !important; }
+
+.opts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.opt { border: 0; background: var(--bg); box-shadow: inset 0 0 0 1.5px var(--line); border-radius: 14px; padding: 8px 6px 9px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 2px; text-align: center; min-height: 44px; }
+.opt svg { display: block; }
+.opt b { font-weight: 600; font-size: 14px; line-height: 1.3; }
+.opt span { font-size: 12px; color: var(--muted); line-height: 1.3; }
+.opt[aria-pressed="true"] { background: var(--sunk); box-shadow: inset 0 0 0 2px var(--accent); }
+.opt[aria-pressed="true"] b { color: var(--accent-text); }
+
+.lin { display: flex; align-items: center; gap: 8px; }
+.lin input { flex: 1 1 auto; min-width: 0; font-family: "DM Sans", system-ui, sans-serif; font-weight: 700; font-size: 24px; letter-spacing: .14em; line-height: 1.2; padding: 8px 14px; border: 0; box-shadow: inset 0 0 0 1.5px var(--line); border-radius: 14px; background: var(--bg); text-transform: uppercase; }
+.lin input:focus { outline: none; box-shadow: inset 0 0 0 2px var(--accent); }
+.lin input::placeholder { color: var(--muted); opacity: .55; }
+.lin output { flex: none; width: 34px; text-align: right; font-size: 12.5px; color: var(--muted); font-variant-numeric: tabular-nums; }
+
+.pairs { display: grid; grid-template-columns: repeat(auto-fill, minmax(92px, 1fr)); gap: 8px; }
+.pair { border: 0; background: var(--bg); box-shadow: inset 0 0 0 1.5px var(--line); border-radius: 14px; padding: 8px 6px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 12px; color: var(--ink); line-height: 1.3; text-align: center; }
+.pair svg { display: block; }
+.pair[aria-pressed="true"] { box-shadow: inset 0 0 0 2.5px var(--accent); background: var(--sunk); }
+.dots { display: flex; flex-wrap: wrap; gap: 8px; }
+.dot { width: 34px; height: 34px; border-radius: 50%; border: 0; cursor: pointer; box-shadow: inset 0 0 0 1px rgba(44,36,32,.18); padding: 0; }
+.dot[aria-pressed="true"] { box-shadow: 0 0 0 2.5px var(--surface), 0 0 0 4.5px var(--accent); }
+.dot:disabled { opacity: .25; cursor: not-allowed; background-image: linear-gradient(135deg, transparent 46%, rgba(44,36,32,.6) 46%, rgba(44,36,32,.6) 54%, transparent 54%); }
+
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; border: 0; border-radius: 999px; padding: 10px 18px; font-weight: 600; font-size: 15px; cursor: pointer; text-decoration: none; min-height: 44px; white-space: nowrap; }
+.btn.primary { background: var(--accent); color: var(--accent-ink); }
+.btn.ghost { background: var(--surface); color: var(--ink); box-shadow: inset 0 0 0 1.5px var(--line); }
+.price-row { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.price { font-family: var(--f-display); font-size: 34px; line-height: 1; color: var(--accent); font-variant-numeric: tabular-nums; }
+.tiers { font-size: 13px; color: var(--muted); }
+.tiers b { color: var(--ink); font-weight: 600; }
+.qty { display: inline-flex; align-items: center; gap: 10px; }
+.qty output { min-width: 2ch; text-align: center; font-size: 20px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.pm { border: 0; width: 36px; height: 36px; border-radius: 50%; background: var(--surface); box-shadow: inset 0 0 0 1.5px var(--line); cursor: pointer; font-size: 18px; line-height: 1; display: grid; place-items: center; }
+.pm:disabled { opacity: .35; cursor: default; }
+.lines { display: flex; flex-direction: column; gap: 4px; font-size: 14px; }
+.lines div { display: flex; justify-content: space-between; gap: 12px; }
+.lines .tot { font-weight: 600; font-size: 16px; border-top: 1px solid var(--line); padding-top: 6px; }
+.order-btn { width: 100%; font-size: 16px; padding-block: 12px; }
+.order-btn[aria-disabled="true"] { opacity: .45; pointer-events: none; }
+.code { font-family: ui-monospace, Menlo, monospace; font-size: 13px; background: var(--bg); box-shadow: inset 0 0 0 1.5px var(--line); border-radius: 10px; padding: 4px 10px; word-break: break-all; user-select: all; display: inline-block; }
+footer { text-align: center; color: var(--muted); font-size: 13px; padding-top: 8px; }
+@media (max-width: 860px) {
+  .viz { position: sticky; top: 0; z-index: 5; }
+  .pvbox { min-height: 0; padding: 8px; border-radius: 0 0 18px 18px; gap: 6px; }
+  #pv svg { max-height: 30vh; width: auto; }
+  .pvtools .btn { min-height: 32px; padding: 4px 10px; font-size: 13px; }
+  .simnote { display: none; }
+}
+@media (max-width: 380px) { .lin input { font-size: 20px; letter-spacing: .1em; } .opt b { font-size: 13px; } }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <span class="brand"><svg viewBox="0 0 40 58" aria-hidden="true"><rect x="15.5" y="0" width="9" height="4.5" rx="1.6" fill="#C4714A"/><rect x="18" y="4" width="4" height="3.5" fill="#A85E3B"/><path d="M20 7.5L36 16.5L20 25.5L4 16.5Z" fill="#C97A53"/><path d="M4 16.5L20 25.5V28.5L4 19.5Z" fill="#A85E3B"/><path d="M36 16.5L20 25.5V28.5L36 19.5Z" fill="#B66A43"/><path d="M4 24.0L20 33.0L36 24.0V28.2L20 37.2L4 28.2Z" fill="#B4663F"/><path d="M4 29.2L20 38.2L36 29.2V33.4L20 42.4L4 33.4Z" fill="#9A5737"/><path d="M4 34.4L20 43.4L36 34.4V38.6L20 47.6L4 38.6Z" fill="#7C4830"/><path d="M4 39.6L20 48.6L36 39.6V43.8L20 52.8L4 43.8Z" fill="#5E3A2A"/><path d="M4 44.8L20 53.8L36 44.8V49.0L20 58.0L4 49.0Z" fill="#432D24"/></svg>FIXTORY<em>.STUDIO</em></span>
+    <h1>พวงกุญแจ X'mas · ต้นคริสต์มาสใส่ชื่อ</h1>
+    <p class="lede">ต้นคริสต์มาสแถบชื่อตัวอักษรนูน ซ้อนหน้ากรอบหน้าต่างหิมะ ร้อยโซ่เส้นเดียว พิมพ์ชื่อ เลือกสีทุกส่วน หรือกด 🎲 ให้สุ่มสีให้</p>
+    <span class="tag">🎄 เฉพาะช่วงเทศกาล · ร้านออกแบบเอง</span>
+  </header>
+  <div class="app">
+    <section class="viz" aria-label="ภาพตัวอย่าง">
+      <div class="pvbox">
+        <div id="pv"></div>
+        <div class="pvcap" id="pvcap"></div>
+        <div class="simnote">ภาพจำลอง ชิ้นจริงพิมพ์นูนหลายชั้น สีจริงอาจต่างเล็กน้อย</div>
+        <div class="pvtools">
+          <button type="button" class="btn ghost" id="dice">🎲 สุ่มสี</button>
+          <button type="button" class="btn ghost" id="reset">↺ สีแบบต้นฉบับ</button>
+          <button type="button" class="btn ghost" id="save">บันทึกรูป</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel" aria-label="ออกแบบ">
+      <div class="step">
+        <div class="step-t"><i>1</i>แบบ</div>
+        <div class="opts" id="types"></div>
+      </div>
+      <div class="step" id="nameStep">
+        <div class="step-t"><i>2</i>ชื่อบนแถบ <span class="hint">A–Z 0–9 · ไม่เกิน 9 ตัว</span></div>
+        <div class="lin"><input id="nm" maxlength="9" autocomplete="off" autocapitalize="characters" spellcheck="false" inputmode="text" placeholder="FIXTORY" aria-label="ชื่อบนแถบป้าย"><output id="cn"></output></div>
+        <div class="warn" id="txtWarn" aria-live="polite"></div>
+      </div>
+      <div class="step">
+        <div class="step-t"><i id="colNo">3</i>สี <span class="hint">กดชุดสีแนะนำ หรือเลือกเองทีละส่วน</span></div>
+        <div class="pairs" id="pairs"></div>
+        <div id="rowTree"><div class="lbl" id="treeLbl">สีต้น</div><div class="dots" id="treeDots"></div></div>
+        <div id="rowName"><div class="lbl">สีชื่อ + ดาว <small id="nameName"></small></div><div class="dots" id="nameDots"></div></div>
+        <div id="rowFrame"><div class="lbl">สีกรอบหน้าต่าง <small id="frameName"></small></div><div class="dots" id="frameDots"></div></div>
+        <div id="rowPat"><div class="lbl">สีลายในหน้าต่าง <small id="patName"></small></div><div class="dots" id="patDots"></div></div>
+      </div>
+    </section>
+
+    <section class="summary" aria-label="สรุปและสั่งซื้อ">
+      <div class="price-row"><span class="hint" id="perPiece"></span><span class="price" id="total">฿0</span></div>
+      <div class="tiers">ชุดคู่ ต้นใส่ชื่อ + หน้าต่าง <b>฿199</b> (แยกซื้อ ฿228) · ต้นใส่ชื่ออย่างเดียว <b>฿129</b> · หน้าต่างอย่างเดียว <b>฿99</b> · แถมโซ่ไข่ปลา</div>
+      <div class="step"><div class="step-t" style="font-size:15px">จำนวน (แบบเดียวกัน)</div>
+        <div class="qty"><button type="button" class="pm" id="minus" aria-label="ลดจำนวน">−</button><output id="qty">1</output><button type="button" class="pm" id="plus" aria-label="เพิ่มจำนวน">+</button></div></div>
+      <div class="lines" id="lines"></div>
+      <a class="btn primary order-btn" id="orderBtn" href="#" target="_blank" rel="noopener" aria-disabled="true">ใส่ชื่อก่อนสั่ง</a>
+      <a class="btn ghost" id="chatBtn" href="https://www.facebook.com/share/1CoEGCMttn/" target="_blank" rel="noopener">สั่ง 10 ชิ้นขึ้นไป · ทักแชตขอราคา</a>
+      <div class="hint">รหัสแบบ (สั่งทาง TikTok / Facebook): <span class="code" id="code">—</span></div>
+    </section>
+  </div>
+  <footer>ออกแบบและผลิตโดย Fixtory Studio · fixtory.studio · 081-336-8232</footer>
+</div>
+<script>
+(function () {
+  'use strict';
+  var $ = function (id) { return document.getElementById(id); };
+  var el = (t, a = {}, ...k) => { const e = document.createElement(t); for (const [x, v] of Object.entries(a)) { if (v == null || v === false) continue; if (x === 'class') e.className = v; else if (x === 'html') e.innerHTML = v; else if (x.startsWith('on')) e.addEventListener(x.slice(2), v); else e.setAttribute(x, v === true ? '' : v) } for (const c of k.flat()) { if (c == null || c === false) continue; e.append(c.nodeType ? c : document.createTextNode(c)) } return e };
+  var fmt = n => '฿' + Number(n).toLocaleString('th-TH');
+
+  // KC_HEX — same 16 colours as keycap.html / namepop.html (shop-order.html already declares it; do NOT copy this line into the XMAS block)
+const KC_HEX={"ฟ้า":"#7FC4E0","ชมพู":"#EFA9C6","ม่วง":"#B7A3E0","เหลือง":"#F2D34D","เนื้อ":"#E6C09C","ขาว":"#F5F5F2","ดำ":"#2B2B2B","ส้ม":"#F0954A","แดง":"#E0435A","เขียว":"#7FC97F","มิ้นท์":"#8FDDC6","ทราย":"#D8C6A8","น้ำเงิน":"#3F63C7","น้ำตาล":"#9A6B44","ชมพูอมแดง":"#E85C7A","เขียวอมฟ้า":"#3FB6B0"};
+
+  // ---- copied verbatim into shop-order.html (XMAS) — options, code and price must match the order page (uses the page's existing KC_HEX) ----
+const XM_COLORS=Object.keys(KC_HEX);   // index (base 36, 1 ตัว) ใช้ในรหัส XM1
+const XM_TYPES={s:'ชุดคู่ (ต้น+หน้าต่าง)',t:'ต้นใส่ชื่อ',w:'หน้าต่าง'};
+const XM_BASE={s:199,t:129,w:99};
+const XM_PARTS={s:'tnfp',t:'tn',w:'tfp'};   // ส่วนที่มีในแต่ละแบบ: t=ต้น n=ชื่อ+ดาว f=กรอบหน้าต่าง p=ลายในหน้าต่าง (ต้นไม้เล็กในหน้าต่างใช้สีต้น)
+const XM_MAXLEN=9,XM_MAXQTY=9;   // ชื่อ ≤9 ตัว · ≤9 ชิ้น/ออเดอร์ (10+ ทักแชต)
+const XM_CHAT='https://www.facebook.com/share/1CoEGCMttn/';
+// รหัสแบบ: XM1.<s|t|w>.<สีต้น><สีชื่อ><สีกรอบ><สีลาย>.<ชื่อ>  สี = index b36 ใน KC_HEX, '-' ถ้าแบบนั้นไม่มีส่วนนั้น · ชื่อ encodeURIComponent ('-' สำหรับหน้าต่างอย่างเดียว)
+function xmEncode(d){const P=XM_PARTS[d.t],c=(k,v)=>P.indexOf(k)<0?'-':XM_COLORS.indexOf(v).toString(36);return 'XM1.'+d.t+'.'+c('t',d.tree)+c('n',d.name)+c('f',d.frame)+c('p',d.pat)+'.'+(P.indexOf('n')<0?'-':encodeURIComponent(d.text))}
+function xmParse(code){
+  const m=/^XM1\.([stw])\.([0-9a-z-])([0-9a-z-])([0-9a-z-])([0-9a-z-])\.(.+)$/.exec(String(code||'').trim());if(!m)return null;
+  const t=m[1],P=XM_PARTS[t],ks='tnfp',d={t,tree:null,name:null,frame:null,pat:null,text:''},keys={t:'tree',n:'name',f:'frame',p:'pat'};
+  for(let i=0;i<4;i++){const k=ks[i],ch=m[i+2],need=P.indexOf(k)>=0;if(need!==(ch!=='-'))return null;if(need){const ix=parseInt(ch,36);if(!(ix<XM_COLORS.length))return null;d[keys[k]]=XM_COLORS[ix]}}
+  if(d.name&&d.name===d.tree)return null;if(d.pat&&d.pat===d.frame)return null;
+  if(P.indexOf('n')>=0){let s;try{s=decodeURIComponent(m[6])}catch(e){return null}if(!/^[A-Z0-9]+$/.test(s)||s.length>XM_MAXLEN)return null;d.text=s}else if(m[6]!=='-')return null;
+  return d;
+}
+function xmUnit(t){return XM_BASE[t]||0}
+// ราคารวม: items=[{t,qty}] (ยังไม่มีส่วนลดจำนวน)
+function xmPrice(items){return items.reduce((a,x)=>a+xmUnit(x.t)*(x.qty||0),0)}
+function xmLabel(d){const P=XM_PARTS[d.t],o=["พวงกุญแจ X'mas "+XM_TYPES[d.t]];if(P.indexOf('n')>=0)o.push('ชื่อ '+d.text);const c=[];c.push('ต้น'+d.tree);if(P.indexOf('n')>=0)c.push('ชื่อ/ดาว'+d.name);if(P.indexOf('f')>=0)c.push('กรอบ'+d.frame+' ลาย'+d.pat);o.push(c.join(' '));return o.join(' · ')}
+  // ---- end copy ----
+
+  // ---------- drawing: a list of shapes (each in its own local frame g={x,y,s}) → SVG (preview) or canvas (saved picture) ----------
+  function shade(hex, k) { var n = parseInt((hex || '#cccccc').slice(1), 16), r = n >> 16, g = n >> 8 & 255, b = n & 255; var f = function (v) { return Math.round(k < 0 ? v * (1 + k) : v + (255 - v) * k); }; return '#' + [f(r), f(g), f(b)].map(function (v) { return v.toString(16).padStart(2, '0'); }).join(''); }
+  function lum(hex) { var n = parseInt(hex.slice(1), 16); return (0.299 * (n >> 16) + 0.587 * (n >> 8 & 255) + 0.114 * (n & 255)) / 255; }
+  var NAME_FAM = '"DM Sans", "Arial", sans-serif', XM_FAM = '"XM Luckiest", "Luckiest Guy", "Arial Black", sans-serif';
+  var mctx = document.createElement('canvas').getContext('2d');
+  function circ(x, y, r) { return 'M' + (x - r) + ' ' + y + 'A' + r + ' ' + r + ' 0 1 0 ' + (x + r) + ' ' + y + 'A' + r + ' ' + r + ' 0 1 0 ' + (x - r) + ' ' + y + 'Z'; }
+  function rrect(x0, y0, x1, y1, r) { return 'M' + (x0 + r) + ' ' + y0 + 'H' + (x1 - r) + 'Q' + x1 + ' ' + y0 + ' ' + x1 + ' ' + (y0 + r) + 'V' + (y1 - r) + 'Q' + x1 + ' ' + y1 + ' ' + (x1 - r) + ' ' + y1 + 'H' + (x0 + r) + 'Q' + x0 + ' ' + y1 + ' ' + x0 + ' ' + (y1 - r) + 'V' + (y0 + r) + 'Q' + x0 + ' ' + y0 + ' ' + (x0 + r) + ' ' + y0 + 'Z'; }
+  function poly(pts) { return pts.map(function (p, i) { return (i ? 'L' : 'M') + (+p[0].toFixed(2)) + ' ' + (+p[1].toFixed(2)); }).join('') + 'Z'; }
+  function star(cx, cy, R, r) { var p = []; for (var i = 0; i < 10; i++) { var a = -Math.PI / 2 + i * Math.PI / 5, q = i % 2 ? r : R; p.push([cx + q * Math.cos(a), cy + q * Math.sin(a)]); } return poly(p); }
+  // printed parts: drop shadow, darker side wall, top face, faint top rim
+  function raised(ops, g, items, col, dep) {
+    items.forEach(function (it) { ops.push({ k: 'p', g: g, d: it.d, rule: it.rule, fill: '#000', op: 0.25, blur: 3, dx: dep * 0.5, dy: dep * 1.4 }); });
+    items.forEach(function (it) { ops.push({ k: 'p', g: g, d: it.d, rule: it.rule, fill: shade(col, -0.34), dy: dep }); });
+    items.forEach(function (it) { ops.push({ k: 'p', g: g, d: it.d, rule: it.rule, fill: shade(col, -0.18), dy: dep * 0.5 }); });
+    items.forEach(function (it) { ops.push({ k: 'p', g: g, d: it.d, rule: it.rule, fill: col, stroke: shade(col, 0.25), sw: 0.9, sop: 0.8 }); });
+  }
+  function raisedText(ops, g, t, col, dep) {
+    ops.push(Object.assign({ k: 't', g: g, fill: '#000', op: 0.3, blur: 1.2, dx: dep * 0.4, dy: dep * 1.1 }, t));
+    ops.push(Object.assign({ k: 't', g: g, fill: shade(col, -0.34), dy: dep }, t));
+    ops.push(Object.assign({ k: 't', g: g, fill: col, dy: 0 }, t));
+  }
+  // letters placed one by one (same spacing in SVG and canvas)
+  function spaced(str, fam, wt, size, ls, cx, y) {
+    mctx.font = wt + ' ' + size + 'px ' + fam;
+    var ws = str.split('').map(function (c) { return mctx.measureText(c).width; }), tw = ws.reduce(function (a, b) { return a + b; }, 0) + ls * (str.length - 1), x = cx - tw / 2, out = [];
+    for (var i = 0; i < str.length; i++) { out.push({ c: str[i], x: +x.toFixed(2) }); x += ws[i] + ls; }
+    return { chars: out, y: y, fam: fam, wt: wt, size: +size.toFixed(2), w: tw };
+  }
+
+  // ---- piece B: arched window, 4 open panes, moon / house / snow / small tree, X'MAS on the base (local frame ≈ x ±92, y −152…128) ----
+  function windowPiece(ops, g, c, ringOnly) {
+    var F = KC_HEX[c.frame], P = KC_HEX[c.pat], T = KC_HEX[c.tree];
+    var ring = [{ d: circ(0, -136, 14) + circ(0, -136, 5.5), rule: 'evenodd' }];
+    if (ringOnly) { raised(ops, g, ring, F, 5); return; }
+    var yA = (-40 - Math.sqrt(71 * 71 - 3.5 * 3.5)).toFixed(2);
+    var frame = 'M-80 90L-80 -40A80 80 0 0 1 80 -40L80 90Z' +
+      'M-71 -27.5L-71 -40A71 71 0 0 1 -3.5 ' + yA + 'L-3.5 -27.5Z' +
+      'M3.5 -27.5L3.5 ' + yA + 'A71 71 0 0 1 71 -40L71 -27.5Z' +
+      'M-71 -20.5H-3.5V87H-71Z' + 'M3.5 -20.5H71V87H3.5Z';
+    // scene parts behind the frame bars (they sit inside the open panes)
+    raised(ops, g, [{ d: circ(-61, -62, 14) }], P, 3.5);   // moon
+    raised(ops, g, [{ d: 'M37 -16L50 4L45 4L57 26L51 26L64 52L41 52L41 66L33 66L33 52L10 52L23 26L17 26L29 4L24 4Z' }], T, 3.5);   // small tree (tree colour)
+    raised(ops, g, [{ d: 'M-64 34L-40 10L-32 18.7V11H-26V25.3L-16 34H-22V74H-58V34Z' + 'M-52 41h7v8h-7Z' + 'M-35 41h7v8h-7Z' + 'M-44 56h8v18h-8Z', rule: 'evenodd' }], P, 3.5);   // house
+    raised(ops, g, [{ d: 'M-71 68Q-40 60 -3.5 70V87H-71Z' }, { d: 'M3.5 66Q34 56 71 60V87H3.5Z' }], P, 3.5);   // snow
+    raised(ops, g, ring.concat([{ d: frame, rule: 'evenodd' }, { d: rrect(-93, 84, 93, 128, 5) }]), F, 6);
+    raisedText(ops, g, spaced("X'MAS", XM_FAM, '400', 24, 1.5, 0, 117), P, 2.2);
+  }
+  // ---- piece A: stepped (chevron) tree, star on top, name banner across the middle (local frame ≈ x ±100, y −142…112) ----
+  function chev(yt, w, h, th) { return [[0, yt], [w, yt + h], [w - 5, yt + h + th], [0, yt + th], [-w + 5, yt + h + th], [-w, yt + h]]; }   // arm ends cut slightly inward like the print
+  function treePiece(ops, g, c, text, opt) {
+    var T = KC_HEX[c.tree], N = KC_HEX[c.name];
+    if (!opt.noRing) raised(ops, g, [{ d: circ(0, -128, 13) + circ(0, -128, 5), rule: 'evenodd' }], T, 5);
+    var tiers = [[18, 100, 52, 42], [-10, 80, 50, 31], [-40, 64, 40, 31], [-70, 48, 30, 31], [-100, 32, 20, 31]];
+    tiers.forEach(function (q) {   // bottom tier first, each higher tier stands in front of the one below
+      var pts = chev(q[0], q[1], q[2], q[3]);
+      raised(ops, g, [{ d: poly(pts) }], T, 5);
+      ops.push({ k: 'p', g: g, d: poly([pts[0], pts[1], pts[2], pts[3]]), fill: '#000', op: 0.09 });   // right slope faces away from the light
+      ops.push({ k: 'p', g: g, d: poly([[0, q[0]], [-q[1], q[0] + q[2]], [-q[1] + 4, q[0] + q[2] + 4], [0, q[0] + 4]]), fill: '#fff', op: 0.16 });   // lit top edge
+    });
+    raised(ops, g, [{ d: rrect(-95, 22, 95, 60, 3) }], T, 6);
+    raised(ops, g, [{ d: star(0, -103, 17, 7.5) }], N, 4);
+    var s = text || 'NAME', size = 25, ls = 3.2, sp = spaced(s, NAME_FAM, '700', size, ls, 0, 0);
+    if (sp.w > 170) { size = size * 170 / sp.w; ls = ls * 170 / sp.w; }
+    sp = spaced(s, NAME_FAM, '700', size, ls, 0, 41 + size * 0.36);
+    raisedText(ops, g, Object.assign(sp, { op: text ? 1 : 0.55 }), N, 1.8);
+  }
+  function chain(ops, x, y) {   // ball chain loop going up out of the picture
+    var d = 'M' + (x - 4) + ' ' + y + 'C' + (x - 26) + ' ' + (y - 24) + ' ' + (x - 14) + ' ' + (y - 50) + ' ' + (x - 6) + ' -4' + 'M' + (x + 4) + ' ' + y + 'C' + (x + 26) + ' ' + (y - 24) + ' ' + (x + 14) + ' ' + (y - 50) + ' ' + (x + 6) + ' -4';
+    ops.push({ k: 'p', d: d, fill: 'none', stroke: '#8E8A84', sw: 4.6, dash: [0, 5.6] });
+    ops.push({ k: 'p', d: d, fill: 'none', stroke: '#E6E3DE', sw: 3.2, dash: [0, 5.6] });
+  }
+  // whole picture in a 300×340 box; d={t,tree,name,frame,pat,text}
+  function scene(d) {
+    var ops = [];
+    if (d.t === 'w') { var gw = { x: 150, y: 196, s: 1 }; chain(ops, 150, 196 - 136); windowPiece(ops, gw, d); }
+    else if (d.t === 't') { var gt = { x: 150, y: 188, s: 1.12 }; chain(ops, 150, 188 - 128 * 1.12); treePiece(ops, gt, d, d.text, {}); }
+    else {
+      var g1 = { x: 150, y: 196, s: 1 }, g2 = { x: 150, y: 183, s: 0.94 };
+      chain(ops, 150, 196 - 136);
+      windowPiece(ops, g1, d);
+      treePiece(ops, g2, d, d.text, { noRing: true });   // tree hangs on the same chain, its ring hidden behind the star
+    }
+    return ops;
+  }
+  var esc = function (s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;'); };
+  function gT(o) { return o.g ? ' transform="translate(' + o.g.x + ' ' + o.g.y + ') scale(' + o.g.s + ')"' : ''; }
+  function toSVG(ops, w, h, label) {
+    var s = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 340" width="' + w + '" height="' + h + '" role="img" aria-label="' + esc(label || "ตัวอย่างพวงกุญแจ X'mas") + '"><defs><filter id="xmb1" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="1.2"/></filter><filter id="xmb3" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="3"/></filter></defs>';
+    ops.forEach(function (o) {
+      var op = o.op != null ? ' opacity="' + o.op + '"' : '', bl = o.blur ? ' filter="url(#' + (o.blur > 2 ? 'xmb3' : 'xmb1') + ')"' : '';
+      var inner;
+      if (o.k === 'p') {
+        inner = '<path d="' + o.d + '" fill="' + o.fill + '"' + (o.rule ? ' fill-rule="' + o.rule + '"' : '') + (o.stroke ? ' stroke="' + o.stroke + '" stroke-width="' + o.sw + '" stroke-linecap="round" stroke-linejoin="round"' + (o.sop != null ? ' stroke-opacity="' + o.sop + '"' : '') + (o.dash ? ' stroke-dasharray="' + o.dash.join(' ') + '"' : '') : '') + ((o.dx || o.dy) ? ' transform="translate(' + (o.dx || 0) + ' ' + (o.dy || 0) + ')"' : '') + op + bl + '/>';
+      } else {
+        inner = '<text font-family=\'' + o.fam + '\' font-weight="' + o.wt + '" font-size="' + o.size + '" fill="' + o.fill + '"' + op + bl + ((o.dx || o.dy) ? ' transform="translate(' + (o.dx || 0) + ' ' + (o.dy || 0) + ')"' : '') + '>' +
+          o.chars.map(function (c) { return '<tspan x="' + c.x + '" y="' + o.y.toFixed(2) + '">' + esc(c.c) + '</tspan>'; }).join('') + '</text>';
+      }
+      s += o.g ? '<g' + gT(o) + '>' + inner + '</g>' : inner;
+    });
+    return s + '</svg>';
+  }
+  function toCanvas(ops, W, bg) {
+    var H = Math.round(W * 340 / 300), c = document.createElement('canvas'); c.width = W; c.height = H; var x = c.getContext('2d'), k = W / 300;
+    x.fillStyle = bg; x.fillRect(0, 0, W, H);
+    ops.forEach(function (o) {
+      x.save(); x.setTransform(k, 0, 0, k, 0, 0);
+      if (o.g) { x.translate(o.g.x, o.g.y); x.scale(o.g.s, o.g.s); }
+      x.translate(o.dx || 0, o.dy || 0); x.globalAlpha = o.op != null ? o.op : 1;
+      if (o.blur && 'filter' in x) x.filter = 'blur(' + (o.blur * k * (o.g ? o.g.s : 1)) + 'px)';
+      if (o.k === 'p') {
+        var p = new Path2D(o.d);
+        if (o.fill !== 'none') { x.fillStyle = o.fill; x.fill(p, o.rule === 'evenodd' ? 'evenodd' : 'nonzero'); }
+        if (o.stroke) { x.globalAlpha = (o.op != null ? o.op : 1) * (o.sop != null ? o.sop : 1); x.strokeStyle = o.stroke; x.lineWidth = o.sw; x.lineCap = 'round'; x.lineJoin = 'round'; if (o.dash) x.setLineDash(o.dash); x.stroke(p); }
+      } else {
+        x.font = o.wt + ' ' + o.size + 'px ' + o.fam; x.textBaseline = 'alphabetic'; x.textAlign = 'left'; x.fillStyle = o.fill;
+        o.chars.forEach(function (ch) { x.fillText(ch.c, ch.x, o.y); });
+      }
+      x.restore();
+    });
+    return c;
+  }
+
+  // ---------- state ----------
+  var DEF = { tree: 'เขียว', name: 'ขาว', frame: 'แดง', pat: 'ขาว' };   // like the printed piece
+  var PAIRS = [
+    { lbl: 'คลาสสิก แดง-เขียว', tree: 'เขียว', name: 'ขาว', frame: 'แดง', pat: 'ขาว' },
+    { lbl: 'ฟ้าหิมะ', tree: 'ฟ้า', name: 'ขาว', frame: 'น้ำเงิน', pat: 'ขาว' },
+    { lbl: 'ทอง-ขาว', tree: 'เหลือง', name: 'น้ำตาล', frame: 'ขาว', pat: 'เหลือง' },
+    { lbl: 'ชมพูหวาน', tree: 'มิ้นท์', name: 'ชมพูอมแดง', frame: 'ชมพู', pat: 'ขาว' },
+    { lbl: 'คืนเหน็บหนาว', tree: 'เขียวอมฟ้า', name: 'เหลือง', frame: 'น้ำเงิน', pat: 'เหลือง' }
+  ];
+  var d = Object.assign({ t: 's', text: 'FIXTORY' }, DEF), qty = 1;
+  function adopt(p) { if (!p) return false; d = Object.assign({}, d, { t: p.t }); ['tree', 'name', 'frame', 'pat'].forEach(function (k) { if (p[k]) d[k] = p[k]; }); if (p.text) d.text = p.text; return true; }
+  try { var q0 = new URLSearchParams(location.search).get('xm'); if (!adopt(xmParse(q0))) adopt(xmParse(localStorage.getItem('fxXmDraft') || '')); } catch (e) {}
+  var SALE = (function () { try { return new URLSearchParams(location.search).get('sale') || ''; } catch (e) { return ''; } })();
+  var ORDER_URL = (/fixtory-studio\.pages\.dev$|^localhost$/.test(location.hostname) ? 'shop-order.html' : 'https://fixtory-studio.pages.dev/shop-order.html') + '?p=xmasorn';
+  $('nm').value = d.text;
+
+  function clean(v) { return v.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, XM_MAXLEN); }
+  $('nm').addEventListener('input', function (e) {
+    var inp = e.target, raw = inp.value, v = clean(raw), bad = raw.toUpperCase().replace(/\s/g, '') !== v && raw.length > 0;
+    if (inp.value !== v) { var p = inp.selectionStart; inp.value = v; try { inp.setSelectionRange(Math.min(p, v.length), Math.min(p, v.length)); } catch (x) {} }
+    $('txtWarn').textContent = bad ? 'ใช้ได้เฉพาะ A–Z และ 0–9 (ภาษาอังกฤษตัวพิมพ์ใหญ่) ไม่เกิน 9 ตัว' : '';
+    d.text = v; render();
+  });
+
+  function pairSvg(p) {
+    var T = KC_HEX[p.tree], N = KC_HEX[p.name], F = KC_HEX[p.frame], P = KC_HEX[p.pat];
+    return '<svg viewBox="0 0 48 48" width="40" height="40" aria-hidden="true"><path d="M7 44V20A17 17 0 0 1 41 20V44Z" fill="' + F + '" stroke="' + shade(F, -0.3) + '"/><path d="M11 40V21A13 13 0 0 1 37 21V40Z" fill="' + shade(F, 0.55) + '"/><circle cx="16" cy="18" r="3.2" fill="' + P + '"/><path d="M11 40V35Q24 32 37 36V40Z" fill="' + P + '"/><path d="M24 6L36 34H12Z" fill="' + T + '" stroke="' + shade(T, -0.3) + '"/><rect x="9" y="25" width="30" height="7" rx="1" fill="' + T + '" stroke="' + shade(T, -0.3) + '" stroke-width=".8"/><rect x="14" y="27.6" width="20" height="1.8" rx=".9" fill="' + N + '"/><path d="' + star(24, 7, 4.2, 1.9) + '" fill="' + N + '" stroke="' + shade(N, -0.3) + '" stroke-width=".6"/></svg>';
+  }
+  function dotRow(box, key, label, blockKey) {
+    box.textContent = '';
+    XM_COLORS.forEach(function (c) {
+      box.append(el('button', { type: 'button', class: 'dot', style: 'background-color:' + KC_HEX[c], title: c, 'aria-label': label + c, 'aria-pressed': String(d[key] === c), disabled: blockKey ? c === d[blockKey] : false, onclick: function () { d[key] = c; render(); } }));
+    });
+  }
+
+  function render() {
+    var P = XM_PARTS[d.t], hasName = P.indexOf('n') >= 0, hasWin = P.indexOf('f') >= 0, ok = !hasName || d.text.length > 0;
+    // keep the "no same colour" rules even after a preset / random pick
+    if (d.name === d.tree) d.name = d.tree === 'ขาว' ? 'ดำ' : 'ขาว';
+    if (d.pat === d.frame) d.pat = d.frame === 'ขาว' ? 'แดง' : 'ขาว';
+    // preview
+    var label = "ตัวอย่างพวงกุญแจ X'mas " + XM_TYPES[d.t] + (hasName ? ' ชื่อ ' + (d.text || '-') : '') + ' ต้น' + d.tree + (hasName ? ' ชื่อ' + d.name : '') + (hasWin ? ' กรอบ' + d.frame + ' ลาย' + d.pat : '');
+    $('pv').innerHTML = toSVG(scene(d), 300, 340, label);
+    $('pvcap').innerHTML = '<b>' + XM_TYPES[d.t] + '</b> · ต้น' + d.tree + (hasName ? ' / ชื่อ' + d.name : '') + (hasWin ? ' / กรอบ' + d.frame + ' / ลาย' + d.pat : '') + (hasName && !d.text ? ' · (ตัวอย่าง NAME)' : '');
+    // type
+    var ty = $('types'); ty.textContent = '';
+    ['s', 't', 'w'].forEach(function (t) {
+      var mini = toSVG(scene(Object.assign({}, d, { t: t, text: d.text || 'NAME' })), 46, 52, '');
+      ty.append(el('button', { type: 'button', class: 'opt', 'aria-pressed': String(d.t === t), onclick: function () { d.t = t; render(); }, html: mini.replace('role="img"', 'aria-hidden="true"') + '<b>' + (t === 's' ? 'ชุดคู่' : t === 't' ? 'ต้นใส่ชื่อ' : 'หน้าต่าง') + '</b><span>' + fmt(XM_BASE[t]) + (t === 's' ? ' · ต้น+หน้าต่าง' : t === 't' ? ' · อย่างเดียว' : ' · ไม่มีชื่อ') + '</span>' }));
+    });
+    $('nameStep').hidden = !hasName; $('colNo').textContent = hasName ? '3' : '2';
+    $('cn').textContent = d.text.length + '/' + XM_MAXLEN;
+    // colours
+    var pr = $('pairs'); pr.textContent = '';
+    PAIRS.forEach(function (p) { pr.append(el('button', { type: 'button', class: 'pair', 'aria-pressed': String(d.tree === p.tree && (!hasName || d.name === p.name) && (!hasWin || (d.frame === p.frame && d.pat === p.pat))), onclick: function () { d.tree = p.tree; d.name = p.name; d.frame = p.frame; d.pat = p.pat; render(); }, html: pairSvg(p) + '<span>' + p.lbl + '</span>' })); });
+    $('treeLbl').innerHTML = (d.t === 'w' ? 'สีต้นไม้เล็กในหน้าต่าง' : 'สีต้น') + ' <small>' + d.tree + (d.t === 's' ? ' · ต้นไม้เล็กในหน้าต่างสีเดียวกัน' : '') + '</small>';
+    $('nameName').textContent = d.name; $('frameName').textContent = d.frame; $('patName').textContent = d.pat + ' · บ้าน หิมะ พระจันทร์ X\'MAS';
+    $('rowName').hidden = !hasName; $('rowFrame').hidden = !hasWin; $('rowPat').hidden = !hasWin;
+    dotRow($('treeDots'), 'tree', 'ต้นสี', hasName ? 'name' : null);
+    dotRow($('nameDots'), 'name', 'ชื่อและดาวสี', 'tree');
+    dotRow($('frameDots'), 'frame', 'กรอบหน้าต่างสี', 'pat');
+    dotRow($('patDots'), 'pat', 'ลายในหน้าต่างสี', 'frame');
+    // price
+    var unit = xmUnit(d.t), tot = xmPrice([{ t: d.t, qty: qty }]);
+    $('perPiece').textContent = XM_TYPES[d.t] + ' ชิ้นละ ' + fmt(unit);
+    $('total').textContent = fmt(ok ? tot : 0);
+    $('qty').textContent = qty; $('minus').disabled = qty <= 1; $('plus').disabled = qty >= XM_MAXQTY;
+    var L = $('lines'); L.textContent = '';
+    if (ok) {
+      L.append(el('div', {}, el('span', {}, XM_TYPES[d.t] + ' · ' + qty + ' ชิ้น × ' + fmt(unit)), el('span', {}, fmt(unit * qty))));
+      L.append(el('div', { class: 'tot' }, el('span', {}, 'รวม (ยังไม่รวมค่าส่ง)'), el('span', {}, fmt(tot))));
+    }
+    var code = ok ? xmEncode(d) : ''; $('code').textContent = code || '—';
+    var ob = $('orderBtn');
+    if (ok) { ob.removeAttribute('aria-disabled'); ob.href = ORDER_URL + '&xm=' + encodeURIComponent(code) + '&qty=' + qty + (SALE ? '&sale=' + encodeURIComponent(SALE) : ''); ob.textContent = 'สั่งซื้อแบบนี้ · ' + fmt(tot); }
+    else { ob.setAttribute('aria-disabled', 'true'); ob.href = '#'; ob.textContent = 'ใส่ชื่อก่อนสั่ง'; }
+    $('chatBtn').href = XM_CHAT;
+    $('chatBtn').textContent = qty >= XM_MAXQTY ? 'ต้องการ 10 ชิ้นขึ้นไป? ทักแชตขอราคา' : 'สั่ง 10 ชิ้นขึ้นไป · ทักแชตขอราคา';
+    try { if (code) localStorage.setItem('fxXmDraft', code); } catch (e) {}
+  }
+
+  $('minus').onclick = function () { qty = Math.max(1, qty - 1); render(); };
+  $('plus').onclick = function () { qty = Math.min(XM_MAXQTY, qty + 1); render(); };
+  $('reset').onclick = function () { Object.assign(d, DEF); render(); };
+  function pick() { return XM_COLORS[Math.floor(Math.random() * XM_COLORS.length)]; }
+  function far(a, b) { return a !== b && Math.abs(lum(KC_HEX[a]) - lum(KC_HEX[b])) >= 0.22; }
+  $('dice').onclick = function () {   // random set that still reads well: name vs tree and pattern vs frame need light/dark contrast
+    var n = 0, t, nm, f, p;
+    do { t = pick(); nm = pick(); f = pick(); p = pick(); n++; }
+    while ((!far(t, nm) || !far(f, p) || f === t || (t === d.tree && f === d.frame)) && n < 400);
+    d.tree = t; d.name = nm; d.frame = f; d.pat = p; render();
+  };
+  function picture(size) { return toCanvas(scene(d), size, '#F3ECE4'); }
+  $('save').onclick = function () {
+    var c = picture(1000), a = document.createElement('a');
+    a.download = 'fixtory-xmas-' + (XM_PARTS[d.t].indexOf('n') >= 0 ? (d.text || 'design') : 'window') + '.png'; a.href = c.toDataURL('image/png'); document.body.appendChild(a); a.click(); a.remove();
+  };
+  // picture for the order page's cart (same site: shared localStorage), like namepop.html / keycap.html
+  $('orderBtn').addEventListener('click', function () {
+    if ($('orderBtn').getAttribute('aria-disabled') === 'true') return;
+    try {
+      var c = xmEncode(d), K = 'fxXmImgs', list = JSON.parse(localStorage.getItem(K) || '[]').filter(function (x) { return x !== c; });
+      list.unshift(c); while (list.length > 30) localStorage.removeItem('fxXmImg:' + list.pop());
+      localStorage.setItem('fxXmImg:' + c, picture(360).toDataURL('image/jpeg', 0.85)); localStorage.setItem(K, JSON.stringify(list));
+    } catch (e) {}
+  }, true);
+
+  render();
+  // re-measure once the fonts have loaded (letter widths change)
+  if (document.fonts && document.fonts.load) Promise.all([document.fonts.load('700 25px "DM Sans"'), document.fonts.load('24px "XM Luckiest"')]).then(render, function () {});
+})();
+</script>
+</body>
+</html>
