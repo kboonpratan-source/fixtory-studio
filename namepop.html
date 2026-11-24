@@ -255,6 +255,70 @@ function npLabel(d){return 'NAME POP '+NP_TYPES[d.t]+' Ø'+d.s+'0 มม. · '+d
     });
     return out;
   }
+  // ---------- warped lettering (like the printed piece): the whole 1–2 line block is turned into outlines (opentype.js),
+  // stretched into a square [-1,1]², then bent into the disc with a square→disc (elliptical grid) mapping, so the top of
+  // line 1, the bottom of line 2 and the outer letters all follow the rim. Falls back to layout() above if the font can't load.
+  var OT = null, wcache = {};
+  function flatten(cmds) {   // opentype path commands → closed polygons, curves sampled and straight edges subdivided (so they bend)
+    var cs = [], cur = null, px = 0, py = 0, STEP = 14;
+    function lineTo(x, y) { var n = Math.max(1, Math.ceil(Math.hypot(x - px, y - py) / STEP)); for (var i = 1; i <= n; i++) cur.push([px + (x - px) * i / n, py + (y - py) * i / n]); px = x; py = y; }
+    cmds.forEach(function (c) {
+      if (c.type === 'M') { cur = [[c.x, c.y]]; cs.push(cur); px = c.x; py = c.y; }
+      else if (c.type === 'L') lineTo(c.x, c.y);
+      else if (c.type === 'Q' || c.type === 'C') {
+        var n = Math.max(6, Math.ceil(Math.hypot(c.x - px, c.y - py) / STEP)), x0 = px, y0 = py;
+        for (var i = 1; i <= n; i++) {
+          var t = i / n, u = 1 - t, x, y;
+          if (c.type === 'Q') { x = u * u * x0 + 2 * u * t * c.x1 + t * t * c.x; y = u * u * y0 + 2 * u * t * c.y1 + t * t * c.y; }
+          else { x = u * u * u * x0 + 3 * u * u * t * c.x1 + 3 * u * t * t * c.x2 + t * t * t * c.x; y = u * u * u * y0 + 3 * u * u * t * c.y1 + 3 * u * t * t * c.y2 + t * t * t * c.y; }
+          cur.push([x, y]);
+        }
+        px = c.x; py = c.y;
+      }
+    });
+    return cs.filter(function (c) { return c.length > 2; });
+  }
+  function lineShape(txt) {   // one line as polygons at font size 1000, letters set a little tight like the real piece
+    var cs = [], x = 0, sc = 1000 / OT.unitsPerEm, prev = null;
+    for (var i = 0; i < txt.length; i++) {
+      var gph = OT.charToGlyph(txt[i]);
+      if (prev) x += OT.getKerningValue(prev, gph) * sc;
+      cs = cs.concat(flatten(gph.getPath(x, 0, 1000).commands));
+      x += gph.advanceWidth * sc - 25; prev = gph;
+    }
+    var x0 = 1e9, x1 = -1e9, y0 = 1e9, y1 = -1e9;
+    cs.forEach(function (c) { c.forEach(function (p) { if (p[0] < x0) x0 = p[0]; if (p[0] > x1) x1 = p[0]; if (p[1] < y0) y0 = p[1]; if (p[1] > y1) y1 = p[1]; }); });
+    return { cs: cs, x0: x0, x1: x1, y0: y0, y1: y1 };
+  }
+  function warpPath(lines, cx, cy, r) {
+    var key = lines.join('~') + '|' + cx.toFixed(1) + '|' + cy.toFixed(1) + '|' + r.toFixed(2);
+    if (wcache[key]) return wcache[key];
+    var two = lines.length === 2, G = 0.035, out = [];
+    lines.forEach(function (ln, li) {
+      var sh = lineShape(ln); if (!sh.cs.length) return;
+      var w = sh.x1 - sh.x0, h = sh.y1 - sh.y0, ya, yb;
+      if (two) { ya = li === 0 ? -1 : G; yb = li === 0 ? -G : 1; }
+      else { var hh = Math.min(1, Math.max(0.55, 2.6 / ln.length)); ya = -hh; yb = hh; }
+      // short words (1 letter) aren't stretched sideways more than ~1.6× their natural shape
+      var xh = Math.min(1, Math.max(0.45, (w / h) * (yb - ya) / 2 * 1.6));
+      sh.cs.forEach(function (c) {
+        var s = '';
+        c.forEach(function (p, k) {
+          var X = -xh + (p[0] - sh.x0) / w * 2 * xh, Y = ya + (p[1] - sh.y0) / h * (yb - ya);
+          var u = X * Math.sqrt(1 - Y * Y / 2), v = Y * Math.sqrt(1 - X * X / 2);
+          s += (k ? 'L' : 'M') + (cx + u * r).toFixed(1) + ' ' + (cy + v * r).toFixed(1);
+        });
+        out.push(s + 'Z');
+      });
+    });
+    return (wcache[key] = out.join(''));
+  }
+  function loadWarpFont() {   // same-site files (vendor/): opentype.js 1.3.4 (MIT) + Luckiest Guy (Apache-2.0, @fontsource 5.3.0)
+    var sc = document.createElement('script'); sc.src = 'vendor/opentype.min.js'; sc.async = true;
+    sc.onload = function () { try { window.opentype.load('vendor/luckiest-guy-latin-400-normal.woff', function (err, f) { if (!err && f) { OT = f; wcache = {}; render(); } }); } catch (e) {} };
+    document.head.appendChild(sc);
+  }
+
   var SCALE = { 4: 0.8, 5: 0.9, 6: 1 };
   // the whole piece in a 300×330 box; d={t,s,fg,bg,lines}
   function scene(d, opt) {
@@ -288,8 +352,18 @@ function npLabel(d){return 'NAME POP '+NP_TYPES[d.t]+' Ø'+d.s+'0 มม. · '+d
       ops.push({ k: 'p', d: 'M' + (cx + rr * 0.2) + ' ' + cy3 + ' L' + (cx + rr * 0.5) + ' ' + (cy3 - 26) + ' Q' + (cx + rr * 0.7) + ' ' + (cy3 - 40) + ' ' + (cx + rr * 1.6) + ' ' + (cy3 - 40), fill: 'none', stroke: metal, sw: 4.5 });
     }
     var lines = d.lines.filter(function (l) { return l; }); if (!lines.length) lines = ['ABC'];
-    var gl = layout(lines, cx, cy - dz * 0.3, R);
     var lh = R * 0.055;   // raised letters: shadow on the base, darker side wall, top face, small shine
+    var wp = null; try { wp = OT ? warpPath(lines, cx, cy - dz * 0.3 - lh * 0.4, R * 0.9) : null; } catch (e) { wp = null; }
+    if (wp) {
+      var sw = R * 0.022;
+      ops.push({ k: 'w', d: wp, dy: lh * 0.9, dx: lh * 0.35, fill: '#000', op: 0.28, blur: 2.5, sw: sw });
+      ops.push({ k: 'w', d: wp, dy: lh, fill: shade(F, -0.32), sw: sw });
+      ops.push({ k: 'w', d: wp, dy: lh * 0.5, fill: shade(F, -0.16), sw: sw });
+      ops.push({ k: 'w', d: wp, dy: 0, fill: F, sw: sw });
+      ops.push({ k: 'w', d: wp, dy: -lh * 0.18, fill: shade(F, 0.35), op: 0.35, sw: 0 });
+      return ops;
+    }
+    var gl = layout(lines, cx, cy - dz * 0.3, R);
     gl.forEach(function (g) { ops.push({ k: 'g', ch: g.ch, m: g.m, dy: lh * 0.9, dx: lh * 0.35, fill: '#000', op: 0.28, blur: 2.5 }); });
     gl.forEach(function (g) { ops.push({ k: 'g', ch: g.ch, m: g.m, dy: lh, fill: shade(F, -0.32) }); });
     gl.forEach(function (g) { ops.push({ k: 'g', ch: g.ch, m: g.m, dy: lh * 0.5, fill: shade(F, -0.16) }); });
@@ -304,6 +378,7 @@ function npLabel(d){return 'NAME POP '+NP_TYPES[d.t]+' Ø'+d.s+'0 มม. · '+d
       var op = o.op != null ? ' opacity="' + o.op + '"' : '', bl = o.blur ? ' filter="url(#' + (o.blur > 4 ? 'npb6' : 'npb2') + ')"' : '';
       if (o.k === 'c') s += '<circle cx="' + o.cx.toFixed(1) + '" cy="' + o.cy.toFixed(1) + '" r="' + o.r.toFixed(1) + '" fill="' + o.fill + '"' + (o.stroke ? ' stroke="' + o.stroke + '" stroke-width="' + o.sw + '"' : '') + op + bl + '/>';
       else if (o.k === 'p') s += '<path d="' + o.d + '" fill="' + o.fill + '" stroke="' + o.stroke + '" stroke-width="' + o.sw + '" stroke-linecap="round"' + op + '/>';
+      else if (o.k === 'w') s += '<path transform="translate(' + (+(o.dx || 0).toFixed(2)) + ' ' + (+o.dy.toFixed(2)) + ')" d="' + o.d + '" fill="' + o.fill + '"' + (o.sw ? ' stroke="' + o.fill + '" stroke-width="' + o.sw.toFixed(2) + '" stroke-linejoin="round"' : '') + op + bl + '/>';
       else if (o.k === 'g') { var m = o.m; s += '<text transform="matrix(' + [m[0], 0, 0, m[3], m[4] + (o.dx || 0), m[5] + o.dy].map(function (v) { return +v.toFixed(4); }).join(' ') + ')" font-family=\'' + FONT + '\' font-size="' + FS + '" fill="' + o.fill + '" stroke="' + o.fill + '" stroke-width="' + GSTROKE + '" stroke-linejoin="round"' + op + bl + '>' + esc(o.ch) + '</text>'; }
     });
     return s + '</svg>';
@@ -316,6 +391,13 @@ function npLabel(d){return 'NAME POP '+NP_TYPES[d.t]+' Ø'+d.s+'0 มม. · '+d
       if (o.blur && 'filter' in g) g.filter = 'blur(' + (o.blur * k) + 'px)';
       if (o.k === 'c') { g.beginPath(); g.arc(o.cx, o.cy, o.r, 0, Math.PI * 2); if (o.fill !== 'none') { g.fillStyle = o.fill; g.fill(); } if (o.stroke) { g.lineWidth = o.sw; g.strokeStyle = o.stroke; g.stroke(); } }
       else if (o.k === 'p') { g.lineWidth = o.sw; g.strokeStyle = o.stroke; g.lineCap = 'round'; g.stroke(new Path2D(o.d)); }
+      else if (o.k === 'w') {   // warped outline; translucent ones go through a layer so fill+stroke don't double up
+        var wl = o.op != null && o.op < 1, tw = g;
+        if (wl) { var t2 = document.createElement('canvas'); t2.width = t2.height = size; tw = t2.getContext('2d'); tw.setTransform(k, 0, 0, k, ox * k, 0); g.filter = 'none'; }
+        tw.translate(o.dx || 0, o.dy); var p2 = new Path2D(o.d); tw.fillStyle = tw.strokeStyle = o.fill; tw.fill(p2);
+        if (o.sw) { tw.lineWidth = o.sw; tw.lineJoin = 'round'; tw.stroke(p2); }
+        if (wl) { g.setTransform(1, 0, 0, 1, 0, 0); if (o.blur && 'filter' in g) g.filter = 'blur(' + (o.blur * k) + 'px)'; g.drawImage(t2, 0, 0); }
+      }
       else if (o.k === 'g' && o.op != null && o.op < 1) {   // translucent glyph: draw opaque on a layer first so fill+stroke don't double up
         var t = document.createElement('canvas'); t.width = t.height = size; var tg = t.getContext('2d'); tg.setTransform(k, 0, 0, k, ox * k, 0);
         var m2 = o.m; tg.transform(m2[0], 0, 0, m2[3], m2[4] + (o.dx || 0), m2[5] + o.dy); tg.font = FS + 'px ' + FONT; tg.textAlign = 'left'; tg.fillStyle = tg.strokeStyle = o.fill; tg.lineWidth = GSTROKE; tg.lineJoin = 'round'; tg.fillText(o.ch, 0, 0); tg.strokeText(o.ch, 0, 0);
@@ -436,6 +518,7 @@ function npLabel(d){return 'NAME POP '+NP_TYPES[d.t]+' Ø'+d.s+'0 มม. · '+d
   }, true);
 
   render();
+  loadWarpFont();
   // re-measure once the bubble font has loaded (glyph boxes change)
   if (document.fonts && document.fonts.load) document.fonts.load('100px "Luckiest Guy"').then(function () { mcache = {}; render(); }, function () {});
 })();
