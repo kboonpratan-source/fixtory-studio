@@ -57,6 +57,15 @@ h1 { margin: 6px 0 0; font-family: var(--f-display); font-weight: 400; font-size
 .pvbox { background: var(--stage); border-radius: 20px; box-shadow: var(--shadow); padding: 18px 12px 12px; display: flex; flex-direction: column; align-items: center; gap: 10px; min-height: 360px; justify-content: center; }
 #pv { width: 100%; display: flex; justify-content: center; }
 #pv svg { display: block; width: 100%; max-width: 400px; height: auto; }
+#pv.wide svg { max-width: 560px; }
+.viewsw { display: inline-flex; background: var(--surface); border-radius: 999px; padding: 3px; box-shadow: inset 0 0 0 1.5px var(--line); }
+.viewsw button { border: 0; background: none; border-radius: 999px; padding: 5px 14px; font-size: 13.5px; font-weight: 600; color: var(--muted); cursor: pointer; min-height: 32px; }
+.viewsw button[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); }
+.pvnote { font-size: 13.5px; font-weight: 600; color: var(--ink); text-align: center; }
+.piece { display: flex; flex-direction: column; gap: 10px; background: var(--bg); border-radius: 16px; padding: 12px 14px 14px; box-shadow: inset 0 0 0 1.5px var(--line); }
+.piece-t { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; font-weight: 600; font-size: 15px; }
+.piece-t small { font-weight: 500; color: var(--muted); font-size: 12.5px; }
+.pno { font-size: 12px; font-weight: 600; color: var(--accent-ink); background: var(--accent); border-radius: 999px; padding: 1px 9px; }
 .pvcap { font-size: 13px; color: var(--muted); text-align: center; font-variant-numeric: tabular-nums; }
 .pvcap b { color: var(--ink); font-weight: 600; }
 .simnote { font-size: 12px; color: var(--muted); }
@@ -116,7 +125,11 @@ footer { text-align: center; color: var(--muted); font-size: 13px; padding-top: 
 @media (max-width: 860px) {
   .viz { position: sticky; top: 0; z-index: 5; }
   .pvbox { min-height: 0; padding: 8px; border-radius: 0 0 18px 18px; gap: 6px; }
-  #pv svg { max-height: 30vh; width: auto; }
+  #pv svg { max-height: 30vh; width: auto; max-width: 100%; }
+  #pv.wide svg { max-height: 26vh; }
+  .pvcap { display: none; }
+  .viewsw button { min-height: 28px; padding: 3px 12px; font-size: 12.5px; }
+  .pvnote { font-size: 12.5px; }
   .pvtools .btn { min-height: 32px; padding: 4px 10px; font-size: 13px; }
   .simnote { display: none; }
 }
@@ -129,13 +142,15 @@ footer { text-align: center; color: var(--muted); font-size: 13px; padding-top: 
   <header>
     <span class="brand"><svg viewBox="0 0 40 58" aria-hidden="true"><rect x="15.5" y="0" width="9" height="4.5" rx="1.6" fill="#C4714A"/><rect x="18" y="4" width="4" height="3.5" fill="#A85E3B"/><path d="M20 7.5L36 16.5L20 25.5L4 16.5Z" fill="#C97A53"/><path d="M4 16.5L20 25.5V28.5L4 19.5Z" fill="#A85E3B"/><path d="M36 16.5L20 25.5V28.5L36 19.5Z" fill="#B66A43"/><path d="M4 24.0L20 33.0L36 24.0V28.2L20 37.2L4 28.2Z" fill="#B4663F"/><path d="M4 29.2L20 38.2L36 29.2V33.4L20 42.4L4 33.4Z" fill="#9A5737"/><path d="M4 34.4L20 43.4L36 34.4V38.6L20 47.6L4 38.6Z" fill="#7C4830"/><path d="M4 39.6L20 48.6L36 39.6V43.8L20 52.8L4 43.8Z" fill="#5E3A2A"/><path d="M4 44.8L20 53.8L36 44.8V49.0L20 58.0L4 49.0Z" fill="#432D24"/></svg>FIXTORY<em>.STUDIO</em></span>
     <h1>พวงกุญแจ X'mas · ต้นคริสต์มาสใส่ชื่อ</h1>
-    <p class="lede">ต้นคริสต์มาสแถบชื่อตัวอักษรนูน ซ้อนหน้ากรอบหน้าต่างหิมะ ร้อยโซ่เส้นเดียว พิมพ์ชื่อ เลือกสีทุกส่วน หรือกด 🎲 ให้สุ่มสีให้</p>
+    <p class="lede">2 ชิ้นแยกกัน — ต้นคริสต์มาสแถบชื่อตัวอักษรนูน + กรอบหน้าต่างหิมะ ร้อยโซ่เส้นเดียว พิมพ์ชื่อ เลือกสีทุกส่วน หรือกด 🎲 ให้สุ่มสีให้</p>
     <span class="tag">🎄 เฉพาะช่วงเทศกาล · ร้านออกแบบเอง</span>
   </header>
   <div class="app">
     <section class="viz" aria-label="ภาพตัวอย่าง">
       <div class="pvbox">
+        <div class="viewsw" id="viewSw" role="group" aria-label="มุมมองชุดคู่"><button type="button" data-v="side" aria-pressed="true">วางข้างกัน</button><button type="button" data-v="hang" aria-pressed="false">ห้อยซ้อน</button></div>
         <div id="pv"></div>
+        <div class="pvnote" id="pvnote">🔗 2 ชิ้นแยกกัน ร้อยโซ่เส้นเดียว</div>
         <div class="pvcap" id="pvcap"></div>
         <div class="simnote">ภาพจำลอง ชิ้นจริงพิมพ์นูนหลายชั้น สีจริงอาจต่างเล็กน้อย</div>
         <div class="pvtools">
@@ -159,10 +174,17 @@ footer { text-align: center; color: var(--muted); font-size: 13px; padding-top: 
       <div class="step">
         <div class="step-t"><i id="colNo">3</i>สี <span class="hint">กดชุดสีแนะนำ หรือเลือกเองทีละส่วน</span></div>
         <div class="pairs" id="pairs"></div>
-        <div id="rowTree"><div class="lbl" id="treeLbl">สีต้น</div><div class="dots" id="treeDots"></div></div>
-        <div id="rowName"><div class="lbl">สีชื่อ + ดาว <small id="nameName"></small></div><div class="dots" id="nameDots"></div></div>
-        <div id="rowFrame"><div class="lbl">สีกรอบหน้าต่าง <small id="frameName"></small></div><div class="dots" id="frameDots"></div></div>
-        <div id="rowPat"><div class="lbl">สีลายในหน้าต่าง <small id="patName"></small></div><div class="dots" id="patDots"></div></div>
+        <div class="piece" id="boxTree">
+          <div class="piece-t"><span class="pno">ชิ้นที่ 1</span>ต้นคริสต์มาส <small>ต้น · ชื่อ+ดาว</small></div>
+          <div><div class="lbl">สีต้น <small id="treeName"></small></div><div class="dots" id="treeDots"></div></div>
+          <div><div class="lbl">สีชื่อ + ดาว <small id="nameName"></small></div><div class="dots" id="nameDots"></div></div>
+        </div>
+        <div class="piece" id="boxWin">
+          <div class="piece-t"><span class="pno" id="winNo">ชิ้นที่ 2</span>หน้าต่าง <small>กรอบ · ลาย · ต้นไม้เล็ก</small></div>
+          <div><div class="lbl">สีกรอบหน้าต่าง <small id="frameName"></small></div><div class="dots" id="frameDots"></div></div>
+          <div><div class="lbl">สีลาย <small id="patName"></small></div><div class="dots" id="patDots"></div></div>
+          <div><div class="lbl">สีต้นไม้เล็กในหน้าต่าง <small id="miniName"></small></div><div class="dots" id="miniDots"></div></div>
+        </div>
       </div>
     </section>
 
@@ -193,23 +215,24 @@ const KC_HEX={"ฟ้า":"#7FC4E0","ชมพู":"#EFA9C6","ม่วง":"#B7
 const XM_COLORS=Object.keys(KC_HEX);   // index (base 36, 1 ตัว) ใช้ในรหัส XM1
 const XM_TYPES={s:'ชุดคู่ (ต้น+หน้าต่าง)',t:'ต้นใส่ชื่อ',w:'หน้าต่าง'};
 const XM_BASE={s:199,t:129,w:99};
-const XM_PARTS={s:'tnfp',t:'tn',w:'tfp'};   // ส่วนที่มีในแต่ละแบบ: t=ต้น n=ชื่อ+ดาว f=กรอบหน้าต่าง p=ลายในหน้าต่าง (ต้นไม้เล็กในหน้าต่างใช้สีต้น)
+const XM_PARTS={s:'tnfpm',t:'tn',w:'fpm'};   // ส่วนที่มีในแต่ละแบบ — ชิ้นที่ 1 ต้น: t=ต้น n=ชื่อ+ดาว · ชิ้นที่ 2 หน้าต่าง: f=กรอบ p=ลาย (บ้าน/หิมะ/พระจันทร์/X'MAS) m=ต้นไม้เล็กในหน้าต่าง
+const XM_KEYS={t:'tree',n:'name',f:'frame',p:'pat',m:'mini'};
 const XM_MAXLEN=9,XM_MAXQTY=9;   // ชื่อ ≤9 ตัว · ≤9 ชิ้น/ออเดอร์ (10+ ทักแชต)
 const XM_CHAT='https://www.facebook.com/share/1CoEGCMttn/';
-// รหัสแบบ: XM1.<s|t|w>.<สีต้น><สีชื่อ><สีกรอบ><สีลาย>.<ชื่อ>  สี = index b36 ใน KC_HEX, '-' ถ้าแบบนั้นไม่มีส่วนนั้น · ชื่อ encodeURIComponent ('-' สำหรับหน้าต่างอย่างเดียว)
-function xmEncode(d){const P=XM_PARTS[d.t],c=(k,v)=>P.indexOf(k)<0?'-':XM_COLORS.indexOf(v).toString(36);return 'XM1.'+d.t+'.'+c('t',d.tree)+c('n',d.name)+c('f',d.frame)+c('p',d.pat)+'.'+(P.indexOf('n')<0?'-':encodeURIComponent(d.text))}
+// รหัสแบบ: XM1.<s|t|w>.<สีต้น><สีชื่อ><สีกรอบ><สีลาย><สีต้นไม้เล็ก>.<ชื่อ>  สี = index b36 ใน KC_HEX, '-' ถ้าแบบนั้นไม่มีส่วนนั้น · ชื่อ encodeURIComponent ('-' สำหรับหน้าต่างอย่างเดียว)
+function xmEncode(d){const P=XM_PARTS[d.t];let c='';for(const k of 'tnfpm')c+=P.indexOf(k)<0?'-':XM_COLORS.indexOf(d[XM_KEYS[k]]).toString(36);return 'XM1.'+d.t+'.'+c+'.'+(P.indexOf('n')<0?'-':encodeURIComponent(d.text))}
 function xmParse(code){
-  const m=/^XM1\.([stw])\.([0-9a-z-])([0-9a-z-])([0-9a-z-])([0-9a-z-])\.(.+)$/.exec(String(code||'').trim());if(!m)return null;
-  const t=m[1],P=XM_PARTS[t],ks='tnfp',d={t,tree:null,name:null,frame:null,pat:null,text:''},keys={t:'tree',n:'name',f:'frame',p:'pat'};
-  for(let i=0;i<4;i++){const k=ks[i],ch=m[i+2],need=P.indexOf(k)>=0;if(need!==(ch!=='-'))return null;if(need){const ix=parseInt(ch,36);if(!(ix<XM_COLORS.length))return null;d[keys[k]]=XM_COLORS[ix]}}
+  const m=/^XM1\.([stw])\.([0-9a-z-]{5})\.(.+)$/.exec(String(code||'').trim());if(!m)return null;
+  const t=m[1],P=XM_PARTS[t],d={t,tree:null,name:null,frame:null,pat:null,mini:null,text:''};
+  for(let i=0;i<5;i++){const k='tnfpm'[i],ch=m[2][i],need=P.indexOf(k)>=0;if(need!==(ch!=='-'))return null;if(need){const ix=parseInt(ch,36);if(!(ix<XM_COLORS.length))return null;d[XM_KEYS[k]]=XM_COLORS[ix]}}
   if(d.name&&d.name===d.tree)return null;if(d.pat&&d.pat===d.frame)return null;
-  if(P.indexOf('n')>=0){let s;try{s=decodeURIComponent(m[6])}catch(e){return null}if(!/^[A-Z0-9]+$/.test(s)||s.length>XM_MAXLEN)return null;d.text=s}else if(m[6]!=='-')return null;
+  if(P.indexOf('n')>=0){let s;try{s=decodeURIComponent(m[3])}catch(e){return null}if(!/^[A-Z0-9]+$/.test(s)||s.length>XM_MAXLEN)return null;d.text=s}else if(m[3]!=='-')return null;
   return d;
 }
 function xmUnit(t){return XM_BASE[t]||0}
 // ราคารวม: items=[{t,qty}] (ยังไม่มีส่วนลดจำนวน)
 function xmPrice(items){return items.reduce((a,x)=>a+xmUnit(x.t)*(x.qty||0),0)}
-function xmLabel(d){const P=XM_PARTS[d.t],o=["พวงกุญแจ X'mas "+XM_TYPES[d.t]];if(P.indexOf('n')>=0)o.push('ชื่อ '+d.text);const c=[];c.push('ต้น'+d.tree);if(P.indexOf('n')>=0)c.push('ชื่อ/ดาว'+d.name);if(P.indexOf('f')>=0)c.push('กรอบ'+d.frame+' ลาย'+d.pat);o.push(c.join(' '));return o.join(' · ')}
+function xmLabel(d){const P=XM_PARTS[d.t],o=["พวงกุญแจ X'mas "+XM_TYPES[d.t]];if(P.indexOf('n')>=0)o.push('ชื่อ '+d.text);const c=[];if(P.indexOf('t')>=0)c.push('ต้น'+d.tree+' ชื่อ/ดาว'+d.name);if(P.indexOf('f')>=0)c.push('หน้าต่าง: กรอบ'+d.frame+' ลาย'+d.pat+' ต้นเล็ก'+d.mini);o.push(c.join(' · '));return o.join(' · ')}
   // ---- end copy ----
 
   // ---------- drawing: a list of shapes (each in its own local frame g={x,y,s}) → SVG (preview) or canvas (saved picture) ----------
@@ -243,7 +266,7 @@ function xmLabel(d){const P=XM_PARTS[d.t],o=["พวงกุญแจ X'mas "+X
 
   // ---- piece B: arched window, 4 open panes, moon / house / snow / small tree, X'MAS on the base (local frame ≈ x ±92, y −152…128) ----
   function windowPiece(ops, g, c, ringOnly) {
-    var F = KC_HEX[c.frame], P = KC_HEX[c.pat], T = KC_HEX[c.tree];
+    var F = KC_HEX[c.frame], P = KC_HEX[c.pat], T = KC_HEX[c.mini];   // window colours belong to the window piece only
     var ring = [{ d: circ(0, -136, 14) + circ(0, -136, 5.5), rule: 'evenodd' }];
     if (ringOnly) { raised(ops, g, ring, F, 5); return; }
     var yA = (-40 - Math.sqrt(71 * 71 - 3.5 * 3.5)).toFixed(2);
@@ -253,7 +276,7 @@ function xmLabel(d){const P=XM_PARTS[d.t],o=["พวงกุญแจ X'mas "+X
       'M-71 -20.5H-3.5V87H-71Z' + 'M3.5 -20.5H71V87H3.5Z';
     // scene parts behind the frame bars (they sit inside the open panes)
     raised(ops, g, [{ d: circ(-61, -62, 14) }], P, 3.5);   // moon
-    raised(ops, g, [{ d: 'M37 -16L50 4L45 4L57 26L51 26L64 52L41 52L41 66L33 66L33 52L10 52L23 26L17 26L29 4L24 4Z' }], T, 3.5);   // small tree (tree colour)
+    raised(ops, g, [{ d: 'M37 -16L50 4L45 4L57 26L51 26L64 52L41 52L41 66L33 66L33 52L10 52L23 26L17 26L29 4L24 4Z' }], T, 3.5);   // small tree (its own colour)
     raised(ops, g, [{ d: 'M-64 34L-40 10L-32 18.7V11H-26V25.3L-16 34H-22V74H-58V34Z' + 'M-52 41h7v8h-7Z' + 'M-35 41h7v8h-7Z' + 'M-44 56h8v18h-8Z', rule: 'evenodd' }], P, 3.5);   // house
     raised(ops, g, [{ d: 'M-71 68Q-40 60 -3.5 70V87H-71Z' }, { d: 'M3.5 66Q34 56 71 60V87H3.5Z' }], P, 3.5);   // snow
     raised(ops, g, ring.concat([{ d: frame, rule: 'evenodd' }, { d: rrect(-93, 84, 93, 128, 5) }]), F, 6);
@@ -278,28 +301,42 @@ function xmLabel(d){const P=XM_PARTS[d.t],o=["พวงกุญแจ X'mas "+X
     sp = spaced(s, NAME_FAM, '700', size, ls, 0, 41 + size * 0.36);
     raisedText(ops, g, Object.assign(sp, { op: text ? 1 : 0.55 }), N, 1.8);
   }
-  function chain(ops, x, y) {   // ball chain loop going up out of the picture
-    var d = 'M' + (x - 4) + ' ' + y + 'C' + (x - 26) + ' ' + (y - 24) + ' ' + (x - 14) + ' ' + (y - 50) + ' ' + (x - 6) + ' -4' + 'M' + (x + 4) + ' ' + y + 'C' + (x + 26) + ' ' + (y - 24) + ' ' + (x + 14) + ' ' + (y - 50) + ' ' + (x + 6) + ' -4';
+  function chainPath(ops, d) {   // ball chain: grey balls with a light highlight
     ops.push({ k: 'p', d: d, fill: 'none', stroke: '#8E8A84', sw: 4.6, dash: [0, 5.6] });
     ops.push({ k: 'p', d: d, fill: 'none', stroke: '#E6E3DE', sw: 3.2, dash: [0, 5.6] });
   }
-  // whole picture in a 300×340 box; d={t,tree,name,frame,pat,text}
-  function scene(d) {
+  function chain(ops, x, y) {   // loop going up out of the picture through ring(s) at (x, y)
+    chainPath(ops, 'M' + (x - 4) + ' ' + y + 'C' + (x - 26) + ' ' + (y - 24) + ' ' + (x - 14) + ' ' + (y - 50) + ' ' + (x - 6) + ' -4' + 'M' + (x + 4) + ' ' + y + 'C' + (x + 26) + ' ' + (y - 24) + ' ' + (x + 14) + ' ' + (y - 50) + ' ' + (x + 6) + ' -4');
+  }
+  function chainTwo(ops, x1, x2, y, cy) {   // ONE chain loop threaded through both rings (pieces lying side by side) + its clasp
+    var cx = (x1 + x2) / 2;
+    chainPath(ops, 'M' + x1 + ' ' + y + 'C' + x1 + ' ' + (y - 30) + ' ' + (cx - 30) + ' ' + cy + ' ' + (cx - 4) + ' ' + cy +
+      'M' + (cx + 4) + ' ' + cy + 'C' + (cx + 30) + ' ' + cy + ' ' + x2 + ' ' + (y - 30) + ' ' + x2 + ' ' + y +
+      'M' + x1 + ' ' + y + 'C' + (x1 + 60) + ' ' + (y + 8) + ' ' + (x2 - 60) + ' ' + (y + 8) + ' ' + x2 + ' ' + y);
+    ops.push({ k: 'p', d: rrect(cx - 8, cy - 3.2, cx + 8, cy + 3.2, 3.2), fill: '#9C978F' });
+    ops.push({ k: 'p', d: rrect(cx - 7, cy - 2.4, cx + 7, cy + 0.4, 1.6), fill: '#E6E3DE', op: 0.8 });
+  }
+  // whole picture → { ops, w, h }; d={t,tree,name,frame,pat,mini,text}; view 'side' (pieces next to each other) | 'hang' (tree hangs in front of the window)
+  function scene(d, view) {
     var ops = [];
-    if (d.t === 'w') { var gw = { x: 150, y: 196, s: 1 }; chain(ops, 150, 196 - 136); windowPiece(ops, gw, d); }
-    else if (d.t === 't') { var gt = { x: 150, y: 188, s: 1.12 }; chain(ops, 150, 188 - 128 * 1.12); treePiece(ops, gt, d, d.text, {}); }
-    else {
-      var g1 = { x: 150, y: 196, s: 1 }, g2 = { x: 150, y: 183, s: 0.94 };
-      chain(ops, 150, 196 - 136);
-      windowPiece(ops, g1, d);
-      treePiece(ops, g2, d, d.text, { noRing: true });   // tree hangs on the same chain, its ring hidden behind the star
+    if (d.t === 'w') { chain(ops, 150, 196 - 136); windowPiece(ops, { x: 150, y: 196, s: 1 }, d); return { ops: ops, w: 300, h: 340 }; }
+    if (d.t === 't') { chain(ops, 150, 188 - 128 * 1.12); treePiece(ops, { x: 150, y: 188, s: 1.12 }, d, d.text, {}); return { ops: ops, w: 300, h: 340 }; }
+    if (view === 'hang') {   // like cat/xmasorn-1.jpg: two rings on the chain, the tree's ring just in front of the window's
+      chain(ops, 148, 61);
+      windowPiece(ops, { x: 150, y: 196, s: 1 }, d);
+      treePiece(ops, { x: 145, y: 183.5, s: 0.94 }, d, d.text, {});
+      return { ops: ops, w: 300, h: 340 };
     }
-    return ops;
+    var s = 0.9, yr = 64, x1 = 122, x2 = 358;   // two separate prints side by side, both rings at the same height
+    chainTwo(ops, x1, x2, yr, 18);
+    treePiece(ops, { x: x1, y: yr + 128 * s, s: s }, d, d.text, {});
+    windowPiece(ops, { x: x2, y: yr + 136 * s, s: s }, d);
+    return { ops: ops, w: 480, h: 340 };
   }
   var esc = function (s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;'); };
   function gT(o) { return o.g ? ' transform="translate(' + o.g.x + ' ' + o.g.y + ') scale(' + o.g.s + ')"' : ''; }
-  function toSVG(ops, w, h, label) {
-    var s = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 340" width="' + w + '" height="' + h + '" role="img" aria-label="' + esc(label || "ตัวอย่างพวงกุญแจ X'mas") + '"><defs><filter id="xmb1" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="1.2"/></filter><filter id="xmb3" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="3"/></filter></defs>';
+  function toSVG(sc, w, h, label) {
+    var ops = sc.ops, s = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + sc.w + ' ' + sc.h + '" width="' + w + '" height="' + h + '" role="img" aria-label="' + esc(label || "ตัวอย่างพวงกุญแจ X'mas") + '"><defs><filter id="xmb1" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="1.2"/></filter><filter id="xmb3" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="3"/></filter></defs>';
     ops.forEach(function (o) {
       var op = o.op != null ? ' opacity="' + o.op + '"' : '', bl = o.blur ? ' filter="url(#' + (o.blur > 2 ? 'xmb3' : 'xmb1') + ')"' : '';
       var inner;
@@ -313,8 +350,8 @@ function xmLabel(d){const P=XM_PARTS[d.t],o=["พวงกุญแจ X'mas "+X
     });
     return s + '</svg>';
   }
-  function toCanvas(ops, W, bg) {
-    var H = Math.round(W * 340 / 300), c = document.createElement('canvas'); c.width = W; c.height = H; var x = c.getContext('2d'), k = W / 300;
+  function toCanvas(sc, W, bg) {
+    var ops = sc.ops, H = Math.round(W * sc.h / sc.w), c = document.createElement('canvas'); c.width = W; c.height = H; var x = c.getContext('2d'), k = W / sc.w;
     x.fillStyle = bg; x.fillRect(0, 0, W, H);
     ops.forEach(function (o) {
       x.save(); x.setTransform(k, 0, 0, k, 0, 0);
@@ -335,16 +372,17 @@ function xmLabel(d){const P=XM_PARTS[d.t],o=["พวงกุญแจ X'mas "+X
   }
 
   // ---------- state ----------
-  var DEF = { tree: 'เขียว', name: 'ขาว', frame: 'แดง', pat: 'ขาว' };   // like the printed piece
+  var DEF = { tree: 'เขียว', name: 'ขาว', frame: 'แดง', pat: 'ขาว', mini: 'เขียว' };   // like the printed piece
   var PAIRS = [
-    { lbl: 'คลาสสิก แดง-เขียว', tree: 'เขียว', name: 'ขาว', frame: 'แดง', pat: 'ขาว' },
-    { lbl: 'ฟ้าหิมะ', tree: 'ฟ้า', name: 'ขาว', frame: 'น้ำเงิน', pat: 'ขาว' },
-    { lbl: 'ทอง-ขาว', tree: 'เหลือง', name: 'น้ำตาล', frame: 'ขาว', pat: 'เหลือง' },
-    { lbl: 'ชมพูหวาน', tree: 'มิ้นท์', name: 'ชมพูอมแดง', frame: 'ชมพู', pat: 'ขาว' },
-    { lbl: 'คืนเหน็บหนาว', tree: 'เขียวอมฟ้า', name: 'เหลือง', frame: 'น้ำเงิน', pat: 'เหลือง' }
+    { lbl: 'คลาสสิก แดง-เขียว', tree: 'เขียว', name: 'ขาว', frame: 'แดง', pat: 'ขาว', mini: 'เขียว' },
+    { lbl: 'ฟ้าหิมะ', tree: 'ฟ้า', name: 'ขาว', frame: 'น้ำเงิน', pat: 'ขาว', mini: 'ฟ้า' },
+    { lbl: 'ทอง-ขาว', tree: 'เหลือง', name: 'น้ำตาล', frame: 'ขาว', pat: 'เหลือง', mini: 'เหลือง' },
+    { lbl: 'ชมพูหวาน', tree: 'มิ้นท์', name: 'ชมพูอมแดง', frame: 'ชมพู', pat: 'ขาว', mini: 'มิ้นท์' },
+    { lbl: 'คืนเหน็บหนาว', tree: 'เขียวอมฟ้า', name: 'เหลือง', frame: 'น้ำเงิน', pat: 'เหลือง', mini: 'เขียวอมฟ้า' }
   ];
-  var d = Object.assign({ t: 's', text: 'FIXTORY' }, DEF), qty = 1;
-  function adopt(p) { if (!p) return false; d = Object.assign({}, d, { t: p.t }); ['tree', 'name', 'frame', 'pat'].forEach(function (k) { if (p[k]) d[k] = p[k]; }); if (p.text) d.text = p.text; return true; }
+  var d = Object.assign({ t: 's', text: 'FIXTORY' }, DEF), qty = 1, view = 'side';
+  try { if (localStorage.getItem('fxXmView') === 'hang') view = 'hang'; } catch (e) {}
+  function adopt(p) { if (!p) return false; d = Object.assign({}, d, { t: p.t }); ['tree', 'name', 'frame', 'pat', 'mini'].forEach(function (k) { if (p[k]) d[k] = p[k]; }); if (p.text) d.text = p.text; return true; }
   try { var q0 = new URLSearchParams(location.search).get('xm'); if (!adopt(xmParse(q0))) adopt(xmParse(localStorage.getItem('fxXmDraft') || '')); } catch (e) {}
   var SALE = (function () { try { return new URLSearchParams(location.search).get('sale') || ''; } catch (e) { return ''; } })();
   var ORDER_URL = (/fixtory-studio\.pages\.dev$|^localhost$/.test(location.hostname) ? 'shop-order.html' : 'https://fixtory-studio.pages.dev/shop-order.html') + '?p=xmasorn';
@@ -359,8 +397,8 @@ function xmLabel(d){const P=XM_PARTS[d.t],o=["พวงกุญแจ X'mas "+X
   });
 
   function pairSvg(p) {
-    var T = KC_HEX[p.tree], N = KC_HEX[p.name], F = KC_HEX[p.frame], P = KC_HEX[p.pat];
-    return '<svg viewBox="0 0 48 48" width="40" height="40" aria-hidden="true"><path d="M7 44V20A17 17 0 0 1 41 20V44Z" fill="' + F + '" stroke="' + shade(F, -0.3) + '"/><path d="M11 40V21A13 13 0 0 1 37 21V40Z" fill="' + shade(F, 0.55) + '"/><circle cx="16" cy="18" r="3.2" fill="' + P + '"/><path d="M11 40V35Q24 32 37 36V40Z" fill="' + P + '"/><path d="M24 6L36 34H12Z" fill="' + T + '" stroke="' + shade(T, -0.3) + '"/><rect x="9" y="25" width="30" height="7" rx="1" fill="' + T + '" stroke="' + shade(T, -0.3) + '" stroke-width=".8"/><rect x="14" y="27.6" width="20" height="1.8" rx=".9" fill="' + N + '"/><path d="' + star(24, 7, 4.2, 1.9) + '" fill="' + N + '" stroke="' + shade(N, -0.3) + '" stroke-width=".6"/></svg>';
+    var T = KC_HEX[p.tree], N = KC_HEX[p.name], F = KC_HEX[p.frame], P = KC_HEX[p.pat], M = KC_HEX[p.mini];
+    return '<svg viewBox="0 0 48 48" width="40" height="40" aria-hidden="true"><path d="M7 44V20A17 17 0 0 1 41 20V44Z" fill="' + F + '" stroke="' + shade(F, -0.3) + '"/><path d="M11 40V21A13 13 0 0 1 37 21V40Z" fill="' + shade(F, 0.55) + '"/><circle cx="16" cy="18" r="3.2" fill="' + P + '"/><path d="M11 40V35Q24 32 37 36V40Z" fill="' + P + '"/><path d="M33 22L37 31H29Z" fill="' + M + '"/><path d="M24 6L36 34H12Z" fill="' + T + '" stroke="' + shade(T, -0.3) + '"/><rect x="9" y="25" width="30" height="7" rx="1" fill="' + T + '" stroke="' + shade(T, -0.3) + '" stroke-width=".8"/><rect x="14" y="27.6" width="20" height="1.8" rx=".9" fill="' + N + '"/><path d="' + star(24, 7, 4.2, 1.9) + '" fill="' + N + '" stroke="' + shade(N, -0.3) + '" stroke-width=".6"/></svg>';
   }
   function dotRow(box, key, label, blockKey) {
     box.textContent = '';
@@ -375,27 +413,30 @@ function xmLabel(d){const P=XM_PARTS[d.t],o=["พวงกุญแจ X'mas "+X
     if (d.name === d.tree) d.name = d.tree === 'ขาว' ? 'ดำ' : 'ขาว';
     if (d.pat === d.frame) d.pat = d.frame === 'ขาว' ? 'แดง' : 'ขาว';
     // preview
-    var label = "ตัวอย่างพวงกุญแจ X'mas " + XM_TYPES[d.t] + (hasName ? ' ชื่อ ' + (d.text || '-') : '') + ' ต้น' + d.tree + (hasName ? ' ชื่อ' + d.name : '') + (hasWin ? ' กรอบ' + d.frame + ' ลาย' + d.pat : '');
-    $('pv').innerHTML = toSVG(scene(d), 300, 340, label);
-    $('pvcap').innerHTML = '<b>' + XM_TYPES[d.t] + '</b> · ต้น' + d.tree + (hasName ? ' / ชื่อ' + d.name : '') + (hasWin ? ' / กรอบ' + d.frame + ' / ลาย' + d.pat : '') + (hasName && !d.text ? ' · (ตัวอย่าง NAME)' : '');
+    var both = d.t === 's', label = "ตัวอย่างพวงกุญแจ X'mas " + XM_TYPES[d.t] + (both ? (view === 'hang' ? ' แบบห้อยซ้อน' : ' 2 ชิ้นวางข้างกัน') : '') + (hasName ? ' ชื่อ ' + (d.text || '-') + ' ต้น' + d.tree + ' ชื่อ' + d.name : '') + (hasWin ? ' กรอบ' + d.frame + ' ลาย' + d.pat + ' ต้นเล็ก' + d.mini : '');
+    var sc = scene(d, view);
+    $('pv').innerHTML = toSVG(sc, sc.w, sc.h, label); $('pv').classList.toggle('wide', sc.w > 300);
+    $('viewSw').hidden = !both; $('pvnote').hidden = !both;
+    $('viewSw').querySelectorAll('button').forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.v === view)); });
+    $('pvcap').innerHTML = '<b>' + XM_TYPES[d.t] + '</b>' + (hasName ? ' · ต้น' + d.tree + ' / ชื่อ' + d.name : '') + (hasWin ? ' · หน้าต่าง: กรอบ' + d.frame + ' / ลาย' + d.pat + ' / ต้นเล็ก' + d.mini : '') + (hasName && !d.text ? ' · (ตัวอย่าง NAME)' : '');
     // type
     var ty = $('types'); ty.textContent = '';
     ['s', 't', 'w'].forEach(function (t) {
-      var mini = toSVG(scene(Object.assign({}, d, { t: t, text: d.text || 'NAME' })), 46, 52, '');
-      ty.append(el('button', { type: 'button', class: 'opt', 'aria-pressed': String(d.t === t), onclick: function () { d.t = t; render(); }, html: mini.replace('role="img"', 'aria-hidden="true"') + '<b>' + (t === 's' ? 'ชุดคู่' : t === 't' ? 'ต้นใส่ชื่อ' : 'หน้าต่าง') + '</b><span>' + fmt(XM_BASE[t]) + (t === 's' ? ' · ต้น+หน้าต่าง' : t === 't' ? ' · อย่างเดียว' : ' · ไม่มีชื่อ') + '</span>' }));
+      var ms = scene(Object.assign({}, d, { t: t, text: d.text || 'NAME' }), 'side'), mini = toSVG(ms, Math.round(52 * ms.w / ms.h), 52, '');
+      ty.append(el('button', { type: 'button', class: 'opt', 'aria-pressed': String(d.t === t), onclick: function () { d.t = t; render(); }, html: mini.replace('role="img"', 'aria-hidden="true"') + '<b>' + (t === 's' ? 'ชุดคู่' : t === 't' ? 'ต้นใส่ชื่อ' : 'หน้าต่าง') + '</b><span>' + fmt(XM_BASE[t]) + (t === 's' ? ' · 2 ชิ้น' : t === 't' ? ' · อย่างเดียว' : ' · ไม่มีชื่อ') + '</span>' }));
     });
     $('nameStep').hidden = !hasName; $('colNo').textContent = hasName ? '3' : '2';
     $('cn').textContent = d.text.length + '/' + XM_MAXLEN;
-    // colours
+    // colours: piece 1 (tree) and piece 2 (window) in their own boxes
     var pr = $('pairs'); pr.textContent = '';
-    PAIRS.forEach(function (p) { pr.append(el('button', { type: 'button', class: 'pair', 'aria-pressed': String(d.tree === p.tree && (!hasName || d.name === p.name) && (!hasWin || (d.frame === p.frame && d.pat === p.pat))), onclick: function () { d.tree = p.tree; d.name = p.name; d.frame = p.frame; d.pat = p.pat; render(); }, html: pairSvg(p) + '<span>' + p.lbl + '</span>' })); });
-    $('treeLbl').innerHTML = (d.t === 'w' ? 'สีต้นไม้เล็กในหน้าต่าง' : 'สีต้น') + ' <small>' + d.tree + (d.t === 's' ? ' · ต้นไม้เล็กในหน้าต่างสีเดียวกัน' : '') + '</small>';
-    $('nameName').textContent = d.name; $('frameName').textContent = d.frame; $('patName').textContent = d.pat + ' · บ้าน หิมะ พระจันทร์ X\'MAS';
-    $('rowName').hidden = !hasName; $('rowFrame').hidden = !hasWin; $('rowPat').hidden = !hasWin;
-    dotRow($('treeDots'), 'tree', 'ต้นสี', hasName ? 'name' : null);
+    PAIRS.forEach(function (p) { pr.append(el('button', { type: 'button', class: 'pair', 'aria-pressed': String((!hasName || (d.tree === p.tree && d.name === p.name)) && (!hasWin || (d.frame === p.frame && d.pat === p.pat && d.mini === p.mini))), onclick: function () { ['tree', 'name', 'frame', 'pat', 'mini'].forEach(function (k) { d[k] = p[k]; }); render(); }, html: pairSvg(p) + '<span>' + p.lbl + '</span>' })); });
+    $('boxTree').hidden = !hasName; $('boxWin').hidden = !hasWin; $('winNo').hidden = !both;
+    $('treeName').textContent = d.tree; $('nameName').textContent = d.name; $('frameName').textContent = d.frame; $('patName').textContent = d.pat + ' · บ้าน หิมะ พระจันทร์ X\'MAS'; $('miniName').textContent = d.mini;
+    dotRow($('treeDots'), 'tree', 'ต้นสี', 'name');
     dotRow($('nameDots'), 'name', 'ชื่อและดาวสี', 'tree');
     dotRow($('frameDots'), 'frame', 'กรอบหน้าต่างสี', 'pat');
     dotRow($('patDots'), 'pat', 'ลายในหน้าต่างสี', 'frame');
+    dotRow($('miniDots'), 'mini', 'ต้นไม้เล็กในหน้าต่างสี', null);
     // price
     var unit = xmUnit(d.t), tot = xmPrice([{ t: d.t, qty: qty }]);
     $('perPiece').textContent = XM_TYPES[d.t] + ' ชิ้นละ ' + fmt(unit);
@@ -417,18 +458,19 @@ function xmLabel(d){const P=XM_PARTS[d.t],o=["พวงกุญแจ X'mas "+X
 
   $('minus').onclick = function () { qty = Math.max(1, qty - 1); render(); };
   $('plus').onclick = function () { qty = Math.min(XM_MAXQTY, qty + 1); render(); };
+  $('viewSw').addEventListener('click', function (e) { var b = e.target.closest('button[data-v]'); if (!b) return; view = b.dataset.v; try { localStorage.setItem('fxXmView', view); } catch (x) {} render(); });
   $('reset').onclick = function () { Object.assign(d, DEF); render(); };
   function pick() { return XM_COLORS[Math.floor(Math.random() * XM_COLORS.length)]; }
   function far(a, b) { return a !== b && Math.abs(lum(KC_HEX[a]) - lum(KC_HEX[b])) >= 0.22; }
   $('dice').onclick = function () {   // random set that still reads well: name vs tree and pattern vs frame need light/dark contrast
-    var n = 0, t, nm, f, p;
-    do { t = pick(); nm = pick(); f = pick(); p = pick(); n++; }
-    while ((!far(t, nm) || !far(f, p) || f === t || (t === d.tree && f === d.frame)) && n < 400);
-    d.tree = t; d.name = nm; d.frame = f; d.pat = p; render();
+    var n = 0, t, nm, f, p, m;
+    do { t = pick(); nm = pick(); f = pick(); p = pick(); m = pick(); n++; }
+    while ((!far(t, nm) || !far(f, p) || !far(f, m) || f === t || (t === d.tree && f === d.frame)) && n < 400);
+    d.tree = t; d.name = nm; d.frame = f; d.pat = p; d.mini = m; render();
   };
-  function picture(size) { return toCanvas(scene(d), size, '#F3ECE4'); }
+  function picture(size) { return toCanvas(scene(d, view), size, '#F3ECE4'); }   // saved picture follows the chosen view
   $('save').onclick = function () {
-    var c = picture(1000), a = document.createElement('a');
+    var c = picture(d.t === 's' && view === 'side' ? 1400 : 1000), a = document.createElement('a');
     a.download = 'fixtory-xmas-' + (XM_PARTS[d.t].indexOf('n') >= 0 ? (d.text || 'design') : 'window') + '.png'; a.href = c.toDataURL('image/png'); document.body.appendChild(a); a.click(); a.remove();
   };
   // picture for the order page's cart (same site: shared localStorage), like namepop.html / keycap.html
@@ -437,7 +479,7 @@ function xmLabel(d){const P=XM_PARTS[d.t],o=["พวงกุญแจ X'mas "+X
     try {
       var c = xmEncode(d), K = 'fxXmImgs', list = JSON.parse(localStorage.getItem(K) || '[]').filter(function (x) { return x !== c; });
       list.unshift(c); while (list.length > 30) localStorage.removeItem('fxXmImg:' + list.pop());
-      localStorage.setItem('fxXmImg:' + c, picture(360).toDataURL('image/jpeg', 0.85)); localStorage.setItem(K, JSON.stringify(list));
+      localStorage.setItem('fxXmImg:' + c, picture(d.t === 's' && view === 'side' ? 480 : 360).toDataURL('image/jpeg', 0.85)); localStorage.setItem(K, JSON.stringify(list));
     } catch (e) {}
   }, true);
 
